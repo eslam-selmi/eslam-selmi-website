@@ -292,7 +292,7 @@ function Hero() {
 
                 <motion.p
                   initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-                  className="mt-7 max-w-2xl text-lg leading-relaxed text-foreground/78 lg:text-xl"
+                  className="mt-7 max-w-2xl text-lg leading-relaxed text-foreground/80 lg:text-xl"
                 >
                   {t("hero_intro")}
                 </motion.p>
@@ -331,7 +331,7 @@ function Hero() {
             <div className="glass-panel relative mx-auto flex h-full min-h-[560px] max-w-lg flex-col justify-end overflow-hidden rounded-[2.25rem] p-3">
               <div className="absolute inset-3 overflow-hidden rounded-[1.8rem] bg-gradient-to-br from-[var(--navy-deep)] via-primary to-accent/60">
                 <div className="absolute inset-0 bg-aurora opacity-70" />
-                <div className="absolute start-6 top-6 rounded-full border border-primary-foreground/18 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.24em] text-primary-foreground/78">
+                <div className="absolute start-6 top-6 rounded-full border border-primary-foreground/20 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.24em] text-primary-foreground/80">
                   01 · Signature profile
                 </div>
                 <img
@@ -382,7 +382,7 @@ function About() {
     <Section id="about" eyebrow={t("about_eyebrow")} title={t("about_title")}>
       <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
         <motion.div {...fadeUp} className="glass-panel sticky top-28 rounded-[2rem] p-7">
-          <p className="text-lg leading-relaxed text-foreground/76">
+          <p className="text-lg leading-relaxed text-foreground/75">
             {t("about_intro")}
           </p>
           <div className="mt-8 grid grid-cols-2 gap-3">
@@ -658,8 +658,8 @@ function Snapshots() {
         loading="lazy"
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition" />
-      <div className="absolute bottom-3 start-3 text-xs text-white/90 opacity-0 group-hover:opacity-100 transition font-semibold tracking-wider uppercase">
+      <div className="image-scrim absolute inset-0 opacity-0 group-hover:opacity-100 transition" />
+      <div className="absolute bottom-3 start-3 text-xs text-primary-foreground opacity-0 group-hover:opacity-100 transition font-semibold tracking-wider uppercase">
         View →
       </div>
     </button>
@@ -688,7 +688,7 @@ function Snapshots() {
         {active !== null && (
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md grid place-items-center p-4"
+            className="modal-backdrop fixed inset-0 z-[100] backdrop-blur-md grid place-items-center p-4"
             onClick={() => setActive(null)}
           >
             <button
