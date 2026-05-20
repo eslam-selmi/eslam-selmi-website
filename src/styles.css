@@ -32,6 +32,9 @@
   --color-gold: var(--gold);
   --color-gold-soft: var(--gold-soft);
   --color-navy: var(--navy);
+  --color-lavender: var(--lavender);
+  --color-lavender-soft: var(--lavender-soft);
+  --color-lavender-deep: var(--lavender-deep);
 }
 
 :root {
