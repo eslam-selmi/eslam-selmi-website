@@ -799,7 +799,7 @@ function Footer() {
 /* ---------- SECTION WRAPPER ---------- */
 function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string; title: string; children: React.ReactNode }) {
   return (
-    <section id={id} className="px-4 sm:px-6 py-20 lg:py-28">
+    <section id={id} className="px-4 sm:px-6 py-16 lg:py-24">
       <div className="mx-auto max-w-7xl">
         <motion.div {...fadeUp} className="mb-10 max-w-2xl">
           <div className="inline-flex items-center gap-2 text-gold text-sm uppercase tracking-[0.2em] font-semibold">
