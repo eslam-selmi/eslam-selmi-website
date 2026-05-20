@@ -195,6 +195,9 @@ html[lang="ar"] {
     box-shadow: var(--shadow-glass), inset 0 1px 0 oklch(1 0 0 / 0.46), inset 0 -1px 0 oklch(1 0 0 / 0.12);
   }
 
+  .modal-backdrop { background: color-mix(in oklab, var(--navy-deep) 94%, transparent); }
+  .image-scrim { background: linear-gradient(to top, color-mix(in oklab, var(--navy-deep) 76%, transparent), transparent); }
+
   .dark .grain::after { opacity: 0.055; mix-blend-mode: screen; }
 
   .hairline {
