@@ -130,14 +130,14 @@ html[lang="ar"] {
   }
   h1, h2, h3, .font-display {
     font-family: var(--font-heading-en);
-    font-weight: 400;
-    letter-spacing: 0;
+    font-weight: 800;
+    letter-spacing: -0.02em;
   }
   html[lang="ar"] body { font-family: var(--font-body-ar); font-weight: 400; }
   html[lang="ar"] h1,
   html[lang="ar"] h2,
   html[lang="ar"] h3,
-  html[lang="ar"] .font-display { font-family: var(--font-heading-ar); font-weight: 700; letter-spacing: 0; }
+  html[lang="ar"] .font-display { font-family: var(--font-heading-ar); font-weight: 800; letter-spacing: 0; }
 }
 
 @layer utilities {
