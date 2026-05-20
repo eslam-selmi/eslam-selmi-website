@@ -844,26 +844,26 @@ function ContactCard({ icon: Icon, label, lines, href }: { icon: any; label: str
 function Footer() {
   const { t } = useI18n();
   return (
-    <footer className="border-t border-white/5 mt-10">
+    <footer className="border-t border-foreground/10 mt-10 bg-foreground/[0.02]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <img src={logo} alt="Eslam Selmi" className="size-10 object-contain" />
           <div>
-            <div className="font-display font-semibold leading-none">Eslam Selmi</div>
+            <div className="font-display italic text-lg leading-none">Eslam Selmi</div>
             <div className="text-xs text-muted-foreground mt-1">{t("footer_tag")}</div>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <a href={LINKEDIN} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"
-            className="size-9 grid place-items-center rounded-full glass hover:bg-white/10 transition">
+            className="size-9 grid place-items-center rounded-full border border-foreground/15 hover:bg-foreground/5 transition">
             <Linkedin className="size-4" />
           </a>
           <a href="mailto:eslam.m.selmi@gmail.com" aria-label="Email"
-            className="size-9 grid place-items-center rounded-full glass hover:bg-white/10 transition">
+            className="size-9 grid place-items-center rounded-full border border-foreground/15 hover:bg-foreground/5 transition">
             <Mail className="size-4" />
           </a>
           <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"
-            className="size-9 grid place-items-center rounded-full glass hover:bg-white/10 transition">
+            className="size-9 grid place-items-center rounded-full border border-foreground/15 hover:bg-foreground/5 transition">
             <MessageCircle className="size-4" />
           </a>
         </div>
