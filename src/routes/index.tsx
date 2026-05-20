@@ -745,7 +745,7 @@ function BookCTA() {
             <h2 className="mt-5 font-display text-balance leading-[1] text-primary-foreground text-[clamp(2.25rem,5vw,4rem)]">
               {t("book_title_1")} <span className="serif-italic text-primary-foreground/75">{t("book_title_2")}</span> {t("book_title_3")}
             </h2>
-            <p className="mt-5 text-primary-foreground/72 max-w-xl leading-relaxed">{t("book_desc")}</p>
+            <p className="mt-5 text-primary-foreground/70 max-w-xl leading-relaxed">{t("book_desc")}</p>
             <div className="mt-7 flex flex-wrap gap-3">
               <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
                 className="group inline-flex items-center gap-2 rounded-full bg-primary-foreground text-primary px-6 py-3 text-sm font-bold hover:bg-primary-foreground/90 transition">
@@ -834,7 +834,7 @@ function LeadForm() {
             </button>
           </form>
           <div className="mt-3 min-h-[1.5rem] text-sm">
-            {state === "success" && <span className="text-emerald-400">✓ {t("lead_success")}</span>}
+            {state === "success" && <span className="text-gold">✓ {t("lead_success")}</span>}
             {state === "error" && <span className="text-destructive">{t("lead_error")}</span>}
             {state === "invalid" && <span className="text-amber-400">{t("lead_invalid")}</span>}
           </div>
