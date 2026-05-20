@@ -215,88 +215,118 @@ function Nav() {
 
 /* ---------- HERO ---------- */
 function Hero() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [0, 120]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, 80]);
 
   return (
-    <section id="home" ref={ref} className="relative pt-28 pb-8 lg:pt-32 lg:pb-12 overflow-hidden">
-      <div className="absolute inset-0 bg-aurora animate-float-slow" />
+    <section id="home" ref={ref} className="relative pt-28 pb-12 lg:pt-32 lg:pb-16 overflow-hidden">
+      <div className="absolute inset-0 bg-aurora" />
       <div className="absolute inset-0 grain" />
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-        <motion.div style={{ y }} className="order-2 lg:order-1">
-          <motion.p
-            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-            className="text-lavender font-medium tracking-[0.25em] uppercase text-xs">
-            ✦ {t("hero_hello")}
-          </motion.p>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.7 }}
-            className="mt-3 font-display text-5xl sm:text-6xl lg:text-7xl tracking-tight text-balance leading-[1.02]">
-            {t("hero_meet")} <span className="text-gradient-premium">Eslam Selmi</span>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
-            className="mt-5 text-lg text-muted-foreground max-w-xl text-balance leading-relaxed">
-            {t("hero_intro")}
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-            className="mt-8 flex flex-wrap gap-3">
-            <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-              className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[var(--lavender-deep)] via-[var(--lavender)] to-[var(--gold)] text-white px-6 py-3 font-semibold shadow-[0_10px_40px_-12px] shadow-[var(--lavender-deep)] hover:shadow-[0_18px_60px_-12px] hover:shadow-[var(--lavender)] transition">
-              <MessageCircle className="size-5" /> {t("hero_btn_book")}
-              <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
-            </a>
-            <a href="#programs" className="inline-flex items-center gap-2 rounded-full glass px-6 py-3 font-medium hover:bg-white/10 hover:border-[var(--lavender)]/40 transition">
-              {t("hero_btn_programs")}
-            </a>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}
-            className="mt-10 grid grid-cols-3 gap-4 max-w-md">
-            <Stat n="3000+" l={t("stat_trainees")} />
-            <Stat n="12" l={t("stat_countries")} />
-            <Stat n="15+" l={t("stat_programs")} />
-          </motion.div>
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
+        {/* Top meta line */}
+        <motion.div
+          initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }}
+          className="flex items-center justify-between text-[11px] uppercase tracking-[0.3em] text-muted-foreground mb-8 lg:mb-12"
+        >
+          <span>Portfolio · MMXXVI</span>
+          <span className="hidden sm:inline">Riyadh · Cairo</span>
+          <span>Vol. 01</span>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }}
-          className="order-1 lg:order-2 relative h-[480px] sm:h-[560px] lg:h-[600px]">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="size-[420px] rounded-full bg-gradient-to-tr from-[var(--lavender)]/30 via-primary/30 to-[var(--gold)]/20 blur-3xl animate-float-slow" />
-          </div>
-          <div className="absolute inset-0 grid place-items-center">
-            <div className="size-[360px] sm:size-[440px] rounded-full border border-[var(--lavender)]/25 bg-gradient-to-b from-white/5 to-transparent backdrop-blur-sm" />
-          </div>
-          <div className="absolute inset-0 grid place-items-center">
-            <div className="size-[300px] sm:size-[380px] rounded-full border border-white/5" />
-          </div>
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          {/* LEFT — Editorial text */}
+          <motion.div style={{ y }} className="order-2 lg:order-1 lg:col-span-7">
+            <div className="text-[11px] uppercase tracking-[0.3em] text-accent font-semibold mb-5">
+              {t("hero_hello")} — {lang === "ar" ? "تعرّف إلى" : "an introduction"}
+            </div>
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.7 }}
+              className="font-display tracking-tight text-balance leading-[0.95] text-foreground text-[clamp(3rem,8vw,7rem)]"
+            >
+              Eslam <span className="serif-italic text-accent">Selmi</span>
+            </motion.h1>
 
-          <motion.div
-            animate={{ y: [0, -12, 0] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="relative h-full w-full grid place-items-center">
-            <img
-              src={headshot}
-              alt="Eslam Selmi, Head of L&D"
-              className="relative max-h-full w-auto object-contain drop-shadow-[0_30px_50px_rgba(167,139,250,0.35)]"
-            />
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
+              className="mt-6 flex items-center gap-4"
+            >
+              <span className="h-px flex-1 bg-foreground/15" />
+              <span className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground whitespace-nowrap">
+                Head of L&amp;D · Talent &amp; Performance
+              </span>
+              <span className="h-px flex-1 bg-foreground/15 hidden sm:block" />
+            </motion.div>
+
+            <motion.p
+              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+              className="mt-6 text-lg lg:text-xl text-foreground/75 max-w-2xl leading-relaxed font-light"
+            >
+              {t("hero_intro")}
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
+              className="mt-8 flex flex-wrap gap-3"
+            >
+              <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
+                className="group inline-flex items-center gap-2 rounded-full bg-foreground text-background px-6 py-3 text-sm font-semibold hover:bg-foreground/85 transition">
+                <MessageCircle className="size-4" /> {t("hero_btn_book")}
+                <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
+              </a>
+              <a href="#programs"
+                className="inline-flex items-center gap-2 rounded-full border border-foreground/20 px-6 py-3 text-sm font-medium hover:bg-foreground/5 transition">
+                {t("hero_btn_programs")}
+              </a>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}
+              className="mt-12 grid grid-cols-3 gap-6 max-w-lg border-t border-foreground/10 pt-6"
+            >
+              <Stat n="3000+" l={t("stat_trainees")} />
+              <Stat n="12" l={t("stat_countries")} />
+              <Stat n="15+" l={t("stat_programs")} />
+            </motion.div>
           </motion.div>
 
+          {/* RIGHT — Editorial portrait */}
           <motion.div
-            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
-            className="absolute bottom-2 left-1/2 -translate-x-1/2 glass-strong rounded-2xl px-4 py-3 flex items-center gap-3 whitespace-nowrap border-[var(--lavender)]/20">
-            <span className="size-2.5 rounded-full bg-emerald-400 shadow-[0_0_12px] shadow-emerald-400" />
-            <div className="text-start">
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("status_current")}</div>
-              <div className="text-sm font-semibold">{t("status_role")}</div>
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}
+            className="order-1 lg:order-2 lg:col-span-5 relative"
+          >
+            <div className="relative aspect-[4/5] w-full max-w-md mx-auto">
+              {/* Frame */}
+              <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-b from-primary to-[var(--navy-deep)] overflow-hidden shadow-[0_30px_80px_-30px_rgba(15,27,61,0.5)]">
+                <div className="absolute inset-0 bg-aurora opacity-40" />
+                <div className="absolute inset-0 grain" />
+                <img
+                  src={headshot}
+                  alt="Eslam Selmi, Head of L&D"
+                  className="absolute inset-0 w-full h-full object-contain object-bottom drop-shadow-[0_30px_40px_rgba(0,0,0,0.35)]"
+                />
+              </div>
+
+              {/* Caption tag */}
+              <motion.div
+                initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 }}
+                className="absolute -bottom-5 start-4 sm:start-8 bg-background border border-foreground/10 rounded-xl px-4 py-3 flex items-center gap-3 shadow-[0_12px_30px_-12px_rgba(15,27,61,0.25)]"
+              >
+                <span className="size-2 rounded-full bg-emerald-500 shadow-[0_0_10px] shadow-emerald-500/60" />
+                <div className="text-start">
+                  <div className="text-[9px] uppercase tracking-[0.25em] text-muted-foreground">{t("status_current")}</div>
+                  <div className="text-sm font-semibold leading-tight mt-0.5">{t("status_role")}</div>
+                </div>
+              </motion.div>
+
+              {/* Plate number badge */}
+              <div className="absolute -top-3 end-4 sm:end-8 font-display italic text-accent text-2xl bg-background px-3 py-1 rounded-full border border-foreground/10">
+                01
+              </div>
             </div>
           </motion.div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
