@@ -109,9 +109,9 @@ const PROGRAMS = [
 ];
 
 const PILLARS = [
-  { icon: UserCheck, key: "talent", color: "from-blue-500/40 to-indigo-500/20" },
-  { icon: TrendingUp, key: "perf", color: "from-amber-500/40 to-orange-500/20" },
-  { icon: BarChart3, key: "kpi", color: "from-emerald-500/40 to-teal-500/20" },
+  { icon: UserCheck, key: "talent", color: "from-accent/35 to-primary/10" },
+  { icon: TrendingUp, key: "perf", color: "from-gold/35 to-accent/10" },
+  { icon: BarChart3, key: "kpi", color: "from-lavender/35 to-primary/10" },
 ];
 
 const SNAPSHOTS = [trainingCollage, snap1, snap2, snap3, snap4, snap5, snap6, snap7];
