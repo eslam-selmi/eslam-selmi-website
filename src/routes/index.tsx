@@ -63,13 +63,13 @@ const JOURNEY = [
 ];
 
 const CREDENTIALS = [
-  { name: { en: "Design Thinking", ar: "التفكير التصميمي" }, issuer: "IDEO U", icon: Lightbulb },
-  { name: { en: "Performance & KPIs", ar: "الأداء والمؤشرات" }, issuer: "ATD", icon: BarChart3 },
-  { name: { en: "Instructional Design", ar: "تصميم تعليمي" }, issuer: "ATD", icon: Layers },
-  { name: { en: "IDPCC Certified", ar: "شهادة IDPCC" }, issuer: "IDPCC", icon: Award },
-  { name: { en: "HR Management", ar: "إدارة الموارد البشرية" }, issuer: "AUC", icon: Users },
-  { name: { en: "Leaders of Learning", ar: "قادة التعلم" }, issuer: "HarvardX", icon: GraduationCap },
-  { name: { en: "Coaching Practice", ar: "ممارسة التدريب" }, issuer: "ICF", icon: HeartHandshake },
+  { name: { en: "PMP", ar: "إدارة المشاريع PMP" }, issuer: { en: "London College", ar: "كلية لندن" }, icon: BadgeCheck },
+  { name: { en: "TOT — Training of Trainers", ar: "تدريب المدربين TOT" }, issuer: { en: "Certified Program", ar: "برنامج معتمد" }, icon: Presentation },
+  { name: { en: "Performance & KPIs", ar: "إدارة الأداء والمؤشرات" }, issuer: { en: "ESLSCA University", ar: "جامعة ESLSCA" }, icon: BarChart3 },
+  { name: { en: "Design Thinking", ar: "التفكير التصميمي" }, issuer: { en: "HP LIFE", ar: "HP LIFE" }, icon: Lightbulb },
+  { name: { en: "Instructional Design", ar: "التصميم التعليمي" }, issuer: { en: "Mentarcise", ar: "Mentarcise" }, icon: Layers },
+  { name: { en: "IDPCC Certified", ar: "شهادة IDPCC" }, issuer: { en: "IDPCC", ar: "IDPCC" }, icon: Award },
+  { name: { en: "Leaders of Learning", ar: "قادة التعلم" }, issuer: { en: "HarvardX", ar: "HarvardX" }, icon: GraduationCap },
 ];
 
 const SERVICES = [
