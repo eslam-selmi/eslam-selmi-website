@@ -559,7 +559,7 @@ function Programs() {
       <div className="grid lg:grid-cols-3 gap-6">
         {PROGRAMS.map((p, i) => (
           <motion.div key={p.track.en} {...fadeUp} transition={{ delay: i * 0.08, duration: 0.6 }}
-            className="glass rounded-3xl p-6 flex flex-col overflow-hidden relative group">
+            className="glass-panel rounded-[2rem] p-6 flex flex-col overflow-hidden relative group transition hover:-translate-y-1">
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--gold)]/0 via-transparent to-primary/10 opacity-0 group-hover:opacity-100 transition" />
             <div className="relative">
               <div className="inline-flex items-center gap-2 self-start glass rounded-full px-3 py-1 text-xs text-gold font-semibold">
@@ -607,7 +607,7 @@ function Clients() {
             <motion.div key={c.code}
               initial={{ opacity: 0, scale: 0.85 }} whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }} transition={{ delay: i * 0.04 }}
-              className="glass aspect-square rounded-2xl flex flex-col items-center justify-center gap-2 hover:bg-foreground/5 hover:border-foreground/20 transition group p-2">
+            className="glass-panel aspect-square rounded-3xl flex flex-col items-center justify-center gap-2 transition hover:-translate-y-1 group p-2">
               <img
                 src={`https://flagcdn.com/${c.code}.svg`}
                 alt={c.name[lang]}
@@ -649,7 +649,7 @@ function Snapshots() {
     <button
       type="button"
       onClick={() => setActive(originalIndex)}
-      className="group relative shrink-0 w-[280px] sm:w-[340px] aspect-[4/3] overflow-hidden rounded-2xl border border-foreground/10 cursor-zoom-in"
+      className="group relative shrink-0 w-[280px] sm:w-[340px] aspect-[4/3] overflow-hidden rounded-3xl border border-foreground/10 cursor-zoom-in shadow-[0_24px_70px_-38px_var(--foreground)]"
       aria-label={`Open snapshot ${originalIndex + 1}`}
     >
       <img
