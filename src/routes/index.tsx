@@ -362,9 +362,9 @@ function Hero() {
 
 function Stat({ n, l }: { n: string; l: string }) {
   return (
-    <div>
-      <div className="font-display text-3xl sm:text-4xl text-foreground tracking-tight">{n}</div>
-      <div className="text-[10px] text-muted-foreground uppercase tracking-[0.25em] mt-1">{l}</div>
+    <div className="glass rounded-2xl p-4 text-center">
+      <div className="font-display text-3xl sm:text-4xl text-foreground">{n}</div>
+      <div className="mt-1 text-[10px] uppercase tracking-[0.22em] text-muted-foreground">{l}</div>
     </div>
   );
 }
