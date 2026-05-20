@@ -346,10 +346,11 @@ function About() {
               key={c.name.en}
               initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ delay: i * 0.05 }}
-              className="glass rounded-xl p-4 group hover:border-[var(--gold)]/40 transition"
+              className="glass rounded-2xl p-4 group hover:border-[var(--lavender)]/40 hover:bg-white/[0.06] transition relative overflow-hidden"
             >
-              <div className="flex items-start gap-3">
-                <div className="size-10 rounded-lg bg-gradient-to-br from-[var(--gold)]/30 to-primary/20 grid place-items-center text-gold shrink-0">
+              <div className="absolute -top-10 -end-10 size-24 rounded-full bg-[var(--lavender)]/20 blur-2xl opacity-0 group-hover:opacity-100 transition" />
+              <div className="relative flex items-start gap-3">
+                <div className="size-11 rounded-xl bg-gradient-to-br from-[var(--lavender)]/30 via-[var(--lavender-deep)]/20 to-[var(--gold)]/20 grid place-items-center text-lavender shrink-0 border border-white/10">
                   <c.icon className="size-5" />
                 </div>
                 <div className="min-w-0">
