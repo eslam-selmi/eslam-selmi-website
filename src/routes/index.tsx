@@ -5,7 +5,7 @@ import {
   Sparkles, Globe2, Layers, MessageCircle, Mail, Linkedin, Phone, ArrowRight,
   CheckCircle2, Menu, X, Calendar, Target, Lightbulb, HeartHandshake,
   GraduationCap, Award, Users, TrendingUp, BarChart3, UserCheck, Languages,
-  ArrowUp, Loader2, Briefcase,
+  ArrowUp, Loader2, Briefcase, BadgeCheck, Compass, Presentation,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n, type Lang } from "@/lib/i18n";
@@ -63,13 +63,13 @@ const JOURNEY = [
 ];
 
 const CREDENTIALS = [
-  { name: { en: "Design Thinking", ar: "التفكير التصميمي" }, issuer: "IDEO U", icon: Lightbulb },
-  { name: { en: "Performance & KPIs", ar: "الأداء والمؤشرات" }, issuer: "ATD", icon: BarChart3 },
-  { name: { en: "Instructional Design", ar: "تصميم تعليمي" }, issuer: "ATD", icon: Layers },
-  { name: { en: "IDPCC Certified", ar: "شهادة IDPCC" }, issuer: "IDPCC", icon: Award },
-  { name: { en: "HR Management", ar: "إدارة الموارد البشرية" }, issuer: "AUC", icon: Users },
-  { name: { en: "Leaders of Learning", ar: "قادة التعلم" }, issuer: "HarvardX", icon: GraduationCap },
-  { name: { en: "Coaching Practice", ar: "ممارسة التدريب" }, issuer: "ICF", icon: HeartHandshake },
+  { name: { en: "PMP", ar: "إدارة المشاريع PMP" }, issuer: { en: "London College", ar: "كلية لندن" }, icon: BadgeCheck },
+  { name: { en: "TOT — Training of Trainers", ar: "تدريب المدربين TOT" }, issuer: { en: "Certified Program", ar: "برنامج معتمد" }, icon: Presentation },
+  { name: { en: "Performance & KPIs", ar: "إدارة الأداء والمؤشرات" }, issuer: { en: "ESLSCA University", ar: "جامعة ESLSCA" }, icon: BarChart3 },
+  { name: { en: "Design Thinking", ar: "التفكير التصميمي" }, issuer: { en: "HP LIFE", ar: "HP LIFE" }, icon: Lightbulb },
+  { name: { en: "Instructional Design", ar: "التصميم التعليمي" }, issuer: { en: "Mentarcise", ar: "Mentarcise" }, icon: Layers },
+  { name: { en: "IDPCC Certified", ar: "شهادة IDPCC" }, issuer: { en: "IDPCC", ar: "IDPCC" }, icon: Award },
+  { name: { en: "Leaders of Learning", ar: "قادة التعلم" }, issuer: { en: "HarvardX", ar: "HarvardX" }, icon: GraduationCap },
 ];
 
 const SERVICES = [
@@ -160,8 +160,8 @@ function Nav() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="glass-strong rounded-full ps-3 pe-2 py-2 flex items-center justify-between gap-2">
           <a href="#home" className="flex items-center gap-2 group shrink-0">
-            <img src={logo} alt="Eslam Selmi" className="size-9 object-contain" />
-            <span className="font-display font-semibold tracking-tight hidden sm:inline text-base">
+            <img src={logo} alt="Eslam Selmi" className="size-10 object-contain" />
+            <span className="font-display font-extrabold tracking-tight hidden sm:inline text-base text-gradient-premium">
               Eslam Selmi
             </span>
           </a>
@@ -189,7 +189,7 @@ function Nav() {
               <Linkedin className="size-4" />
             </a>
             <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-              className="hidden md:inline-flex items-center gap-2 rounded-full bg-gold text-accent-foreground px-4 py-2 text-sm font-semibold hover:opacity-90 transition">
+              className="hidden md:inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[var(--lavender-deep)] via-[var(--lavender)] to-[var(--gold)] text-white px-4 py-2 text-sm font-semibold hover:opacity-95 hover:shadow-[0_10px_30px_-12px] hover:shadow-[var(--lavender)] transition">
               <Calendar className="size-4" /> {t("book_cta")}
             </a>
             <button className="xl:hidden p-2" onClick={() => setOpen(v => !v)} aria-label="Menu">
@@ -221,20 +221,20 @@ function Hero() {
   const y = useTransform(scrollYProgress, [0, 1], [0, 120]);
 
   return (
-    <section id="home" ref={ref} className="relative pt-28 pb-16 lg:pt-36 lg:pb-24 overflow-hidden">
+    <section id="home" ref={ref} className="relative pt-28 pb-8 lg:pt-32 lg:pb-12 overflow-hidden">
       <div className="absolute inset-0 bg-aurora animate-float-slow" />
       <div className="absolute inset-0 grain" />
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 grid lg:grid-cols-2 gap-10 items-center">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
         <motion.div style={{ y }} className="order-2 lg:order-1">
           <motion.p
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-            className="text-gold font-medium tracking-wider uppercase text-sm">
+            className="text-lavender font-medium tracking-[0.25em] uppercase text-xs">
             ✦ {t("hero_hello")}
           </motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.7 }}
-            className="mt-3 font-display text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-balance leading-[1.05]">
-            {t("hero_meet")} <span className="text-gradient-gold">Eslam Selmi</span>
+            className="mt-3 font-display text-5xl sm:text-6xl lg:text-7xl tracking-tight text-balance leading-[1.02]">
+            {t("hero_meet")} <span className="text-gradient-premium">Eslam Selmi</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
@@ -245,11 +245,11 @@ function Hero() {
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
             className="mt-8 flex flex-wrap gap-3">
             <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-              className="group inline-flex items-center gap-2 rounded-full bg-gold text-accent-foreground px-6 py-3 font-semibold hover:shadow-[0_0_40px_-8px] hover:shadow-[var(--gold)] transition">
+              className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[var(--lavender-deep)] via-[var(--lavender)] to-[var(--gold)] text-white px-6 py-3 font-semibold shadow-[0_10px_40px_-12px] shadow-[var(--lavender-deep)] hover:shadow-[0_18px_60px_-12px] hover:shadow-[var(--lavender)] transition">
               <MessageCircle className="size-5" /> {t("hero_btn_book")}
               <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
             </a>
-            <a href="#programs" className="inline-flex items-center gap-2 rounded-full glass px-6 py-3 font-medium hover:bg-white/10 transition">
+            <a href="#programs" className="inline-flex items-center gap-2 rounded-full glass px-6 py-3 font-medium hover:bg-white/10 hover:border-[var(--lavender)]/40 transition">
               {t("hero_btn_programs")}
             </a>
           </motion.div>
@@ -265,27 +265,31 @@ function Hero() {
 
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }}
-          className="order-1 lg:order-2 relative">
-          <div className="absolute inset-0 -z-10 flex items-center justify-center">
-            <div className="size-[420px] rounded-full bg-gradient-to-tr from-[var(--gold)]/30 via-primary/30 to-transparent blur-3xl animate-float-slow" />
+          className="order-1 lg:order-2 relative h-[480px] sm:h-[560px] lg:h-[600px]">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="size-[420px] rounded-full bg-gradient-to-tr from-[var(--lavender)]/30 via-primary/30 to-[var(--gold)]/20 blur-3xl animate-float-slow" />
           </div>
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[55%] size-[360px] sm:size-[440px] rounded-full border border-[var(--gold)]/20 bg-gradient-to-b from-white/5 to-transparent backdrop-blur-sm" />
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[55%] size-[300px] sm:size-[380px] rounded-full border border-white/5" />
+          <div className="absolute inset-0 grid place-items-center">
+            <div className="size-[360px] sm:size-[440px] rounded-full border border-[var(--lavender)]/25 bg-gradient-to-b from-white/5 to-transparent backdrop-blur-sm" />
+          </div>
+          <div className="absolute inset-0 grid place-items-center">
+            <div className="size-[300px] sm:size-[380px] rounded-full border border-white/5" />
+          </div>
 
           <motion.div
-            animate={{ y: [0, -14, 0] }}
+            animate={{ y: [0, -12, 0] }}
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="relative mx-auto max-w-sm">
+            className="relative h-full w-full grid place-items-center">
             <img
               src={headshot}
               alt="Eslam Selmi, Head of L&D"
-              className="relative w-full h-auto object-contain drop-shadow-[0_30px_50px_rgba(214,158,46,0.35)]"
+              className="relative max-h-full w-auto object-contain drop-shadow-[0_30px_50px_rgba(167,139,250,0.35)]"
             />
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
-            className="absolute bottom-2 left-1/2 -translate-x-1/2 glass-strong rounded-2xl px-4 py-3 flex items-center gap-3 whitespace-nowrap">
+            className="absolute bottom-2 left-1/2 -translate-x-1/2 glass-strong rounded-2xl px-4 py-3 flex items-center gap-3 whitespace-nowrap border-[var(--lavender)]/20">
             <span className="size-2.5 rounded-full bg-emerald-400 shadow-[0_0_12px] shadow-emerald-400" />
             <div className="text-start">
               <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("status_current")}</div>
@@ -346,15 +350,16 @@ function About() {
               key={c.name.en}
               initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ delay: i * 0.05 }}
-              className="glass rounded-xl p-4 group hover:border-[var(--gold)]/40 transition"
+              className="glass rounded-2xl p-4 group hover:border-[var(--lavender)]/40 hover:bg-white/[0.06] transition relative overflow-hidden"
             >
-              <div className="flex items-start gap-3">
-                <div className="size-10 rounded-lg bg-gradient-to-br from-[var(--gold)]/30 to-primary/20 grid place-items-center text-gold shrink-0">
+              <div className="absolute -top-10 -end-10 size-24 rounded-full bg-[var(--lavender)]/20 blur-2xl opacity-0 group-hover:opacity-100 transition" />
+              <div className="relative flex items-start gap-3">
+                <div className="size-11 rounded-xl bg-gradient-to-br from-[var(--lavender)]/30 via-[var(--lavender-deep)]/20 to-[var(--gold)]/20 grid place-items-center text-lavender shrink-0 border border-white/10">
                   <c.icon className="size-5" />
                 </div>
                 <div className="min-w-0">
                   <div className="font-semibold text-sm leading-tight">{c.name[lang]}</div>
-                  <div className="text-[11px] text-muted-foreground mt-1 uppercase tracking-wider">{c.issuer}</div>
+                  <div className="text-[11px] text-muted-foreground mt-1 uppercase tracking-wider">{c.issuer[lang]}</div>
                 </div>
               </div>
             </motion.div>
@@ -397,37 +402,62 @@ function Journey() {
   return (
     <Section id="journey" eyebrow={t("journey_eyebrow")} title={t("journey_title")}>
       <div className="relative">
-        <div className="absolute start-4 sm:start-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[var(--gold)]/40 to-transparent" />
-        <div className="space-y-6">
-          {JOURNEY.map((j, i) => (
-            <motion.div
-              key={j.year + j.company}
-              {...fadeUp} transition={{ delay: i * 0.08, duration: 0.6 }}
-              className={`relative grid sm:grid-cols-2 gap-4 sm:gap-12 items-center`}
-            >
-              <div className={`${i % 2 === 0 ? "sm:order-1 sm:text-end" : "sm:order-2"} ps-12 sm:ps-0`}>
-                <div className="glass rounded-2xl p-5 hover:bg-white/[0.06] transition group">
-                  <div className="flex items-center gap-3 mb-3 sm:justify-start">
-                    <div className="size-11 rounded-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 grid place-items-center text-gold font-display font-bold text-sm">
-                      {j.company.slice(0, 2).toUpperCase()}
-                    </div>
-                    <div>
-                      <div className="font-semibold leading-tight">{j.company}</div>
-                      <div className="text-[11px] text-muted-foreground uppercase tracking-wider mt-0.5">
-                        {j.country === "SA" ? "🇸🇦 Saudi Arabia" : "🇪🇬 Egypt"}
+        {/* Central rail */}
+        <div className="absolute start-5 sm:start-1/2 sm:-translate-x-1/2 top-2 bottom-2 w-[2px] bg-gradient-to-b from-[var(--lavender)]/10 via-[var(--lavender)]/50 to-[var(--gold)]/30 rounded-full" />
+
+        <div className="space-y-10 sm:space-y-14">
+          {JOURNEY.map((j, i) => {
+            const left = i % 2 === 0;
+            const country = j.country === "SA"
+              ? { flag: "sa", name: { en: "Saudi Arabia", ar: "السعودية" } }
+              : { flag: "eg", name: { en: "Egypt", ar: "مصر" } };
+            return (
+              <motion.div
+                key={j.year + j.company + i}
+                {...fadeUp}
+                transition={{ delay: i * 0.08, duration: 0.6 }}
+                className="relative grid sm:grid-cols-2 gap-6 sm:gap-16 items-center"
+              >
+                {/* Card */}
+                <div className={`${left ? "sm:order-1 sm:text-end sm:pe-4" : "sm:order-2 sm:ps-4"} ps-14 sm:ps-0`}>
+                  <div className="glass rounded-2xl p-5 hover:bg-white/[0.06] hover:border-[var(--lavender)]/40 transition group relative overflow-hidden">
+                    <div className={`absolute -top-12 ${left ? "-end-12" : "-start-12"} size-32 rounded-full bg-[var(--lavender)]/15 blur-2xl opacity-0 group-hover:opacity-100 transition`} />
+                    <div className={`relative flex items-center gap-3 ${left ? "sm:flex-row-reverse sm:text-start" : ""}`}>
+                      <div className="size-12 rounded-xl bg-gradient-to-br from-[var(--lavender-deep)]/40 to-[var(--gold)]/30 border border-white/15 grid place-items-center text-lavender font-display font-extrabold text-sm shrink-0">
+                        {j.company.slice(0, 2).toUpperCase()}
+                      </div>
+                      <div className="min-w-0">
+                        <div className="font-semibold leading-tight text-base">{j.company}</div>
+                        <div className="text-[11px] text-muted-foreground uppercase tracking-wider mt-1 inline-flex items-center gap-1.5">
+                          <img src={`https://flagcdn.com/${country.flag}.svg`} alt="" className="w-4 h-3 rounded-[2px] object-cover" />
+                          {country.name[lang]}
+                        </div>
                       </div>
                     </div>
+                    <div className={`relative mt-4 text-sm font-medium ${left ? "sm:text-end" : ""}`}>{j.role[lang]}</div>
                   </div>
-                  <div className="font-medium text-sm">{j.role[lang]}</div>
                 </div>
-              </div>
-              <div className={`${i % 2 === 0 ? "sm:order-2" : "sm:order-1 sm:text-end"} hidden sm:block`}>
-                <div className="font-display text-3xl font-bold text-gradient-gold">{j.year}</div>
-              </div>
-              <div className="absolute start-4 sm:start-1/2 top-6 -translate-x-1/2 size-3 rounded-full bg-gold shadow-[0_0_18px] shadow-[var(--gold)] z-10" />
-              <div className="sm:hidden absolute start-12 top-0 text-xs font-semibold text-gold">{j.year}</div>
-            </motion.div>
-          ))}
+
+                {/* Year side */}
+                <div className={`${left ? "sm:order-2 sm:ps-4" : "sm:order-1 sm:pe-4 sm:text-end"} hidden sm:block`}>
+                  <div className="inline-flex items-baseline gap-2">
+                    <span className="font-display text-5xl lg:text-6xl font-extrabold text-gradient-premium tracking-tight">{j.year}</span>
+                    <Compass className="size-4 text-lavender/70" />
+                  </div>
+                </div>
+
+                {/* Year (mobile, above card) */}
+                <div className="sm:hidden absolute start-14 -top-3 text-xs font-bold text-gradient-premium font-display">
+                  {j.year}
+                </div>
+
+                {/* Dot on rail */}
+                <div className="absolute start-5 sm:start-1/2 top-6 sm:top-1/2 -translate-x-1/2 sm:-translate-y-1/2 z-10">
+                  <div className="size-4 rounded-full bg-gradient-to-br from-[var(--lavender)] to-[var(--gold)] shadow-[0_0_20px] shadow-[var(--lavender)] ring-4 ring-background" />
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </Section>
@@ -529,9 +559,8 @@ function Clients() {
 
 /* ---------- SNAPSHOTS w/ LIGHTBOX ---------- */
 function Snapshots() {
-  const { t } = useI18n();
+  const { t, dir } = useI18n();
   const [active, setActive] = useState<number | null>(null);
-  const spans = ["md:col-span-2 row-span-2", "", "", "row-span-2", "", "md:col-span-2", "", ""];
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -544,26 +573,49 @@ function Snapshots() {
     return () => window.removeEventListener("keydown", onKey);
   }, [active]);
 
+  // Two interleaved tracks for richer marquee, doubled for seamless loop
+  const trackA = [...SNAPSHOTS, ...SNAPSHOTS];
+  const trackB = [...SNAPSHOTS.slice().reverse(), ...SNAPSHOTS.slice().reverse()];
+  const marqueeClass = dir === "rtl" ? "animate-marquee-rtl" : "animate-marquee";
+  const marqueeSlowClass = dir === "rtl" ? "animate-marquee-rtl" : "animate-marquee-slow";
+
+  const Card = ({ src, i, originalIndex }: { src: string; i: number; originalIndex: number }) => (
+    <button
+      type="button"
+      onClick={() => setActive(originalIndex)}
+      className="group relative shrink-0 w-[280px] sm:w-[340px] aspect-[4/3] overflow-hidden rounded-2xl border border-white/10 cursor-zoom-in"
+      aria-label={`Open snapshot ${originalIndex + 1}`}
+    >
+      <img
+        src={src}
+        alt={`Snapshot ${originalIndex + 1}`}
+        loading="lazy"
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition" />
+      <div className="absolute bottom-3 start-3 text-xs text-white/90 opacity-0 group-hover:opacity-100 transition font-semibold tracking-wider uppercase">
+        View →
+      </div>
+    </button>
+  );
+
   return (
     <Section id="snapshots" eyebrow={t("snapshots_eyebrow")} title={t("snapshots_title")}>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 auto-rows-[180px] md:auto-rows-[220px]">
-        {SNAPSHOTS.map((src, i) => (
-          <motion.button
-            key={i}
-            type="button"
-            onClick={() => setActive(i)}
-            initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ delay: i * 0.05, duration: 0.6 }}
-            className={`relative overflow-hidden rounded-2xl group cursor-zoom-in ${spans[i] || ""}`}
-          >
-            <img src={src} alt={`Snapshot ${i + 1}`} loading="lazy"
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition" />
-            <div className="absolute bottom-3 start-3 text-xs text-white/90 opacity-0 group-hover:opacity-100 transition font-semibold">
-              View →
-            </div>
-          </motion.button>
-        ))}
+      <div className="space-y-5 marquee-mask">
+        <div className="overflow-hidden">
+          <div className={`flex gap-5 w-max ${marqueeClass} hover:[animation-play-state:paused]`}>
+            {trackA.map((src, idx) => (
+              <Card key={`a-${idx}`} src={src} i={idx} originalIndex={idx % SNAPSHOTS.length} />
+            ))}
+          </div>
+        </div>
+        <div className="overflow-hidden">
+          <div className={`flex gap-5 w-max ${marqueeSlowClass} hover:[animation-play-state:paused]`}>
+            {trackB.map((src, idx) => (
+              <Card key={`b-${idx}`} src={src} i={idx} originalIndex={(SNAPSHOTS.length - 1 - (idx % SNAPSHOTS.length))} />
+            ))}
+          </div>
+        </div>
       </div>
 
       <AnimatePresence>
@@ -794,11 +846,11 @@ function Footer() {
 /* ---------- SECTION WRAPPER ---------- */
 function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string; title: string; children: React.ReactNode }) {
   return (
-    <section id={id} className="px-4 sm:px-6 py-20 lg:py-28">
+    <section id={id} className="px-4 sm:px-6 py-16 lg:py-24">
       <div className="mx-auto max-w-7xl">
         <motion.div {...fadeUp} className="mb-10 max-w-2xl">
-          <div className="inline-flex items-center gap-2 text-gold text-sm uppercase tracking-[0.2em] font-semibold">
-            <span className="h-px w-8 bg-gold" /> {eyebrow}
+          <div className="inline-flex items-center gap-2 text-lavender text-sm uppercase tracking-[0.25em] font-semibold">
+            <span className="h-px w-8 bg-gradient-to-r from-[var(--lavender)] to-[var(--gold)]" /> {eyebrow}
           </div>
           <h2 className="mt-3 font-display text-4xl sm:text-5xl font-bold tracking-tight text-balance leading-[1.1]">
             {title}
@@ -841,7 +893,7 @@ function ScrollTop() {
           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           aria-label="Scroll to top"
-          className={`fixed bottom-20 ${dir === "rtl" ? "left-5" : "right-5"} z-40 size-11 grid place-items-center rounded-full bg-gold text-accent-foreground shadow-lg hover:scale-110 transition`}
+          className={`fixed bottom-20 ${dir === "rtl" ? "left-5" : "right-5"} z-40 size-11 grid place-items-center rounded-full bg-gradient-to-br from-[var(--lavender)] to-[var(--gold)] text-white shadow-lg hover:scale-110 transition`}
         >
           <ArrowUp className="size-5" />
         </motion.button>
