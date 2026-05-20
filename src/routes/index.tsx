@@ -158,16 +158,16 @@ function Nav() {
   return (
     <header className={`fixed top-0 inset-x-0 z-50 transition-all ${scrolled ? "py-2" : "py-4"}`}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="glass-strong rounded-full ps-3 pe-2 py-2 flex items-center justify-between gap-2">
-          <a href="#home" className="flex items-center gap-2 group shrink-0">
-            <img src={logo} alt="Eslam Selmi" className="size-10 object-contain" />
-            <span className="font-display font-extrabold tracking-tight hidden sm:inline text-base text-gradient-premium">
+        <div className={`glass-strong rounded-full ps-3 pe-2 py-2 flex items-center justify-between gap-2 ${scrolled ? "shadow-[0_8px_30px_-12px_rgba(15,27,61,0.18)]" : ""}`}>
+          <a href="#home" className="flex items-center gap-2.5 group shrink-0">
+            <img src={logo} alt="Eslam Selmi" className="size-9 object-contain" />
+            <span className="font-display italic tracking-tight hidden sm:inline text-lg text-foreground">
               Eslam Selmi
             </span>
           </a>
           <nav className="hidden xl:flex items-center gap-0.5">
             {NAV.map(n => (
-              <a key={n.id} href={`#${n.id}`} className="px-2.5 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-white/5">
+              <a key={n.id} href={`#${n.id}`} className="px-2.5 py-1.5 text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-foreground/5">
                 {t(n.key)}
               </a>
             ))}
@@ -176,7 +176,7 @@ function Nav() {
             <button
               onClick={() => setLang(lang === "en" ? "ar" : "en" as Lang)}
               aria-label="Toggle language"
-              className="inline-flex items-center gap-1.5 rounded-full glass px-3 py-1.5 text-xs font-semibold hover:bg-white/10 transition"
+              className="inline-flex items-center gap-1.5 rounded-full border border-foreground/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider hover:bg-foreground/5 transition"
             >
               <Languages className="size-3.5" />
               {lang === "en" ? "AR" : "EN"}
@@ -184,12 +184,12 @@ function Nav() {
             <a
               href={LINKEDIN} target="_blank" rel="noopener noreferrer"
               aria-label="LinkedIn"
-              className="hidden sm:inline-flex size-9 items-center justify-center rounded-full glass hover:bg-white/10 transition"
+              className="hidden sm:inline-flex size-9 items-center justify-center rounded-full border border-foreground/10 hover:bg-foreground/5 transition"
             >
               <Linkedin className="size-4" />
             </a>
             <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-              className="hidden md:inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[var(--lavender-deep)] via-[var(--lavender)] to-[var(--gold)] text-white px-4 py-2 text-sm font-semibold hover:opacity-95 hover:shadow-[0_10px_30px_-12px] hover:shadow-[var(--lavender)] transition">
+              className="hidden md:inline-flex items-center gap-2 rounded-full bg-foreground text-background px-4 py-2 text-sm font-semibold hover:bg-foreground/85 transition">
               <Calendar className="size-4" /> {t("book_cta")}
             </a>
             <button className="xl:hidden p-2" onClick={() => setOpen(v => !v)} aria-label="Menu">
@@ -200,10 +200,10 @@ function Nav() {
         {open && (
           <div className="xl:hidden mt-2 glass-strong rounded-2xl p-3 grid gap-1">
             {NAV.map(n => (
-              <a key={n.id} href={`#${n.id}`} onClick={() => setOpen(false)} className="px-3 py-2 rounded-lg hover:bg-white/5 text-sm">{t(n.key)}</a>
+              <a key={n.id} href={`#${n.id}`} onClick={() => setOpen(false)} className="px-3 py-2 rounded-lg hover:bg-foreground/5 text-sm">{t(n.key)}</a>
             ))}
             <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-              className="mt-1 inline-flex items-center justify-center gap-2 rounded-lg bg-gold text-accent-foreground px-4 py-2 text-sm font-semibold">
+              className="mt-1 inline-flex items-center justify-center gap-2 rounded-lg bg-foreground text-background px-4 py-2 text-sm font-semibold">
               <Calendar className="size-4" /> {t("book_cta")}
             </a>
           </div>
