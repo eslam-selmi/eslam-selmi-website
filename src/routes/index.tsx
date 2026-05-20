@@ -822,12 +822,12 @@ function LeadForm() {
               maxLength={320}
               required
               dir={lang === "ar" ? "rtl" : "ltr"}
-              className="flex-1 rounded-full glass px-5 py-3 text-sm outline-none focus:border-[var(--gold)] transition placeholder:text-muted-foreground"
+              className="flex-1 rounded-full glass-panel px-5 py-3 text-sm outline-none focus:border-[var(--gold)] transition placeholder:text-muted-foreground"
             />
             <button
               type="submit"
               disabled={state === "loading"}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-gold text-accent-foreground px-6 py-3 font-semibold hover:opacity-90 transition disabled:opacity-60"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground px-6 py-3 font-bold hover:opacity-90 transition disabled:opacity-60"
             >
               {state === "loading" ? <Loader2 className="size-4 animate-spin" /> : <Mail className="size-4" />}
               {t("lead_btn")}
@@ -839,7 +839,7 @@ function LeadForm() {
             {state === "invalid" && <span className="text-amber-400">{t("lead_invalid")}</span>}
           </div>
         </motion.div>
-        <motion.div {...fadeUp} className="glass rounded-3xl p-6 grid grid-cols-3 gap-3">
+        <motion.div {...fadeUp} className="glass-panel rounded-[2rem] p-6 grid grid-cols-3 gap-3">
           {[Briefcase, Award, GraduationCap, Users, TrendingUp, BarChart3].map((Icon, i) => (
             <div key={i} className="aspect-square rounded-2xl bg-gradient-to-br from-[var(--gold)]/20 to-primary/20 grid place-items-center text-gold">
               <Icon className="size-7" />
@@ -868,7 +868,7 @@ function Contact() {
 function ContactCard({ icon: Icon, label, lines, href }: { icon: any; label: string; lines: string[]; href: string }) {
   return (
     <motion.a {...fadeUp} href={href} target="_blank" rel="noopener noreferrer"
-      className="glass rounded-2xl p-6 hover:bg-foreground/[0.04] hover:border-[var(--gold)]/30 transition group block">
+      className="glass-panel rounded-3xl p-6 transition hover:-translate-y-1 group block">
       <Icon className="size-6 text-gold" />
       <div className="mt-3 text-sm text-muted-foreground">{label}</div>
       {lines.map(l => <div key={l} className="font-medium mt-1">{l}</div>)}
@@ -883,7 +883,7 @@ function ContactCard({ icon: Icon, label, lines, href }: { icon: any; label: str
 function Footer() {
   const { t } = useI18n();
   return (
-    <footer className="border-t border-foreground/10 mt-10 bg-foreground/[0.02]">
+    <footer className="border-t border-foreground/10 mt-10 bg-foreground/[0.025] backdrop-blur-xl">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <img src={logo} alt="Eslam Selmi" className="size-10 object-contain" />
@@ -915,7 +915,9 @@ function Footer() {
 /* ---------- SECTION WRAPPER ---------- */
 function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string; title: string; children: React.ReactNode }) {
   return (
-    <section id={id} className="px-4 sm:px-6 py-20 lg:py-28 relative">
+    <section id={id} className="px-4 sm:px-6 py-20 lg:py-28 relative overflow-hidden">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
+      <div className="absolute -end-40 top-20 size-80 rounded-full bg-accent/8 blur-3xl" />
       <div className="mx-auto max-w-7xl">
         <motion.div {...fadeUp} className="mb-12 lg:mb-16 max-w-3xl">
           <div className="inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-accent font-semibold mb-5">
