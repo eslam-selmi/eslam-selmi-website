@@ -849,8 +849,8 @@ function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string
     <section id={id} className="px-4 sm:px-6 py-16 lg:py-24">
       <div className="mx-auto max-w-7xl">
         <motion.div {...fadeUp} className="mb-10 max-w-2xl">
-          <div className="inline-flex items-center gap-2 text-gold text-sm uppercase tracking-[0.2em] font-semibold">
-            <span className="h-px w-8 bg-gold" /> {eyebrow}
+          <div className="inline-flex items-center gap-2 text-lavender text-sm uppercase tracking-[0.25em] font-semibold">
+            <span className="h-px w-8 bg-gradient-to-r from-[var(--lavender)] to-[var(--gold)]" /> {eyebrow}
           </div>
           <h2 className="mt-3 font-display text-4xl sm:text-5xl font-bold tracking-tight text-balance leading-[1.1]">
             {title}
