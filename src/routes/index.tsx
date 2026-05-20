@@ -189,7 +189,7 @@ function Nav() {
               <Linkedin className="size-4" />
             </a>
             <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-              className="hidden md:inline-flex items-center gap-2 rounded-full bg-gold text-accent-foreground px-4 py-2 text-sm font-semibold hover:opacity-90 transition">
+              className="hidden md:inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[var(--lavender-deep)] via-[var(--lavender)] to-[var(--gold)] text-white px-4 py-2 text-sm font-semibold hover:opacity-95 hover:shadow-[0_10px_30px_-12px] hover:shadow-[var(--lavender)] transition">
               <Calendar className="size-4" /> {t("book_cta")}
             </a>
             <button className="xl:hidden p-2" onClick={() => setOpen(v => !v)} aria-label="Menu">
