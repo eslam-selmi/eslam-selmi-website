@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import { I18nProvider } from "@/lib/i18n";
 
 function NotFoundComponent() {
   return (
@@ -72,23 +73,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Eslam Selmi — Head of L&D | Portfolio 2026" },
-      { name: "description", content: "Eslam Selmi — Head of Learning & Development with 8+ years across Egypt, KSA and 12 countries. L&D strategy, instructional design, and 1:1 coaching." },
+      { title: "Eslam Selmi — Head of L&D, Talent & Performance Management" },
+      { name: "description", content: "Eslam Selmi — Head of Learning & Development, Talent Management and Performance leader with 8+ years across Egypt, KSA and 12 countries. Book a free 1:1 session." },
       { name: "author", content: "Eslam Selmi" },
-      { property: "og:title", content: "Eslam Selmi — Head of L&D | Portfolio 2026" },
-      { property: "og:description", content: "Eslam Selmi — Head of Learning & Development with 8+ years across Egypt, KSA and 12 countries. L&D strategy, instructional design, and 1:1 coaching." },
+      { property: "og:title", content: "Eslam Selmi — Head of L&D, Talent & Performance Management" },
+      { property: "og:description", content: "L&D, Talent Management, Performance & KPIs expert. 8+ years across 12 countries. Bilingual EN/AR portfolio." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Eslam Selmi — Head of L&D | Portfolio 2026" },
-      { name: "twitter:description", content: "Eslam Selmi — Head of Learning & Development with 8+ years across Egypt, KSA and 12 countries. L&D strategy, instructional design, and 1:1 coaching." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/926e0446-66d4-4a1c-bf97-b03a62c50d9f/id-preview-280177b6--89f245e8-fae7-43be-a7fc-c95e6e265858.lovable.app-1779297951896.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/926e0446-66d4-4a1c-bf97-b03a62c50d9f/id-preview-280177b6--89f245e8-fae7-43be-a7fc-c95e6e265858.lovable.app-1779297951896.png" },
+      { name: "twitter:title", content: "Eslam Selmi — Head of L&D" },
+      { name: "twitter:description", content: "L&D, Talent Management, Performance & KPIs expert. 8+ years across 12 countries." },
     ],
     links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
+      { rel: "stylesheet", href: appCss },
     ],
   }),
   shellComponent: RootShell,
@@ -99,11 +95,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" dir="ltr">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@500;600;700;800&family=Cairo:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet"
+        />
         <HeadContent />
       </head>
       <body>
@@ -119,7 +118,9 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <I18nProvider>
+        <Outlet />
+      </I18nProvider>
     </QueryClientProvider>
   );
 }
