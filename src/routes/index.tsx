@@ -7,7 +7,7 @@ import {
   Menu, X, Calendar, Target, Lightbulb, HeartHandshake
 } from "lucide-react";
 
-import headshot from "@/assets/portfolio/headshot.jpg";
+import headshot from "@/assets/portfolio/headshot.png";
 import snap1 from "@/assets/portfolio/snap-1.jpg";
 import snap2 from "@/assets/portfolio/snap-2.jpg";
 import snap3 from "@/assets/portfolio/snap-3.jpg";
@@ -220,17 +220,35 @@ function Hero() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }}
           className="order-1 lg:order-2 relative">
-          <div className="absolute -inset-6 bg-gradient-to-tr from-primary/30 via-accent/30 to-transparent blur-3xl" />
-          <div className="relative rounded-3xl overflow-hidden glass aspect-[4/5] max-w-md mx-auto">
-            <img src={headshot} alt="Eslam Selmi, Head of L&D" className="w-full h-full object-cover object-top" />
-            <div className="absolute bottom-4 left-4 right-4 glass rounded-2xl p-3 flex items-center justify-between">
-              <div>
-                <div className="text-xs text-muted-foreground">Currently</div>
-                <div className="font-semibold">Head of L&D · KSA</div>
-              </div>
-              <span className="size-2.5 rounded-full bg-emerald-400 shadow-[0_0_12px] shadow-emerald-400" />
-            </div>
+          {/* Animated aurora glow behind portrait */}
+          <div className="absolute inset-0 -z-10 flex items-center justify-center">
+            <div className="size-[420px] rounded-full bg-gradient-to-tr from-primary/40 via-accent/40 to-transparent blur-3xl animate-float-slow" />
           </div>
+          {/* Decorative ring */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[55%] size-[360px] sm:size-[440px] rounded-full border border-white/10 bg-gradient-to-b from-white/5 to-transparent backdrop-blur-sm" />
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[55%] size-[300px] sm:size-[380px] rounded-full border border-white/5" />
+
+          <motion.div
+            animate={{ y: [0, -14, 0] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            className="relative mx-auto max-w-sm">
+            <img
+              src={headshot}
+              alt="Eslam Selmi, Head of L&D"
+              className="relative w-full h-auto object-contain drop-shadow-[0_30px_50px_rgba(99,102,241,0.45)]"
+            />
+          </motion.div>
+
+          {/* Floating status badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
+            className="absolute bottom-2 left-1/2 -translate-x-1/2 glass rounded-2xl px-4 py-3 flex items-center gap-3 whitespace-nowrap">
+            <span className="size-2.5 rounded-full bg-emerald-400 shadow-[0_0_12px] shadow-emerald-400" />
+            <div className="text-left">
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Currently</div>
+              <div className="text-sm font-semibold">Head of L&D · KSA</div>
+            </div>
+          </motion.div>
         </motion.div>
       </div>
     </section>
