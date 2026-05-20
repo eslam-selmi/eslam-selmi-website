@@ -5,7 +5,7 @@ import {
   Sparkles, Globe2, Layers, MessageCircle, Mail, Linkedin, Phone, ArrowRight,
   CheckCircle2, Menu, X, Calendar, Target, Lightbulb, HeartHandshake,
   GraduationCap, Award, Users, TrendingUp, BarChart3, UserCheck, Languages,
-  ArrowUp, Loader2, Briefcase, BadgeCheck, Compass, Presentation,
+  ArrowUp, Loader2, Briefcase, BadgeCheck, Compass, Presentation, Moon, Sun,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n, type Lang } from "@/lib/i18n";
@@ -109,12 +109,14 @@ const PROGRAMS = [
 ];
 
 const PILLARS = [
-  { icon: UserCheck, key: "talent", color: "from-blue-500/40 to-indigo-500/20" },
-  { icon: TrendingUp, key: "perf", color: "from-amber-500/40 to-orange-500/20" },
-  { icon: BarChart3, key: "kpi", color: "from-emerald-500/40 to-teal-500/20" },
+  { icon: UserCheck, key: "talent", color: "from-accent/35 to-primary/10" },
+  { icon: TrendingUp, key: "perf", color: "from-gold/35 to-accent/10" },
+  { icon: BarChart3, key: "kpi", color: "from-lavender/35 to-primary/10" },
 ];
 
 const SNAPSHOTS = [trainingCollage, snap1, snap2, snap3, snap4, snap5, snap6, snap7];
+
+type ThemeMode = "dark" | "light";
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -124,9 +126,27 @@ const fadeUp = {
 };
 
 function Portfolio() {
+  const [theme, setTheme] = useState<ThemeMode>("dark");
+
+  useEffect(() => {
+    const saved = typeof window !== "undefined" ? window.localStorage.getItem("theme-mode") : null;
+    const next: ThemeMode = saved === "light" ? "light" : "dark";
+    setTheme(next);
+    document.documentElement.classList.toggle("dark", next === "dark");
+  }, []);
+
+  const toggleTheme = () => {
+    setTheme((current) => {
+      const next: ThemeMode = current === "dark" ? "light" : "dark";
+      document.documentElement.classList.toggle("dark", next === "dark");
+      if (typeof window !== "undefined") window.localStorage.setItem("theme-mode", next);
+      return next;
+    });
+  };
+
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
-      <Nav />
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-accent/25">
+      <Nav theme={theme} onThemeToggle={toggleTheme} />
       <Hero />
       <About />
       <Pillars />
@@ -146,7 +166,7 @@ function Portfolio() {
 }
 
 /* ---------- NAV ---------- */
-function Nav() {
+function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => void }) {
   const { t, lang, setLang } = useI18n();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -181,6 +201,13 @@ function Nav() {
               <Languages className="size-3.5" />
               {lang === "en" ? "AR" : "EN"}
             </button>
+            <button
+              onClick={onThemeToggle}
+              aria-label="Toggle theme"
+              className="inline-flex size-9 items-center justify-center rounded-full border border-foreground/10 hover:bg-foreground/5 transition"
+            >
+              {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
+            </button>
             <a
               href={LINKEDIN} target="_blank" rel="noopener noreferrer"
               aria-label="LinkedIn"
@@ -189,7 +216,7 @@ function Nav() {
               <Linkedin className="size-4" />
             </a>
             <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-              className="hidden md:inline-flex items-center gap-2 rounded-full bg-foreground text-background px-4 py-2 text-sm font-semibold hover:bg-foreground/85 transition">
+              className="hidden md:inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-4 py-2 text-sm font-bold hover:opacity-90 transition">
               <Calendar className="size-4" /> {t("book_cta")}
             </a>
             <button className="xl:hidden p-2" onClick={() => setOpen(v => !v)} aria-label="Menu">
@@ -203,7 +230,7 @@ function Nav() {
               <a key={n.id} href={`#${n.id}`} onClick={() => setOpen(false)} className="px-3 py-2 rounded-lg hover:bg-foreground/5 text-sm">{t(n.key)}</a>
             ))}
             <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-              className="mt-1 inline-flex items-center justify-center gap-2 rounded-lg bg-foreground text-background px-4 py-2 text-sm font-semibold">
+              className="mt-1 inline-flex items-center justify-center gap-2 rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-bold">
               <Calendar className="size-4" /> {t("book_cta")}
             </a>
           </div>
@@ -221,109 +248,110 @@ function Hero() {
   const y = useTransform(scrollYProgress, [0, 1], [0, 80]);
 
   return (
-    <section id="home" ref={ref} className="relative pt-28 pb-12 lg:pt-32 lg:pb-16 overflow-hidden">
+    <section id="home" ref={ref} className="relative min-h-screen pt-28 pb-16 lg:pt-32 lg:pb-20 overflow-hidden">
       <div className="absolute inset-0 bg-aurora" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:84px_84px] opacity-35" />
+      <div className="absolute -top-24 start-1/2 size-[34rem] -translate-x-1/2 rounded-full border border-foreground/10 blur-3xl" />
       <div className="absolute inset-0 grain" />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
-        {/* Top meta line */}
         <motion.div
           initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between text-[11px] uppercase tracking-[0.3em] text-muted-foreground mb-8 lg:mb-12"
+          className="glass-strong mx-auto mb-8 flex max-w-4xl items-center justify-between rounded-full px-4 py-2 text-[10px] uppercase tracking-[0.28em] text-muted-foreground lg:mb-10"
         >
           <span>Portfolio · MMXXVI</span>
           <span className="hidden sm:inline">Riyadh · Cairo</span>
           <span>Vol. 01</span>
         </motion.div>
 
-        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          {/* LEFT — Editorial text */}
-          <motion.div style={{ y }} className="order-2 lg:order-1 lg:col-span-7">
-            <div className="text-[11px] uppercase tracking-[0.3em] text-accent font-semibold mb-5">
-              {t("hero_hello")} — {lang === "ar" ? "تعرّف إلى" : "an introduction"}
+        <div className="grid gap-5 lg:grid-cols-[1.04fr_0.96fr] lg:items-stretch">
+          <motion.div style={{ y }} className="order-2 lg:order-1">
+            <div className="glass-panel relative flex h-full flex-col justify-between overflow-hidden rounded-[2rem] p-6 sm:p-8 lg:p-10">
+              <div className="absolute -end-24 -top-24 size-72 rounded-full bg-accent/20 blur-3xl" />
+              <div className="absolute -bottom-32 start-10 size-80 rounded-full bg-gold/20 blur-3xl" />
+              <div className="relative">
+                <div className="mb-6 inline-flex items-center gap-3 rounded-full border border-foreground/10 bg-background/40 px-3.5 py-2 text-[11px] font-bold uppercase tracking-[0.22em] text-accent">
+                  <Sparkles className="size-3.5" />
+                  {t("hero_hello")} {lang === "ar" ? "تجربة تنفيذية" : "Executive presence"}
+                </div>
+                <motion.h1
+                  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.7 }}
+                  className="font-display text-balance leading-[0.9] text-foreground text-[clamp(3.6rem,9vw,8.8rem)]"
+                >
+                  Eslam <span className="serif-italic text-gradient-premium">Selmi</span>
+                </motion.h1>
+
+                <motion.div
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
+                  className="mt-6 flex items-center gap-4"
+                >
+                  <span className="h-px flex-1 bg-foreground/15" />
+                  <span className="text-[11px] uppercase tracking-[0.24em] text-muted-foreground whitespace-nowrap">
+                    Head of L&amp;D · Talent &amp; Performance
+                  </span>
+                </motion.div>
+
+                <motion.p
+                  initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+                  className="mt-7 max-w-2xl text-lg leading-relaxed text-foreground/80 lg:text-xl"
+                >
+                  {t("hero_intro")}
+                </motion.p>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
+                  className="mt-9 flex flex-wrap gap-3"
+                >
+                  <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
+                    className="group inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-[0_18px_45px_-22px_var(--foreground)] hover:scale-[1.02] transition">
+                    <MessageCircle className="size-4" /> {t("hero_btn_book")}
+                    <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
+                  </a>
+                  <a href="#programs"
+                    className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-background/35 px-6 py-3 text-sm font-bold backdrop-blur-xl hover:bg-foreground/5 transition">
+                    {t("hero_btn_programs")}
+                  </a>
+                </motion.div>
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}
+                className="relative mt-12 grid grid-cols-3 gap-3"
+              >
+                <Stat n="3000+" l={t("stat_trainees")} />
+                <Stat n="12" l={t("stat_countries")} />
+                <Stat n="15+" l={t("stat_programs")} />
+              </motion.div>
             </div>
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.7 }}
-              className="font-display tracking-tight text-balance leading-[0.95] text-foreground text-[clamp(3rem,8vw,7rem)]"
-            >
-              Eslam <span className="serif-italic text-accent">Selmi</span>
-            </motion.h1>
-
-            <motion.div
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
-              className="mt-6 flex items-center gap-4"
-            >
-              <span className="h-px flex-1 bg-foreground/15" />
-              <span className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground whitespace-nowrap">
-                Head of L&amp;D · Talent &amp; Performance
-              </span>
-              <span className="h-px flex-1 bg-foreground/15 hidden sm:block" />
-            </motion.div>
-
-            <motion.p
-              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-              className="mt-6 text-lg lg:text-xl text-foreground/75 max-w-2xl leading-relaxed font-light"
-            >
-              {t("hero_intro")}
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
-              className="mt-8 flex flex-wrap gap-3"
-            >
-              <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-                className="group inline-flex items-center gap-2 rounded-full bg-foreground text-background px-6 py-3 text-sm font-semibold hover:bg-foreground/85 transition">
-                <MessageCircle className="size-4" /> {t("hero_btn_book")}
-                <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
-              </a>
-              <a href="#programs"
-                className="inline-flex items-center gap-2 rounded-full border border-foreground/20 px-6 py-3 text-sm font-medium hover:bg-foreground/5 transition">
-                {t("hero_btn_programs")}
-              </a>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}
-              className="mt-12 grid grid-cols-3 gap-6 max-w-lg border-t border-foreground/10 pt-6"
-            >
-              <Stat n="3000+" l={t("stat_trainees")} />
-              <Stat n="12" l={t("stat_countries")} />
-              <Stat n="15+" l={t("stat_programs")} />
-            </motion.div>
           </motion.div>
 
-          {/* RIGHT — Editorial portrait */}
           <motion.div
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}
-            className="order-1 lg:order-2 lg:col-span-5 relative"
+            className="order-1 lg:order-2"
           >
-            <div className="relative aspect-[4/5] w-full max-w-md mx-auto">
-              {/* Frame */}
-              <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-b from-primary to-[var(--navy-deep)] overflow-hidden shadow-[0_30px_80px_-30px_rgba(15,27,61,0.5)]">
-                <div className="absolute inset-0 bg-aurora opacity-40" />
-                <div className="absolute inset-0 grain" />
+            <div className="glass-panel relative mx-auto flex h-full min-h-[560px] max-w-lg flex-col justify-end overflow-hidden rounded-[2.25rem] p-3">
+              <div className="absolute inset-3 overflow-hidden rounded-[1.8rem] bg-gradient-to-br from-[var(--navy-deep)] via-primary to-accent/60">
+                <div className="absolute inset-0 bg-aurora opacity-70" />
+                <div className="absolute start-6 top-6 rounded-full border border-primary-foreground/20 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.24em] text-primary-foreground/80">
+                  01 · Signature profile
+                </div>
                 <img
                   src={headshot}
                   alt="Eslam Selmi, Head of L&D"
-                  className="absolute inset-0 w-full h-full object-contain object-bottom drop-shadow-[0_30px_40px_rgba(0,0,0,0.35)]"
+                  className="absolute inset-x-0 bottom-0 h-[96%] w-full object-contain object-bottom drop-shadow-[0_36px_48px_rgba(0,0,0,0.42)]"
                 />
               </div>
-
-              {/* Caption tag */}
               <motion.div
-                initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 }}
-                className="absolute -bottom-5 start-4 sm:start-8 bg-background border border-foreground/10 rounded-xl px-4 py-3 flex items-center gap-3 shadow-[0_12px_30px_-12px_rgba(15,27,61,0.25)]"
+                initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.65 }}
+                className="glass-strong relative m-4 rounded-2xl p-4"
               >
-                <span className="size-2 rounded-full bg-emerald-500 shadow-[0_0_10px] shadow-emerald-500/60" />
-                <div className="text-start">
-                  <div className="text-[9px] uppercase tracking-[0.25em] text-muted-foreground">{t("status_current")}</div>
-                  <div className="text-sm font-semibold leading-tight mt-0.5">{t("status_role")}</div>
+                <div className="flex items-center gap-3">
+                  <span className="size-2.5 rounded-full bg-gold shadow-[0_0_16px] shadow-[var(--gold)]" />
+                  <div className="text-start">
+                    <div className="text-[9px] uppercase tracking-[0.24em] text-muted-foreground">{t("status_current")}</div>
+                    <div className="text-sm font-bold leading-tight mt-0.5">{t("status_role")}</div>
+                  </div>
                 </div>
               </motion.div>
-
-              {/* Plate number badge */}
-              <div className="absolute -top-3 end-4 sm:end-8 font-display italic text-accent text-2xl bg-background px-3 py-1 rounded-full border border-foreground/10">
-                01
-              </div>
             </div>
           </motion.div>
         </div>
@@ -334,9 +362,9 @@ function Hero() {
 
 function Stat({ n, l }: { n: string; l: string }) {
   return (
-    <div>
-      <div className="font-display text-3xl sm:text-4xl text-foreground tracking-tight">{n}</div>
-      <div className="text-[10px] text-muted-foreground uppercase tracking-[0.25em] mt-1">{l}</div>
+    <div className="glass rounded-2xl p-4 text-center">
+      <div className="font-display text-3xl sm:text-4xl text-foreground">{n}</div>
+      <div className="mt-1 text-[10px] uppercase tracking-[0.22em] text-muted-foreground">{l}</div>
     </div>
   );
 }
@@ -352,13 +380,20 @@ function About() {
   ];
   return (
     <Section id="about" eyebrow={t("about_eyebrow")} title={t("about_title")}>
-      <motion.p {...fadeUp} className="text-lg text-muted-foreground max-w-3xl leading-relaxed">
-        {t("about_intro")}
-      </motion.p>
-      <div className="mt-10 grid sm:grid-cols-2 gap-4">
+      <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+        <motion.div {...fadeUp} className="glass-panel sticky top-28 rounded-[2rem] p-7">
+          <p className="text-lg leading-relaxed text-foreground/75">
+            {t("about_intro")}
+          </p>
+          <div className="mt-8 grid grid-cols-2 gap-3">
+            <Stat n="8+" l={lang === "ar" ? "سنوات" : "Years"} />
+            <Stat n="4" l={lang === "ar" ? "قطاعات" : "Sectors"} />
+          </div>
+        </motion.div>
+      <div className="grid sm:grid-cols-2 gap-4">
         {strengths.map((s, i) => (
           <motion.div key={s.t.en} {...fadeUp} transition={{ duration: 0.6, delay: i * 0.08 }}
-            className="glass rounded-2xl p-5 hover:bg-foreground/[0.04] transition group">
+            className="glass-panel rounded-3xl p-5 transition hover:-translate-y-1 group">
             <div className="flex items-start gap-3">
               <CheckCircle2 className="size-5 text-gold mt-0.5 shrink-0" />
               <div>
@@ -368,6 +403,7 @@ function About() {
             </div>
           </motion.div>
         ))}
+      </div>
       </div>
 
       <motion.div {...fadeUp} className="mt-12">
@@ -380,7 +416,7 @@ function About() {
               key={c.name.en}
               initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ delay: i * 0.05 }}
-              className="glass rounded-2xl p-4 group hover:border-[var(--lavender)]/40 hover:bg-foreground/[0.04] transition relative overflow-hidden"
+              className="glass-panel rounded-3xl p-4 group hover:-translate-y-1 transition relative overflow-hidden"
             >
               <div className="absolute -top-10 -end-10 size-24 rounded-full bg-[var(--lavender)]/20 blur-2xl opacity-0 group-hover:opacity-100 transition" />
               <div className="relative flex items-start gap-3">
@@ -409,7 +445,7 @@ function Pillars() {
         {PILLARS.map((p, i) => (
           <motion.div
             key={p.key} {...fadeUp} transition={{ duration: 0.6, delay: i * 0.1 }}
-            className="relative glass rounded-3xl p-7 overflow-hidden group hover:border-[var(--gold)]/30 transition"
+            className="relative glass-panel rounded-[2rem] p-7 overflow-hidden group hover:-translate-y-1 transition"
           >
             <div className={`absolute -top-20 -end-20 size-48 rounded-full bg-gradient-to-br ${p.color} blur-3xl opacity-60 group-hover:opacity-100 transition`} />
             <div className="relative">
@@ -450,7 +486,7 @@ function Journey() {
               >
                 {/* Card */}
                 <div className={`${left ? "sm:order-1 sm:text-end sm:pe-4" : "sm:order-2 sm:ps-4"} ps-14 sm:ps-0`}>
-                  <div className="glass rounded-2xl p-5 hover:bg-foreground/[0.04] hover:border-[var(--lavender)]/40 transition group relative overflow-hidden">
+                  <div className="glass-panel rounded-3xl p-5 transition hover:-translate-y-1 group relative overflow-hidden">
                     <div className={`absolute -top-12 ${left ? "-end-12" : "-start-12"} size-32 rounded-full bg-[var(--lavender)]/15 blur-2xl opacity-0 group-hover:opacity-100 transition`} />
                     <div className={`relative flex items-center gap-3 ${left ? "sm:flex-row-reverse sm:text-start" : ""}`}>
                       <div className="size-12 rounded-xl bg-gradient-to-br from-[var(--lavender-deep)]/40 to-[var(--gold)]/30 border border-foreground/15 grid place-items-center text-lavender font-display font-extrabold text-sm shrink-0">
@@ -502,7 +538,7 @@ function Services() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {SERVICES.map((s, i) => (
           <motion.div key={s.key} {...fadeUp} transition={{ delay: i * 0.08, duration: 0.6 }}
-            className="relative glass rounded-2xl p-6 group overflow-hidden hover:bg-foreground/[0.04] hover:border-[var(--gold)]/30 transition">
+            className="relative glass-panel rounded-3xl p-6 group overflow-hidden transition hover:-translate-y-1">
             <div className="absolute -top-12 -end-12 size-32 rounded-full bg-[var(--gold)]/20 blur-2xl opacity-0 group-hover:opacity-100 transition" />
             <s.icon className="size-7 text-gold" />
             <div className="mt-4 text-xs text-muted-foreground font-mono">0{i + 1}</div>
@@ -523,7 +559,7 @@ function Programs() {
       <div className="grid lg:grid-cols-3 gap-6">
         {PROGRAMS.map((p, i) => (
           <motion.div key={p.track.en} {...fadeUp} transition={{ delay: i * 0.08, duration: 0.6 }}
-            className="glass rounded-3xl p-6 flex flex-col overflow-hidden relative group">
+            className="glass-panel rounded-[2rem] p-6 flex flex-col overflow-hidden relative group transition hover:-translate-y-1">
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--gold)]/0 via-transparent to-primary/10 opacity-0 group-hover:opacity-100 transition" />
             <div className="relative">
               <div className="inline-flex items-center gap-2 self-start glass rounded-full px-3 py-1 text-xs text-gold font-semibold">
@@ -571,7 +607,7 @@ function Clients() {
             <motion.div key={c.code}
               initial={{ opacity: 0, scale: 0.85 }} whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }} transition={{ delay: i * 0.04 }}
-              className="glass aspect-square rounded-2xl flex flex-col items-center justify-center gap-2 hover:bg-foreground/5 hover:border-foreground/20 transition group p-2">
+            className="glass-panel aspect-square rounded-3xl flex flex-col items-center justify-center gap-2 transition hover:-translate-y-1 group p-2">
               <img
                 src={`https://flagcdn.com/${c.code}.svg`}
                 alt={c.name[lang]}
@@ -613,7 +649,7 @@ function Snapshots() {
     <button
       type="button"
       onClick={() => setActive(originalIndex)}
-      className="group relative shrink-0 w-[280px] sm:w-[340px] aspect-[4/3] overflow-hidden rounded-2xl border border-foreground/10 cursor-zoom-in"
+      className="group relative shrink-0 w-[280px] sm:w-[340px] aspect-[4/3] overflow-hidden rounded-3xl border border-foreground/10 cursor-zoom-in shadow-[0_24px_70px_-38px_var(--foreground)]"
       aria-label={`Open snapshot ${originalIndex + 1}`}
     >
       <img
@@ -622,8 +658,8 @@ function Snapshots() {
         loading="lazy"
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition" />
-      <div className="absolute bottom-3 start-3 text-xs text-white/90 opacity-0 group-hover:opacity-100 transition font-semibold tracking-wider uppercase">
+      <div className="image-scrim absolute inset-0 opacity-0 group-hover:opacity-100 transition" />
+      <div className="absolute bottom-3 start-3 text-xs text-primary-foreground opacity-0 group-hover:opacity-100 transition font-semibold tracking-wider uppercase">
         View →
       </div>
     </button>
@@ -652,12 +688,12 @@ function Snapshots() {
         {active !== null && (
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md grid place-items-center p-4"
+            className="modal-backdrop fixed inset-0 z-[100] backdrop-blur-md grid place-items-center p-4"
             onClick={() => setActive(null)}
           >
             <button
               onClick={(e) => { e.stopPropagation(); setActive(null); }}
-              className="absolute top-5 end-5 size-10 grid place-items-center rounded-full bg-white/10 hover:bg-white/20 text-white"
+              className="absolute top-5 end-5 size-10 grid place-items-center rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground"
               aria-label="Close"
             >
               <X className="size-5" />
@@ -672,12 +708,12 @@ function Snapshots() {
             <div className="absolute bottom-5 inset-x-0 flex justify-center gap-3">
               <button
                 onClick={(e) => { e.stopPropagation(); setActive((a) => a === null ? null : (a - 1 + SNAPSHOTS.length) % SNAPSHOTS.length); }}
-                className="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white text-sm"
+                className="px-4 py-2 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground text-sm"
               >← Prev</button>
-              <span className="px-4 py-2 rounded-full bg-white/10 text-white text-sm">{active + 1} / {SNAPSHOTS.length}</span>
+              <span className="px-4 py-2 rounded-full bg-primary-foreground/10 text-primary-foreground text-sm">{active + 1} / {SNAPSHOTS.length}</span>
               <button
                 onClick={(e) => { e.stopPropagation(); setActive((a) => a === null ? null : (a + 1) % SNAPSHOTS.length); }}
-                className="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white text-sm"
+                className="px-4 py-2 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground text-sm"
               >Next →</button>
             </div>
           </motion.div>
@@ -698,40 +734,40 @@ function BookCTA() {
   return (
     <section id="book" className="px-4 sm:px-6 py-16">
       <motion.div {...fadeUp}
-        className="relative mx-auto max-w-6xl rounded-[2rem] p-8 sm:p-12 lg:p-16 overflow-hidden bg-foreground text-background">
-        <div className="absolute inset-0 bg-aurora opacity-30" />
+        className="glass-panel relative mx-auto max-w-6xl rounded-[2.25rem] p-8 sm:p-12 lg:p-16 overflow-hidden bg-primary text-primary-foreground">
+        <div className="absolute inset-0 bg-aurora opacity-60" />
         <div className="absolute inset-0 grain" />
         <div className="relative grid lg:grid-cols-[1.4fr_1fr] gap-10 items-center">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-background/20 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.25em] text-background/80">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/20 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.25em] text-primary-foreground/80">
               <Sparkles className="size-3.5" /> {t("book_badge")}
             </div>
-            <h2 className="mt-5 font-display tracking-tight text-balance leading-[1] text-background text-[clamp(2.25rem,5vw,4rem)]">
-              {t("book_title_1")} <span className="serif-italic text-background/75">{t("book_title_2")}</span> {t("book_title_3")}
+            <h2 className="mt-5 font-display text-balance leading-[1] text-primary-foreground text-[clamp(2.25rem,5vw,4rem)]">
+              {t("book_title_1")} <span className="serif-italic text-primary-foreground/75">{t("book_title_2")}</span> {t("book_title_3")}
             </h2>
-            <p className="mt-5 text-background/70 max-w-xl leading-relaxed font-light">{t("book_desc")}</p>
+            <p className="mt-5 text-primary-foreground/70 max-w-xl leading-relaxed">{t("book_desc")}</p>
             <div className="mt-7 flex flex-wrap gap-3">
               <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-                className="group inline-flex items-center gap-2 rounded-full bg-background text-foreground px-6 py-3 text-sm font-semibold hover:bg-background/90 transition">
+                className="group inline-flex items-center gap-2 rounded-full bg-primary-foreground text-primary px-6 py-3 text-sm font-bold hover:bg-primary-foreground/90 transition">
                 <MessageCircle className="size-4" /> {t("book_btn_whatsapp")}
                 <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
               </a>
-              <a href="tel:+966555376228" className="inline-flex items-center gap-2 rounded-full border border-background/20 px-6 py-3 text-sm font-medium hover:bg-background/10 transition">
+              <a href="tel:+966555376228" className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/20 px-6 py-3 text-sm font-bold hover:bg-primary-foreground/10 transition">
                 <Phone className="size-4" /> +966 555 376 228
               </a>
             </div>
           </div>
           <div className="grid gap-3">
             {steps.map(({ i: Icon, t: tt, d }, idx) => (
-              <div key={tt} className="rounded-2xl border border-background/15 bg-background/5 p-4 flex items-start gap-3">
-                <span className="size-9 rounded-full bg-background/10 grid place-items-center text-background shrink-0 font-display italic text-sm">
+              <div key={tt} className="rounded-2xl border border-primary-foreground/15 bg-primary-foreground/10 p-4 flex items-start gap-3 backdrop-blur-xl">
+                <span className="size-9 rounded-full bg-primary-foreground/10 grid place-items-center text-primary-foreground shrink-0 font-display italic text-sm">
                   0{idx + 1}
                 </span>
                 <div className="min-w-0">
                   <div className="font-semibold text-sm flex items-center gap-2">
                     <Icon className="size-3.5 opacity-70" /> {tt}
                   </div>
-                  <div className="text-xs text-background/60 mt-1 leading-relaxed">{d}</div>
+                  <div className="text-xs text-primary-foreground/60 mt-1 leading-relaxed">{d}</div>
                 </div>
               </div>
             ))}
@@ -786,24 +822,24 @@ function LeadForm() {
               maxLength={320}
               required
               dir={lang === "ar" ? "rtl" : "ltr"}
-              className="flex-1 rounded-full glass px-5 py-3 text-sm outline-none focus:border-[var(--gold)] transition placeholder:text-muted-foreground"
+              className="flex-1 rounded-full glass-panel px-5 py-3 text-sm outline-none focus:border-[var(--gold)] transition placeholder:text-muted-foreground"
             />
             <button
               type="submit"
               disabled={state === "loading"}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-gold text-accent-foreground px-6 py-3 font-semibold hover:opacity-90 transition disabled:opacity-60"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground px-6 py-3 font-bold hover:opacity-90 transition disabled:opacity-60"
             >
               {state === "loading" ? <Loader2 className="size-4 animate-spin" /> : <Mail className="size-4" />}
               {t("lead_btn")}
             </button>
           </form>
           <div className="mt-3 min-h-[1.5rem] text-sm">
-            {state === "success" && <span className="text-emerald-400">✓ {t("lead_success")}</span>}
+            {state === "success" && <span className="text-gold">✓ {t("lead_success")}</span>}
             {state === "error" && <span className="text-destructive">{t("lead_error")}</span>}
             {state === "invalid" && <span className="text-amber-400">{t("lead_invalid")}</span>}
           </div>
         </motion.div>
-        <motion.div {...fadeUp} className="glass rounded-3xl p-6 grid grid-cols-3 gap-3">
+        <motion.div {...fadeUp} className="glass-panel rounded-[2rem] p-6 grid grid-cols-3 gap-3">
           {[Briefcase, Award, GraduationCap, Users, TrendingUp, BarChart3].map((Icon, i) => (
             <div key={i} className="aspect-square rounded-2xl bg-gradient-to-br from-[var(--gold)]/20 to-primary/20 grid place-items-center text-gold">
               <Icon className="size-7" />
@@ -832,7 +868,7 @@ function Contact() {
 function ContactCard({ icon: Icon, label, lines, href }: { icon: any; label: string; lines: string[]; href: string }) {
   return (
     <motion.a {...fadeUp} href={href} target="_blank" rel="noopener noreferrer"
-      className="glass rounded-2xl p-6 hover:bg-foreground/[0.04] hover:border-[var(--gold)]/30 transition group block">
+      className="glass-panel rounded-3xl p-6 transition hover:-translate-y-1 group block">
       <Icon className="size-6 text-gold" />
       <div className="mt-3 text-sm text-muted-foreground">{label}</div>
       {lines.map(l => <div key={l} className="font-medium mt-1">{l}</div>)}
@@ -847,7 +883,7 @@ function ContactCard({ icon: Icon, label, lines, href }: { icon: any; label: str
 function Footer() {
   const { t } = useI18n();
   return (
-    <footer className="border-t border-foreground/10 mt-10 bg-foreground/[0.02]">
+    <footer className="border-t border-foreground/10 mt-10 bg-foreground/[0.025] backdrop-blur-xl">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <img src={logo} alt="Eslam Selmi" className="size-10 object-contain" />
@@ -879,7 +915,9 @@ function Footer() {
 /* ---------- SECTION WRAPPER ---------- */
 function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string; title: string; children: React.ReactNode }) {
   return (
-    <section id={id} className="px-4 sm:px-6 py-20 lg:py-28 relative">
+    <section id={id} className="px-4 sm:px-6 py-20 lg:py-28 relative overflow-hidden">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
+      <div className="absolute -end-40 top-20 size-80 rounded-full bg-accent/10 blur-3xl" />
       <div className="mx-auto max-w-7xl">
         <motion.div {...fadeUp} className="mb-12 lg:mb-16 max-w-3xl">
           <div className="inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-accent font-semibold mb-5">
@@ -904,7 +942,7 @@ function WhatsAppFloat() {
     <a
       href={WHATSAPP} target="_blank" rel="noopener noreferrer"
       aria-label={t("book_cta")}
-      className={`fixed bottom-5 ${dir === "rtl" ? "left-5" : "right-5"} z-40 inline-flex items-center gap-2 rounded-full bg-emerald-500 hover:bg-emerald-400 text-white px-4 py-3 font-semibold shadow-[0_10px_40px_-10px] shadow-emerald-500 transition`}
+      className={`fixed bottom-5 ${dir === "rtl" ? "left-5" : "right-5"} z-40 inline-flex items-center gap-2 rounded-full bg-primary hover:opacity-90 text-primary-foreground px-4 py-3 font-semibold shadow-[0_10px_40px_-10px_var(--foreground)] transition`}
     >
       <MessageCircle className="size-5" />
       <span className="hidden sm:inline">{t("book_cta")}</span>
@@ -928,7 +966,7 @@ function ScrollTop() {
           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           aria-label="Scroll to top"
-          className={`fixed bottom-20 ${dir === "rtl" ? "left-5" : "right-5"} z-40 size-11 grid place-items-center rounded-full bg-gradient-to-br from-[var(--lavender)] to-[var(--gold)] text-white shadow-lg hover:scale-110 transition`}
+          className={`fixed bottom-20 ${dir === "rtl" ? "left-5" : "right-5"} z-40 size-11 grid place-items-center rounded-full bg-gradient-to-br from-[var(--lavender)] to-[var(--gold)] text-primary-foreground shadow-lg hover:scale-110 transition`}
         >
           <ArrowUp className="size-5" />
         </motion.button>
