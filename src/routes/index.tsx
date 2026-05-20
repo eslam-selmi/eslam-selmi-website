@@ -358,7 +358,7 @@ function About() {
       <div className="mt-10 grid sm:grid-cols-2 gap-4">
         {strengths.map((s, i) => (
           <motion.div key={s.t.en} {...fadeUp} transition={{ duration: 0.6, delay: i * 0.08 }}
-            className="glass rounded-2xl p-5 hover:bg-white/[0.06] transition group">
+            className="glass rounded-2xl p-5 hover:bg-foreground/[0.04] transition group">
             <div className="flex items-start gap-3">
               <CheckCircle2 className="size-5 text-gold mt-0.5 shrink-0" />
               <div>
@@ -380,7 +380,7 @@ function About() {
               key={c.name.en}
               initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ delay: i * 0.05 }}
-              className="glass rounded-2xl p-4 group hover:border-[var(--lavender)]/40 hover:bg-white/[0.06] transition relative overflow-hidden"
+              className="glass rounded-2xl p-4 group hover:border-[var(--lavender)]/40 hover:bg-foreground/[0.04] transition relative overflow-hidden"
             >
               <div className="absolute -top-10 -end-10 size-24 rounded-full bg-[var(--lavender)]/20 blur-2xl opacity-0 group-hover:opacity-100 transition" />
               <div className="relative flex items-start gap-3">
@@ -450,7 +450,7 @@ function Journey() {
               >
                 {/* Card */}
                 <div className={`${left ? "sm:order-1 sm:text-end sm:pe-4" : "sm:order-2 sm:ps-4"} ps-14 sm:ps-0`}>
-                  <div className="glass rounded-2xl p-5 hover:bg-white/[0.06] hover:border-[var(--lavender)]/40 transition group relative overflow-hidden">
+                  <div className="glass rounded-2xl p-5 hover:bg-foreground/[0.04] hover:border-[var(--lavender)]/40 transition group relative overflow-hidden">
                     <div className={`absolute -top-12 ${left ? "-end-12" : "-start-12"} size-32 rounded-full bg-[var(--lavender)]/15 blur-2xl opacity-0 group-hover:opacity-100 transition`} />
                     <div className={`relative flex items-center gap-3 ${left ? "sm:flex-row-reverse sm:text-start" : ""}`}>
                       <div className="size-12 rounded-xl bg-gradient-to-br from-[var(--lavender-deep)]/40 to-[var(--gold)]/30 border border-white/15 grid place-items-center text-lavender font-display font-extrabold text-sm shrink-0">
@@ -502,7 +502,7 @@ function Services() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {SERVICES.map((s, i) => (
           <motion.div key={s.key} {...fadeUp} transition={{ delay: i * 0.08, duration: 0.6 }}
-            className="relative glass rounded-2xl p-6 group overflow-hidden hover:bg-white/[0.06] hover:border-[var(--gold)]/30 transition">
+            className="relative glass rounded-2xl p-6 group overflow-hidden hover:bg-foreground/[0.04] hover:border-[var(--gold)]/30 transition">
             <div className="absolute -top-12 -end-12 size-32 rounded-full bg-[var(--gold)]/20 blur-2xl opacity-0 group-hover:opacity-100 transition" />
             <s.icon className="size-7 text-gold" />
             <div className="mt-4 text-xs text-muted-foreground font-mono">0{i + 1}</div>
@@ -533,7 +533,7 @@ function Programs() {
               <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{p.intro[lang]}</p>
               <div className="mt-5 space-y-3">
                 {p.items.map(it => (
-                  <div key={it.name.en} className="rounded-xl bg-white/[0.03] border border-white/5 p-3 hover:border-[var(--gold)]/30 transition">
+                  <div key={it.name.en} className="rounded-xl bg-foreground/[0.03] border border-foreground/10 p-3 hover:border-[var(--gold)]/30 transition">
                     <div className="font-medium text-sm">{it.name[lang]}</div>
                     <div className="text-xs text-muted-foreground mt-1">{it.desc[lang]}</div>
                   </div>
@@ -571,7 +571,7 @@ function Clients() {
             <motion.div key={c.code}
               initial={{ opacity: 0, scale: 0.85 }} whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }} transition={{ delay: i * 0.04 }}
-              className="glass aspect-square rounded-2xl flex flex-col items-center justify-center gap-2 hover:bg-white/10 hover:border-[var(--gold)]/40 transition group p-2">
+              className="glass aspect-square rounded-2xl flex flex-col items-center justify-center gap-2 hover:bg-foreground/5 hover:border-foreground/20 transition group p-2">
               <img
                 src={`https://flagcdn.com/${c.code}.svg`}
                 alt={c.name[lang]}
@@ -829,7 +829,7 @@ function Contact() {
 function ContactCard({ icon: Icon, label, lines, href }: { icon: any; label: string; lines: string[]; href: string }) {
   return (
     <motion.a {...fadeUp} href={href} target="_blank" rel="noopener noreferrer"
-      className="glass rounded-2xl p-6 hover:bg-white/[0.06] hover:border-[var(--gold)]/30 transition group block">
+      className="glass rounded-2xl p-6 hover:bg-foreground/[0.04] hover:border-[var(--gold)]/30 transition group block">
       <Icon className="size-6 text-gold" />
       <div className="mt-3 text-sm text-muted-foreground">{label}</div>
       {lines.map(l => <div key={l} className="font-medium mt-1">{l}</div>)}
