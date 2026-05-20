@@ -160,8 +160,8 @@ function Nav() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="glass-strong rounded-full ps-3 pe-2 py-2 flex items-center justify-between gap-2">
           <a href="#home" className="flex items-center gap-2 group shrink-0">
-            <img src={logo} alt="Eslam Selmi" className="size-9 object-contain" />
-            <span className="font-display font-semibold tracking-tight hidden sm:inline text-base">
+            <img src={logo} alt="Eslam Selmi" className="size-10 object-contain" />
+            <span className="font-display font-extrabold tracking-tight hidden sm:inline text-base text-gradient-premium">
               Eslam Selmi
             </span>
           </a>
