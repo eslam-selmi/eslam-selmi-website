@@ -386,8 +386,8 @@ function About() {
             {t("about_intro")}
           </p>
           <div className="mt-8 grid grid-cols-2 gap-3">
-            <Stat n="8+" l="Years" />
-            <Stat n="4" l="Sectors" />
+            <Stat n="8+" l={lang === "ar" ? "سنوات" : "Years"} />
+            <Stat n="4" l={lang === "ar" ? "قطاعات" : "Sectors"} />
           </div>
         </motion.div>
       <div className="grid sm:grid-cols-2 gap-4">
@@ -759,7 +759,7 @@ function BookCTA() {
           </div>
           <div className="grid gap-3">
             {steps.map(({ i: Icon, t: tt, d }, idx) => (
-              <div key={tt} className="rounded-2xl border border-primary-foreground/15 bg-primary-foreground/8 p-4 flex items-start gap-3 backdrop-blur-xl">
+              <div key={tt} className="rounded-2xl border border-primary-foreground/15 bg-primary-foreground/10 p-4 flex items-start gap-3 backdrop-blur-xl">
                 <span className="size-9 rounded-full bg-primary-foreground/10 grid place-items-center text-primary-foreground shrink-0 font-display italic text-sm">
                   0{idx + 1}
                 </span>
@@ -767,7 +767,7 @@ function BookCTA() {
                   <div className="font-semibold text-sm flex items-center gap-2">
                     <Icon className="size-3.5 opacity-70" /> {tt}
                   </div>
-                  <div className="text-xs text-primary-foreground/64 mt-1 leading-relaxed">{d}</div>
+                  <div className="text-xs text-primary-foreground/60 mt-1 leading-relaxed">{d}</div>
                 </div>
               </div>
             ))}
