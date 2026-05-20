@@ -416,7 +416,7 @@ function About() {
               key={c.name.en}
               initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ delay: i * 0.05 }}
-              className="glass rounded-2xl p-4 group hover:border-[var(--lavender)]/40 hover:bg-foreground/[0.04] transition relative overflow-hidden"
+              className="glass-panel rounded-3xl p-4 group hover:-translate-y-1 transition relative overflow-hidden"
             >
               <div className="absolute -top-10 -end-10 size-24 rounded-full bg-[var(--lavender)]/20 blur-2xl opacity-0 group-hover:opacity-100 transition" />
               <div className="relative flex items-start gap-3">
@@ -445,7 +445,7 @@ function Pillars() {
         {PILLARS.map((p, i) => (
           <motion.div
             key={p.key} {...fadeUp} transition={{ duration: 0.6, delay: i * 0.1 }}
-            className="relative glass rounded-3xl p-7 overflow-hidden group hover:border-[var(--gold)]/30 transition"
+            className="relative glass-panel rounded-[2rem] p-7 overflow-hidden group hover:-translate-y-1 transition"
           >
             <div className={`absolute -top-20 -end-20 size-48 rounded-full bg-gradient-to-br ${p.color} blur-3xl opacity-60 group-hover:opacity-100 transition`} />
             <div className="relative">
@@ -486,7 +486,7 @@ function Journey() {
               >
                 {/* Card */}
                 <div className={`${left ? "sm:order-1 sm:text-end sm:pe-4" : "sm:order-2 sm:ps-4"} ps-14 sm:ps-0`}>
-                  <div className="glass rounded-2xl p-5 hover:bg-foreground/[0.04] hover:border-[var(--lavender)]/40 transition group relative overflow-hidden">
+                  <div className="glass-panel rounded-3xl p-5 transition hover:-translate-y-1 group relative overflow-hidden">
                     <div className={`absolute -top-12 ${left ? "-end-12" : "-start-12"} size-32 rounded-full bg-[var(--lavender)]/15 blur-2xl opacity-0 group-hover:opacity-100 transition`} />
                     <div className={`relative flex items-center gap-3 ${left ? "sm:flex-row-reverse sm:text-start" : ""}`}>
                       <div className="size-12 rounded-xl bg-gradient-to-br from-[var(--lavender-deep)]/40 to-[var(--gold)]/30 border border-foreground/15 grid place-items-center text-lavender font-display font-extrabold text-sm shrink-0">
@@ -538,7 +538,7 @@ function Services() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {SERVICES.map((s, i) => (
           <motion.div key={s.key} {...fadeUp} transition={{ delay: i * 0.08, duration: 0.6 }}
-            className="relative glass rounded-2xl p-6 group overflow-hidden hover:bg-foreground/[0.04] hover:border-[var(--gold)]/30 transition">
+            className="relative glass-panel rounded-3xl p-6 group overflow-hidden transition hover:-translate-y-1">
             <div className="absolute -top-12 -end-12 size-32 rounded-full bg-[var(--gold)]/20 blur-2xl opacity-0 group-hover:opacity-100 transition" />
             <s.icon className="size-7 text-gold" />
             <div className="mt-4 text-xs text-muted-foreground font-mono">0{i + 1}</div>
