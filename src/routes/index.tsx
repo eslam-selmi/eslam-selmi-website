@@ -559,9 +559,8 @@ function Clients() {
 
 /* ---------- SNAPSHOTS w/ LIGHTBOX ---------- */
 function Snapshots() {
-  const { t } = useI18n();
+  const { t, dir } = useI18n();
   const [active, setActive] = useState<number | null>(null);
-  const spans = ["md:col-span-2 row-span-2", "", "", "row-span-2", "", "md:col-span-2", "", ""];
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -574,26 +573,49 @@ function Snapshots() {
     return () => window.removeEventListener("keydown", onKey);
   }, [active]);
 
+  // Two interleaved tracks for richer marquee, doubled for seamless loop
+  const trackA = [...SNAPSHOTS, ...SNAPSHOTS];
+  const trackB = [...SNAPSHOTS.slice().reverse(), ...SNAPSHOTS.slice().reverse()];
+  const marqueeClass = dir === "rtl" ? "animate-marquee-rtl" : "animate-marquee";
+  const marqueeSlowClass = dir === "rtl" ? "animate-marquee-rtl" : "animate-marquee-slow";
+
+  const Card = ({ src, i, originalIndex }: { src: string; i: number; originalIndex: number }) => (
+    <button
+      type="button"
+      onClick={() => setActive(originalIndex)}
+      className="group relative shrink-0 w-[280px] sm:w-[340px] aspect-[4/3] overflow-hidden rounded-2xl border border-white/10 cursor-zoom-in"
+      aria-label={`Open snapshot ${originalIndex + 1}`}
+    >
+      <img
+        src={src}
+        alt={`Snapshot ${originalIndex + 1}`}
+        loading="lazy"
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition" />
+      <div className="absolute bottom-3 start-3 text-xs text-white/90 opacity-0 group-hover:opacity-100 transition font-semibold tracking-wider uppercase">
+        View →
+      </div>
+    </button>
+  );
+
   return (
     <Section id="snapshots" eyebrow={t("snapshots_eyebrow")} title={t("snapshots_title")}>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 auto-rows-[180px] md:auto-rows-[220px]">
-        {SNAPSHOTS.map((src, i) => (
-          <motion.button
-            key={i}
-            type="button"
-            onClick={() => setActive(i)}
-            initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ delay: i * 0.05, duration: 0.6 }}
-            className={`relative overflow-hidden rounded-2xl group cursor-zoom-in ${spans[i] || ""}`}
-          >
-            <img src={src} alt={`Snapshot ${i + 1}`} loading="lazy"
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition" />
-            <div className="absolute bottom-3 start-3 text-xs text-white/90 opacity-0 group-hover:opacity-100 transition font-semibold">
-              View →
-            </div>
-          </motion.button>
-        ))}
+      <div className="space-y-5 marquee-mask">
+        <div className="overflow-hidden">
+          <div className={`flex gap-5 w-max ${marqueeClass} hover:[animation-play-state:paused]`}>
+            {trackA.map((src, idx) => (
+              <Card key={`a-${idx}`} src={src} i={idx} originalIndex={idx % SNAPSHOTS.length} />
+            ))}
+          </div>
+        </div>
+        <div className="overflow-hidden">
+          <div className={`flex gap-5 w-max ${marqueeSlowClass} hover:[animation-play-state:paused]`}>
+            {trackB.map((src, idx) => (
+              <Card key={`b-${idx}`} src={src} i={idx} originalIndex={(SNAPSHOTS.length - 1 - (idx % SNAPSHOTS.length))} />
+            ))}
+          </div>
+        </div>
       </div>
 
       <AnimatePresence>
