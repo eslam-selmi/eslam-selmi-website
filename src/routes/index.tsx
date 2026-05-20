@@ -354,7 +354,7 @@ function About() {
                 </div>
                 <div className="min-w-0">
                   <div className="font-semibold text-sm leading-tight">{c.name[lang]}</div>
-                  <div className="text-[11px] text-muted-foreground mt-1 uppercase tracking-wider">{c.issuer}</div>
+                  <div className="text-[11px] text-muted-foreground mt-1 uppercase tracking-wider">{c.issuer[lang]}</div>
                 </div>
               </div>
             </motion.div>
