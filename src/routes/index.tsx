@@ -893,7 +893,7 @@ function ScrollTop() {
           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           aria-label="Scroll to top"
-          className={`fixed bottom-20 ${dir === "rtl" ? "left-5" : "right-5"} z-40 size-11 grid place-items-center rounded-full bg-gold text-accent-foreground shadow-lg hover:scale-110 transition`}
+          className={`fixed bottom-20 ${dir === "rtl" ? "left-5" : "right-5"} z-40 size-11 grid place-items-center rounded-full bg-gradient-to-br from-[var(--lavender)] to-[var(--gold)] text-white shadow-lg hover:scale-110 transition`}
         >
           <ArrowUp className="size-5" />
         </motion.button>
