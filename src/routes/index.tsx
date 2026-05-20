@@ -116,6 +116,8 @@ const PILLARS = [
 
 const SNAPSHOTS = [trainingCollage, snap1, snap2, snap3, snap4, snap5, snap6, snap7];
 
+type ThemeMode = "dark" | "light";
+
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
   whileInView: { opacity: 1, y: 0 },
@@ -124,9 +126,27 @@ const fadeUp = {
 };
 
 function Portfolio() {
+  const [theme, setTheme] = useState<ThemeMode>("dark");
+
+  useEffect(() => {
+    const saved = typeof window !== "undefined" ? window.localStorage.getItem("theme-mode") : null;
+    const next: ThemeMode = saved === "light" ? "light" : "dark";
+    setTheme(next);
+    document.documentElement.classList.toggle("dark", next === "dark");
+  }, []);
+
+  const toggleTheme = () => {
+    setTheme((current) => {
+      const next: ThemeMode = current === "dark" ? "light" : "dark";
+      document.documentElement.classList.toggle("dark", next === "dark");
+      if (typeof window !== "undefined") window.localStorage.setItem("theme-mode", next);
+      return next;
+    });
+  };
+
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
-      <Nav />
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-accent/25">
+      <Nav theme={theme} onThemeToggle={toggleTheme} />
       <Hero />
       <About />
       <Pillars />
