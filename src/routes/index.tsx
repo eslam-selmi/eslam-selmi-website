@@ -384,7 +384,7 @@ function About() {
             >
               <div className="absolute -top-10 -end-10 size-24 rounded-full bg-[var(--lavender)]/20 blur-2xl opacity-0 group-hover:opacity-100 transition" />
               <div className="relative flex items-start gap-3">
-                <div className="size-11 rounded-xl bg-gradient-to-br from-[var(--lavender)]/30 via-[var(--lavender-deep)]/20 to-[var(--gold)]/20 grid place-items-center text-lavender shrink-0 border border-white/10">
+                <div className="size-11 rounded-xl bg-gradient-to-br from-[var(--lavender)]/30 via-[var(--lavender-deep)]/20 to-[var(--gold)]/20 grid place-items-center text-lavender shrink-0 border border-foreground/10">
                   <c.icon className="size-5" />
                 </div>
                 <div className="min-w-0">
@@ -453,7 +453,7 @@ function Journey() {
                   <div className="glass rounded-2xl p-5 hover:bg-foreground/[0.04] hover:border-[var(--lavender)]/40 transition group relative overflow-hidden">
                     <div className={`absolute -top-12 ${left ? "-end-12" : "-start-12"} size-32 rounded-full bg-[var(--lavender)]/15 blur-2xl opacity-0 group-hover:opacity-100 transition`} />
                     <div className={`relative flex items-center gap-3 ${left ? "sm:flex-row-reverse sm:text-start" : ""}`}>
-                      <div className="size-12 rounded-xl bg-gradient-to-br from-[var(--lavender-deep)]/40 to-[var(--gold)]/30 border border-white/15 grid place-items-center text-lavender font-display font-extrabold text-sm shrink-0">
+                      <div className="size-12 rounded-xl bg-gradient-to-br from-[var(--lavender-deep)]/40 to-[var(--gold)]/30 border border-foreground/15 grid place-items-center text-lavender font-display font-extrabold text-sm shrink-0">
                         {j.company.slice(0, 2).toUpperCase()}
                       </div>
                       <div className="min-w-0">
@@ -613,7 +613,7 @@ function Snapshots() {
     <button
       type="button"
       onClick={() => setActive(originalIndex)}
-      className="group relative shrink-0 w-[280px] sm:w-[340px] aspect-[4/3] overflow-hidden rounded-2xl border border-white/10 cursor-zoom-in"
+      className="group relative shrink-0 w-[280px] sm:w-[340px] aspect-[4/3] overflow-hidden rounded-2xl border border-foreground/10 cursor-zoom-in"
       aria-label={`Open snapshot ${originalIndex + 1}`}
     >
       <img
