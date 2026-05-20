@@ -5,7 +5,7 @@ import {
   Sparkles, Globe2, Layers, MessageCircle, Mail, Linkedin, Phone, ArrowRight,
   CheckCircle2, Menu, X, Calendar, Target, Lightbulb, HeartHandshake,
   GraduationCap, Award, Users, TrendingUp, BarChart3, UserCheck, Languages,
-  ArrowUp, Loader2, Briefcase,
+  ArrowUp, Loader2, Briefcase, BadgeCheck, Compass, Presentation, MapPin,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n, type Lang } from "@/lib/i18n";
