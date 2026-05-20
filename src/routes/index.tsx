@@ -158,16 +158,16 @@ function Nav() {
   return (
     <header className={`fixed top-0 inset-x-0 z-50 transition-all ${scrolled ? "py-2" : "py-4"}`}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="glass-strong rounded-full ps-3 pe-2 py-2 flex items-center justify-between gap-2">
-          <a href="#home" className="flex items-center gap-2 group shrink-0">
-            <img src={logo} alt="Eslam Selmi" className="size-10 object-contain" />
-            <span className="font-display font-extrabold tracking-tight hidden sm:inline text-base text-gradient-premium">
+        <div className={`glass-strong rounded-full ps-3 pe-2 py-2 flex items-center justify-between gap-2 ${scrolled ? "shadow-[0_8px_30px_-12px_rgba(15,27,61,0.18)]" : ""}`}>
+          <a href="#home" className="flex items-center gap-2.5 group shrink-0">
+            <img src={logo} alt="Eslam Selmi" className="size-9 object-contain" />
+            <span className="font-display italic tracking-tight hidden sm:inline text-lg text-foreground">
               Eslam Selmi
             </span>
           </a>
           <nav className="hidden xl:flex items-center gap-0.5">
             {NAV.map(n => (
-              <a key={n.id} href={`#${n.id}`} className="px-2.5 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-white/5">
+              <a key={n.id} href={`#${n.id}`} className="px-2.5 py-1.5 text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-foreground/5">
                 {t(n.key)}
               </a>
             ))}
@@ -176,7 +176,7 @@ function Nav() {
             <button
               onClick={() => setLang(lang === "en" ? "ar" : "en" as Lang)}
               aria-label="Toggle language"
-              className="inline-flex items-center gap-1.5 rounded-full glass px-3 py-1.5 text-xs font-semibold hover:bg-white/10 transition"
+              className="inline-flex items-center gap-1.5 rounded-full border border-foreground/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider hover:bg-foreground/5 transition"
             >
               <Languages className="size-3.5" />
               {lang === "en" ? "AR" : "EN"}
@@ -184,12 +184,12 @@ function Nav() {
             <a
               href={LINKEDIN} target="_blank" rel="noopener noreferrer"
               aria-label="LinkedIn"
-              className="hidden sm:inline-flex size-9 items-center justify-center rounded-full glass hover:bg-white/10 transition"
+              className="hidden sm:inline-flex size-9 items-center justify-center rounded-full border border-foreground/10 hover:bg-foreground/5 transition"
             >
               <Linkedin className="size-4" />
             </a>
             <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-              className="hidden md:inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[var(--lavender-deep)] via-[var(--lavender)] to-[var(--gold)] text-white px-4 py-2 text-sm font-semibold hover:opacity-95 hover:shadow-[0_10px_30px_-12px] hover:shadow-[var(--lavender)] transition">
+              className="hidden md:inline-flex items-center gap-2 rounded-full bg-foreground text-background px-4 py-2 text-sm font-semibold hover:bg-foreground/85 transition">
               <Calendar className="size-4" /> {t("book_cta")}
             </a>
             <button className="xl:hidden p-2" onClick={() => setOpen(v => !v)} aria-label="Menu">
@@ -200,10 +200,10 @@ function Nav() {
         {open && (
           <div className="xl:hidden mt-2 glass-strong rounded-2xl p-3 grid gap-1">
             {NAV.map(n => (
-              <a key={n.id} href={`#${n.id}`} onClick={() => setOpen(false)} className="px-3 py-2 rounded-lg hover:bg-white/5 text-sm">{t(n.key)}</a>
+              <a key={n.id} href={`#${n.id}`} onClick={() => setOpen(false)} className="px-3 py-2 rounded-lg hover:bg-foreground/5 text-sm">{t(n.key)}</a>
             ))}
             <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-              className="mt-1 inline-flex items-center justify-center gap-2 rounded-lg bg-gold text-accent-foreground px-4 py-2 text-sm font-semibold">
+              className="mt-1 inline-flex items-center justify-center gap-2 rounded-lg bg-foreground text-background px-4 py-2 text-sm font-semibold">
               <Calendar className="size-4" /> {t("book_cta")}
             </a>
           </div>
@@ -215,88 +215,118 @@ function Nav() {
 
 /* ---------- HERO ---------- */
 function Hero() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [0, 120]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, 80]);
 
   return (
-    <section id="home" ref={ref} className="relative pt-28 pb-8 lg:pt-32 lg:pb-12 overflow-hidden">
-      <div className="absolute inset-0 bg-aurora animate-float-slow" />
+    <section id="home" ref={ref} className="relative pt-28 pb-12 lg:pt-32 lg:pb-16 overflow-hidden">
+      <div className="absolute inset-0 bg-aurora" />
       <div className="absolute inset-0 grain" />
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-        <motion.div style={{ y }} className="order-2 lg:order-1">
-          <motion.p
-            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-            className="text-lavender font-medium tracking-[0.25em] uppercase text-xs">
-            ✦ {t("hero_hello")}
-          </motion.p>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.7 }}
-            className="mt-3 font-display text-5xl sm:text-6xl lg:text-7xl tracking-tight text-balance leading-[1.02]">
-            {t("hero_meet")} <span className="text-gradient-premium">Eslam Selmi</span>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
-            className="mt-5 text-lg text-muted-foreground max-w-xl text-balance leading-relaxed">
-            {t("hero_intro")}
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-            className="mt-8 flex flex-wrap gap-3">
-            <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-              className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[var(--lavender-deep)] via-[var(--lavender)] to-[var(--gold)] text-white px-6 py-3 font-semibold shadow-[0_10px_40px_-12px] shadow-[var(--lavender-deep)] hover:shadow-[0_18px_60px_-12px] hover:shadow-[var(--lavender)] transition">
-              <MessageCircle className="size-5" /> {t("hero_btn_book")}
-              <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
-            </a>
-            <a href="#programs" className="inline-flex items-center gap-2 rounded-full glass px-6 py-3 font-medium hover:bg-white/10 hover:border-[var(--lavender)]/40 transition">
-              {t("hero_btn_programs")}
-            </a>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}
-            className="mt-10 grid grid-cols-3 gap-4 max-w-md">
-            <Stat n="3000+" l={t("stat_trainees")} />
-            <Stat n="12" l={t("stat_countries")} />
-            <Stat n="15+" l={t("stat_programs")} />
-          </motion.div>
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
+        {/* Top meta line */}
+        <motion.div
+          initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }}
+          className="flex items-center justify-between text-[11px] uppercase tracking-[0.3em] text-muted-foreground mb-8 lg:mb-12"
+        >
+          <span>Portfolio · MMXXVI</span>
+          <span className="hidden sm:inline">Riyadh · Cairo</span>
+          <span>Vol. 01</span>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }}
-          className="order-1 lg:order-2 relative h-[480px] sm:h-[560px] lg:h-[600px]">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="size-[420px] rounded-full bg-gradient-to-tr from-[var(--lavender)]/30 via-primary/30 to-[var(--gold)]/20 blur-3xl animate-float-slow" />
-          </div>
-          <div className="absolute inset-0 grid place-items-center">
-            <div className="size-[360px] sm:size-[440px] rounded-full border border-[var(--lavender)]/25 bg-gradient-to-b from-white/5 to-transparent backdrop-blur-sm" />
-          </div>
-          <div className="absolute inset-0 grid place-items-center">
-            <div className="size-[300px] sm:size-[380px] rounded-full border border-white/5" />
-          </div>
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          {/* LEFT — Editorial text */}
+          <motion.div style={{ y }} className="order-2 lg:order-1 lg:col-span-7">
+            <div className="text-[11px] uppercase tracking-[0.3em] text-accent font-semibold mb-5">
+              {t("hero_hello")} — {lang === "ar" ? "تعرّف إلى" : "an introduction"}
+            </div>
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.7 }}
+              className="font-display tracking-tight text-balance leading-[0.95] text-foreground text-[clamp(3rem,8vw,7rem)]"
+            >
+              Eslam <span className="serif-italic text-accent">Selmi</span>
+            </motion.h1>
 
-          <motion.div
-            animate={{ y: [0, -12, 0] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="relative h-full w-full grid place-items-center">
-            <img
-              src={headshot}
-              alt="Eslam Selmi, Head of L&D"
-              className="relative max-h-full w-auto object-contain drop-shadow-[0_30px_50px_rgba(167,139,250,0.35)]"
-            />
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
+              className="mt-6 flex items-center gap-4"
+            >
+              <span className="h-px flex-1 bg-foreground/15" />
+              <span className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground whitespace-nowrap">
+                Head of L&amp;D · Talent &amp; Performance
+              </span>
+              <span className="h-px flex-1 bg-foreground/15 hidden sm:block" />
+            </motion.div>
+
+            <motion.p
+              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
+              className="mt-6 text-lg lg:text-xl text-foreground/75 max-w-2xl leading-relaxed font-light"
+            >
+              {t("hero_intro")}
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
+              className="mt-8 flex flex-wrap gap-3"
+            >
+              <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
+                className="group inline-flex items-center gap-2 rounded-full bg-foreground text-background px-6 py-3 text-sm font-semibold hover:bg-foreground/85 transition">
+                <MessageCircle className="size-4" /> {t("hero_btn_book")}
+                <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
+              </a>
+              <a href="#programs"
+                className="inline-flex items-center gap-2 rounded-full border border-foreground/20 px-6 py-3 text-sm font-medium hover:bg-foreground/5 transition">
+                {t("hero_btn_programs")}
+              </a>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}
+              className="mt-12 grid grid-cols-3 gap-6 max-w-lg border-t border-foreground/10 pt-6"
+            >
+              <Stat n="3000+" l={t("stat_trainees")} />
+              <Stat n="12" l={t("stat_countries")} />
+              <Stat n="15+" l={t("stat_programs")} />
+            </motion.div>
           </motion.div>
 
+          {/* RIGHT — Editorial portrait */}
           <motion.div
-            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
-            className="absolute bottom-2 left-1/2 -translate-x-1/2 glass-strong rounded-2xl px-4 py-3 flex items-center gap-3 whitespace-nowrap border-[var(--lavender)]/20">
-            <span className="size-2.5 rounded-full bg-emerald-400 shadow-[0_0_12px] shadow-emerald-400" />
-            <div className="text-start">
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("status_current")}</div>
-              <div className="text-sm font-semibold">{t("status_role")}</div>
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}
+            className="order-1 lg:order-2 lg:col-span-5 relative"
+          >
+            <div className="relative aspect-[4/5] w-full max-w-md mx-auto">
+              {/* Frame */}
+              <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-b from-primary to-[var(--navy-deep)] overflow-hidden shadow-[0_30px_80px_-30px_rgba(15,27,61,0.5)]">
+                <div className="absolute inset-0 bg-aurora opacity-40" />
+                <div className="absolute inset-0 grain" />
+                <img
+                  src={headshot}
+                  alt="Eslam Selmi, Head of L&D"
+                  className="absolute inset-0 w-full h-full object-contain object-bottom drop-shadow-[0_30px_40px_rgba(0,0,0,0.35)]"
+                />
+              </div>
+
+              {/* Caption tag */}
+              <motion.div
+                initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 }}
+                className="absolute -bottom-5 start-4 sm:start-8 bg-background border border-foreground/10 rounded-xl px-4 py-3 flex items-center gap-3 shadow-[0_12px_30px_-12px_rgba(15,27,61,0.25)]"
+              >
+                <span className="size-2 rounded-full bg-emerald-500 shadow-[0_0_10px] shadow-emerald-500/60" />
+                <div className="text-start">
+                  <div className="text-[9px] uppercase tracking-[0.25em] text-muted-foreground">{t("status_current")}</div>
+                  <div className="text-sm font-semibold leading-tight mt-0.5">{t("status_role")}</div>
+                </div>
+              </motion.div>
+
+              {/* Plate number badge */}
+              <div className="absolute -top-3 end-4 sm:end-8 font-display italic text-accent text-2xl bg-background px-3 py-1 rounded-full border border-foreground/10">
+                01
+              </div>
             </div>
           </motion.div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
@@ -305,8 +335,8 @@ function Hero() {
 function Stat({ n, l }: { n: string; l: string }) {
   return (
     <div>
-      <div className="font-display text-2xl sm:text-3xl font-bold text-gradient-gold">{n}</div>
-      <div className="text-xs text-muted-foreground uppercase tracking-wider mt-1">{l}</div>
+      <div className="font-display text-3xl sm:text-4xl text-foreground tracking-tight">{n}</div>
+      <div className="text-[10px] text-muted-foreground uppercase tracking-[0.25em] mt-1">{l}</div>
     </div>
   );
 }
@@ -328,7 +358,7 @@ function About() {
       <div className="mt-10 grid sm:grid-cols-2 gap-4">
         {strengths.map((s, i) => (
           <motion.div key={s.t.en} {...fadeUp} transition={{ duration: 0.6, delay: i * 0.08 }}
-            className="glass rounded-2xl p-5 hover:bg-white/[0.06] transition group">
+            className="glass rounded-2xl p-5 hover:bg-foreground/[0.04] transition group">
             <div className="flex items-start gap-3">
               <CheckCircle2 className="size-5 text-gold mt-0.5 shrink-0" />
               <div>
@@ -350,11 +380,11 @@ function About() {
               key={c.name.en}
               initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ delay: i * 0.05 }}
-              className="glass rounded-2xl p-4 group hover:border-[var(--lavender)]/40 hover:bg-white/[0.06] transition relative overflow-hidden"
+              className="glass rounded-2xl p-4 group hover:border-[var(--lavender)]/40 hover:bg-foreground/[0.04] transition relative overflow-hidden"
             >
               <div className="absolute -top-10 -end-10 size-24 rounded-full bg-[var(--lavender)]/20 blur-2xl opacity-0 group-hover:opacity-100 transition" />
               <div className="relative flex items-start gap-3">
-                <div className="size-11 rounded-xl bg-gradient-to-br from-[var(--lavender)]/30 via-[var(--lavender-deep)]/20 to-[var(--gold)]/20 grid place-items-center text-lavender shrink-0 border border-white/10">
+                <div className="size-11 rounded-xl bg-gradient-to-br from-[var(--lavender)]/30 via-[var(--lavender-deep)]/20 to-[var(--gold)]/20 grid place-items-center text-lavender shrink-0 border border-foreground/10">
                   <c.icon className="size-5" />
                 </div>
                 <div className="min-w-0">
@@ -420,10 +450,10 @@ function Journey() {
               >
                 {/* Card */}
                 <div className={`${left ? "sm:order-1 sm:text-end sm:pe-4" : "sm:order-2 sm:ps-4"} ps-14 sm:ps-0`}>
-                  <div className="glass rounded-2xl p-5 hover:bg-white/[0.06] hover:border-[var(--lavender)]/40 transition group relative overflow-hidden">
+                  <div className="glass rounded-2xl p-5 hover:bg-foreground/[0.04] hover:border-[var(--lavender)]/40 transition group relative overflow-hidden">
                     <div className={`absolute -top-12 ${left ? "-end-12" : "-start-12"} size-32 rounded-full bg-[var(--lavender)]/15 blur-2xl opacity-0 group-hover:opacity-100 transition`} />
                     <div className={`relative flex items-center gap-3 ${left ? "sm:flex-row-reverse sm:text-start" : ""}`}>
-                      <div className="size-12 rounded-xl bg-gradient-to-br from-[var(--lavender-deep)]/40 to-[var(--gold)]/30 border border-white/15 grid place-items-center text-lavender font-display font-extrabold text-sm shrink-0">
+                      <div className="size-12 rounded-xl bg-gradient-to-br from-[var(--lavender-deep)]/40 to-[var(--gold)]/30 border border-foreground/15 grid place-items-center text-lavender font-display font-extrabold text-sm shrink-0">
                         {j.company.slice(0, 2).toUpperCase()}
                       </div>
                       <div className="min-w-0">
@@ -472,7 +502,7 @@ function Services() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {SERVICES.map((s, i) => (
           <motion.div key={s.key} {...fadeUp} transition={{ delay: i * 0.08, duration: 0.6 }}
-            className="relative glass rounded-2xl p-6 group overflow-hidden hover:bg-white/[0.06] hover:border-[var(--gold)]/30 transition">
+            className="relative glass rounded-2xl p-6 group overflow-hidden hover:bg-foreground/[0.04] hover:border-[var(--gold)]/30 transition">
             <div className="absolute -top-12 -end-12 size-32 rounded-full bg-[var(--gold)]/20 blur-2xl opacity-0 group-hover:opacity-100 transition" />
             <s.icon className="size-7 text-gold" />
             <div className="mt-4 text-xs text-muted-foreground font-mono">0{i + 1}</div>
@@ -503,7 +533,7 @@ function Programs() {
               <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{p.intro[lang]}</p>
               <div className="mt-5 space-y-3">
                 {p.items.map(it => (
-                  <div key={it.name.en} className="rounded-xl bg-white/[0.03] border border-white/5 p-3 hover:border-[var(--gold)]/30 transition">
+                  <div key={it.name.en} className="rounded-xl bg-foreground/[0.03] border border-foreground/10 p-3 hover:border-[var(--gold)]/30 transition">
                     <div className="font-medium text-sm">{it.name[lang]}</div>
                     <div className="text-xs text-muted-foreground mt-1">{it.desc[lang]}</div>
                   </div>
@@ -541,7 +571,7 @@ function Clients() {
             <motion.div key={c.code}
               initial={{ opacity: 0, scale: 0.85 }} whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }} transition={{ delay: i * 0.04 }}
-              className="glass aspect-square rounded-2xl flex flex-col items-center justify-center gap-2 hover:bg-white/10 hover:border-[var(--gold)]/40 transition group p-2">
+              className="glass aspect-square rounded-2xl flex flex-col items-center justify-center gap-2 hover:bg-foreground/5 hover:border-foreground/20 transition group p-2">
               <img
                 src={`https://flagcdn.com/${c.code}.svg`}
                 alt={c.name[lang]}
@@ -583,7 +613,7 @@ function Snapshots() {
     <button
       type="button"
       onClick={() => setActive(originalIndex)}
-      className="group relative shrink-0 w-[280px] sm:w-[340px] aspect-[4/3] overflow-hidden rounded-2xl border border-white/10 cursor-zoom-in"
+      className="group relative shrink-0 w-[280px] sm:w-[340px] aspect-[4/3] overflow-hidden rounded-2xl border border-foreground/10 cursor-zoom-in"
       aria-label={`Open snapshot ${originalIndex + 1}`}
     >
       <img
@@ -668,37 +698,40 @@ function BookCTA() {
   return (
     <section id="book" className="px-4 sm:px-6 py-16">
       <motion.div {...fadeUp}
-        className="relative mx-auto max-w-6xl rounded-[2rem] p-8 sm:p-12 lg:p-16 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/40 via-[var(--gold)]/20 to-primary/10" />
-        <div className="absolute inset-0 bg-aurora opacity-60" />
+        className="relative mx-auto max-w-6xl rounded-[2rem] p-8 sm:p-12 lg:p-16 overflow-hidden bg-foreground text-background">
+        <div className="absolute inset-0 bg-aurora opacity-30" />
         <div className="absolute inset-0 grain" />
-        <div className="relative grid lg:grid-cols-[1.4fr_1fr] gap-8 items-center">
+        <div className="relative grid lg:grid-cols-[1.4fr_1fr] gap-10 items-center">
           <div>
-            <div className="inline-flex items-center gap-2 glass rounded-full px-3 py-1 text-xs font-semibold text-gold">
+            <div className="inline-flex items-center gap-2 rounded-full border border-background/20 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.25em] text-background/80">
               <Sparkles className="size-3.5" /> {t("book_badge")}
             </div>
-            <h2 className="mt-4 font-display text-4xl sm:text-5xl font-bold tracking-tight text-balance leading-[1.1]">
-              {t("book_title_1")} <span className="text-gradient-gold">{t("book_title_2")}</span> {t("book_title_3")}
+            <h2 className="mt-5 font-display tracking-tight text-balance leading-[1] text-background text-[clamp(2.25rem,5vw,4rem)]">
+              {t("book_title_1")} <span className="serif-italic text-background/75">{t("book_title_2")}</span> {t("book_title_3")}
             </h2>
-            <p className="mt-4 text-muted-foreground max-w-xl leading-relaxed">{t("book_desc")}</p>
-            <div className="mt-6 flex flex-wrap gap-3">
+            <p className="mt-5 text-background/70 max-w-xl leading-relaxed font-light">{t("book_desc")}</p>
+            <div className="mt-7 flex flex-wrap gap-3">
               <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-                className="group inline-flex items-center gap-2 rounded-full bg-emerald-500 text-white px-6 py-3 font-semibold hover:bg-emerald-400 transition shadow-[0_0_40px_-10px] shadow-emerald-500">
-                <MessageCircle className="size-5" /> {t("book_btn_whatsapp")}
+                className="group inline-flex items-center gap-2 rounded-full bg-background text-foreground px-6 py-3 text-sm font-semibold hover:bg-background/90 transition">
+                <MessageCircle className="size-4" /> {t("book_btn_whatsapp")}
                 <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
               </a>
-              <a href="tel:+966555376228" className="inline-flex items-center gap-2 rounded-full glass px-6 py-3 font-medium hover:bg-white/10 transition">
+              <a href="tel:+966555376228" className="inline-flex items-center gap-2 rounded-full border border-background/20 px-6 py-3 text-sm font-medium hover:bg-background/10 transition">
                 <Phone className="size-4" /> +966 555 376 228
               </a>
             </div>
           </div>
           <div className="grid gap-3">
-            {steps.map(({ i: Icon, t: tt, d }) => (
-              <div key={tt} className="glass rounded-2xl p-4 flex items-start gap-3">
-                <span className="size-9 rounded-xl bg-[var(--gold)]/20 grid place-items-center text-gold shrink-0"><Icon className="size-5" /></span>
-                <div>
-                  <div className="font-semibold text-sm">{tt}</div>
-                  <div className="text-xs text-muted-foreground mt-0.5">{d}</div>
+            {steps.map(({ i: Icon, t: tt, d }, idx) => (
+              <div key={tt} className="rounded-2xl border border-background/15 bg-background/5 p-4 flex items-start gap-3">
+                <span className="size-9 rounded-full bg-background/10 grid place-items-center text-background shrink-0 font-display italic text-sm">
+                  0{idx + 1}
+                </span>
+                <div className="min-w-0">
+                  <div className="font-semibold text-sm flex items-center gap-2">
+                    <Icon className="size-3.5 opacity-70" /> {tt}
+                  </div>
+                  <div className="text-xs text-background/60 mt-1 leading-relaxed">{d}</div>
                 </div>
               </div>
             ))}
@@ -799,7 +832,7 @@ function Contact() {
 function ContactCard({ icon: Icon, label, lines, href }: { icon: any; label: string; lines: string[]; href: string }) {
   return (
     <motion.a {...fadeUp} href={href} target="_blank" rel="noopener noreferrer"
-      className="glass rounded-2xl p-6 hover:bg-white/[0.06] hover:border-[var(--gold)]/30 transition group block">
+      className="glass rounded-2xl p-6 hover:bg-foreground/[0.04] hover:border-[var(--gold)]/30 transition group block">
       <Icon className="size-6 text-gold" />
       <div className="mt-3 text-sm text-muted-foreground">{label}</div>
       {lines.map(l => <div key={l} className="font-medium mt-1">{l}</div>)}
@@ -814,26 +847,26 @@ function ContactCard({ icon: Icon, label, lines, href }: { icon: any; label: str
 function Footer() {
   const { t } = useI18n();
   return (
-    <footer className="border-t border-white/5 mt-10">
+    <footer className="border-t border-foreground/10 mt-10 bg-foreground/[0.02]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <img src={logo} alt="Eslam Selmi" className="size-10 object-contain" />
           <div>
-            <div className="font-display font-semibold leading-none">Eslam Selmi</div>
+            <div className="font-display italic text-lg leading-none">Eslam Selmi</div>
             <div className="text-xs text-muted-foreground mt-1">{t("footer_tag")}</div>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <a href={LINKEDIN} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"
-            className="size-9 grid place-items-center rounded-full glass hover:bg-white/10 transition">
+            className="size-9 grid place-items-center rounded-full border border-foreground/15 hover:bg-foreground/5 transition">
             <Linkedin className="size-4" />
           </a>
           <a href="mailto:eslam.m.selmi@gmail.com" aria-label="Email"
-            className="size-9 grid place-items-center rounded-full glass hover:bg-white/10 transition">
+            className="size-9 grid place-items-center rounded-full border border-foreground/15 hover:bg-foreground/5 transition">
             <Mail className="size-4" />
           </a>
           <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"
-            className="size-9 grid place-items-center rounded-full glass hover:bg-white/10 transition">
+            className="size-9 grid place-items-center rounded-full border border-foreground/15 hover:bg-foreground/5 transition">
             <MessageCircle className="size-4" />
           </a>
         </div>
@@ -846,13 +879,15 @@ function Footer() {
 /* ---------- SECTION WRAPPER ---------- */
 function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string; title: string; children: React.ReactNode }) {
   return (
-    <section id={id} className="px-4 sm:px-6 py-16 lg:py-24">
+    <section id={id} className="px-4 sm:px-6 py-20 lg:py-28 relative">
       <div className="mx-auto max-w-7xl">
-        <motion.div {...fadeUp} className="mb-10 max-w-2xl">
-          <div className="inline-flex items-center gap-2 text-lavender text-sm uppercase tracking-[0.25em] font-semibold">
-            <span className="h-px w-8 bg-gradient-to-r from-[var(--lavender)] to-[var(--gold)]" /> {eyebrow}
+        <motion.div {...fadeUp} className="mb-12 lg:mb-16 max-w-3xl">
+          <div className="inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-accent font-semibold mb-5">
+            <span className="size-1 rounded-full bg-accent" />
+            {eyebrow}
+            <span className="h-px w-12 bg-accent/40" />
           </div>
-          <h2 className="mt-3 font-display text-4xl sm:text-5xl font-bold tracking-tight text-balance leading-[1.1]">
+          <h2 className="font-display text-balance leading-[0.98] tracking-tight text-foreground text-[clamp(2.25rem,5vw,4.25rem)]">
             {title}
           </h2>
         </motion.div>
