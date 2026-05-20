@@ -166,7 +166,7 @@ function Portfolio() {
 }
 
 /* ---------- NAV ---------- */
-function Nav() {
+function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => void }) {
   const { t, lang, setLang } = useI18n();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -200,6 +200,13 @@ function Nav() {
             >
               <Languages className="size-3.5" />
               {lang === "en" ? "AR" : "EN"}
+            </button>
+            <button
+              onClick={onThemeToggle}
+              aria-label="Toggle theme"
+              className="inline-flex size-9 items-center justify-center rounded-full border border-foreground/10 hover:bg-foreground/5 transition"
+            >
+              {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
             </button>
             <a
               href={LINKEDIN} target="_blank" rel="noopener noreferrer"
