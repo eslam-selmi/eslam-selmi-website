@@ -335,8 +335,8 @@ function Hero() {
 function Stat({ n, l }: { n: string; l: string }) {
   return (
     <div>
-      <div className="font-display text-2xl sm:text-3xl font-bold text-gradient-gold">{n}</div>
-      <div className="text-xs text-muted-foreground uppercase tracking-wider mt-1">{l}</div>
+      <div className="font-display text-3xl sm:text-4xl text-foreground tracking-tight">{n}</div>
+      <div className="text-[10px] text-muted-foreground uppercase tracking-[0.25em] mt-1">{l}</div>
     </div>
   );
 }
