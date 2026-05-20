@@ -221,20 +221,20 @@ function Hero() {
   const y = useTransform(scrollYProgress, [0, 1], [0, 120]);
 
   return (
-    <section id="home" ref={ref} className="relative pt-28 pb-16 lg:pt-36 lg:pb-24 overflow-hidden">
+    <section id="home" ref={ref} className="relative pt-28 pb-8 lg:pt-32 lg:pb-12 overflow-hidden">
       <div className="absolute inset-0 bg-aurora animate-float-slow" />
       <div className="absolute inset-0 grain" />
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 grid lg:grid-cols-2 gap-10 items-center">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
         <motion.div style={{ y }} className="order-2 lg:order-1">
           <motion.p
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-            className="text-gold font-medium tracking-wider uppercase text-sm">
+            className="text-lavender font-medium tracking-[0.25em] uppercase text-xs">
             ✦ {t("hero_hello")}
           </motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.7 }}
-            className="mt-3 font-display text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-balance leading-[1.05]">
-            {t("hero_meet")} <span className="text-gradient-gold">Eslam Selmi</span>
+            className="mt-3 font-display text-5xl sm:text-6xl lg:text-7xl tracking-tight text-balance leading-[1.02]">
+            {t("hero_meet")} <span className="text-gradient-premium">Eslam Selmi</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
@@ -245,11 +245,11 @@ function Hero() {
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
             className="mt-8 flex flex-wrap gap-3">
             <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-              className="group inline-flex items-center gap-2 rounded-full bg-gold text-accent-foreground px-6 py-3 font-semibold hover:shadow-[0_0_40px_-8px] hover:shadow-[var(--gold)] transition">
+              className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[var(--lavender-deep)] via-[var(--lavender)] to-[var(--gold)] text-white px-6 py-3 font-semibold shadow-[0_10px_40px_-12px] shadow-[var(--lavender-deep)] hover:shadow-[0_18px_60px_-12px] hover:shadow-[var(--lavender)] transition">
               <MessageCircle className="size-5" /> {t("hero_btn_book")}
               <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
             </a>
-            <a href="#programs" className="inline-flex items-center gap-2 rounded-full glass px-6 py-3 font-medium hover:bg-white/10 transition">
+            <a href="#programs" className="inline-flex items-center gap-2 rounded-full glass px-6 py-3 font-medium hover:bg-white/10 hover:border-[var(--lavender)]/40 transition">
               {t("hero_btn_programs")}
             </a>
           </motion.div>
@@ -265,27 +265,31 @@ function Hero() {
 
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }}
-          className="order-1 lg:order-2 relative">
-          <div className="absolute inset-0 -z-10 flex items-center justify-center">
-            <div className="size-[420px] rounded-full bg-gradient-to-tr from-[var(--gold)]/30 via-primary/30 to-transparent blur-3xl animate-float-slow" />
+          className="order-1 lg:order-2 relative h-[480px] sm:h-[560px] lg:h-[600px]">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="size-[420px] rounded-full bg-gradient-to-tr from-[var(--lavender)]/30 via-primary/30 to-[var(--gold)]/20 blur-3xl animate-float-slow" />
           </div>
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[55%] size-[360px] sm:size-[440px] rounded-full border border-[var(--gold)]/20 bg-gradient-to-b from-white/5 to-transparent backdrop-blur-sm" />
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[55%] size-[300px] sm:size-[380px] rounded-full border border-white/5" />
+          <div className="absolute inset-0 grid place-items-center">
+            <div className="size-[360px] sm:size-[440px] rounded-full border border-[var(--lavender)]/25 bg-gradient-to-b from-white/5 to-transparent backdrop-blur-sm" />
+          </div>
+          <div className="absolute inset-0 grid place-items-center">
+            <div className="size-[300px] sm:size-[380px] rounded-full border border-white/5" />
+          </div>
 
           <motion.div
-            animate={{ y: [0, -14, 0] }}
+            animate={{ y: [0, -12, 0] }}
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="relative mx-auto max-w-sm">
+            className="relative h-full w-full grid place-items-center">
             <img
               src={headshot}
               alt="Eslam Selmi, Head of L&D"
-              className="relative w-full h-auto object-contain drop-shadow-[0_30px_50px_rgba(214,158,46,0.35)]"
+              className="relative max-h-full w-auto object-contain drop-shadow-[0_30px_50px_rgba(167,139,250,0.35)]"
             />
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
-            className="absolute bottom-2 left-1/2 -translate-x-1/2 glass-strong rounded-2xl px-4 py-3 flex items-center gap-3 whitespace-nowrap">
+            className="absolute bottom-2 left-1/2 -translate-x-1/2 glass-strong rounded-2xl px-4 py-3 flex items-center gap-3 whitespace-nowrap border-[var(--lavender)]/20">
             <span className="size-2.5 rounded-full bg-emerald-400 shadow-[0_0_12px] shadow-emerald-400" />
             <div className="text-start">
               <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("status_current")}</div>
