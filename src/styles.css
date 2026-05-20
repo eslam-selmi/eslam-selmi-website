@@ -109,8 +109,23 @@ html[lang="ar"] {
   .text-gold { color: var(--gold); }
   .bg-gold { background-color: var(--gold); }
   .border-gold { border-color: var(--gold); }
+  .text-lavender { color: var(--lavender); }
+  .bg-lavender { background-color: var(--lavender); }
+  .border-lavender { border-color: var(--lavender); }
   .text-gradient-gold {
     background: linear-gradient(135deg, var(--gold) 0%, var(--gold-soft) 50%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-gradient-lavender {
+    background: linear-gradient(135deg, var(--lavender-soft) 0%, var(--lavender) 45%, var(--lavender-deep) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-gradient-premium {
+    background: linear-gradient(110deg, var(--lavender-soft) 0%, var(--lavender) 30%, var(--gold-soft) 70%, var(--gold) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
