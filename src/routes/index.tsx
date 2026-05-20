@@ -693,7 +693,7 @@ function Snapshots() {
           >
             <button
               onClick={(e) => { e.stopPropagation(); setActive(null); }}
-              className="absolute top-5 end-5 size-10 grid place-items-center rounded-full bg-white/10 hover:bg-white/20 text-white"
+              className="absolute top-5 end-5 size-10 grid place-items-center rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground"
               aria-label="Close"
             >
               <X className="size-5" />
@@ -708,12 +708,12 @@ function Snapshots() {
             <div className="absolute bottom-5 inset-x-0 flex justify-center gap-3">
               <button
                 onClick={(e) => { e.stopPropagation(); setActive((a) => a === null ? null : (a - 1 + SNAPSHOTS.length) % SNAPSHOTS.length); }}
-                className="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white text-sm"
+                className="px-4 py-2 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground text-sm"
               >← Prev</button>
-              <span className="px-4 py-2 rounded-full bg-white/10 text-white text-sm">{active + 1} / {SNAPSHOTS.length}</span>
+              <span className="px-4 py-2 rounded-full bg-primary-foreground/10 text-primary-foreground text-sm">{active + 1} / {SNAPSHOTS.length}</span>
               <button
                 onClick={(e) => { e.stopPropagation(); setActive((a) => a === null ? null : (a + 1) % SNAPSHOTS.length); }}
-                className="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white text-sm"
+                className="px-4 py-2 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground text-sm"
               >Next →</button>
             </div>
           </motion.div>
@@ -917,7 +917,7 @@ function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string
   return (
     <section id={id} className="px-4 sm:px-6 py-20 lg:py-28 relative overflow-hidden">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
-      <div className="absolute -end-40 top-20 size-80 rounded-full bg-accent/8 blur-3xl" />
+      <div className="absolute -end-40 top-20 size-80 rounded-full bg-accent/10 blur-3xl" />
       <div className="mx-auto max-w-7xl">
         <motion.div {...fadeUp} className="mb-12 lg:mb-16 max-w-3xl">
           <div className="inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-accent font-semibold mb-5">
@@ -942,7 +942,7 @@ function WhatsAppFloat() {
     <a
       href={WHATSAPP} target="_blank" rel="noopener noreferrer"
       aria-label={t("book_cta")}
-      className={`fixed bottom-5 ${dir === "rtl" ? "left-5" : "right-5"} z-40 inline-flex items-center gap-2 rounded-full bg-emerald-500 hover:bg-emerald-400 text-white px-4 py-3 font-semibold shadow-[0_10px_40px_-10px] shadow-emerald-500 transition`}
+      className={`fixed bottom-5 ${dir === "rtl" ? "left-5" : "right-5"} z-40 inline-flex items-center gap-2 rounded-full bg-primary hover:opacity-90 text-primary-foreground px-4 py-3 font-semibold shadow-[0_10px_40px_-10px_var(--foreground)] transition`}
     >
       <MessageCircle className="size-5" />
       <span className="hidden sm:inline">{t("book_cta")}</span>
@@ -966,7 +966,7 @@ function ScrollTop() {
           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           aria-label="Scroll to top"
-          className={`fixed bottom-20 ${dir === "rtl" ? "left-5" : "right-5"} z-40 size-11 grid place-items-center rounded-full bg-gradient-to-br from-[var(--lavender)] to-[var(--gold)] text-white shadow-lg hover:scale-110 transition`}
+          className={`fixed bottom-20 ${dir === "rtl" ? "left-5" : "right-5"} z-40 size-11 grid place-items-center rounded-full bg-gradient-to-br from-[var(--lavender)] to-[var(--gold)] text-primary-foreground shadow-lg hover:scale-110 transition`}
         >
           <ArrowUp className="size-5" />
         </motion.button>
