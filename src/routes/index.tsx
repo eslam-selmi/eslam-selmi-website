@@ -216,7 +216,7 @@ function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => 
               <Linkedin className="size-4" />
             </a>
             <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-              className="hidden md:inline-flex items-center gap-2 rounded-full bg-foreground text-background px-4 py-2 text-sm font-semibold hover:bg-foreground/85 transition">
+              className="hidden md:inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-4 py-2 text-sm font-bold hover:opacity-90 transition">
               <Calendar className="size-4" /> {t("book_cta")}
             </a>
             <button className="xl:hidden p-2" onClick={() => setOpen(v => !v)} aria-label="Menu">
@@ -230,7 +230,7 @@ function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => 
               <a key={n.id} href={`#${n.id}`} onClick={() => setOpen(false)} className="px-3 py-2 rounded-lg hover:bg-foreground/5 text-sm">{t(n.key)}</a>
             ))}
             <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-              className="mt-1 inline-flex items-center justify-center gap-2 rounded-lg bg-foreground text-background px-4 py-2 text-sm font-semibold">
+              className="mt-1 inline-flex items-center justify-center gap-2 rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-bold">
               <Calendar className="size-4" /> {t("book_cta")}
             </a>
           </div>
@@ -248,7 +248,7 @@ function Hero() {
   const y = useTransform(scrollYProgress, [0, 1], [0, 80]);
 
   return (
-    <section id="home" ref={ref} className="relative min-h-screen pt-28 pb-16 lg:pt-34 lg:pb-20 overflow-hidden">
+    <section id="home" ref={ref} className="relative min-h-screen pt-28 pb-16 lg:pt-32 lg:pb-20 overflow-hidden">
       <div className="absolute inset-0 bg-aurora" />
       <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:84px_84px] opacity-35" />
       <div className="absolute -top-24 start-1/2 size-[34rem] -translate-x-1/2 rounded-full border border-foreground/10 blur-3xl" />
@@ -345,7 +345,7 @@ function Hero() {
                 className="glass-strong relative m-4 rounded-2xl p-4"
               >
                 <div className="flex items-center gap-3">
-                  <span className="size-2.5 rounded-full bg-emerald-400 shadow-[0_0_16px] shadow-emerald-400/80" />
+                  <span className="size-2.5 rounded-full bg-gold shadow-[0_0_16px] shadow-[var(--gold)]" />
                   <div className="text-start">
                     <div className="text-[9px] uppercase tracking-[0.24em] text-muted-foreground">{t("status_current")}</div>
                     <div className="text-sm font-bold leading-tight mt-0.5">{t("status_role")}</div>
