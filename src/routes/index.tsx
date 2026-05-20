@@ -380,13 +380,20 @@ function About() {
   ];
   return (
     <Section id="about" eyebrow={t("about_eyebrow")} title={t("about_title")}>
-      <motion.p {...fadeUp} className="text-lg text-muted-foreground max-w-3xl leading-relaxed">
-        {t("about_intro")}
-      </motion.p>
-      <div className="mt-10 grid sm:grid-cols-2 gap-4">
+      <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+        <motion.div {...fadeUp} className="glass-panel sticky top-28 rounded-[2rem] p-7">
+          <p className="text-lg leading-relaxed text-foreground/76">
+            {t("about_intro")}
+          </p>
+          <div className="mt-8 grid grid-cols-2 gap-3">
+            <Stat n="8+" l="Years" />
+            <Stat n="4" l="Sectors" />
+          </div>
+        </motion.div>
+      <div className="grid sm:grid-cols-2 gap-4">
         {strengths.map((s, i) => (
           <motion.div key={s.t.en} {...fadeUp} transition={{ duration: 0.6, delay: i * 0.08 }}
-            className="glass rounded-2xl p-5 hover:bg-foreground/[0.04] transition group">
+            className="glass-panel rounded-3xl p-5 transition hover:-translate-y-1 group">
             <div className="flex items-start gap-3">
               <CheckCircle2 className="size-5 text-gold mt-0.5 shrink-0" />
               <div>
@@ -396,6 +403,7 @@ function About() {
             </div>
           </motion.div>
         ))}
+      </div>
       </div>
 
       <motion.div {...fadeUp} className="mt-12">
