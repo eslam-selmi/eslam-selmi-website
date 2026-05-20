@@ -402,37 +402,62 @@ function Journey() {
   return (
     <Section id="journey" eyebrow={t("journey_eyebrow")} title={t("journey_title")}>
       <div className="relative">
-        <div className="absolute start-4 sm:start-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[var(--gold)]/40 to-transparent" />
-        <div className="space-y-6">
-          {JOURNEY.map((j, i) => (
-            <motion.div
-              key={j.year + j.company}
-              {...fadeUp} transition={{ delay: i * 0.08, duration: 0.6 }}
-              className={`relative grid sm:grid-cols-2 gap-4 sm:gap-12 items-center`}
-            >
-              <div className={`${i % 2 === 0 ? "sm:order-1 sm:text-end" : "sm:order-2"} ps-12 sm:ps-0`}>
-                <div className="glass rounded-2xl p-5 hover:bg-white/[0.06] transition group">
-                  <div className="flex items-center gap-3 mb-3 sm:justify-start">
-                    <div className="size-11 rounded-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 grid place-items-center text-gold font-display font-bold text-sm">
-                      {j.company.slice(0, 2).toUpperCase()}
-                    </div>
-                    <div>
-                      <div className="font-semibold leading-tight">{j.company}</div>
-                      <div className="text-[11px] text-muted-foreground uppercase tracking-wider mt-0.5">
-                        {j.country === "SA" ? "🇸🇦 Saudi Arabia" : "🇪🇬 Egypt"}
+        {/* Central rail */}
+        <div className="absolute start-5 sm:start-1/2 sm:-translate-x-1/2 top-2 bottom-2 w-[2px] bg-gradient-to-b from-[var(--lavender)]/10 via-[var(--lavender)]/50 to-[var(--gold)]/30 rounded-full" />
+
+        <div className="space-y-10 sm:space-y-14">
+          {JOURNEY.map((j, i) => {
+            const left = i % 2 === 0;
+            const country = j.country === "SA"
+              ? { flag: "sa", name: { en: "Saudi Arabia", ar: "السعودية" } }
+              : { flag: "eg", name: { en: "Egypt", ar: "مصر" } };
+            return (
+              <motion.div
+                key={j.year + j.company + i}
+                {...fadeUp}
+                transition={{ delay: i * 0.08, duration: 0.6 }}
+                className="relative grid sm:grid-cols-2 gap-6 sm:gap-16 items-center"
+              >
+                {/* Card */}
+                <div className={`${left ? "sm:order-1 sm:text-end sm:pe-4" : "sm:order-2 sm:ps-4"} ps-14 sm:ps-0`}>
+                  <div className="glass rounded-2xl p-5 hover:bg-white/[0.06] hover:border-[var(--lavender)]/40 transition group relative overflow-hidden">
+                    <div className={`absolute -top-12 ${left ? "-end-12" : "-start-12"} size-32 rounded-full bg-[var(--lavender)]/15 blur-2xl opacity-0 group-hover:opacity-100 transition`} />
+                    <div className={`relative flex items-center gap-3 ${left ? "sm:flex-row-reverse sm:text-start" : ""}`}>
+                      <div className="size-12 rounded-xl bg-gradient-to-br from-[var(--lavender-deep)]/40 to-[var(--gold)]/30 border border-white/15 grid place-items-center text-lavender font-display font-extrabold text-sm shrink-0">
+                        {j.company.slice(0, 2).toUpperCase()}
+                      </div>
+                      <div className="min-w-0">
+                        <div className="font-semibold leading-tight text-base">{j.company}</div>
+                        <div className="text-[11px] text-muted-foreground uppercase tracking-wider mt-1 inline-flex items-center gap-1.5">
+                          <img src={`https://flagcdn.com/${country.flag}.svg`} alt="" className="w-4 h-3 rounded-[2px] object-cover" />
+                          {country.name[lang]}
+                        </div>
                       </div>
                     </div>
+                    <div className={`relative mt-4 text-sm font-medium ${left ? "sm:text-end" : ""}`}>{j.role[lang]}</div>
                   </div>
-                  <div className="font-medium text-sm">{j.role[lang]}</div>
                 </div>
-              </div>
-              <div className={`${i % 2 === 0 ? "sm:order-2" : "sm:order-1 sm:text-end"} hidden sm:block`}>
-                <div className="font-display text-3xl font-bold text-gradient-gold">{j.year}</div>
-              </div>
-              <div className="absolute start-4 sm:start-1/2 top-6 -translate-x-1/2 size-3 rounded-full bg-gold shadow-[0_0_18px] shadow-[var(--gold)] z-10" />
-              <div className="sm:hidden absolute start-12 top-0 text-xs font-semibold text-gold">{j.year}</div>
-            </motion.div>
-          ))}
+
+                {/* Year side */}
+                <div className={`${left ? "sm:order-2 sm:ps-4" : "sm:order-1 sm:pe-4 sm:text-end"} hidden sm:block`}>
+                  <div className="inline-flex items-baseline gap-2">
+                    <span className="font-display text-5xl lg:text-6xl font-extrabold text-gradient-premium tracking-tight">{j.year}</span>
+                    <Compass className="size-4 text-lavender/70" />
+                  </div>
+                </div>
+
+                {/* Year (mobile, above card) */}
+                <div className="sm:hidden absolute start-14 -top-3 text-xs font-bold text-gradient-premium font-display">
+                  {j.year}
+                </div>
+
+                {/* Dot on rail */}
+                <div className="absolute start-5 sm:start-1/2 top-6 sm:top-1/2 -translate-x-1/2 sm:-translate-y-1/2 z-10">
+                  <div className="size-4 rounded-full bg-gradient-to-br from-[var(--lavender)] to-[var(--gold)] shadow-[0_0_20px] shadow-[var(--lavender)] ring-4 ring-background" />
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </Section>
