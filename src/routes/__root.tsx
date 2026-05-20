@@ -75,10 +75,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "Eslam Selmi — Head of L&D | Portfolio 2026" },
       { name: "description", content: "Eslam Selmi — Head of Learning & Development with 8+ years across Egypt, KSA and 12 countries. L&D strategy, instructional design, and 1:1 coaching." },
       { name: "author", content: "Eslam Selmi" },
-      { property: "og:title", content: "Eslam Selmi — Head of L&D" },
-      { property: "og:description", content: "L&D Strategy, Hybrid Corporate Training, Instructional Design and 1:1 Coaching." },
+      { property: "og:title", content: "Eslam Selmi — Head of L&D | Portfolio 2026" },
+      { property: "og:description", content: "Eslam Selmi — Head of Learning & Development with 8+ years across Egypt, KSA and 12 countries. L&D strategy, instructional design, and 1:1 coaching." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Eslam Selmi — Head of L&D | Portfolio 2026" },
+      { name: "twitter:description", content: "Eslam Selmi — Head of Learning & Development with 8+ years across Egypt, KSA and 12 countries. L&D strategy, instructional design, and 1:1 coaching." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/926e0446-66d4-4a1c-bf97-b03a62c50d9f/id-preview-280177b6--89f245e8-fae7-43be-a7fc-c95e6e265858.lovable.app-1779297951896.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/926e0446-66d4-4a1c-bf97-b03a62c50d9f/id-preview-280177b6--89f245e8-fae7-43be-a7fc-c95e6e265858.lovable.app-1779297951896.png" },
     ],
     links: [
       {
