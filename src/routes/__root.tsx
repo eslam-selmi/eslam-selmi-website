@@ -72,14 +72,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Eslam Selmi — Head of L&D | Portfolio 2026" },
+      { name: "description", content: "Eslam Selmi — Head of Learning & Development with 8+ years across Egypt, KSA and 12 countries. L&D strategy, instructional design, and 1:1 coaching." },
+      { name: "author", content: "Eslam Selmi" },
+      { property: "og:title", content: "Eslam Selmi — Head of L&D" },
+      { property: "og:description", content: "L&D Strategy, Hybrid Corporate Training, Instructional Design and 1:1 Coaching." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       {
