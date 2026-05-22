@@ -702,14 +702,14 @@ function Snapshots() {
     <button
       type="button"
       onClick={() => setActive(originalIndex)}
-      className="group relative shrink-0 w-[280px] sm:w-[340px] aspect-[4/3] overflow-hidden rounded-3xl border border-foreground/10 cursor-zoom-in shadow-[0_24px_70px_-38px_var(--foreground)]"
+      className="group relative shrink-0 w-[300px] sm:w-[360px] aspect-[4/5] overflow-hidden rounded-3xl border border-foreground/10 cursor-zoom-in shadow-[0_24px_70px_-38px_var(--foreground)] bg-foreground/[0.04]"
       aria-label={`Open snapshot ${originalIndex + 1}`}
     >
       <img
         src={src}
         alt={`Snapshot ${originalIndex + 1}`}
         loading="lazy"
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+        className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
       />
       <div className="image-scrim absolute inset-0 opacity-0 group-hover:opacity-100 transition" />
       <div className="absolute bottom-3 start-3 text-xs text-primary-foreground opacity-0 group-hover:opacity-100 transition font-semibold tracking-wider uppercase">
