@@ -253,29 +253,44 @@ function CalendlyDialog() {
 /* ---------- BRAND MARK ---------- */
 function BrandMark({ size = 42 }: { size?: number }) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2.5">
       <svg width={size} height={size} viewBox="0 0 48 48" className="shrink-0" aria-label="Eslam Selmi">
         <defs>
-          <linearGradient id="bmg" x1="0" y1="0" x2="1" y2="1">
+          <linearGradient id="bmg" x1="0" y1="1" x2="1" y2="0">
             <stop offset="0%" stopColor="var(--navy)" />
-            <stop offset="55%" stopColor="var(--lavender-deep)" />
+            <stop offset="50%" stopColor="var(--lavender-deep)" />
             <stop offset="100%" stopColor="var(--accent)" />
           </linearGradient>
+          <linearGradient id="bms" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="white" stopOpacity="0.95" />
+            <stop offset="100%" stopColor="white" stopOpacity="0.75" />
+          </linearGradient>
         </defs>
-        {/* rounded squircle plate */}
-        <rect x="2" y="2" width="44" height="44" rx="13" fill="url(#bmg)" />
-        {/* inner highlight */}
-        <rect x="2" y="2" width="44" height="44" rx="13" fill="none" stroke="white" strokeOpacity="0.15" strokeWidth="1" />
-        {/* monogram E + S interlocked */}
+        {/* squircle plate */}
+        <rect x="2" y="2" width="44" height="44" rx="14" fill="url(#bmg)" />
+        <rect x="2.5" y="2.5" width="43" height="43" rx="13.5" fill="none" stroke="white" strokeOpacity="0.18" />
+
+        {/* Concept: an open book / page (knowledge) with a rising spark/arrow (growth) — leadership + learning */}
+        {/* Book base */}
         <path
-          d="M16 15 H30 M16 24 H26 M16 33 H30"
-          stroke="white" strokeWidth="2.4" strokeLinecap="round" fill="none"
+          d="M11 33 C 16 30, 20 30, 24 32 C 28 30, 32 30, 37 33 L 37 17 C 32 14, 28 14, 24 16 C 20 14, 16 14, 11 17 Z"
+          fill="url(#bms)"
+        />
+        {/* Spine */}
+        <path d="M24 16 L 24 32" stroke="var(--navy)" strokeOpacity="0.35" strokeWidth="1" />
+
+        {/* Rising spark — growth arrow lifting from the book */}
+        <path
+          d="M24 14 L 24 7"
+          stroke="white" strokeWidth="2.2" strokeLinecap="round"
         />
         <path
-          d="M34 18 C 34 15, 31 14, 28 15.5 M28 30 C 28 33, 31 34, 34 32.5"
-          stroke="white" strokeOpacity="0.85" strokeWidth="2.2" strokeLinecap="round" fill="none"
+          d="M20.5 10.5 L 24 7 L 27.5 10.5"
+          stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="none"
         />
-        <circle cx="34" cy="24" r="1.6" fill="white" />
+        {/* Spark glow */}
+        <circle cx="24" cy="7" r="2.2" fill="white" />
+        <circle cx="24" cy="7" r="3.6" fill="white" fillOpacity="0.25" />
       </svg>
       <span className="hidden sm:flex flex-col leading-none">
         <span className="font-display text-[14px] font-extrabold tracking-tight text-foreground">Eslam Selmi</span>
