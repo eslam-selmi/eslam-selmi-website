@@ -180,11 +180,16 @@ function BrandMark({ size = 40 }: { size?: number }) {
             <stop offset="100%" stopColor="var(--accent)" />
           </linearGradient>
         </defs>
-        <rect x="2" y="2" width="44" height="44" rx="12" fill="url(#bmg)" />
-        <path d="M14 32 L24 14 L34 32 M18.5 25 H29.5" stroke="white" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+        <circle cx="24" cy="24" r="22" fill="none" stroke="url(#bmg)" strokeWidth="2" opacity="0.35" />
+        <path
+          d="M12 30 C 16 22, 20 22, 24 24 C 28 26, 32 26, 36 18"
+          stroke="url(#bmg)" strokeWidth="2.8" strokeLinecap="round" fill="none"
+        />
+        <circle cx="36" cy="18" r="3" fill="url(#bmg)" />
+        <circle cx="12" cy="30" r="2" fill="url(#bmg)" opacity="0.6" />
       </svg>
       <span className="hidden sm:flex flex-col leading-none">
-        <span className="font-display text-[13px] font-bold tracking-[0.18em] uppercase text-foreground">Eslam Selmi</span>
+        <span className="font-display text-[13px] font-bold tracking-[0.14em] text-foreground">Eslam Selmi</span>
         <span className="text-[9px] tracking-[0.28em] uppercase text-muted-foreground mt-1">Head of L&amp;D</span>
       </span>
     </div>
