@@ -636,10 +636,10 @@ function Clients() {
         <motion.div {...fadeUp}>
           <div className="font-display text-[8rem] lg:text-[10rem] leading-none font-bold text-gradient-gold">12</div>
           <p className="text-xl font-medium mt-2">{t("clients_sub")}</p>
-          <div className="mt-6 grid grid-cols-3 gap-4 max-w-sm">
-            <Stat n="3000+" l={t("stat_trainees")} />
-            <Stat n="12+" l={t("nav_clients")} />
-            <Stat n="15+" l={t("stat_programs")} />
+          <div className="mt-6 grid grid-cols-3 gap-3 max-w-md">
+            <CompactStat n="3000+" l={t("stat_trainees")} />
+            <CompactStat n="12+" l={t("nav_clients")} />
+            <CompactStat n="15+" l={t("stat_programs")} />
           </div>
           <div className="mt-6 inline-flex items-center gap-2 text-sm text-muted-foreground">
             <Globe2 className="size-4 text-gold" />
