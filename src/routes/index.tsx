@@ -514,64 +514,61 @@ function Journey() {
   const { t, lang } = useI18n();
   return (
     <Section id="journey" eyebrow={t("journey_eyebrow")} title={t("journey_title")}>
-      <div className="relative">
-        {/* Central rail */}
-        <div className="absolute start-5 sm:start-1/2 sm:-translate-x-1/2 top-2 bottom-2 w-[2px] bg-gradient-to-b from-[var(--lavender)]/10 via-[var(--lavender)]/50 to-[var(--gold)]/30 rounded-full" />
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {JOURNEY.map((j, i) => {
+          const country = j.country === "SA"
+            ? { flag: "sa", name: { en: "Saudi Arabia", ar: "السعودية" } }
+            : { flag: "eg", name: { en: "Egypt", ar: "مصر" } };
+          const initials = j.company.split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase();
+          return (
+            <motion.div
+              key={j.year + j.company + i}
+              {...fadeUp}
+              transition={{ delay: i * 0.07, duration: 0.55 }}
+              className="group relative rounded-3xl bg-card border border-foreground/10 p-6 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px_oklch(0.22_0.06_252/0.35)] transition-all overflow-hidden"
+            >
+              <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[var(--accent)] via-[var(--accent)]/40 to-transparent opacity-70" />
 
-        <div className="space-y-10 sm:space-y-14">
-          {JOURNEY.map((j, i) => {
-            const left = i % 2 === 0;
-            const country = j.country === "SA"
-              ? { flag: "sa", name: { en: "Saudi Arabia", ar: "السعودية" } }
-              : { flag: "eg", name: { en: "Egypt", ar: "مصر" } };
-            return (
-              <motion.div
-                key={j.year + j.company + i}
-                {...fadeUp}
-                transition={{ delay: i * 0.08, duration: 0.6 }}
-                className="relative grid sm:grid-cols-2 gap-6 sm:gap-16 items-center"
-              >
-                {/* Card */}
-                <div className={`${left ? "sm:order-1 sm:text-end sm:pe-4" : "sm:order-2 sm:ps-4"} ps-14 sm:ps-0`}>
-                  <div className="glass-panel rounded-3xl p-5 transition hover:-translate-y-1 group relative overflow-hidden">
-                    <div className={`absolute -top-12 ${left ? "-end-12" : "-start-12"} size-32 rounded-full bg-[var(--lavender)]/15 blur-2xl opacity-0 group-hover:opacity-100 transition`} />
-                    <div className={`relative flex items-center gap-3 ${left ? "sm:flex-row-reverse sm:text-start" : ""}`}>
-                      <div className="size-12 rounded-xl bg-gradient-to-br from-[var(--lavender-deep)]/40 to-[var(--gold)]/30 border border-foreground/15 grid place-items-center text-lavender font-display font-extrabold text-sm shrink-0">
-                        {j.company.slice(0, 2).toUpperCase()}
-                      </div>
-                      <div className="min-w-0">
-                        <div className="font-semibold leading-tight text-base">{j.company}</div>
-                        <div className="text-[11px] text-muted-foreground uppercase tracking-wider mt-1 inline-flex items-center gap-1.5">
-                          <img src={`https://flagcdn.com/${country.flag}.svg`} alt="" className="w-4 h-3 rounded-[2px] object-cover" />
-                          {country.name[lang]}
-                        </div>
-                      </div>
-                    </div>
-                    <div className={`relative mt-4 text-sm font-medium ${left ? "sm:text-end" : ""}`}>{j.role[lang]}</div>
-                  </div>
-                </div>
-
-                {/* Year side */}
-                <div className={`${left ? "sm:order-2 sm:ps-4" : "sm:order-1 sm:pe-4 sm:text-end"} hidden sm:block`}>
-                  <div className="inline-flex items-baseline gap-2">
-                    <span className="font-display text-5xl lg:text-6xl font-extrabold text-gradient-premium tracking-tight">{j.year}</span>
-                    <Compass className="size-4 text-lavender/70" />
-                  </div>
-                </div>
-
-                {/* Year (mobile, above card) */}
-                <div className="sm:hidden absolute start-14 -top-3 text-xs font-bold text-gradient-premium font-display">
+              {/* Top row: year + country flag */}
+              <div className="flex items-center justify-between mb-5">
+                <span className="font-display text-3xl font-extrabold tracking-tight" style={{ color: "var(--accent)" }}>
                   {j.year}
-                </div>
+                </span>
+                <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground bg-foreground/[0.04] rounded-full px-2.5 py-1">
+                  <img src={`https://flagcdn.com/${country.flag}.svg`} alt="" className="w-4 h-3 rounded-[2px] object-cover" />
+                  {country.name[lang]}
+                </span>
+              </div>
 
-                {/* Dot on rail */}
-                <div className="absolute start-5 sm:start-1/2 top-6 sm:top-1/2 -translate-x-1/2 sm:-translate-y-1/2 z-10">
-                  <div className="size-4 rounded-full bg-gradient-to-br from-[var(--lavender)] to-[var(--gold)] shadow-[0_0_20px] shadow-[var(--lavender)] ring-4 ring-background" />
+              {/* Logo + company */}
+              <div className="flex items-center gap-4">
+                <div className="size-16 rounded-2xl bg-white border border-foreground/10 grid place-items-center p-2 shadow-sm shrink-0 overflow-hidden">
+                  <img
+                    src={j.logo}
+                    alt={j.company}
+                    loading="lazy"
+                    className="max-w-full max-h-full object-contain"
+                    onError={(e) => {
+                      const el = e.currentTarget;
+                      el.style.display = "none";
+                      const parent = el.parentElement;
+                      if (parent && !parent.querySelector(".fallback-initials")) {
+                        const span = document.createElement("span");
+                        span.className = "fallback-initials font-display font-extrabold text-primary text-lg";
+                        span.textContent = initials;
+                        parent.appendChild(span);
+                      }
+                    }}
+                  />
                 </div>
-              </motion.div>
-            );
-          })}
-        </div>
+                <div className="min-w-0">
+                  <div className="font-display font-bold text-lg leading-tight truncate">{j.company}</div>
+                  <div className="text-sm text-muted-foreground mt-1 leading-tight">{j.role[lang]}</div>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
     </Section>
   );
