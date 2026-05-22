@@ -82,6 +82,10 @@ const en: Dict = {
   podcast_more_soon: "More episodes coming soon — stay tuned.",
   podcast_ep1_title: "Episode 01 — Inside Learning & Development",
   podcast_ep1_desc: "Real stories from the field on building talent, performance and culture.",
+  podcast_ep3_title: "Episode 03 — Talent in Action",
+  podcast_ep3_desc: "Field insights on developing high-potential talent and team performance.",
+  podcast_ep4_title: "Episode 04 — Coaching for Growth",
+  podcast_ep4_desc: "How coaching and mentoring drive measurable workplace impact.",
 
 
   // book
