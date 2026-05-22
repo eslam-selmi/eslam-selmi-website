@@ -251,9 +251,9 @@ function CalendlyDialog() {
 }
 
 /* ---------- BRAND MARK ---------- */
-function BrandMark({ size = 44 }: { size?: number }) {
+function BrandMark({ size = 52 }: { size?: number }) {
   return (
-    <div className="flex items-center gap-2.5">
+    <div className="flex items-center gap-1.5">
       <img
         src={brandLogo}
         alt="Eslam Selmi"
@@ -263,7 +263,7 @@ function BrandMark({ size = 44 }: { size?: number }) {
         style={{ width: size, height: size }}
       />
       <span className="hidden sm:flex items-center leading-none">
-        <span className="font-display text-[15px] font-extrabold tracking-tight text-foreground">Eslam Selmi</span>
+        <span className="font-sans text-[15px] font-semibold tracking-tight text-foreground">Eslam Selmi</span>
       </span>
     </div>
   );
@@ -520,7 +520,7 @@ function Hero() {
                 <img
                   src={headshot}
                   alt="Eslam Selmi"
-                  className="absolute inset-x-0 bottom-0 h-[125%] w-full object-cover object-[center_25%] scale-105"
+                  className="absolute inset-x-0 bottom-0 h-[112%] w-full object-contain object-bottom"
                 />
                 {/* Thin inner stroke */}
                 <div
