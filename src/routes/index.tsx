@@ -373,13 +373,31 @@ function Hero() {
             />
           </div>
 
-          {/* Top floating stat */}
+          {/* Top floating stat — Years */}
           <motion.div
             animate={{ y: [0, -10, 0] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
             className="absolute -right-2 sm:-right-6 top-6 rounded-2xl px-5 py-4 bg-card border border-foreground/10 shadow-xl min-w-[140px]"
           >
-            <div className="text-2xl sm:text-3xl font-extrabold font-display" style={{ color: "var(--accent)" }}>3000+</div>
-            <div className="text-xs text-muted-foreground mt-0.5 font-medium">{t("stat_trainees")}</div>
+            <div className="text-2xl sm:text-3xl font-extrabold font-display" style={{ color: "var(--accent)" }}>8+</div>
+            <div className="text-xs text-muted-foreground mt-0.5 font-medium">{lang === "ar" ? "سنوات خبرة" : "Years experience"}</div>
+          </motion.div>
+
+          {/* Bottom floating stat */}
+          <motion.div
+            animate={{ y: [0, 12, 0] }} transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -left-2 sm:-left-6 bottom-8 rounded-2xl px-5 py-4 bg-card border border-foreground/10 shadow-xl min-w-[140px]"
+          >
+            <div className="text-2xl sm:text-3xl font-extrabold font-display" style={{ color: "var(--accent)" }}>12+</div>
+            <div className="text-xs text-muted-foreground mt-0.5 font-medium">{lang === "ar" ? "دولة" : "Countries"}</div>
+          </motion.div>
+
+          {/* Side badge — Sectors */}
+          <motion.div
+            animate={{ x: [0, -6, 0] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -left-2 sm:-left-8 top-1/2 -translate-y-1/2 rounded-2xl px-4 py-3 bg-primary text-primary-foreground shadow-xl"
+          >
+            <div className="text-xl font-extrabold font-display leading-none">4</div>
+            <div className="text-[10px] uppercase tracking-wider mt-1 opacity-80 font-semibold">{lang === "ar" ? "قطاعات" : "Sectors"}</div>
           </motion.div>
 
           {/* Bottom floating stat */}
