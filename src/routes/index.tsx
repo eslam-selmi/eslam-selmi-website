@@ -13,14 +13,15 @@ import { useI18n, type Lang } from "@/lib/i18n";
 
 import headshot from "@/assets/portfolio/headshot.png";
 
-import trainingCollage from "@/assets/portfolio/training-collage.webp";
-import snap1 from "@/assets/portfolio/snap-1.jpg";
-import snap2 from "@/assets/portfolio/snap-2.jpg";
-import snap3 from "@/assets/portfolio/snap-3.jpg";
-import snap4 from "@/assets/portfolio/snap-4.jpg";
-import snap5 from "@/assets/portfolio/snap-5.jpg";
-import snap6 from "@/assets/portfolio/snap-6.jpg";
-import snap7 from "@/assets/portfolio/snap-7.jpg";
+import snap1 from "@/assets/snapshots/snap-1.jpg";
+import snap2 from "@/assets/snapshots/snap-2.jpg";
+import snap3 from "@/assets/snapshots/snap-3.jpg";
+import snap4 from "@/assets/snapshots/snap-4.jpg";
+import snap5 from "@/assets/snapshots/snap-5.jpg";
+import snap6 from "@/assets/snapshots/snap-6.jpg";
+import snap7 from "@/assets/snapshots/snap-7.jpg";
+import snap8 from "@/assets/snapshots/snap-8.jpg";
+import snap9 from "@/assets/snapshots/snap-9.jpg";
 
 export const Route = createFileRoute("/")({ component: Portfolio });
 
