@@ -971,6 +971,125 @@ function Footer() {
   );
 }
 
+/* ---------- PODCAST ---------- */
+const PODCAST_EPISODES = [
+  {
+    id: "f0cDZYSbrCU",
+    number: "01",
+    titleKey: "podcast_ep1_title",
+    descKey: "podcast_ep1_desc",
+    duration: "—",
+  },
+];
+
+function Podcast() {
+  const { t } = useI18n();
+  const [active, setActive] = React.useState(PODCAST_EPISODES[0]);
+  const [playing, setPlaying] = React.useState(false);
+
+  return (
+    <Section id="podcast" eyebrow={t("podcast_eyebrow")} title={t("podcast_title")}>
+      <div className="grid lg:grid-cols-[1.35fr_1fr] gap-6 lg:gap-8 items-start">
+        {/* Player card */}
+        <motion.div {...fadeUp} className="relative">
+          <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-gradient-to-br from-accent/25 via-accent/5 to-transparent blur-2xl" />
+          <div className="glass-panel rounded-3xl overflow-hidden border border-foreground/10">
+            <div className="relative aspect-video bg-black">
+              {playing ? (
+                <iframe
+                  key={active.id}
+                  className="absolute inset-0 w-full h-full"
+                  src={`https://www.youtube-nocookie.com/embed/${active.id}?autoplay=1&rel=0&modestbranding=1`}
+                  title={t(active.titleKey)}
+                  allow="accelerated-2d-canvas; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              ) : (
+                <button
+                  onClick={() => setPlaying(true)}
+                  className="group absolute inset-0 w-full h-full cursor-pointer"
+                  aria-label={t("podcast_play")}
+                >
+                  <img
+                    src={`https://i.ytimg.com/vi/${active.id}/maxresdefault.jpg`}
+                    alt={t(active.titleKey)}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    onError={(e) => { (e.currentTarget as HTMLImageElement).src = `https://i.ytimg.com/vi/${active.id}/hqdefault.jpg`; }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="relative">
+                      <span className="absolute inset-0 rounded-full bg-accent/40 blur-2xl scale-150 animate-pulse" />
+                      <div className="relative size-20 lg:size-24 rounded-full bg-white/95 backdrop-blur flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300">
+                        <svg viewBox="0 0 24 24" className="size-8 lg:size-10 text-[var(--navy)] ms-1" fill="currentColor">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="absolute bottom-0 inset-x-0 p-5 lg:p-7 text-start">
+                    <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-white/80 font-semibold mb-2">
+                      <span className="size-1.5 rounded-full bg-accent animate-pulse" />
+                      {t("podcast_eyebrow")} · {active.number}
+                    </div>
+                    <h3 className="text-white font-display text-xl lg:text-2xl leading-tight">{t(active.titleKey)}</h3>
+                  </div>
+                </button>
+              )}
+            </div>
+            <div className="p-5 lg:p-6 flex items-center justify-between gap-4 border-t border-foreground/10">
+              <div className="min-w-0">
+                <div className="text-[10px] uppercase tracking-[0.28em] text-accent font-semibold">{t("podcast_now_playing")}</div>
+                <div className="font-display text-base lg:text-lg truncate">{t(active.titleKey)}</div>
+              </div>
+              <a
+                href={`https://youtu.be/${active.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0 inline-flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-full border border-foreground/15 hover:bg-foreground/5 transition-colors"
+              >
+                YouTube
+                <svg viewBox="0 0 24 24" className="size-3.5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M7 17L17 7M9 7h8v8"/></svg>
+              </a>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Episodes list */}
+        <motion.div {...fadeUp} className="space-y-3">
+          <div className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground font-semibold mb-2">{t("podcast_episodes")}</div>
+          {PODCAST_EPISODES.map((ep) => {
+            const isActive = ep.id === active.id;
+            return (
+              <button
+                key={ep.id}
+                onClick={() => { setActive(ep); setPlaying(false); }}
+                className={`w-full text-start group glass rounded-2xl p-4 lg:p-5 border transition-all duration-300 ${isActive ? "border-accent/60 shadow-lg shadow-accent/10" : "border-foreground/10 hover:border-foreground/25"}`}
+              >
+                <div className="flex items-center gap-4">
+                  <div className={`shrink-0 size-12 rounded-xl flex items-center justify-center font-display text-sm transition-colors ${isActive ? "bg-accent text-[var(--navy)]" : "bg-foreground/5 text-foreground"}`}>
+                    {ep.number}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="font-display text-sm lg:text-base leading-tight truncate">{t(ep.titleKey)}</div>
+                    <div className="text-xs text-muted-foreground line-clamp-1 mt-0.5">{t(ep.descKey)}</div>
+                  </div>
+                  <div className={`shrink-0 size-9 rounded-full flex items-center justify-center transition-colors ${isActive ? "bg-accent text-[var(--navy)]" : "bg-foreground/5 text-foreground group-hover:bg-foreground/10"}`}>
+                    <svg viewBox="0 0 24 24" className="size-3.5 ms-0.5" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+          <div className="glass rounded-2xl p-4 lg:p-5 border border-dashed border-foreground/15 text-xs text-muted-foreground">
+            {t("podcast_more_soon")}
+          </div>
+        </motion.div>
+      </div>
+    </Section>
+  );
+}
+
 /* ---------- SECTION WRAPPER ---------- */
 function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string; title: string; children: React.ReactNode }) {
   return (
