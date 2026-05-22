@@ -76,6 +76,11 @@ const en: Dict = {
   clients_title: "Borders don't stop us",
   clients_sub: "Worldwide learning, delivered online & on-site.",
 
+  // brands
+  brands_eyebrow: "Trusted by",
+  brands_title: "Brands I've worked with",
+  brands_desc: "A snapshot of companies and partners I've designed, delivered and led L&D programs with across the region.",
+
   // snapshots
   snapshots_eyebrow: "Snapshots",
   snapshots_title: "Executive moments",
