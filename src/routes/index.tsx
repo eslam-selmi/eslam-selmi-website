@@ -1740,5 +1740,4 @@ function EmpowermentTools() {
     </Section>
   );
 }
-  );
-}
+
