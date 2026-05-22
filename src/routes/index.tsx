@@ -1758,12 +1758,12 @@ function EmpowermentTools() {
                 key={tool.key}
                 initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }} transition={{ delay: i * 0.06 }}
-                className="rounded-2xl border border-white/20 bg-white/10 backdrop-blur p-4 flex flex-col items-start gap-2.5"
+                className="rounded-2xl border border-white/15 bg-white text-[#0b1736] p-4 flex flex-col items-start gap-2.5 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.5)]"
               >
-                <span className="size-10 grid place-items-center rounded-xl bg-white/15 border border-white/20">
+                <span className="size-10 grid place-items-center rounded-xl text-white" style={{ background: "linear-gradient(135deg, var(--navy-deep), var(--lavender-deep))" }}>
                   <tool.icon className="size-5" />
                 </span>
-                <div className="text-xs font-semibold leading-tight">{t(tool.key)}</div>
+                <div className="text-xs font-bold leading-tight text-[#0b1736]">{t(tool.key)}</div>
               </motion.div>
             ))}
           </div>
