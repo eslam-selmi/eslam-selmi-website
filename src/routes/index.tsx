@@ -46,7 +46,10 @@ const waServiceLink = (serviceEn: string, lang: "en" | "ar") => {
 // Primary nav — kept short and focused. The full set lives in the mobile menu.
 const NAV = [
   { id: "about", key: "nav_about" },
+  { id: "journey", key: "nav_journey" },
   { id: "services", key: "nav_services" },
+  { id: "programs", key: "nav_programs" },
+  { id: "empowerment", key: "nav_empowerment" },
   { id: "current-courses", key: "nav_courses" },
   { id: "library", key: "nav_library" },
   { id: "podcast", key: "nav_podcast" },
@@ -59,6 +62,7 @@ const NAV_FULL = [
   { id: "journey", key: "nav_journey" },
   { id: "services", key: "nav_services" },
   { id: "programs", key: "nav_programs" },
+  { id: "empowerment", key: "nav_empowerment" },
   { id: "current-courses", key: "nav_courses" },
   { id: "library", key: "nav_library" },
   { id: "podcast", key: "nav_podcast" },
