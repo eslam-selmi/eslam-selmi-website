@@ -1003,7 +1003,7 @@ function CurrentCourses() {
         className="relative mx-auto max-w-5xl rounded-[2rem] overflow-hidden bg-card border border-foreground/10 shadow-[0_30px_80px_-40px_oklch(0.22_0.06_252/0.35)]">
         <div className="grid md:grid-cols-[1fr_1.2fr]">
           {/* Accent panel */}
-          <div className="relative hidden md:block bg-gradient-to-br from-primary via-[var(--lavender-deep)] to-[var(--accent)] p-10 overflow-hidden">
+          <div className="relative hidden md:block p-10 overflow-hidden" style={{ background: "linear-gradient(135deg, var(--navy-deep) 0%, var(--lavender-deep) 60%, var(--accent) 100%)" }}>
             <div className="absolute inset-0 grain opacity-25 pointer-events-none" />
             <div className="relative h-full flex flex-col justify-between text-white">
               <div className="size-14 grid place-items-center rounded-2xl bg-white/15 backdrop-blur border border-white/25">
