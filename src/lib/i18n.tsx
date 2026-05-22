@@ -73,6 +73,17 @@ const en: Dict = {
   snapshots_eyebrow: "Snapshots",
   snapshots_title: "Executive moments",
 
+  // podcast
+  podcast_eyebrow: "L&D Podcast",
+  podcast_title: "Conversations on learning, talent & growth.",
+  podcast_now_playing: "Now playing",
+  podcast_episodes: "Episodes",
+  podcast_play: "Play episode",
+  podcast_more_soon: "More episodes coming soon — stay tuned.",
+  podcast_ep1_title: "Episode 01 — Inside Learning & Development",
+  podcast_ep1_desc: "Real stories from the field on building talent, performance and culture.",
+
+
   // book
   book_badge: "Free 30-minute session",
   book_title_1: "Book a free",
