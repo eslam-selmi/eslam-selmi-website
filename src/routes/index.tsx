@@ -336,11 +336,11 @@ export function Nav({ theme, onThemeToggle }: { theme?: ThemeMode; onThemeToggle
               </span>
             </button>
             <button
-              onClick={onThemeToggle}
+              onClick={handleThemeToggle}
               aria-label="Toggle theme"
               className="inline-flex size-9 items-center justify-center rounded-full border border-foreground/10 hover:bg-foreground/5 transition"
             >
-              {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
+              {activeTheme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
             </button>
             <a
               href={LINKEDIN} target="_blank" rel="noopener noreferrer"
