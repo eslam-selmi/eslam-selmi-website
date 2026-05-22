@@ -138,7 +138,7 @@ const en: Dict = {
   emp_eyebrow: "New graduates",
   emp_title: "Empowerment Tools",
   emp_tagline: "Workplace-ready in weeks, not years.",
-  emp_desc: "A hands-on program that prepares fresh graduates to master the everyday tools of modern work — practical AI use, professional Outlook workflows, design with Canva, project tracking with Trello, and data work with Google Sheets & Forms.",
+  emp_desc: "A hands-on program that prepares fresh graduates to master the everyday tools of modern work: practical AI use, professional Outlook workflows, design with Canva, project tracking with Trello, and data work with Google Sheets & Forms.",
   emp_btn: "Enroll now",
   emp_meta: "Tools · Workflows · Confidence",
   emp_tool_ai: "AI at work",
