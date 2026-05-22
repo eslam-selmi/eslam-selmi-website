@@ -733,14 +733,14 @@ function Snapshots() {
         <div className="overflow-hidden">
           <div className={`flex gap-7 w-max ${marqueeClass} hover:[animation-play-state:paused]`}>
             {trackA.map((src, idx) => (
-              <Card key={`a-${idx}`} src={src} i={idx} originalIndex={idx % SNAPSHOTS.length} />
+              <Card key={`a-${idx}`} src={src} i={idx} originalIndex={SNAPSHOTS.indexOf(src)} />
             ))}
           </div>
         </div>
         <div className="overflow-hidden">
           <div className={`flex gap-7 w-max ${marqueeSlowClass} hover:[animation-play-state:paused]`}>
             {trackB.map((src, idx) => (
-              <Card key={`b-${idx}`} src={src} i={idx} originalIndex={(SNAPSHOTS.length - 1 - (idx % SNAPSHOTS.length))} />
+              <Card key={`b-${idx}`} src={src} i={idx} originalIndex={SNAPSHOTS.indexOf(src)} />
             ))}
           </div>
         </div>
