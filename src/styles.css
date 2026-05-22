@@ -254,3 +254,5 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
   -webkit-mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
           mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
 }
+.animate-marquee-x { animation: marquee-x 40s linear infinite; }
+.animate-marquee-x-reverse { animation: marquee-x-rtl 40s linear infinite; }
