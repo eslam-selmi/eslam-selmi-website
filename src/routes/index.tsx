@@ -194,6 +194,7 @@ function Portfolio() {
       
       <Podcast />
       <Clients />
+      <Brands />
       <Snapshots />
       <BookCTA />
       <Contact />
