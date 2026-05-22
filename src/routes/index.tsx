@@ -6,7 +6,7 @@ import {
   CheckCircle2, Menu, X, Calendar, Target, Lightbulb, HeartHandshake,
   GraduationCap, Award, Users, TrendingUp, BarChart3, UserCheck, Languages,
   ArrowUp, Loader2, Briefcase, BadgeCheck, Compass, Presentation, Moon, Sun,
-  Mic, BookOpen,
+  Mic, BookOpen, Library as LibraryIcon, FileText, Download, ExternalLink,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n, type Lang } from "@/lib/i18n";
