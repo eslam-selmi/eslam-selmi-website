@@ -305,7 +305,7 @@ export function Nav({ theme, onThemeToggle }: { theme?: ThemeMode; onThemeToggle
                   {t(n.key)}
                 </Link>
               ) : (
-                <a key={n.id} href={`#${n.id}`} className="px-2.5 py-1.5 text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-foreground/5">
+                <a key={n.id} href={hashHref(n.id)} className="px-2.5 py-1.5 text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-foreground/5">
                   {t(n.key)}
                 </a>
               )
