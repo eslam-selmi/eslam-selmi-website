@@ -337,7 +337,7 @@ function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => 
         </div>
         {open && (
           <div className="xl:hidden mt-2 glass-strong rounded-2xl p-3 grid gap-1">
-            {NAV.map(n => (
+            {NAV_FULL.map(n => (
               <a key={n.id} href={`#${n.id}`} onClick={() => setOpen(false)} className="px-3 py-2 rounded-lg hover:bg-foreground/5 text-sm">{t(n.key)}</a>
             ))}
             <button onClick={(e) => { setOpen(false); openCalendly(e); }}
