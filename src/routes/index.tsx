@@ -698,9 +698,12 @@ function Snapshots() {
     return () => window.removeEventListener("keydown", onKey);
   }, [active]);
 
-  // Two interleaved tracks for richer marquee, doubled for seamless loop
-  const trackA = [...SNAPSHOTS, ...SNAPSHOTS];
-  const trackB = [...SNAPSHOTS.slice().reverse(), ...SNAPSHOTS.slice().reverse()];
+  // Split snapshots across two tracks so the rows don't show the same images
+  const half = Math.ceil(SNAPSHOTS.length / 2);
+  const setA = SNAPSHOTS.slice(0, half);
+  const setB = SNAPSHOTS.slice(half);
+  const trackA = [...setA, ...setA, ...setA];
+  const trackB = [...setB.slice().reverse(), ...setB.slice().reverse(), ...setB.slice().reverse()];
   const marqueeClass = dir === "rtl" ? "animate-marquee-rtl" : "animate-marquee";
   const marqueeSlowClass = dir === "rtl" ? "animate-marquee-rtl" : "animate-marquee-slow";
 
