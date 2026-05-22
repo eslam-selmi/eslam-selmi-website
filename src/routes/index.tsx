@@ -691,7 +691,7 @@ function Services() {
             <a
               href={waServiceLink(s.title.en, lang)}
               target="_blank" rel="noopener noreferrer"
-              className="mt-5 group/btn inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold hover:opacity-90 transition relative z-10"
+              className="mt-auto pt-5 group/btn inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold hover:opacity-90 transition relative z-10 self-stretch"
               aria-label={`${t("svc_request_btn")} — ${s.title[lang]}`}
             >
               <MessageCircle className="size-4" />
