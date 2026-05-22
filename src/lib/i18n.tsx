@@ -80,6 +80,7 @@ const en: Dict = {
   brands_eyebrow: "Trusted by",
   brands_title: "Brands I've worked with",
   brands_desc: "A snapshot of companies and partners I've designed, delivered and led L&D programs with across the region.",
+  brands_meta: "Brands & partners",
 
   // snapshots
   snapshots_eyebrow: "Snapshots",
