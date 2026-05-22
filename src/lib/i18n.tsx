@@ -14,6 +14,7 @@ const en: Dict = {
   nav_programs: "Programs",
   nav_clients: "Clients",
   nav_snapshots: "Snapshots",
+  nav_podcast: "Podcast",
   nav_contact: "Contact",
   book_cta: "Book free 1:1",
 
@@ -72,6 +73,17 @@ const en: Dict = {
   snapshots_eyebrow: "Snapshots",
   snapshots_title: "Executive moments",
 
+  // podcast
+  podcast_eyebrow: "L&D Podcast",
+  podcast_title: "Conversations on learning, talent & growth.",
+  podcast_now_playing: "Now playing",
+  podcast_episodes: "Episodes",
+  podcast_play: "Play episode",
+  podcast_more_soon: "More episodes coming soon — stay tuned.",
+  podcast_ep1_title: "Episode 01 — Inside Learning & Development",
+  podcast_ep1_desc: "Real stories from the field on building talent, performance and culture.",
+
+
   // book
   book_badge: "Free 30-minute session",
   book_title_1: "Book a free",
@@ -120,6 +132,7 @@ const ar: Dict = {
   nav_programs: "البرامج",
   nav_clients: "العملاء",
   nav_snapshots: "لقطات",
+  nav_podcast: "البودكاست",
   nav_contact: "تواصل",
   book_cta: "احجز جلسة مجانية",
 
@@ -169,6 +182,16 @@ const ar: Dict = {
 
   snapshots_eyebrow: "لقطات",
   snapshots_title: "لحظات من الميدان",
+
+  podcast_eyebrow: "بودكاست التعلم والتطوير",
+  podcast_title: "حوارات في التعلم، إدارة المواهب والنمو.",
+  podcast_now_playing: "يُعرض الآن",
+  podcast_episodes: "الحلقات",
+  podcast_play: "تشغيل الحلقة",
+  podcast_more_soon: "حلقات جديدة قريبًا — تابعنا.",
+  podcast_ep1_title: "الحلقة الأولى — داخل عالم التعلم والتطوير",
+  podcast_ep1_desc: "قصص حقيقية من الميدان عن بناء المواهب والأداء والثقافة.",
+
 
   book_badge: "جلسة مجانية ٣٠ دقيقة",
   book_title_1: "احجز جلسة",
