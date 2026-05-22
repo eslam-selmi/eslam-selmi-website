@@ -25,8 +25,22 @@ import snap9 from "@/assets/snapshots/snap-9.jpg";
 
 export const Route = createFileRoute("/")({ component: Portfolio });
 
-const WHATSAPP = "https://wa.me/966555376228?text=Hi%20Eslam%2C%20I%27d%20like%20to%20book%20a%20free%201%3A1%20session.";
+const WHATSAPP_BASE = "https://wa.me/966555376228";
+const WHATSAPP = `${WHATSAPP_BASE}?text=${encodeURIComponent("Hi Eslam, I'd like to book a free 1:1 session.")}`;
+const CALENDLY_URL = "https://calendly.com/eslam-m-selmi/30min";
 const LINKEDIN = "https://www.linkedin.com/in/eslam-selmi/";
+
+const openCalendly = (e?: React.MouseEvent) => {
+  if (e) e.preventDefault();
+  if (typeof window !== "undefined") window.dispatchEvent(new Event("open-calendly"));
+};
+
+const waServiceLink = (serviceEn: string, lang: "en" | "ar") => {
+  const msg = lang === "ar"
+    ? `مرحبًا إسلام، أرغب في طلب خدمة: ${serviceEn}. هل يمكننا التحدث؟`
+    : `Hi Eslam, I'd like to request the "${serviceEn}" service. Can we chat?`;
+  return `${WHATSAPP_BASE}?text=${encodeURIComponent(msg)}`;
+};
 
 const NAV = [
   { id: "home", key: "nav_home" },
@@ -168,6 +182,51 @@ function Portfolio() {
       <WhatsAppFloat />
       <ScrollTop />
       <DemoBanner />
+      <CalendlyDialog />
+    </div>
+  );
+}
+
+/* ---------- CALENDLY DIALOG ---------- */
+function CalendlyDialog() {
+  const { t, dir } = useI18n();
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const handler = () => setOpen(true);
+    window.addEventListener("open-calendly", handler);
+    return () => window.removeEventListener("open-calendly", handler);
+  }, []);
+  if (!open) return null;
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-sm"
+      onClick={() => setOpen(false)}
+      dir={dir}
+    >
+      <div
+        className="relative w-full max-w-3xl h-[85vh] rounded-2xl overflow-hidden bg-card shadow-2xl border border-foreground/10"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-5 py-3 border-b border-foreground/10 bg-card">
+          <div className="min-w-0">
+            <div className="font-display font-bold text-sm sm:text-base truncate">{t("calendly_title")}</div>
+            <div className="text-xs text-muted-foreground truncate">{t("calendly_desc")}</div>
+          </div>
+          <button
+            onClick={() => setOpen(false)}
+            aria-label="Close"
+            className="size-9 grid place-items-center rounded-full hover:bg-foreground/10 transition shrink-0"
+          >
+            <X className="size-4" />
+          </button>
+        </div>
+        <iframe
+          src={CALENDLY_URL}
+          title="Calendly booking"
+          className="w-full h-[calc(85vh-56px)] border-0"
+          loading="lazy"
+        />
+      </div>
     </div>
   );
 }
@@ -246,10 +305,10 @@ function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => 
             >
               <Linkedin className="size-4" />
             </a>
-            <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-              className="hidden md:inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-4 py-2 text-sm font-bold hover:opacity-90 transition">
+            <button onClick={openCalendly}
+              className="hidden md:inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-4 py-2 text-sm font-bold hover:opacity-90 transition cursor-pointer">
               <Calendar className="size-4" /> {t("book_cta")}
-            </a>
+            </button>
             <button className="xl:hidden p-2" onClick={() => setOpen(v => !v)} aria-label="Menu">
               {open ? <X className="size-5" /> : <Menu className="size-5" />}
             </button>
@@ -260,10 +319,10 @@ function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => 
             {NAV.map(n => (
               <a key={n.id} href={`#${n.id}`} onClick={() => setOpen(false)} className="px-3 py-2 rounded-lg hover:bg-foreground/5 text-sm">{t(n.key)}</a>
             ))}
-            <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-              className="mt-1 inline-flex items-center justify-center gap-2 rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-bold">
+            <button onClick={(e) => { setOpen(false); openCalendly(e); }}
+              className="mt-1 inline-flex items-center justify-center gap-2 rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-bold cursor-pointer">
               <Calendar className="size-4" /> {t("book_cta")}
-            </a>
+            </button>
           </div>
         )}
       </div>
@@ -336,11 +395,11 @@ function Hero() {
             initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}
             className="flex flex-wrap gap-3 pt-2"
           >
-            <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-              className="group inline-flex items-center gap-2 rounded-xl bg-primary px-7 py-4 text-sm font-bold text-primary-foreground shadow-[0_18px_40px_-14px_oklch(0.22_0.06_252/0.5)] hover:translate-y-[-2px] transition">
+            <button onClick={openCalendly}
+              className="group inline-flex items-center gap-2 rounded-xl bg-primary px-7 py-4 text-sm font-bold text-primary-foreground shadow-[0_18px_40px_-14px_oklch(0.22_0.06_252/0.5)] hover:translate-y-[-2px] transition cursor-pointer">
               <Calendar className="size-4" /> {t("hero_btn_book")}
               <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
-            </a>
+            </button>
             <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-xl border border-foreground/15 bg-card px-7 py-4 text-sm font-bold text-foreground hover:border-foreground/30 hover:bg-foreground/[0.03] transition">
               <MessageCircle className="size-4" /> WhatsApp
@@ -617,15 +676,28 @@ function Services() {
   const { t, lang } = useI18n();
   return (
     <Section id="services" eyebrow={t("services_eyebrow")} title={t("services_title")}>
+      <p className="-mt-6 mb-10 text-center text-base text-muted-foreground max-w-2xl mx-auto">
+        {t("services_subtitle")}
+      </p>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {SERVICES.map((s, i) => (
           <motion.div key={s.key} {...fadeUp} transition={{ delay: i * 0.08, duration: 0.6 }}
-            className="relative glass-panel rounded-3xl p-6 group overflow-hidden transition hover:-translate-y-1">
+            className="relative glass-panel rounded-3xl p-6 group overflow-hidden transition hover:-translate-y-1 flex flex-col">
             <div className="absolute -top-12 -end-12 size-32 rounded-full bg-[var(--gold)]/20 blur-2xl opacity-0 group-hover:opacity-100 transition" />
             <s.icon className="size-7 text-gold" />
             <div className="mt-4 text-xs text-muted-foreground font-mono">0{i + 1}</div>
             <h3 className="mt-1 font-semibold text-lg leading-tight">{s.title[lang]}</h3>
             <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.desc[lang]}</p>
+            <a
+              href={waServiceLink(s.title.en, lang)}
+              target="_blank" rel="noopener noreferrer"
+              className="mt-5 group/btn inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold hover:opacity-90 transition relative z-10"
+              aria-label={`${t("svc_request_btn")} — ${s.title[lang]}`}
+            >
+              <MessageCircle className="size-4" />
+              {t("svc_request_btn")}
+              <ArrowRight className="size-4 group-hover/btn:translate-x-1 rtl-flip transition" />
+            </a>
           </motion.div>
         ))}
       </div>
@@ -832,10 +904,14 @@ function BookCTA() {
             </h2>
             <p className="mt-5 text-white/90 max-w-xl leading-relaxed text-base">{t("book_desc")}</p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-                className="group inline-flex items-center gap-2 rounded-full bg-white text-[#0b1736] px-6 py-3.5 text-sm font-bold hover:bg-white/95 transition shadow-lg">
-                <MessageCircle className="size-4" /> {t("book_btn_whatsapp")}
+              <button onClick={openCalendly}
+                className="group inline-flex items-center gap-2 rounded-full bg-white text-[#0b1736] px-6 py-3.5 text-sm font-bold hover:bg-white/95 transition shadow-lg cursor-pointer">
+                <Calendar className="size-4" /> {t("book_cta")}
                 <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
+              </button>
+              <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 text-white px-6 py-3.5 text-sm font-bold hover:bg-white/20 transition">
+                <MessageCircle className="size-4" /> {t("book_btn_whatsapp")}
               </a>
               <a href="tel:+966555376228" className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 text-white px-6 py-3.5 text-sm font-bold hover:bg-white/20 transition">
                 <Phone className="size-4" /> +966 555 376 228
