@@ -210,6 +210,7 @@ function Portfolio() {
       <About />
       <Pillars />
       <Journey />
+      <Brands />
       <Services />
       <Programs />
       
@@ -218,7 +219,6 @@ function Portfolio() {
       
       <Podcast />
       <Clients />
-      <Brands />
       <Snapshots />
       <BookCTA />
       <Contact />
