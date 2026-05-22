@@ -85,6 +85,8 @@ const en: Dict = {
   podcast_more_soon: "More episodes coming soon — stay tuned.",
   podcast_ep1_title: "Episode 01 — Inside Learning & Development",
   podcast_ep1_desc: "Real stories from the field on building talent, performance and culture.",
+  podcast_ep2_title: "Episode 02 — Building Learning Culture",
+  podcast_ep2_desc: "How to embed a learning mindset across teams and leaders.",
   podcast_ep3_title: "Episode 03 — Talent in Action",
   podcast_ep3_desc: "Field insights on developing high-potential talent and team performance.",
   podcast_ep4_title: "Episode 04 — Coaching for Growth",
