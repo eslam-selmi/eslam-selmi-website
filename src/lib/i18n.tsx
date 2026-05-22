@@ -176,7 +176,7 @@ const en: Dict = {
   contact_linkedin_line: "Connect with Eslam",
 
   // footer
-  footer_tag: "2026 — Head of L&D, Talent & Performance",
+  footer_tag: "Head of L&D, Talent & Performance",
   footer_rights: "All rights reserved.",
 };
 

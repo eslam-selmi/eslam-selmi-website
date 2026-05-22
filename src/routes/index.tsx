@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useI18n, type Lang } from "@/lib/i18n";
 
 import headshot from "@/assets/portfolio/headshot.png";
+import brandLogo from "@/assets/brand-logo.png";
 
 import snap1 from "@/assets/snapshots/snap-1.jpg";
 import snap2 from "@/assets/snapshots/snap-2.jpg";
@@ -519,7 +520,7 @@ function Hero() {
                 <img
                   src={headshot}
                   alt="Eslam Selmi"
-                  className="absolute inset-x-0 bottom-0 h-[108%] w-full object-contain object-bottom"
+                  className="absolute inset-x-0 bottom-0 h-[125%] w-full object-cover object-[center_25%] scale-105"
                 />
                 {/* Thin inner stroke */}
                 <div
@@ -1349,7 +1350,7 @@ function Footer() {
             <MessageCircle className="size-4" />
           </a>
         </div>
-        <div className="text-xs text-muted-foreground">© {new Date().getFullYear()} Eslam Selmi. {t("footer_rights")}</div>
+        <div className="text-xs text-muted-foreground">Eslam Selmi. {t("footer_rights")}</div>
       </div>
     </footer>
   );
@@ -1671,12 +1672,12 @@ function EmpowermentTools() {
     <Section id="empowerment" eyebrow={t("emp_eyebrow")} title={t("emp_title")}>
       <motion.div {...fadeUp}
         className="relative mx-auto max-w-6xl rounded-[2rem] overflow-hidden border border-foreground/10 shadow-[0_30px_80px_-40px_oklch(0.22_0.06_252/0.35)]"
-        style={{ background: "linear-gradient(135deg, var(--navy-deep) 0%, var(--navy) 55%, var(--lavender-deep) 110%)" }}
+        style={{ background: "linear-gradient(135deg, #0b1736 0%, #14224d 50%, #1f2a5a 100%)" }}
       >
-        <div className="absolute inset-0 grain opacity-25 pointer-events-none" />
+        <div className="absolute inset-0 grain opacity-20 pointer-events-none" />
         <div
-          className="absolute inset-0 opacity-50 pointer-events-none"
-          style={{ background: "radial-gradient(ellipse 60% 60% at 90% 10%, oklch(0.72 0.13 180 / 0.45), transparent 60%)" }}
+          className="absolute inset-0 opacity-60 pointer-events-none"
+          style={{ background: "radial-gradient(ellipse 55% 55% at 88% 8%, oklch(0.78 0.13 85 / 0.28), transparent 60%)" }}
         />
         <div className="relative p-7 sm:p-10 lg:p-14 grid lg:grid-cols-[1.1fr_1fr] gap-10 items-center text-white">
           <div>
