@@ -354,7 +354,7 @@ function Hero() {
                 <Mic className="size-3.5" />
                 <span className="absolute inset-0 rounded-full ring-2 ring-white/40 animate-ping" />
               </span>
-              <span className="relative">Listen — Podcast</span>
+              <span className="relative">{t("listen_podcast")}</span>
               <ArrowRight className="relative size-4 group-hover:translate-x-1 rtl-flip transition" />
             </a>
           </motion.div>
