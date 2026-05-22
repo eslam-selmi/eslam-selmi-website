@@ -126,11 +126,11 @@ const fadeUp = {
 };
 
 function Portfolio() {
-  const [theme, setTheme] = useState<ThemeMode>("dark");
+  const [theme, setTheme] = useState<ThemeMode>("light");
 
   useEffect(() => {
     const saved = typeof window !== "undefined" ? window.localStorage.getItem("theme-mode") : null;
-    const next: ThemeMode = saved === "light" ? "light" : "dark";
+    const next: ThemeMode = saved === "dark" ? "dark" : "light";
     setTheme(next);
     document.documentElement.classList.toggle("dark", next === "dark");
   }, []);
@@ -245,59 +245,58 @@ function Hero() {
   const { t, lang } = useI18n();
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [0, 80]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, 60]);
+
+  const nameEn = "Eslam Selmi";
+  const nameAr = "إسلام سلمي";
 
   return (
-    <section id="home" ref={ref} className="relative min-h-screen pt-28 pb-20 lg:pt-32 overflow-hidden">
-      {/* Aurora blobs */}
-      <motion.div
-        animate={{ x: [0, 24, 0], y: [0, -18, 0] }}
-        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-        className="pointer-events-none absolute -top-[10%] -left-[10%] size-[55vw] rounded-full blur-[120px] opacity-70"
-        style={{ background: "oklch(0.55 0.18 258 / 0.55)" }}
+    <section id="home" ref={ref} className="relative min-h-screen pt-28 pb-16 lg:pt-32 overflow-hidden">
+      {/* Soft background wash */}
+      <div
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{
+          background:
+            "radial-gradient(ellipse 60% 50% at 85% 12%, oklch(0.72 0.13 180 / 0.18), transparent 60%), radial-gradient(ellipse 50% 40% at 5% 90%, oklch(0.22 0.06 252 / 0.10), transparent 60%)",
+        }}
       />
-      <motion.div
-        animate={{ x: [0, -28, 0], y: [0, 20, 0] }}
-        transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
-        className="pointer-events-none absolute -bottom-[10%] -right-[10%] size-[45vw] rounded-full blur-[120px] opacity-60"
-        style={{ background: "oklch(0.5 0.2 280 / 0.5)" }}
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-px"
+        style={{ background: "linear-gradient(90deg, transparent, var(--accent), transparent)", opacity: 0.4 }}
       />
-      <motion.div
-        animate={{ scale: [1, 1.08, 1] }}
-        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
-        className="pointer-events-none absolute top-[18%] right-[12%] size-[30vw] rounded-full blur-[110px] opacity-50"
-        style={{ background: "oklch(0.72 0.15 220 / 0.4)" }}
-      />
-      <div className="absolute inset-0 grain" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 grid lg:grid-cols-12 gap-10 lg:gap-14 items-center">
         {/* Left: Copy */}
         <motion.div style={{ y }} className="lg:col-span-7 order-2 lg:order-1 space-y-7">
           <motion.div
             initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-foreground/5 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.22em] text-accent backdrop-blur-md"
+            className="inline-flex items-center gap-2 text-[11px] sm:text-xs font-bold uppercase tracking-[0.28em]"
+            style={{ color: "var(--accent)" }}
           >
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: "var(--accent)" }} />
-              <span className="relative inline-flex rounded-full h-2 w-2" style={{ background: "var(--accent)" }} />
-            </span>
-            {lang === "ar" ? "قائد المواهب والأداء" : "Talent & Performance Leader"}
+            <span className="h-px w-8" style={{ background: "var(--accent)" }} />
+            {lang === "ar" ? "حلول مبتكرة لبناء القدرات" : "Innovative Solutions for Building"}
           </motion.div>
 
           <motion.h1
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.7 }}
-            className="font-display text-balance leading-[1.02] text-[clamp(2.8rem,7.5vw,6.8rem)]"
+            className="font-display font-extrabold text-balance leading-[1.02] text-[clamp(2.6rem,7vw,6rem)] text-foreground"
           >
             {lang === "ar" ? (
-              <>هندسة <span className="bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(90deg, oklch(0.72 0.16 240), oklch(0.7 0.18 270), oklch(0.78 0.15 210))" }}>الإمكانات البشرية.</span></>
+              <>
+                مؤسسة أقوى مع{" "}
+                <span className="block sm:inline" style={{ color: "var(--accent)" }}>{nameAr}</span>
+              </>
             ) : (
-              <>Architecting <span className="bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(90deg, oklch(0.72 0.16 240), oklch(0.7 0.18 270), oklch(0.78 0.15 210))" }}>Human Potential.</span></>
+              <>
+                A Stronger Business With{" "}
+                <span className="block sm:inline" style={{ color: "var(--accent)" }}>{nameEn}</span>
+              </>
             )}
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-            className="max-w-xl text-lg leading-relaxed text-foreground/70"
+            className="max-w-xl text-base sm:text-lg leading-relaxed text-muted-foreground"
           >
             {t("hero_intro")}
           </motion.p>
@@ -307,72 +306,85 @@ function Hero() {
             className="flex flex-wrap gap-3 pt-2"
           >
             <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-              className="group inline-flex items-center gap-2 rounded-2xl bg-accent px-7 py-4 text-sm font-bold text-accent-foreground shadow-[0_24px_60px_-20px_var(--accent)] hover:scale-[1.02] transition">
+              className="group inline-flex items-center gap-2 rounded-xl bg-primary px-7 py-4 text-sm font-bold text-primary-foreground shadow-[0_18px_40px_-14px_oklch(0.22_0.06_252/0.5)] hover:translate-y-[-2px] transition">
               <Calendar className="size-4" /> {t("hero_btn_book")}
               <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
             </a>
             <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-2xl border border-foreground/15 bg-foreground/5 px-7 py-4 text-sm font-bold backdrop-blur-xl hover:bg-foreground/10 transition">
+              className="inline-flex items-center gap-2 rounded-xl border border-foreground/15 bg-card px-7 py-4 text-sm font-bold text-foreground hover:border-foreground/30 hover:bg-foreground/[0.03] transition">
               <MessageCircle className="size-4" /> WhatsApp
+            </a>
+          </motion.div>
+
+          {/* Social row */}
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}
+            className="flex items-center gap-3 pt-3"
+          >
+            <a href={LINKEDIN} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"
+              className="size-10 rounded-full border border-foreground/15 grid place-items-center text-foreground/70 hover:text-foreground hover:border-foreground/30 transition">
+              <Linkedin className="size-4" />
+            </a>
+            <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"
+              className="size-10 rounded-full border border-foreground/15 grid place-items-center text-foreground/70 hover:text-foreground hover:border-foreground/30 transition">
+              <MessageCircle className="size-4" />
+            </a>
+            <a href="mailto:eslam.selmi@example.com" aria-label="Email"
+              className="size-10 rounded-full border border-foreground/15 grid place-items-center text-foreground/70 hover:text-foreground hover:border-foreground/30 transition">
+              <Mail className="size-4" />
             </a>
           </motion.div>
         </motion.div>
 
-        {/* Right: Portrait + floating glass cards */}
+        {/* Right: Portrait + floating cards */}
         <motion.div
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}
           className="lg:col-span-5 order-1 lg:order-2 relative"
         >
-          <div className="relative w-full aspect-[4/5] max-w-md mx-auto rounded-[2.5rem] overflow-hidden border border-foreground/10 shadow-2xl"
-               style={{ background: "linear-gradient(180deg, oklch(0.22 0.06 260), oklch(0.13 0.05 263))" }}>
-            <div className="absolute inset-0 bg-aurora opacity-60" />
+          <div className="relative w-full aspect-[4/5] max-w-md mx-auto rounded-[2rem] overflow-hidden"
+               style={{
+                 background: "linear-gradient(180deg, oklch(0.94 0.018 200) 0%, oklch(0.92 0.025 195) 100%)",
+                 boxShadow: "0 40px 80px -30px oklch(0.22 0.06 252 / 0.28)"
+               }}>
             <img
               src={headshot}
               alt="Eslam Selmi"
-              className="absolute inset-x-0 bottom-0 h-[98%] w-full object-contain object-bottom drop-shadow-[0_36px_48px_rgba(0,0,0,0.5)]"
+              className="absolute inset-x-0 bottom-0 h-[98%] w-full object-contain object-bottom"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
-            <div className="absolute start-5 top-5 rounded-full border border-white/20 bg-white/5 backdrop-blur-md px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.22em] text-white/80">
-              01 · {lang === "ar" ? "بروفايل" : "Signature"}
-            </div>
           </div>
 
-          {/* Floating stat cards */}
+          {/* Top floating stat */}
           <motion.div
-            animate={{ y: [0, -14, 0] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -left-4 sm:-left-10 top-16 rounded-2xl p-4 bg-white/8 backdrop-blur-2xl border border-white/15 shadow-2xl"
+            animate={{ y: [0, -10, 0] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -right-2 sm:-right-6 top-6 rounded-2xl px-5 py-4 bg-card border border-foreground/10 shadow-xl min-w-[140px]"
           >
-            <div className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "oklch(0.78 0.14 240)" }}>
-              {lang === "ar" ? "خبرة" : "Experience"}
-            </div>
-            <div className="text-2xl font-extrabold font-display mt-0.5">8+ {lang === "ar" ? "سنوات" : "Years"}</div>
+            <div className="text-2xl sm:text-3xl font-extrabold font-display" style={{ color: "var(--accent)" }}>3000+</div>
+            <div className="text-xs text-muted-foreground mt-0.5 font-medium">{t("stat_trainees")}</div>
           </motion.div>
 
-          <motion.div
-            animate={{ scale: [1, 1.04, 1] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -right-2 sm:-right-8 top-1/2 rounded-2xl p-4 bg-white/8 backdrop-blur-2xl border border-white/15 shadow-2xl"
-          >
-            <div className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "oklch(0.74 0.16 268)" }}>
-              {lang === "ar" ? "تأثير" : "Impact"}
-            </div>
-            <div className="text-2xl font-extrabold font-display mt-0.5">3000+</div>
-            <div className="text-[10px] text-foreground/60 mt-0.5">{t("stat_trainees")}</div>
-          </motion.div>
-
+          {/* Bottom floating stat */}
           <motion.div
             animate={{ y: [0, 12, 0] }} transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -left-2 sm:-left-6 bottom-8 rounded-2xl p-4 bg-white/8 backdrop-blur-2xl border border-white/15 shadow-2xl"
+            className="absolute -left-2 sm:-left-6 bottom-8 rounded-2xl px-5 py-4 bg-card border border-foreground/10 shadow-xl min-w-[140px]"
           >
-            <div className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "oklch(0.8 0.14 210)" }}>
-              {lang === "ar" ? "وصول" : "Reach"}
-            </div>
-            <div className="text-2xl font-extrabold font-display mt-0.5">12 {lang === "ar" ? "دولة" : "Countries"}</div>
+            <div className="text-2xl sm:text-3xl font-extrabold font-display" style={{ color: "var(--accent)" }}>12+</div>
+            <div className="text-xs text-muted-foreground mt-0.5 font-medium">{lang === "ar" ? "دولة" : "Countries"}</div>
+          </motion.div>
+
+          {/* Side badge — Years */}
+          <motion.div
+            animate={{ x: [0, -6, 0] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -left-2 sm:-left-8 top-1/2 -translate-y-1/2 rounded-2xl px-4 py-3 bg-primary text-primary-foreground shadow-xl"
+          >
+            <div className="text-xl font-extrabold font-display leading-none">8+</div>
+            <div className="text-[10px] uppercase tracking-wider mt-1 opacity-80 font-semibold">{lang === "ar" ? "سنوات" : "Years"}</div>
           </motion.div>
         </motion.div>
       </div>
     </section>
   );
 }
+
 
 function Stat({ n, l }: { n: string; l: string }) {
   return (
