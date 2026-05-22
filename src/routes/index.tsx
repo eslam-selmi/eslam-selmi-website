@@ -62,6 +62,7 @@ const NAV_FULL: { id: string; key: string; to?: string }[] = [
   { id: "journey", key: "nav_journey" },
   { id: "services", key: "nav_services" },
   { id: "programs", key: "nav_programs" },
+  { id: "empowerment", key: "nav_empowerment", to: "/graduates" },
   { id: "current-courses", key: "nav_courses" },
   { id: "library", key: "nav_library", to: "/library" },
   { id: "podcast", key: "nav_podcast" },
