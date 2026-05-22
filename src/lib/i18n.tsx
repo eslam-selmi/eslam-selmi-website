@@ -110,7 +110,7 @@ const en: Dict = {
   book_step_2_t: "Get a tailored plan",
   book_step_2_d: "Walk away with concrete next steps.",
   book_step_3_t: "No strings attached",
-  book_step_3_d: "Free, no obligations — just value.",
+  book_step_3_d: "Free, no obligations. Just value.",
 
   // current courses
   current_eyebrow: "Open now",
