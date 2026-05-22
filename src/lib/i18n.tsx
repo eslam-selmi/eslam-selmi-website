@@ -82,6 +82,10 @@ const en: Dict = {
   podcast_more_soon: "More episodes coming soon — stay tuned.",
   podcast_ep1_title: "Episode 01 — Inside Learning & Development",
   podcast_ep1_desc: "Real stories from the field on building talent, performance and culture.",
+  podcast_ep3_title: "Episode 03 — Talent in Action",
+  podcast_ep3_desc: "Field insights on developing high-potential talent and team performance.",
+  podcast_ep4_title: "Episode 04 — Coaching for Growth",
+  podcast_ep4_desc: "How coaching and mentoring drive measurable workplace impact.",
 
 
   // book
@@ -191,6 +195,10 @@ const ar: Dict = {
   podcast_more_soon: "حلقات جديدة قريبًا — تابعنا.",
   podcast_ep1_title: "الحلقة الأولى — داخل عالم التعلم والتطوير",
   podcast_ep1_desc: "قصص حقيقية من الميدان عن بناء المواهب والأداء والثقافة.",
+  podcast_ep3_title: "الحلقة الثالثة — المواهب في الميدان",
+  podcast_ep3_desc: "رؤى عملية لتطوير المواهب الواعدة وأداء الفرق.",
+  podcast_ep4_title: "الحلقة الرابعة — الكوتشينج للنمو",
+  podcast_ep4_desc: "كيف يُحدث الكوتشينج والإرشاد أثرًا حقيقيًا في بيئة العمل.",
 
 
   book_badge: "جلسة مجانية ٣٠ دقيقة",

@@ -58,7 +58,6 @@ const JOURNEY = [
   { year: "2017", role: { en: "Senior L&D / L&D Specialist", ar: "أخصائي أول / أخصائي تعلم وتطوير" }, company: "G4S", country: "EG", logo: "https://logo.clearbit.com/g4s.com" },
   { year: "2022", role: { en: "L&D Specialist", ar: "أخصائي تعلم وتطوير" }, company: "Aramex", country: "EG", logo: "https://logo.clearbit.com/aramex.com" },
   { year: "2023", role: { en: "Control Supervisor", ar: "مشرف رقابة" }, company: "Badreldin Developments", country: "EG", logo: "https://logo.clearbit.com/badreldin.com" },
-  { year: "2024", role: { en: "L&D Supervisor", ar: "مشرف التعلم والتطوير" }, company: "KnowledgeCity", country: "SA", logo: "https://logo.clearbit.com/knowledgecity.com" },
   { year: "2026", role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: "Imtenan", country: "EG", logo: "https://logo.clearbit.com/imtenan.com" },
   { year: "NOW", role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: "KnowledgeCity", country: "SA", logo: "https://logo.clearbit.com/knowledgecity.com" },
 ];
@@ -181,11 +180,16 @@ function BrandMark({ size = 40 }: { size?: number }) {
             <stop offset="100%" stopColor="var(--accent)" />
           </linearGradient>
         </defs>
-        <rect x="2" y="2" width="44" height="44" rx="12" fill="url(#bmg)" />
-        <path d="M14 32 L24 14 L34 32 M18.5 25 H29.5" stroke="white" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+        <circle cx="24" cy="24" r="22" fill="none" stroke="url(#bmg)" strokeWidth="2" opacity="0.35" />
+        <path
+          d="M12 30 C 16 22, 20 22, 24 24 C 28 26, 32 26, 36 18"
+          stroke="url(#bmg)" strokeWidth="2.8" strokeLinecap="round" fill="none"
+        />
+        <circle cx="36" cy="18" r="3" fill="url(#bmg)" />
+        <circle cx="12" cy="30" r="2" fill="url(#bmg)" opacity="0.6" />
       </svg>
       <span className="hidden sm:flex flex-col leading-none">
-        <span className="font-display text-[13px] font-bold tracking-[0.18em] uppercase text-foreground">Eslam Selmi</span>
+        <span className="font-display text-[13px] font-bold tracking-[0.14em] text-foreground">Eslam Selmi</span>
         <span className="text-[9px] tracking-[0.28em] uppercase text-muted-foreground mt-1">Head of L&amp;D</span>
       </span>
     </div>
@@ -694,9 +698,12 @@ function Snapshots() {
     return () => window.removeEventListener("keydown", onKey);
   }, [active]);
 
-  // Two interleaved tracks for richer marquee, doubled for seamless loop
-  const trackA = [...SNAPSHOTS, ...SNAPSHOTS];
-  const trackB = [...SNAPSHOTS.slice().reverse(), ...SNAPSHOTS.slice().reverse()];
+  // Split snapshots across two tracks so the rows don't show the same images
+  const half = Math.ceil(SNAPSHOTS.length / 2);
+  const setA = SNAPSHOTS.slice(0, half);
+  const setB = SNAPSHOTS.slice(half);
+  const trackA = [...setA, ...setA, ...setA];
+  const trackB = [...setB.slice().reverse(), ...setB.slice().reverse(), ...setB.slice().reverse()];
   const marqueeClass = dir === "rtl" ? "animate-marquee-rtl" : "animate-marquee";
   const marqueeSlowClass = dir === "rtl" ? "animate-marquee-rtl" : "animate-marquee-slow";
 
@@ -704,7 +711,7 @@ function Snapshots() {
     <button
       type="button"
       onClick={() => setActive(originalIndex)}
-      className="group relative shrink-0 w-[300px] sm:w-[360px] aspect-[4/5] overflow-hidden rounded-3xl border border-foreground/10 cursor-zoom-in shadow-[0_24px_70px_-38px_var(--foreground)] bg-foreground/[0.04]"
+      className="group relative shrink-0 w-[200px] sm:w-[240px] lg:w-[260px] aspect-[4/5] overflow-hidden rounded-2xl border border-foreground/10 cursor-zoom-in shadow-[0_18px_50px_-30px_var(--foreground)] bg-foreground/[0.04]"
       aria-label={`Open snapshot ${originalIndex + 1}`}
     >
       <img
@@ -726,14 +733,14 @@ function Snapshots() {
         <div className="overflow-hidden">
           <div className={`flex gap-7 w-max ${marqueeClass} hover:[animation-play-state:paused]`}>
             {trackA.map((src, idx) => (
-              <Card key={`a-${idx}`} src={src} i={idx} originalIndex={idx % SNAPSHOTS.length} />
+              <Card key={`a-${idx}`} src={src} i={idx} originalIndex={SNAPSHOTS.indexOf(src)} />
             ))}
           </div>
         </div>
         <div className="overflow-hidden">
           <div className={`flex gap-7 w-max ${marqueeSlowClass} hover:[animation-play-state:paused]`}>
             {trackB.map((src, idx) => (
-              <Card key={`b-${idx}`} src={src} i={idx} originalIndex={(SNAPSHOTS.length - 1 - (idx % SNAPSHOTS.length))} />
+              <Card key={`b-${idx}`} src={src} i={idx} originalIndex={SNAPSHOTS.indexOf(src)} />
             ))}
           </div>
         </div>
@@ -789,40 +796,40 @@ function BookCTA() {
   return (
     <section id="book" className="px-4 sm:px-6 py-16">
       <motion.div {...fadeUp}
-        className="glass-panel relative mx-auto max-w-6xl rounded-[2.25rem] p-8 sm:p-12 lg:p-16 overflow-hidden bg-primary text-primary-foreground">
-        <div className="absolute inset-0 bg-aurora opacity-60" />
-        <div className="absolute inset-0 grain" />
+        className="relative mx-auto max-w-6xl rounded-[2.25rem] p-8 sm:p-12 lg:p-16 overflow-hidden bg-[#0b1736] text-white shadow-[0_40px_80px_-40px_rgba(11,23,54,0.6)]">
+        <div className="absolute inset-0 opacity-40" style={{ background: "radial-gradient(ellipse 60% 50% at 85% 10%, oklch(0.72 0.13 180 / 0.55), transparent 60%), radial-gradient(ellipse 50% 50% at 10% 90%, oklch(0.55 0.2 290 / 0.35), transparent 65%)" }} />
+        <div className="absolute inset-0 grain opacity-30" />
         <div className="relative grid lg:grid-cols-[1.4fr_1fr] gap-10 items-center">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.25em] text-primary-foreground">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.25em] text-white">
               <Sparkles className="size-3.5" /> {t("book_badge")}
             </div>
-            <h2 className="mt-5 font-display font-extrabold text-balance leading-[1.05] text-primary-foreground text-[clamp(2.25rem,5vw,3.75rem)]">
+            <h2 className="mt-5 font-display font-extrabold text-balance leading-[1.05] text-white text-[clamp(2.25rem,5vw,3.75rem)]">
               {t("book_title_1")} <span style={{ color: "var(--accent)" }}>{t("book_title_2")}</span> {t("book_title_3")}
             </h2>
-            <p className="mt-5 text-primary-foreground/85 max-w-xl leading-relaxed text-base">{t("book_desc")}</p>
+            <p className="mt-5 text-white/90 max-w-xl leading-relaxed text-base">{t("book_desc")}</p>
             <div className="mt-7 flex flex-wrap gap-3">
               <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-                className="group inline-flex items-center gap-2 rounded-full bg-primary-foreground text-primary px-6 py-3.5 text-sm font-bold hover:bg-primary-foreground/90 transition shadow-lg">
+                className="group inline-flex items-center gap-2 rounded-full bg-white text-[#0b1736] px-6 py-3.5 text-sm font-bold hover:bg-white/95 transition shadow-lg">
                 <MessageCircle className="size-4" /> {t("book_btn_whatsapp")}
                 <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
               </a>
-              <a href="tel:+966555376228" className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 bg-primary-foreground/5 px-6 py-3.5 text-sm font-bold hover:bg-primary-foreground/15 transition">
+              <a href="tel:+966555376228" className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 text-white px-6 py-3.5 text-sm font-bold hover:bg-white/20 transition">
                 <Phone className="size-4" /> +966 555 376 228
               </a>
             </div>
           </div>
           <div className="grid gap-3">
             {steps.map(({ i: Icon, t: tt, d }, idx) => (
-              <div key={tt} className="rounded-2xl border border-primary-foreground/25 bg-primary-foreground/15 p-4 flex items-start gap-3 backdrop-blur-xl">
-                <span className="size-10 rounded-xl bg-primary-foreground text-primary grid place-items-center shrink-0 font-display font-extrabold text-sm">
+              <div key={tt} className="rounded-2xl border border-white/25 bg-white/10 p-4 flex items-start gap-3 backdrop-blur-xl">
+                <span className="size-10 rounded-xl bg-white text-[#0b1736] grid place-items-center shrink-0 font-display font-extrabold text-sm">
                   0{idx + 1}
                 </span>
                 <div className="min-w-0">
-                  <div className="font-semibold text-sm flex items-center gap-2 text-primary-foreground">
+                  <div className="font-semibold text-sm flex items-center gap-2 text-white">
                     <Icon className="size-3.5" /> {tt}
                   </div>
-                  <div className="text-xs text-primary-foreground/80 mt-1 leading-relaxed">{d}</div>
+                  <div className="text-xs text-white/85 mt-1 leading-relaxed">{d}</div>
                 </div>
               </div>
             ))}
@@ -978,6 +985,20 @@ const PODCAST_EPISODES = [
     number: "01",
     titleKey: "podcast_ep1_title",
     descKey: "podcast_ep1_desc",
+    duration: "—",
+  },
+  {
+    id: "yOYL9R84yyE",
+    number: "03",
+    titleKey: "podcast_ep3_title",
+    descKey: "podcast_ep3_desc",
+    duration: "—",
+  },
+  {
+    id: "IGlDz6mCcU0",
+    number: "04",
+    titleKey: "podcast_ep4_title",
+    descKey: "podcast_ep4_desc",
     duration: "—",
   },
 ];
