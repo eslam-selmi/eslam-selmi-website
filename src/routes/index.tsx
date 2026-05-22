@@ -1136,7 +1136,7 @@ function Library() {
             </div>
           </div>
           {/* Accent panel */}
-          <div className="relative hidden md:block bg-gradient-to-br from-[var(--lavender-deep)] via-primary to-[var(--accent)] p-10 overflow-hidden order-1 md:order-2">
+          <div className="relative hidden md:block p-10 overflow-hidden order-1 md:order-2" style={{ background: "linear-gradient(135deg, var(--lavender-deep) 0%, var(--navy-deep) 55%, var(--accent) 100%)" }}>
             <div className="absolute inset-0 grain opacity-25 pointer-events-none" />
             <div className="relative h-full flex flex-col justify-between text-white">
               <div className="flex items-start justify-between">
