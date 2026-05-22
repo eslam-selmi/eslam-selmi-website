@@ -1009,9 +1009,9 @@ function Podcast() {
     <Section id="podcast" eyebrow={t("podcast_eyebrow")} title={t("podcast_title")}>
       <div className="grid lg:grid-cols-[1.35fr_1fr] gap-6 lg:gap-8 items-start">
         {/* Player card */}
-        <motion.div {...fadeUp} className="relative">
-          <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-gradient-to-br from-accent/25 via-accent/5 to-transparent blur-2xl" />
-          <div className="glass-panel rounded-3xl overflow-hidden border border-foreground/10">
+        <motion.div {...fadeUp} className="relative min-w-0 w-full">
+          <div className="absolute -inset-2 sm:-inset-6 -z-10 rounded-[2rem] bg-gradient-to-br from-accent/25 via-accent/5 to-transparent blur-2xl" />
+          <div className="glass-panel rounded-2xl sm:rounded-3xl overflow-hidden border border-foreground/10">
             <div className="relative aspect-video bg-black">
               {playing ? (
                 <iframe
