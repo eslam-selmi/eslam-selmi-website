@@ -183,6 +183,16 @@ const ar: Dict = {
   snapshots_eyebrow: "لقطات",
   snapshots_title: "لحظات من الميدان",
 
+  podcast_eyebrow: "بودكاست التعلم والتطوير",
+  podcast_title: "حوارات في التعلم، إدارة المواهب والنمو.",
+  podcast_now_playing: "يُعرض الآن",
+  podcast_episodes: "الحلقات",
+  podcast_play: "تشغيل الحلقة",
+  podcast_more_soon: "حلقات جديدة قريبًا — تابعنا.",
+  podcast_ep1_title: "الحلقة الأولى — داخل عالم التعلم والتطوير",
+  podcast_ep1_desc: "قصص حقيقية من الميدان عن بناء المواهب والأداء والثقافة.",
+
+
   book_badge: "جلسة مجانية ٣٠ دقيقة",
   book_title_1: "احجز جلسة",
   book_title_2: "فردية مجانية",
