@@ -126,7 +126,7 @@ const PROGRAMS = [
   },
   {
     track: { en: "Learning & Development", ar: "التعلم والتطوير" },
-    intro: { en: "Dynamic L&D program — nurture talent, foster improvement and build a culture of learning.", ar: "برنامج تعلم وتطوير ديناميكي يبني ثقافة التعلم." },
+    intro: { en: "Dynamic L&D program: nurture talent, foster improvement and build a culture of learning.", ar: "برنامج تعلم وتطوير ديناميكي يبني ثقافة التعلم." },
     items: [
       { name: { en: "L&D From Scratch", ar: "L&D من الصفر" }, desc: { en: "TNA, annual plans, training kits, ROI analysis and budget management.", ar: "تحليل الاحتياج، خطط سنوية، أدوات تدريب، تحليل العائد وإدارة الميزانية." } },
     ],
