@@ -119,7 +119,7 @@ const PILLARS = [
   { icon: BarChart3, key: "kpi", color: "from-lavender/35 to-primary/10" },
 ];
 
-const SNAPSHOTS = [trainingCollage, snap1, snap2, snap3, snap4, snap5, snap6, snap7];
+const SNAPSHOTS = [snap1, snap2, snap5, snap3, snap8, snap4, snap7, snap9, snap6];
 
 type ThemeMode = "dark" | "light";
 
