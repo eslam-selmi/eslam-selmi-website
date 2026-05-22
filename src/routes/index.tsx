@@ -364,7 +364,7 @@ export function Nav({ theme, onThemeToggle }: { theme?: ThemeMode; onThemeToggle
               n.to ? (
                 <Link key={n.id} to={n.to} onClick={() => setOpen(false)} className="px-3 py-2 rounded-lg hover:bg-foreground/5 text-sm">{t(n.key)}</Link>
               ) : (
-                <a key={n.id} href={`#${n.id}`} onClick={() => setOpen(false)} className="px-3 py-2 rounded-lg hover:bg-foreground/5 text-sm">{t(n.key)}</a>
+                <a key={n.id} href={hashHref(n.id)} onClick={() => setOpen(false)} className="px-3 py-2 rounded-lg hover:bg-foreground/5 text-sm">{t(n.key)}</a>
               )
             ))}
             <button onClick={(e) => { setOpen(false); openCalendly(e); }}
