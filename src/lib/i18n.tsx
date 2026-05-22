@@ -182,7 +182,7 @@ const en: Dict = {
 
 const ar: Dict = {
   nav_home: "الرئيسية",
-  nav_about: "نبذة",
+  nav_about: "من أنا",
   nav_journey: "المسيرة",
   nav_services: "الخدمات",
   nav_pillars: "الركائز",
