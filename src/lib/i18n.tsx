@@ -17,7 +17,7 @@ const en: Dict = {
   nav_podcast: "Podcast",
   nav_contact: "Contact",
   book_cta: "Book free 1:1",
-  listen_podcast: "Listen — Podcast",
+  listen_podcast: "Listen · Podcast",
   demo_title: "Demo preview",
   demo_desc: "This site is a live demo. Content and links may evolve.",
 
@@ -38,7 +38,7 @@ const en: Dict = {
   about_eyebrow: "About me",
   about_title: "Driving human capital excellence",
   about_intro:
-    "L&D Head, Talent & Performance Management Leader with 9+ years across Egypt, Saudi Arabia and 12 other countries. Expertise spans Education, Retail, FMCG and Logistics — partnering with global leaders like KnowledgeCity, G4S, Aramex and Imtenan.",
+    "L&D Head, Talent & Performance Management Leader with 9+ years across Egypt, Saudi Arabia and 12 other countries. Expertise spans Education, Retail, FMCG and Logistics, partnering with global leaders like KnowledgeCity, G4S, Aramex and Imtenan.",
   about_credentials: "Educational credentials",
 
   // pillars
@@ -87,13 +87,13 @@ const en: Dict = {
   podcast_episodes: "Episodes",
   podcast_play: "Play episode",
   podcast_more_soon: "More episodes coming soon. Stay tuned.",
-  podcast_ep1_title: "Episode 01 — Inside Learning & Development",
+  podcast_ep1_title: "Episode 01: Inside Learning & Development",
   podcast_ep1_desc: "Real stories from the field on building talent, performance and culture.",
-  podcast_ep2_title: "Episode 02 — Building Learning Culture",
+  podcast_ep2_title: "Episode 02: Building Learning Culture",
   podcast_ep2_desc: "How to embed a learning mindset across teams and leaders.",
-  podcast_ep3_title: "Episode 03 — Talent in Action",
+  podcast_ep3_title: "Episode 03: Talent in Action",
   podcast_ep3_desc: "Field insights on developing high-potential talent and team performance.",
-  podcast_ep4_title: "Episode 04 — Coaching for Growth",
+  podcast_ep4_title: "Episode 04: Coaching for Growth",
   podcast_ep4_desc: "How coaching and mentoring drive measurable workplace impact.",
 
 
@@ -110,7 +110,7 @@ const en: Dict = {
   book_step_2_t: "Get a tailored plan",
   book_step_2_d: "Walk away with concrete next steps.",
   book_step_3_t: "No strings attached",
-  book_step_3_d: "Free, no obligations — just value.",
+  book_step_3_d: "Free, no obligations. Just value.",
 
   // current courses
   current_eyebrow: "Open now",
@@ -138,7 +138,7 @@ const en: Dict = {
   emp_eyebrow: "New graduates",
   emp_title: "Empowerment Tools",
   emp_tagline: "Workplace-ready in weeks, not years.",
-  emp_desc: "A hands-on program that prepares fresh graduates to master the everyday tools of modern work — practical AI use, professional Outlook workflows, design with Canva, project tracking with Trello, and data work with Google Sheets & Forms.",
+  emp_desc: "A hands-on program that prepares fresh graduates to master the everyday tools of modern work: practical AI use, professional Outlook workflows, design with Canva, project tracking with Trello, and data work with Google Sheets & Forms.",
   emp_btn: "Enroll now",
   emp_meta: "Tools · Workflows · Confidence",
   emp_tool_ai: "AI at work",
@@ -160,7 +160,7 @@ const en: Dict = {
   lead_eyebrow: "Stay in the loop",
   lead_title: "Subscribe to upcoming courses",
   lead_desc:
-    "Be the first to know when new cohorts open — leadership, L&D, instructional design and performance management.",
+    "Be the first to know when new cohorts open: leadership, L&D, instructional design and performance management.",
   lead_placeholder: "Your email address",
   lead_btn: "Subscribe",
   lead_success: "You're in. I'll be in touch.",
@@ -192,7 +192,7 @@ const ar: Dict = {
   nav_podcast: "البودكاست",
   nav_contact: "تواصل",
   book_cta: "احجز جلسة مجانية",
-  listen_podcast: "استمع — البودكاست",
+  listen_podcast: "استمع · البودكاست",
   demo_title: "نسخة تجريبية",
   demo_desc: "هذا الموقع نسخة تجريبية حية. قد يتغير المحتوى والروابط.",
 
@@ -253,13 +253,13 @@ const ar: Dict = {
   podcast_episodes: "الحلقات",
   podcast_play: "تشغيل الحلقة",
   podcast_more_soon: "حلقات جديدة قريبًا. تابعنا.",
-  podcast_ep1_title: "الحلقة الأولى — داخل عالم التعلم والتطوير",
+  podcast_ep1_title: "الحلقة الأولى: داخل عالم التعلم والتطوير",
   podcast_ep1_desc: "قصص حقيقية من الميدان عن بناء المواهب والأداء والثقافة.",
-  podcast_ep2_title: "الحلقة الثانية — بناء ثقافة التعلم",
+  podcast_ep2_title: "الحلقة الثانية: بناء ثقافة التعلم",
   podcast_ep2_desc: "كيف نُرسّخ عقلية التعلم لدى الفرق والقيادات.",
-  podcast_ep3_title: "الحلقة الثالثة — المواهب في الميدان",
+  podcast_ep3_title: "الحلقة الثالثة: المواهب في الميدان",
   podcast_ep3_desc: "رؤى عملية لتطوير المواهب الواعدة وأداء الفرق.",
-  podcast_ep4_title: "الحلقة الرابعة — الكوتشينج للنمو",
+  podcast_ep4_title: "الحلقة الرابعة: الكوتشينج للنمو",
   podcast_ep4_desc: "كيف يُحدث الكوتشينج والإرشاد أثرًا حقيقيًا في بيئة العمل.",
 
 
@@ -275,7 +275,7 @@ const ar: Dict = {
   book_step_2_t: "خطة مخصّصة",
   book_step_2_d: "تخرج بخطوات عملية واضحة قابلة للتنفيذ.",
   book_step_3_t: "دون أي التزامات",
-  book_step_3_d: "جلسة مجانية تمامًا — قيمة حقيقية فقط.",
+  book_step_3_d: "جلسة مجانية تمامًا، قيمة حقيقية فقط.",
 
   current_eyebrow: "متاح الآن",
   current_title: "دورات مباشرة، سجّل اليوم",
@@ -300,7 +300,7 @@ const ar: Dict = {
   emp_eyebrow: "للخريجين الجدد",
   emp_title: "أدوات التمكين",
   emp_tagline: "جاهز لسوق العمل خلال أسابيع، لا سنوات.",
-  emp_desc: "برنامج عملي يؤهّل الخريجين الجدد لإتقان الأدوات الأساسية في بيئة العمل الحديثة — توظيف الذكاء الاصطناعي بفاعلية، إتقان Outlook، التصميم باستخدام Canva، إدارة المهام عبر Trello، والعمل مع Google Sheets و Google Forms.",
+  emp_desc: "برنامج عملي يؤهّل الخريجين الجدد لإتقان الأدوات الأساسية في بيئة العمل الحديثة: توظيف الذكاء الاصطناعي بفاعلية، إتقان Outlook، التصميم باستخدام Canva، إدارة المهام عبر Trello، والعمل مع Google Sheets و Google Forms.",
   emp_btn: "سجّل الآن",
   emp_meta: "أدوات · مهارات · ثقة",
   emp_tool_ai: "الذكاء الاصطناعي",

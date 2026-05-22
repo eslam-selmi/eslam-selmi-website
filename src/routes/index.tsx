@@ -7,7 +7,7 @@ import {
   GraduationCap, Award, Users, TrendingUp, BarChart3, UserCheck, Languages,
   ArrowUp, Loader2, Briefcase, BadgeCheck, Compass, Presentation, Moon, Sun,
   Mic, BookOpen, Library as LibraryIcon, FileText, Download, ExternalLink,
-  Rocket, Wand2, Mail as MailIcon, Palette, Trello, Table2, Bot,
+  Rocket, Wand2, Mail as MailIcon, Palette, Trello, Table2, Bot, Quote,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n, type Lang } from "@/lib/i18n";
@@ -97,7 +97,7 @@ const JOURNEY = [
 const CREDENTIALS = [
   { name: { en: "PMP", ar: "إدارة المشاريع PMP" }, issuer: { en: "London College", ar: "كلية لندن" }, icon: BadgeCheck },
   { name: { en: "PMI® Kick-Off Predictive", ar: "PMI® Kick-Off Predictive" }, issuer: { en: "Project Management Institute", ar: "معهد إدارة المشاريع" }, icon: BadgeCheck },
-  { name: { en: "TOT — Training of Trainers", ar: "تدريب المدربين TOT" }, issuer: { en: "Certified Program", ar: "برنامج معتمد" }, icon: Presentation },
+  { name: { en: "TOT, Training of Trainers", ar: "تدريب المدربين TOT" }, issuer: { en: "Certified Program", ar: "برنامج معتمد" }, icon: Presentation },
   { name: { en: "Performance & KPIs", ar: "إدارة الأداء والمؤشرات" }, issuer: { en: "ESLSCA University", ar: "جامعة ESLSCA" }, icon: BarChart3 },
   { name: { en: "Workplace Learning with Coaching & Mentoring", ar: "التعلم في بيئة العمل بالكوتشينج والإرشاد" }, issuer: { en: "The Open University", ar: "الجامعة المفتوحة" }, icon: HeartHandshake },
   { name: { en: "Risk Management Workshop", ar: "ورشة إدارة المخاطر" }, issuer: { en: "Masar Academy", ar: "أكاديمية مسار" }, icon: Target },
@@ -109,7 +109,7 @@ const CREDENTIALS = [
 
 const SERVICES = [
   { icon: Target, key: "svc_strategy", title: { en: "L&D Strategy Consulting", ar: "استشارات استراتيجية L&D" }, desc: { en: "Tailored strategies that align training initiatives with business goals.", ar: "استراتيجيات مخصصة تربط مبادرات التدريب بأهداف العمل." } },
-  { icon: Layers, key: "svc_hybrid", title: { en: "Hybrid Corporate Training", ar: "تدريب مؤسسي هجين" }, desc: { en: "Flexible sessions for companies — online and on-site.", ar: "جلسات مرنة للشركات — أونلاين وحضوريًا." } },
+  { icon: Layers, key: "svc_hybrid", title: { en: "Hybrid Corporate Training", ar: "تدريب مؤسسي هجين" }, desc: { en: "Flexible sessions for companies, online and on-site.", ar: "جلسات مرنة للشركات، أونلاين وحضوريًا." } },
   { icon: Lightbulb, key: "svc_id", title: { en: "Instructional Design", ar: "تصميم تعليمي" }, desc: { en: "Engaging learning experiences crafted with innovative methods.", ar: "تجارب تعلم جذابة بأساليب مبتكرة." } },
   { icon: HeartHandshake, key: "svc_coach", title: { en: "One-on-One Coaching", ar: "تدريب فردي" }, desc: { en: "Personalized sessions to unlock individual potential and growth.", ar: "جلسات مخصصة لإطلاق الإمكانات والنمو." } },
 ];
@@ -126,7 +126,7 @@ const PROGRAMS = [
   },
   {
     track: { en: "Learning & Development", ar: "التعلم والتطوير" },
-    intro: { en: "Dynamic L&D program — nurture talent, foster improvement and build a culture of learning.", ar: "برنامج تعلم وتطوير ديناميكي يبني ثقافة التعلم." },
+    intro: { en: "Dynamic L&D program: nurture talent, foster improvement and build a culture of learning.", ar: "برنامج تعلم وتطوير ديناميكي يبني ثقافة التعلم." },
     items: [
       { name: { en: "L&D From Scratch", ar: "L&D من الصفر" }, desc: { en: "TNA, annual plans, training kits, ROI analysis and budget management.", ar: "تحليل الاحتياج، خطط سنوية، أدوات تدريب، تحليل العائد وإدارة الميزانية." } },
     ],
@@ -520,7 +520,7 @@ function Hero() {
                 <img
                   src={headshot}
                   alt="Eslam Selmi"
-                  className="absolute inset-x-0 bottom-0 h-[112%] w-full object-contain object-bottom"
+                  className="absolute inset-x-0 bottom-0 h-[120%] w-full object-contain object-bottom"
                 />
                 {/* Thin inner stroke */}
                 <div
@@ -603,30 +603,45 @@ function About() {
   ];
   return (
     <Section id="about" eyebrow={t("about_eyebrow")} title={t("about_title")}>
-      <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-        <motion.div {...fadeUp} className="glass-panel sticky top-28 rounded-[2rem] p-7">
-          <p className="text-lg leading-relaxed text-foreground/75">
-            {t("about_intro")}
-          </p>
-          <div className="mt-8 grid grid-cols-2 gap-3">
-            <Stat n="9+" l={lang === "ar" ? "سنوات" : "Years"} />
-            <Stat n="4" l={lang === "ar" ? "قطاعات" : "Sectors"} />
+      {/* Editorial intro card */}
+      <motion.div {...fadeUp} className="relative overflow-hidden rounded-[2.5rem] border border-foreground/10 bg-gradient-to-br from-[var(--navy)] via-[#162045] to-[var(--lavender-deep)] text-white p-8 sm:p-12">
+        <div className="pointer-events-none absolute -top-24 -end-24 size-80 rounded-full bg-[var(--gold)]/25 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-32 -start-20 size-96 rounded-full bg-[var(--lavender)]/30 blur-3xl" />
+        <div className="pointer-events-none absolute inset-0 opacity-[0.08]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)", backgroundSize: "22px 22px" }} />
+
+        <div className="relative grid gap-10 lg:grid-cols-[1.4fr_1fr] lg:items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 px-3 py-1 text-[11px] uppercase tracking-[0.25em] text-white/80">
+              <span className="size-1.5 rounded-full bg-[var(--gold)]" /> {lang === "ar" ? "ملف القائد" : "Leader profile"}
+            </div>
+            <Quote className="mt-6 size-10 text-[var(--gold)]/80 rtl-flip" />
+            <p className="mt-4 font-display text-2xl sm:text-[28px] leading-[1.35] text-white/95">
+              {t("about_intro")}
+            </p>
           </div>
-        </motion.div>
-      <div className="grid sm:grid-cols-2 gap-4">
+
+          <div className="grid grid-cols-2 gap-3">
+            <BigStat n="9+" l={lang === "ar" ? "سنوات خبرة" : "Years of experience"} />
+            <BigStat n="12" l={lang === "ar" ? "دولة" : "Countries"} />
+            <BigStat n="4" l={lang === "ar" ? "قطاعات" : "Sectors"} />
+            <BigStat n="1.5K+" l={lang === "ar" ? "متدرّب" : "Trainees"} />
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Strengths */}
+      <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {strengths.map((s, i) => (
           <motion.div key={s.t.en} {...fadeUp} transition={{ duration: 0.6, delay: i * 0.08 }}
-            className="glass-panel rounded-3xl p-5 transition hover:-translate-y-1 group">
-            <div className="flex items-start gap-3">
-              <CheckCircle2 className="size-5 text-gold mt-0.5 shrink-0" />
-              <div>
-                <h3 className="font-semibold">{s.t[lang]}</h3>
-                <p className="text-sm text-muted-foreground mt-1">{s.d[lang]}</p>
-              </div>
+            className="relative glass-panel rounded-3xl p-6 group hover:-translate-y-1 transition overflow-hidden">
+            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[var(--gold)] via-[var(--lavender)] to-[var(--gold)] opacity-70" />
+            <div className="font-display text-3xl font-extrabold leading-none" style={{ color: "var(--accent)" }}>
+              {String(i + 1).padStart(2, "0")}
             </div>
+            <h3 className="mt-3 font-semibold text-base leading-tight">{s.t[lang]}</h3>
+            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.d[lang]}</p>
           </motion.div>
         ))}
-      </div>
       </div>
 
       <motion.div {...fadeUp} className="mt-12">
@@ -656,6 +671,15 @@ function About() {
         </div>
       </motion.div>
     </Section>
+  );
+}
+
+function BigStat({ n, l }: { n: string; l: string }) {
+  return (
+    <div className="rounded-2xl bg-white/10 border border-white/15 backdrop-blur-md p-4 text-center">
+      <div className="font-display text-3xl sm:text-4xl font-extrabold leading-none text-white">{n}</div>
+      <div className="mt-2 text-[10px] uppercase tracking-[0.22em] text-white/75">{l}</div>
+    </div>
   );
 }
 
@@ -1304,7 +1328,16 @@ function Contact() {
   return (
     <Section id="contact" eyebrow={t("contact_eyebrow")} title={t("contact_title")}>
       <div className="grid sm:grid-cols-3 gap-4">
-        <ContactCard icon={Phone} label={t("contact_mobile")} lines={["🇸🇦 +966 555 376 228", "🇪🇬 +20 10 9727 9900"]} href="tel:+966555376228" />
+        <ContactCard icon={Phone} label={t("contact_mobile")} lines={[
+          <span key="sa" className="inline-flex items-center gap-2.5">
+            <img src="https://flagcdn.com/w40/sa.png" srcSet="https://flagcdn.com/w80/sa.png 2x" width={22} height={16} alt="Saudi Arabia" className="rounded-[3px] ring-1 ring-foreground/15 shadow-sm shrink-0" />
+            <span dir="ltr">+966 555 376 228</span>
+          </span>,
+          <span key="eg" className="inline-flex items-center gap-2.5">
+            <img src="https://flagcdn.com/w40/eg.png" srcSet="https://flagcdn.com/w80/eg.png 2x" width={22} height={16} alt="Egypt" className="rounded-[3px] ring-1 ring-foreground/15 shadow-sm shrink-0" />
+            <span dir="ltr">+20 10 9727 9900</span>
+          </span>,
+        ]} href="tel:+966555376228" />
         <ContactCard icon={Mail} label={t("contact_email")} lines={["eslam.m.selmi@gmail.com"]} href="mailto:eslam.m.selmi@gmail.com" />
         <ContactCard icon={Linkedin} label={t("contact_linkedin")} lines={[t("contact_linkedin_line")]} href={LINKEDIN} />
       </div>
@@ -1312,13 +1345,13 @@ function Contact() {
   );
 }
 
-function ContactCard({ icon: Icon, label, lines, href }: { icon: any; label: string; lines: string[]; href: string }) {
+function ContactCard({ icon: Icon, label, lines, href }: { icon: any; label: string; lines: React.ReactNode[]; href: string }) {
   return (
     <motion.a {...fadeUp} href={href} target="_blank" rel="noopener noreferrer"
       className="glass-panel rounded-3xl p-6 transition hover:-translate-y-1 group block">
       <Icon className="size-6 text-gold" />
       <div className="mt-3 text-sm text-muted-foreground">{label}</div>
-      {lines.map(l => <div key={l} className="font-medium mt-1">{l}</div>)}
+      {lines.map((l, i) => <div key={i} className="font-medium mt-1">{l}</div>)}
       <div className="mt-4 inline-flex items-center gap-1 text-xs text-gold group-hover:gap-2 transition-all">
         Open <ArrowRight className="size-3 rtl-flip" />
       </div>
