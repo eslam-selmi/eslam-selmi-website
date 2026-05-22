@@ -309,17 +309,17 @@ function Hero() {
 
           <motion.h1
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.7 }}
-            className="font-display font-extrabold text-balance leading-[1.02] text-[clamp(2.6rem,7vw,6rem)] text-foreground"
+            className="font-display font-extrabold text-balance leading-[1.05] text-[clamp(2rem,4.6vw,4.25rem)] text-foreground"
           >
             {lang === "ar" ? (
               <>
                 إطلاق إمكانات المواهب مع{" "}
-                <span className="block sm:inline" style={{ color: "var(--accent)" }}>{nameAr}</span>
+                <span style={{ color: "var(--accent)" }}>{nameAr}</span>
               </>
             ) : (
               <>
                 Unlocking Talent Potential With{" "}
-                <span className="block sm:inline" style={{ color: "var(--accent)" }}>{nameEn}</span>
+                <span style={{ color: "var(--accent)" }}>{nameEn}</span>
               </>
             )}
           </motion.h1>
