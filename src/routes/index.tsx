@@ -910,6 +910,36 @@ function Clients() {
   );
 }
 
+/* ---------- BRANDS / LOGO WALL ---------- */
+function Brands() {
+  const { t } = useI18n();
+  return (
+    <Section id="brands" eyebrow={t("brands_eyebrow")} title={t("brands_title")}>
+      <p className="text-muted-foreground max-w-2xl mb-10">{t("brands_desc")}</p>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        {BRANDS.map((b, i) => (
+          <motion.div
+            key={b.name}
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.04 }}
+            className="group relative aspect-[4/3] rounded-2xl bg-white border border-border/40 shadow-sm overflow-hidden flex items-center justify-center p-4 transition hover:-translate-y-1 hover:shadow-lg"
+          >
+            <img
+              src={b.src}
+              alt={b.name}
+              loading="lazy"
+              className="max-w-full max-h-full object-contain transition group-hover:scale-105"
+            />
+          </motion.div>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+
 /* ---------- SNAPSHOTS w/ LIGHTBOX ---------- */
 function Snapshots() {
   const { t, dir } = useI18n();
