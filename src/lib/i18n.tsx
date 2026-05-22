@@ -160,7 +160,7 @@ const en: Dict = {
   lead_eyebrow: "Stay in the loop",
   lead_title: "Subscribe to upcoming courses",
   lead_desc:
-    "Be the first to know when new cohorts open — leadership, L&D, instructional design and performance management.",
+    "Be the first to know when new cohorts open: leadership, L&D, instructional design and performance management.",
   lead_placeholder: "Your email address",
   lead_btn: "Subscribe",
   lead_success: "You're in. I'll be in touch.",
