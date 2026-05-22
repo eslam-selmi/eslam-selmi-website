@@ -291,8 +291,8 @@ function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => 
                 {t(n.key)}
               </a>
             ))}
-            <a
-              href="#empowerment"
+            <Link
+              to="/graduates"
               className="ms-2 group inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-extrabold tracking-tight border-2 transition-all hover:-translate-y-0.5"
               style={{
                 borderColor: "var(--accent)",
@@ -303,7 +303,7 @@ function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => 
             >
               <Rocket className="size-3.5" />
               {t("nav_empowerment")}
-            </a>
+            </Link>
           </nav>
           <div className="flex items-center gap-1.5">
             <button
