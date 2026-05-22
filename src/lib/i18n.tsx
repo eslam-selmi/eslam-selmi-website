@@ -35,7 +35,7 @@ const en: Dict = {
   status_role: "Head of L&D · KSA",
 
   // about
-  about_eyebrow: "About me",
+  about_eyebrow: "Who I am",
   about_title: "Driving human capital excellence",
   about_intro:
     "L&D Head, Talent & Performance Management Leader with 9+ years across Egypt, Saudi Arabia and 12 other countries. Expertise spans Education, Retail, FMCG and Logistics, partnering with global leaders like KnowledgeCity, G4S, Aramex and Imtenan.",
