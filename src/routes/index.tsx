@@ -188,7 +188,7 @@ function Portfolio() {
       <Journey />
       <Services />
       <Programs />
-      <EmpowermentTools />
+      
       <CurrentCourses />
       <Library />
       
