@@ -25,8 +25,22 @@ import snap9 from "@/assets/snapshots/snap-9.jpg";
 
 export const Route = createFileRoute("/")({ component: Portfolio });
 
-const WHATSAPP = "https://wa.me/966555376228?text=Hi%20Eslam%2C%20I%27d%20like%20to%20book%20a%20free%201%3A1%20session.";
+const WHATSAPP_BASE = "https://wa.me/966555376228";
+const WHATSAPP = `${WHATSAPP_BASE}?text=${encodeURIComponent("Hi Eslam, I'd like to book a free 1:1 session.")}`;
+const CALENDLY_URL = "https://calendly.com/eslam-m-selmi/30min";
 const LINKEDIN = "https://www.linkedin.com/in/eslam-selmi/";
+
+const openCalendly = (e?: React.MouseEvent) => {
+  if (e) e.preventDefault();
+  if (typeof window !== "undefined") window.dispatchEvent(new Event("open-calendly"));
+};
+
+const waServiceLink = (serviceEn: string, lang: "en" | "ar") => {
+  const msg = lang === "ar"
+    ? `مرحبًا إسلام، أرغب في طلب خدمة: ${serviceEn}. هل يمكننا التحدث؟`
+    : `Hi Eslam, I'd like to request the "${serviceEn}" service. Can we chat?`;
+  return `${WHATSAPP_BASE}?text=${encodeURIComponent(msg)}`;
+};
 
 const NAV = [
   { id: "home", key: "nav_home" },
