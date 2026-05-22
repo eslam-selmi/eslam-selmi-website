@@ -168,7 +168,27 @@ function Portfolio() {
   );
 }
 
-/* ---------- NAV ---------- */
+/* ---------- BRAND MARK ---------- */
+function BrandMark({ size = 40 }: { size?: number }) {
+  return (
+    <div className="flex items-center gap-2.5">
+      <svg width={size} height={size} viewBox="0 0 48 48" className="shrink-0" aria-label="Eslam Selmi">
+        <defs>
+          <linearGradient id="bmg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="var(--navy)" />
+            <stop offset="100%" stopColor="var(--accent)" />
+          </linearGradient>
+        </defs>
+        <rect x="2" y="2" width="44" height="44" rx="12" fill="url(#bmg)" />
+        <path d="M14 32 L24 14 L34 32 M18.5 25 H29.5" stroke="white" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      </svg>
+      <span className="hidden sm:flex flex-col leading-none">
+        <span className="font-display text-[13px] font-bold tracking-[0.18em] uppercase text-foreground">Eslam Selmi</span>
+        <span className="text-[9px] tracking-[0.28em] uppercase text-muted-foreground mt-1">Head of L&amp;D</span>
+      </span>
+    </div>
+  );
+}
 function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => void }) {
   const { t, lang, setLang } = useI18n();
   const [open, setOpen] = useState(false);
