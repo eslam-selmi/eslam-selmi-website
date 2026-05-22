@@ -708,7 +708,7 @@ function Snapshots() {
     <button
       type="button"
       onClick={() => setActive(originalIndex)}
-      className="group relative shrink-0 w-[300px] sm:w-[360px] aspect-[4/5] overflow-hidden rounded-3xl border border-foreground/10 cursor-zoom-in shadow-[0_24px_70px_-38px_var(--foreground)] bg-foreground/[0.04]"
+      className="group relative shrink-0 w-[200px] sm:w-[240px] lg:w-[260px] aspect-[4/5] overflow-hidden rounded-2xl border border-foreground/10 cursor-zoom-in shadow-[0_18px_50px_-30px_var(--foreground)] bg-foreground/[0.04]"
       aria-label={`Open snapshot ${originalIndex + 1}`}
     >
       <img
