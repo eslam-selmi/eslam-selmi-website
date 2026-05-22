@@ -56,13 +56,13 @@ const en: Dict = {
 
   // journey
   journey_eyebrow: "My journey",
-  journey_title: "From specialist to head of L&D",
+  journey_title: "A decade of shaping L&D excellence",
 
   // services
   services_eyebrow: "Services",
   services_title: "Pick a service",
   services_subtitle: "Tap any service to request it instantly via WhatsApp.",
-  svc_request_btn: "Request this service",
+  svc_request_btn: "Invest in this service",
   calendly_title: "Book your free 1:1 session",
   calendly_desc: "Pick a time that works for you.",
 
@@ -132,6 +132,29 @@ const en: Dict = {
   library_open_drive: "Open in Google Drive",
   nav_courses: "Courses",
   nav_library: "Library",
+  nav_empowerment: "Empowerment",
+
+  // empowerment tools
+  emp_eyebrow: "New graduates",
+  emp_title: "Empowerment Tools",
+  emp_tagline: "Workplace-ready in weeks, not years.",
+  emp_desc: "A hands-on program that prepares fresh graduates to master the everyday tools of modern work — practical AI use, professional Outlook workflows, design with Canva, project tracking with Trello, and data work with Google Sheets & Forms.",
+  emp_btn: "Enroll now",
+  emp_meta: "Tools · Workflows · Confidence",
+  emp_tool_ai: "AI at work",
+  emp_tool_outlook: "Outlook mastery",
+  emp_tool_canva: "Canva design",
+  emp_tool_trello: "Trello & tasks",
+  emp_tool_sheets: "Sheets & Forms",
+  emp_tool_more: "More essentials",
+
+  // language hint toast
+  lang_hint_title_en: "Prefer English?",
+  lang_hint_title_ar: "تفضّل العربية؟",
+  lang_hint_desc_en: "You can switch the language anytime from here.",
+  lang_hint_desc_ar: "يمكنك تغيير لغة الموقع في أي وقت من هنا.",
+  lang_hint_switch_en: "Switch to English",
+  lang_hint_switch_ar: "التحويل للعربية",
 
   // lead form
   lead_eyebrow: "Stay in the loop",
@@ -204,12 +227,12 @@ const ar: Dict = {
     "تصميم بطاقات الأداء المتوازن، هندسة المقاييس الكمية، بناء لوحات قياس الأداء، ومواءمة برامج التعلم بقرارات قائمة على البيانات وقياس العائد على الاستثمار.",
 
   journey_eyebrow: "مسيرتي المهنية",
-  journey_title: "من أخصائي إلى رئيس قطاع التعلم والتطوير",
+  journey_title: "عقد من بناء التميّز في التعلم والتطوير",
 
   services_eyebrow: "الخدمات",
   services_title: "اختر خدمتك",
   services_subtitle: "اضغط على أي خدمة لطلبها مباشرة عبر واتساب.",
-  svc_request_btn: "اطلب هذه الخدمة",
+  svc_request_btn: "استثمر في هذه الخدمة",
   calendly_title: "احجز جلستك المجانية",
   calendly_desc: "اختر الموعد الذي يناسبك.",
 
@@ -272,6 +295,27 @@ const ar: Dict = {
   library_open_drive: "افتح في Google Drive",
   nav_courses: "الدورات",
   nav_library: "المكتبة",
+  nav_empowerment: "التمكين",
+
+  emp_eyebrow: "للخريجين الجدد",
+  emp_title: "أدوات التمكين",
+  emp_tagline: "جاهز لسوق العمل خلال أسابيع، لا سنوات.",
+  emp_desc: "برنامج عملي يؤهّل الخريجين الجدد لإتقان الأدوات الأساسية في بيئة العمل الحديثة — توظيف الذكاء الاصطناعي بفاعلية، إتقان Outlook، التصميم باستخدام Canva، إدارة المهام عبر Trello، والعمل مع Google Sheets و Google Forms.",
+  emp_btn: "سجّل الآن",
+  emp_meta: "أدوات · مهارات · ثقة",
+  emp_tool_ai: "الذكاء الاصطناعي",
+  emp_tool_outlook: "Outlook باحتراف",
+  emp_tool_canva: "تصميم Canva",
+  emp_tool_trello: "Trello والمهام",
+  emp_tool_sheets: "Sheets و Forms",
+  emp_tool_more: "أدوات أخرى",
+
+  lang_hint_title_en: "Prefer English?",
+  lang_hint_title_ar: "تفضّل العربية؟",
+  lang_hint_desc_en: "You can switch the language anytime from here.",
+  lang_hint_desc_ar: "يمكنك تغيير لغة الموقع في أي وقت من هنا.",
+  lang_hint_switch_en: "Switch to English",
+  lang_hint_switch_ar: "التحويل للعربية",
 
   lead_eyebrow: "ابقَ على اطّلاع",
   lead_title: "اشترك في الدورات القادمة",

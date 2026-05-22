@@ -7,6 +7,7 @@ import {
   GraduationCap, Award, Users, TrendingUp, BarChart3, UserCheck, Languages,
   ArrowUp, Loader2, Briefcase, BadgeCheck, Compass, Presentation, Moon, Sun,
   Mic, BookOpen, Library as LibraryIcon, FileText, Download, ExternalLink,
+  Rocket, Wand2, Mail as MailIcon, Palette, Trello, Table2, Bot,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n, type Lang } from "@/lib/i18n";
@@ -45,7 +46,10 @@ const waServiceLink = (serviceEn: string, lang: "en" | "ar") => {
 // Primary nav — kept short and focused. The full set lives in the mobile menu.
 const NAV = [
   { id: "about", key: "nav_about" },
+  { id: "journey", key: "nav_journey" },
   { id: "services", key: "nav_services" },
+  { id: "programs", key: "nav_programs" },
+  { id: "empowerment", key: "nav_empowerment" },
   { id: "current-courses", key: "nav_courses" },
   { id: "library", key: "nav_library" },
   { id: "podcast", key: "nav_podcast" },
@@ -58,6 +62,7 @@ const NAV_FULL = [
   { id: "journey", key: "nav_journey" },
   { id: "services", key: "nav_services" },
   { id: "programs", key: "nav_programs" },
+  { id: "empowerment", key: "nav_empowerment" },
   { id: "current-courses", key: "nav_courses" },
   { id: "library", key: "nav_library" },
   { id: "podcast", key: "nav_podcast" },
@@ -183,9 +188,10 @@ function Portfolio() {
       <Journey />
       <Services />
       <Programs />
+      <EmpowermentTools />
       <CurrentCourses />
-      <LeadForm />
       <Library />
+      <LeadForm />
       <Podcast />
       <Clients />
       <Snapshots />
@@ -194,8 +200,8 @@ function Portfolio() {
       <Footer />
       <WhatsAppFloat />
       <ScrollTop />
-      <DemoBanner />
       <CalendlyDialog />
+      <LanguageHint />
     </div>
   );
 }
@@ -247,29 +253,44 @@ function CalendlyDialog() {
 /* ---------- BRAND MARK ---------- */
 function BrandMark({ size = 42 }: { size?: number }) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2.5">
       <svg width={size} height={size} viewBox="0 0 48 48" className="shrink-0" aria-label="Eslam Selmi">
         <defs>
-          <linearGradient id="bmg" x1="0" y1="0" x2="1" y2="1">
+          <linearGradient id="bmg" x1="0" y1="1" x2="1" y2="0">
             <stop offset="0%" stopColor="var(--navy)" />
-            <stop offset="55%" stopColor="var(--lavender-deep)" />
+            <stop offset="50%" stopColor="var(--lavender-deep)" />
             <stop offset="100%" stopColor="var(--accent)" />
           </linearGradient>
+          <linearGradient id="bms" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="white" stopOpacity="0.95" />
+            <stop offset="100%" stopColor="white" stopOpacity="0.75" />
+          </linearGradient>
         </defs>
-        {/* rounded squircle plate */}
-        <rect x="2" y="2" width="44" height="44" rx="13" fill="url(#bmg)" />
-        {/* inner highlight */}
-        <rect x="2" y="2" width="44" height="44" rx="13" fill="none" stroke="white" strokeOpacity="0.15" strokeWidth="1" />
-        {/* monogram E + S interlocked */}
+        {/* squircle plate */}
+        <rect x="2" y="2" width="44" height="44" rx="14" fill="url(#bmg)" />
+        <rect x="2.5" y="2.5" width="43" height="43" rx="13.5" fill="none" stroke="white" strokeOpacity="0.18" />
+
+        {/* Concept: an open book / page (knowledge) with a rising spark/arrow (growth) — leadership + learning */}
+        {/* Book base */}
         <path
-          d="M16 15 H30 M16 24 H26 M16 33 H30"
-          stroke="white" strokeWidth="2.4" strokeLinecap="round" fill="none"
+          d="M11 33 C 16 30, 20 30, 24 32 C 28 30, 32 30, 37 33 L 37 17 C 32 14, 28 14, 24 16 C 20 14, 16 14, 11 17 Z"
+          fill="url(#bms)"
+        />
+        {/* Spine */}
+        <path d="M24 16 L 24 32" stroke="var(--navy)" strokeOpacity="0.35" strokeWidth="1" />
+
+        {/* Rising spark — growth arrow lifting from the book */}
+        <path
+          d="M24 14 L 24 7"
+          stroke="white" strokeWidth="2.2" strokeLinecap="round"
         />
         <path
-          d="M34 18 C 34 15, 31 14, 28 15.5 M28 30 C 28 33, 31 34, 34 32.5"
-          stroke="white" strokeOpacity="0.85" strokeWidth="2.2" strokeLinecap="round" fill="none"
+          d="M20.5 10.5 L 24 7 L 27.5 10.5"
+          stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="none"
         />
-        <circle cx="34" cy="24" r="1.6" fill="white" />
+        {/* Spark glow */}
+        <circle cx="24" cy="7" r="2.2" fill="white" />
+        <circle cx="24" cy="7" r="3.6" fill="white" fillOpacity="0.25" />
       </svg>
       <span className="hidden sm:flex flex-col leading-none">
         <span className="font-display text-[14px] font-extrabold tracking-tight text-foreground">Eslam Selmi</span>
@@ -713,12 +734,14 @@ function Services() {
               <a
                 href={waServiceLink(s.title.en, lang)}
                 target="_blank" rel="noopener noreferrer"
-                className="group/btn inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold hover:opacity-90 transition relative z-10"
+                className="group/btn relative inline-flex w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-bold text-white overflow-hidden transition shadow-[0_12px_28px_-12px_oklch(0.55_0.2_290/0.55)] hover:translate-y-[-1px]"
+                style={{ background: "linear-gradient(120deg, var(--navy) 0%, var(--lavender-deep) 60%, var(--accent) 100%)" }}
                 aria-label={`${t("svc_request_btn")} — ${s.title[lang]}`}
               >
-                <MessageCircle className="size-4" />
-                {t("svc_request_btn")}
-                <ArrowRight className="size-4 group-hover/btn:translate-x-1 rtl-flip transition" />
+                <span className="absolute inset-0 bg-white/0 group-hover/btn:bg-white/10 transition" />
+                <Rocket className="relative size-4" />
+                <span className="relative">{t("svc_request_btn")}</span>
+                <ArrowRight className="relative size-4 group-hover/btn:translate-x-1 rtl-flip transition" />
               </a>
             </div>
           </motion.div>
@@ -980,7 +1003,7 @@ function CurrentCourses() {
         className="relative mx-auto max-w-5xl rounded-[2rem] overflow-hidden bg-card border border-foreground/10 shadow-[0_30px_80px_-40px_oklch(0.22_0.06_252/0.35)]">
         <div className="grid md:grid-cols-[1fr_1.2fr]">
           {/* Accent panel */}
-          <div className="relative hidden md:block bg-gradient-to-br from-primary via-[var(--lavender-deep)] to-[var(--accent)] p-10 overflow-hidden">
+          <div className="relative hidden md:block p-10 overflow-hidden" style={{ background: "linear-gradient(135deg, var(--navy-deep) 0%, var(--lavender-deep) 60%, var(--accent) 100%)" }}>
             <div className="absolute inset-0 grain opacity-25 pointer-events-none" />
             <div className="relative h-full flex flex-col justify-between text-white">
               <div className="size-14 grid place-items-center rounded-2xl bg-white/15 backdrop-blur border border-white/25">
@@ -1113,7 +1136,7 @@ function Library() {
             </div>
           </div>
           {/* Accent panel */}
-          <div className="relative hidden md:block bg-gradient-to-br from-[var(--lavender-deep)] via-primary to-[var(--accent)] p-10 overflow-hidden order-1 md:order-2">
+          <div className="relative hidden md:block p-10 overflow-hidden order-1 md:order-2" style={{ background: "linear-gradient(135deg, var(--lavender-deep) 0%, var(--navy-deep) 55%, var(--accent) 100%)" }}>
             <div className="absolute inset-0 grain opacity-25 pointer-events-none" />
             <div className="relative h-full flex flex-col justify-between text-white">
               <div className="flex items-start justify-between">
@@ -1519,26 +1542,38 @@ function ScrollTop() {
   );
 }
 
-/* ---------- DEMO BANNER ---------- */
-function DemoBanner() {
-  const { t, lang, dir } = useI18n();
+/* ---------- LANGUAGE HINT TOAST ---------- */
+function LanguageHint() {
+  const { lang, setLang, t, dir } = useI18n();
   const [show, setShow] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (window.localStorage.getItem("demo-banner-seen")) return;
-    const showTimer = setTimeout(() => setShow(true), 700);
+    if (window.localStorage.getItem("lang-hint-seen")) return;
+    const showTimer = setTimeout(() => setShow(true), 1500);
     const hideTimer = setTimeout(() => {
       setShow(false);
-      window.localStorage.setItem("demo-banner-seen", "1");
-    }, 7000);
+      window.localStorage.setItem("lang-hint-seen", "1");
+    }, 6500);
     return () => { clearTimeout(showTimer); clearTimeout(hideTimer); };
   }, []);
 
   const dismiss = () => {
     setShow(false);
-    if (typeof window !== "undefined") window.localStorage.setItem("demo-banner-seen", "1");
+    if (typeof window !== "undefined") window.localStorage.setItem("lang-hint-seen", "1");
   };
+
+  const switchLang = () => {
+    setLang(lang === "en" ? "ar" : "en");
+    dismiss();
+  };
+
+  // Suggest the OTHER language
+  const suggestAr = lang === "en";
+  const title = suggestAr ? t("lang_hint_title_ar") : t("lang_hint_title_en");
+  const desc = suggestAr ? t("lang_hint_desc_ar") : t("lang_hint_desc_en");
+  const switchLabel = suggestAr ? t("lang_hint_switch_ar") : t("lang_hint_switch_en");
+  const toastDir = suggestAr ? "rtl" : "ltr";
 
   return (
     <AnimatePresence>
@@ -1547,10 +1582,11 @@ function DemoBanner() {
           initial={{ opacity: 0, y: 30, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 20, scale: 0.97 }}
-          transition={{ duration: 0.5, ease: [0.21, 0.5, 0.3, 1] }}
-          className={`fixed bottom-5 z-[60] max-w-[92vw] w-[380px] ${dir === "rtl" ? "right-5" : "left-5"}`}
+          transition={{ duration: 0.45, ease: [0.21, 0.5, 0.3, 1] }}
+          className={`fixed top-24 z-[60] max-w-[92vw] w-[340px] ${dir === "rtl" ? "left-5" : "right-5"}`}
           role="status"
           aria-live="polite"
+          dir={toastDir}
         >
           <div className="relative rounded-2xl overflow-hidden border border-white/15 bg-[#0b1736]/95 backdrop-blur-xl text-white shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]">
             <div
@@ -1561,18 +1597,18 @@ function DemoBanner() {
               <span className="relative shrink-0 mt-0.5">
                 <span className="absolute inset-0 rounded-full bg-[var(--accent)]/40 blur-md animate-pulse" />
                 <span className="relative grid place-items-center size-9 rounded-full bg-white/10 border border-white/20">
-                  <Sparkles className="size-4" style={{ color: "var(--accent)" }} />
+                  <Languages className="size-4" style={{ color: "var(--accent)" }} />
                 </span>
               </span>
               <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                  <span className="font-display font-bold text-sm">{t("demo_title")}</span>
-                  <span className="inline-flex items-center gap-1 text-[9px] uppercase tracking-[0.2em] font-bold rounded-full px-2 py-0.5 bg-[var(--accent)]/20 text-[var(--accent)] border border-[var(--accent)]/30">
-                    <span className="size-1 rounded-full bg-[var(--accent)] animate-pulse" />
-                    {lang === "ar" ? "تجريبي" : "Demo"}
-                  </span>
-                </div>
-                <p className="text-xs text-white/80 mt-1 leading-relaxed">{t("demo_desc")}</p>
+                <div className="font-display font-bold text-sm">{title}</div>
+                <p className="text-xs text-white/80 mt-1 leading-relaxed">{desc}</p>
+                <button
+                  onClick={switchLang}
+                  className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white text-[#0b1736] px-3 py-1.5 text-xs font-bold hover:bg-white/95 transition"
+                >
+                  <Languages className="size-3.5" /> {switchLabel}
+                </button>
               </div>
               <button
                 onClick={dismiss}
@@ -1585,9 +1621,9 @@ function DemoBanner() {
             <motion.div
               initial={{ scaleX: 1 }}
               animate={{ scaleX: 0 }}
-              transition={{ duration: 7, ease: "linear" }}
+              transition={{ duration: 5, ease: "linear" }}
               className="h-[2px] origin-left"
-              style={{ background: "linear-gradient(90deg, var(--accent), oklch(0.55 0.2 290))", transformOrigin: dir === "rtl" ? "right" : "left" }}
+              style={{ background: "linear-gradient(90deg, var(--accent), oklch(0.55 0.2 290))", transformOrigin: toastDir === "rtl" ? "right" : "left" }}
             />
           </div>
         </motion.div>
@@ -1595,3 +1631,113 @@ function DemoBanner() {
     </AnimatePresence>
   );
 }
+
+/* ---------- EMPOWERMENT TOOLS (for new graduates) ---------- */
+function EmpowermentTools() {
+  const { t, dir } = useI18n();
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  const tools = [
+    { icon: Bot, key: "emp_tool_ai" },
+    { icon: MailIcon, key: "emp_tool_outlook" },
+    { icon: Palette, key: "emp_tool_canva" },
+    { icon: Trello, key: "emp_tool_trello" },
+    { icon: Table2, key: "emp_tool_sheets" },
+    { icon: Wand2, key: "emp_tool_more" },
+  ];
+
+  return (
+    <Section id="empowerment" eyebrow={t("emp_eyebrow")} title={t("emp_title")}>
+      <motion.div {...fadeUp}
+        className="relative mx-auto max-w-6xl rounded-[2rem] overflow-hidden border border-foreground/10 shadow-[0_30px_80px_-40px_oklch(0.22_0.06_252/0.35)]"
+        style={{ background: "linear-gradient(135deg, var(--navy-deep) 0%, var(--lavender-deep) 55%, var(--accent) 110%)" }}
+      >
+        <div className="absolute inset-0 grain opacity-25 pointer-events-none" />
+        <div
+          className="absolute inset-0 opacity-50 pointer-events-none"
+          style={{ background: "radial-gradient(ellipse 60% 60% at 90% 10%, oklch(0.72 0.13 180 / 0.45), transparent 60%)" }}
+        />
+        <div className="relative p-7 sm:p-10 lg:p-14 grid lg:grid-cols-[1.1fr_1fr] gap-10 items-center text-white">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full bg-white/12 border border-white/20 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.25em]">
+              <Rocket className="size-3.5" /> {t("emp_tagline")}
+            </div>
+            <h3 className="mt-5 font-display font-extrabold leading-[1.05] text-[clamp(1.75rem,3.4vw,2.75rem)]">
+              {t("emp_title")}
+            </h3>
+            <p className="mt-5 text-white/85 leading-relaxed max-w-xl">{t("emp_desc")}</p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <button
+                onClick={() => setOpen(true)}
+                className="group inline-flex items-center gap-2.5 rounded-full bg-white text-[#0b1736] px-6 py-3.5 text-sm font-bold hover:bg-white/95 transition shadow-lg cursor-pointer"
+              >
+                <Rocket className="size-4" />
+                {t("emp_btn")}
+                <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
+              </button>
+              <div className="inline-flex items-center text-[11px] uppercase tracking-[0.25em] font-bold text-white/80">
+                {t("emp_meta")}
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {tools.map((tool, i) => (
+              <motion.div
+                key={tool.key}
+                initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ delay: i * 0.06 }}
+                className="rounded-2xl border border-white/20 bg-white/10 backdrop-blur p-4 flex flex-col items-start gap-2.5"
+              >
+                <span className="size-10 grid place-items-center rounded-xl bg-white/15 border border-white/20">
+                  <tool.icon className="size-5" />
+                </span>
+                <div className="text-xs font-semibold leading-tight">{t(tool.key)}</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+
+      {open && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-sm"
+          onClick={() => setOpen(false)}
+          dir={dir}
+        >
+          <div
+            className="relative w-full max-w-2xl h-[90vh] rounded-2xl overflow-hidden bg-card shadow-2xl border border-foreground/10 flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-5 py-3 border-b border-foreground/10 bg-card shrink-0">
+              <div className="min-w-0">
+                <div className="font-display font-bold text-sm sm:text-base truncate">{t("emp_title")}</div>
+                <div className="text-xs text-muted-foreground truncate">{t("emp_tagline")}</div>
+              </div>
+              <button
+                onClick={() => setOpen(false)}
+                aria-label="Close"
+                className="size-9 grid place-items-center rounded-full hover:bg-foreground/10 transition shrink-0"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+            <iframe
+              src={COURSES_FORM_URL}
+              title="Empowerment Tools enrollment"
+              className="w-full flex-1 border-0 bg-white"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      )}
+    </Section>
+  );
+}
+
