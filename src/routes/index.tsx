@@ -549,7 +549,7 @@ function Journey() {
           const country = j.country === "SA"
             ? { flag: "sa", name: { en: "Saudi Arabia", ar: "السعودية" } }
             : { flag: "eg", name: { en: "Egypt", ar: "مصر" } };
-          const initials = j.company.split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase();
+          
           return (
             <motion.div
               key={j.year + j.company + i}
