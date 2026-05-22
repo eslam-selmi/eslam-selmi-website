@@ -60,7 +60,7 @@ const en: Dict = {
 
   // services
   services_eyebrow: "Services",
-  services_title: "Let's build something impactful — pick a service",
+  services_title: "Pick a service",
   services_subtitle: "Tap any service to request it instantly via WhatsApp.",
   svc_request_btn: "Request this service",
   calendly_title: "Book your free 1:1 session",
@@ -82,11 +82,11 @@ const en: Dict = {
 
   // podcast
   podcast_eyebrow: "L&D Podcast",
-  podcast_title: "Conversations on learning, talent & growth.",
+  podcast_title: "Conversations on learning & growth.",
   podcast_now_playing: "Now playing",
   podcast_episodes: "Episodes",
   podcast_play: "Play episode",
-  podcast_more_soon: "More episodes coming soon — stay tuned.",
+  podcast_more_soon: "More episodes coming soon. Stay tuned.",
   podcast_ep1_title: "Episode 01 — Inside Learning & Development",
   podcast_ep1_desc: "Real stories from the field on building talent, performance and culture.",
   podcast_ep2_title: "Episode 02 — Building Learning Culture",
@@ -114,7 +114,7 @@ const en: Dict = {
 
   // current courses
   current_eyebrow: "Open now",
-  current_title: "Live courses — enroll today",
+  current_title: "Live courses, enroll today",
   current_desc: "Active cohorts running right now. Pick the program that fits you and apply in under a minute.",
   current_btn: "Browse & enroll",
   current_meta: "Limited seats · Live sessions",
@@ -124,7 +124,7 @@ const en: Dict = {
   // library
   library_eyebrow: "Free resources",
   library_title: "Knowledge Library",
-  library_desc: "A curated vault of e-books, frameworks, templates and resources I share with the community. Always growing — bookmark it.",
+  library_desc: "A curated vault of e-books, frameworks, templates and resources I share with the community. Always growing, so bookmark it.",
   library_btn: "Open the library",
   library_meta: "E-books · Templates · Frameworks",
   library_modal_title: "Knowledge Library",
@@ -207,7 +207,7 @@ const ar: Dict = {
   journey_title: "من أخصائي إلى رئيس قطاع التعلم والتطوير",
 
   services_eyebrow: "الخدمات",
-  services_title: "هيا نصنع أثرًا حقيقيًا — اختر خدمتك الآن",
+  services_title: "اختر خدمتك",
   services_subtitle: "اضغط على أي خدمة لطلبها مباشرة عبر واتساب.",
   svc_request_btn: "اطلب هذه الخدمة",
   calendly_title: "احجز جلستك المجانية",
@@ -225,11 +225,11 @@ const ar: Dict = {
   snapshots_title: "لحظات من الميدان",
 
   podcast_eyebrow: "بودكاست التعلم والتطوير",
-  podcast_title: "حوارات في التعلم، إدارة المواهب والنمو.",
+  podcast_title: "حوارات في التعلم والنمو.",
   podcast_now_playing: "يُعرض الآن",
   podcast_episodes: "الحلقات",
   podcast_play: "تشغيل الحلقة",
-  podcast_more_soon: "حلقات جديدة قريبًا — تابعنا.",
+  podcast_more_soon: "حلقات جديدة قريبًا. تابعنا.",
   podcast_ep1_title: "الحلقة الأولى — داخل عالم التعلم والتطوير",
   podcast_ep1_desc: "قصص حقيقية من الميدان عن بناء المواهب والأداء والثقافة.",
   podcast_ep2_title: "الحلقة الثانية — بناء ثقافة التعلم",
@@ -255,7 +255,7 @@ const ar: Dict = {
   book_step_3_d: "جلسة مجانية تمامًا — قيمة حقيقية فقط.",
 
   current_eyebrow: "متاح الآن",
-  current_title: "دورات مباشرة — سجّل اليوم",
+  current_title: "دورات مباشرة، سجّل اليوم",
   current_desc: "دفعات مفتوحة الآن. اختر البرنامج المناسب لك وقدّم طلبك في أقل من دقيقة.",
   current_btn: "تصفّح وسجّل الآن",
   current_meta: "مقاعد محدودة · جلسات مباشرة",
@@ -264,7 +264,7 @@ const ar: Dict = {
 
   library_eyebrow: "مصادر مجانية",
   library_title: "مكتبة المعرفة",
-  library_desc: "مكتبة مختارة من الكتب الإلكترونية والقوالب والأطر العملية والمصادر التي أشاركها مع المجتمع. تتحدّث باستمرار — احفظها للرجوع إليها.",
+  library_desc: "مكتبة مختارة من الكتب الإلكترونية والقوالب والأطر العملية والمصادر التي أشاركها مع المجتمع. تتجدّد باستمرار، فاحفظها للرجوع إليها.",
   library_btn: "ادخل المكتبة",
   library_meta: "كتب إلكترونية · قوالب · أطر عملية",
   library_modal_title: "مكتبة المعرفة",

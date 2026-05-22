@@ -42,7 +42,16 @@ const waServiceLink = (serviceEn: string, lang: "en" | "ar") => {
   return `${WHATSAPP_BASE}?text=${encodeURIComponent(msg)}`;
 };
 
+// Primary nav — kept short and focused. The full set lives in the mobile menu.
 const NAV = [
+  { id: "about", key: "nav_about" },
+  { id: "services", key: "nav_services" },
+  { id: "current-courses", key: "nav_courses" },
+  { id: "library", key: "nav_library" },
+  { id: "podcast", key: "nav_podcast" },
+  { id: "contact", key: "nav_contact" },
+];
+const NAV_FULL = [
   { id: "home", key: "nav_home" },
   { id: "about", key: "nav_about" },
   { id: "pillars", key: "nav_pillars" },
@@ -236,27 +245,35 @@ function CalendlyDialog() {
 }
 
 /* ---------- BRAND MARK ---------- */
-function BrandMark({ size = 40 }: { size?: number }) {
+function BrandMark({ size = 42 }: { size?: number }) {
   return (
-    <div className="flex items-center gap-2.5">
+    <div className="flex items-center gap-3">
       <svg width={size} height={size} viewBox="0 0 48 48" className="shrink-0" aria-label="Eslam Selmi">
         <defs>
           <linearGradient id="bmg" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="var(--navy)" />
+            <stop offset="55%" stopColor="var(--lavender-deep)" />
             <stop offset="100%" stopColor="var(--accent)" />
           </linearGradient>
         </defs>
-        <circle cx="24" cy="24" r="22" fill="none" stroke="url(#bmg)" strokeWidth="2" opacity="0.35" />
+        {/* rounded squircle plate */}
+        <rect x="2" y="2" width="44" height="44" rx="13" fill="url(#bmg)" />
+        {/* inner highlight */}
+        <rect x="2" y="2" width="44" height="44" rx="13" fill="none" stroke="white" strokeOpacity="0.15" strokeWidth="1" />
+        {/* monogram E + S interlocked */}
         <path
-          d="M12 30 C 16 22, 20 22, 24 24 C 28 26, 32 26, 36 18"
-          stroke="url(#bmg)" strokeWidth="2.8" strokeLinecap="round" fill="none"
+          d="M16 15 H30 M16 24 H26 M16 33 H30"
+          stroke="white" strokeWidth="2.4" strokeLinecap="round" fill="none"
         />
-        <circle cx="36" cy="18" r="3" fill="url(#bmg)" />
-        <circle cx="12" cy="30" r="2" fill="url(#bmg)" opacity="0.6" />
+        <path
+          d="M34 18 C 34 15, 31 14, 28 15.5 M28 30 C 28 33, 31 34, 34 32.5"
+          stroke="white" strokeOpacity="0.85" strokeWidth="2.2" strokeLinecap="round" fill="none"
+        />
+        <circle cx="34" cy="24" r="1.6" fill="white" />
       </svg>
       <span className="hidden sm:flex flex-col leading-none">
-        <span className="font-display text-[13px] font-bold tracking-[0.14em] text-foreground">Eslam Selmi</span>
-        <span className="text-[9px] tracking-[0.28em] uppercase text-muted-foreground mt-1">Head of L&amp;D</span>
+        <span className="font-display text-[14px] font-extrabold tracking-tight text-foreground">Eslam Selmi</span>
+        <span className="text-[9px] tracking-[0.32em] uppercase text-muted-foreground mt-1.5">L&amp;D Leader</span>
       </span>
     </div>
   );
@@ -320,7 +337,7 @@ function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => 
         </div>
         {open && (
           <div className="xl:hidden mt-2 glass-strong rounded-2xl p-3 grid gap-1">
-            {NAV.map(n => (
+            {NAV_FULL.map(n => (
               <a key={n.id} href={`#${n.id}`} onClick={() => setOpen(false)} className="px-3 py-2 rounded-lg hover:bg-foreground/5 text-sm">{t(n.key)}</a>
             ))}
             <button onClick={(e) => { setOpen(false); openCalendly(e); }}
@@ -1448,10 +1465,9 @@ function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string
       <div className="absolute -end-40 top-20 size-80 rounded-full bg-accent/10 blur-3xl" />
       <div className="mx-auto max-w-7xl">
         <motion.div {...fadeUp} className="mb-12 lg:mb-16">
-          <div className="inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-accent font-semibold mb-5">
-            <span className="size-1 rounded-full bg-accent" />
+          <div className="inline-flex items-center gap-2 rounded-full bg-foreground/[0.06] border border-foreground/10 px-3.5 py-1.5 text-[11px] uppercase tracking-[0.28em] text-foreground font-bold mb-5">
+            <span className="size-1.5 rounded-full bg-accent" />
             {eyebrow}
-            <span className="h-px w-12 bg-accent/40" />
           </div>
           <h2 className="font-display leading-[1.05] tracking-tight text-foreground text-[clamp(1.9rem,4.4vw,3.75rem)] whitespace-normal lg:whitespace-nowrap">
             {title}
