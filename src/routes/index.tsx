@@ -675,9 +675,9 @@ function About() {
 
 function BigStat({ n, l }: { n: string; l: string }) {
   return (
-    <div className="rounded-2xl bg-white/10 border border-white/15 backdrop-blur-md p-4 text-center">
-      <div className="font-display text-3xl sm:text-4xl font-extrabold leading-none text-white">{n}</div>
-      <div className="mt-2 text-[10px] uppercase tracking-[0.22em] text-white/75">{l}</div>
+    <div className="rounded-2xl bg-white/[0.07] border border-white/15 backdrop-blur-md p-3.5 text-center">
+      <div className="font-display text-2xl sm:text-[26px] font-extrabold leading-none text-white">{n}</div>
+      <div className="mt-1.5 text-[9px] uppercase tracking-[0.2em] text-white/70">{l}</div>
     </div>
   );
 }
