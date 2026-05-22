@@ -23,6 +23,30 @@ import snap5 from "@/assets/snapshots/snap-5.jpg";
 import snap6 from "@/assets/snapshots/snap-6.jpg";
 import snap7 from "@/assets/snapshots/snap-7.jpg";
 import snap8 from "@/assets/snapshots/snap-8.jpg";
+
+import logoAramex from "@/assets/clients/aramex.jpg";
+import logoG4s from "@/assets/clients/g4s.jpg";
+import logoAllerAqua from "@/assets/clients/aller-aqua.jpg";
+import logoEvno from "@/assets/clients/evno.jpg";
+import logoBadreldin from "@/assets/clients/badreldin.jpg";
+import logoAmazonEg from "@/assets/clients/amazon-eg.jpg";
+import logoAlmajarah from "@/assets/clients/almajarah.jpg";
+import logoImtenan from "@/assets/clients/imtenan.jpg";
+import logoDaralnokba from "@/assets/clients/daralnokba.jpg";
+import logoMallOfEgypt from "@/assets/clients/mall-of-egypt.jpg";
+
+const BRANDS = [
+  { src: logoAramex, name: "Aramex" },
+  { src: logoG4s, name: "G4S" },
+  { src: logoAmazonEg, name: "Amazon.eg" },
+  { src: logoImtenan, name: "Imtenan" },
+  { src: logoMallOfEgypt, name: "Mall of Egypt" },
+  { src: logoBadreldin, name: "Badreldin Developments" },
+  { src: logoAllerAqua, name: "Aller Aqua Egypt" },
+  { src: logoEvno, name: "Evno" },
+  { src: logoAlmajarah, name: "Al Majarah" },
+  { src: logoDaralnokba, name: "Daralnokba Recruitment" },
+];
 import snap9 from "@/assets/snapshots/snap-9.jpg";
 
 export const Route = createFileRoute("/")({ component: Portfolio });
@@ -194,6 +218,7 @@ function Portfolio() {
       
       <Podcast />
       <Clients />
+      <Brands />
       <Snapshots />
       <BookCTA />
       <Contact />
@@ -884,6 +909,36 @@ function Clients() {
     </Section>
   );
 }
+
+/* ---------- BRANDS / LOGO WALL ---------- */
+function Brands() {
+  const { t } = useI18n();
+  return (
+    <Section id="brands" eyebrow={t("brands_eyebrow")} title={t("brands_title")}>
+      <p className="text-muted-foreground max-w-2xl mb-10">{t("brands_desc")}</p>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        {BRANDS.map((b, i) => (
+          <motion.div
+            key={b.name}
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.04 }}
+            className="group relative aspect-[4/3] rounded-2xl bg-white border border-border/40 shadow-sm overflow-hidden flex items-center justify-center p-4 transition hover:-translate-y-1 hover:shadow-lg"
+          >
+            <img
+              src={b.src}
+              alt={b.name}
+              loading="lazy"
+              className="max-w-full max-h-full object-contain transition group-hover:scale-105"
+            />
+          </motion.div>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
 
 /* ---------- SNAPSHOTS w/ LIGHTBOX ---------- */
 function Snapshots() {

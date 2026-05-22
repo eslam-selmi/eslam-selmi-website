@@ -76,6 +76,11 @@ const en: Dict = {
   clients_title: "Borders don't stop us",
   clients_sub: "Worldwide learning, delivered online & on-site.",
 
+  // brands
+  brands_eyebrow: "Trusted by",
+  brands_title: "Brands I've worked with",
+  brands_desc: "A snapshot of companies and partners I've designed, delivered and led L&D programs with across the region.",
+
   // snapshots
   snapshots_eyebrow: "Snapshots",
   snapshots_title: "Executive moments",
@@ -243,6 +248,10 @@ const ar: Dict = {
   clients_eyebrow: "العملاء",
   clients_title: "الحدود لا توقفنا",
   clients_sub: "تعلّم عالمي يُقدَّم عبر الإنترنت وحضوريًا.",
+
+  brands_eyebrow: "موثوق من",
+  brands_title: "علامات عملت معها",
+  brands_desc: "لمحة عن الشركات والشركاء الذين صمّمت وقدت معهم برامج التعلم والتطوير عبر المنطقة.",
 
   snapshots_eyebrow: "لقطات",
   snapshots_title: "لحظات من الميدان",
