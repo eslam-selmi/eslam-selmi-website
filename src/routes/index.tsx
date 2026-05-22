@@ -380,49 +380,75 @@ function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* Right: Portrait + floating cards */}
+        {/* Right: Portrait — elegant compact circular frame */}
         <motion.div
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}
           className="lg:col-span-5 order-1 lg:order-2 relative"
         >
-          <div className="relative w-full aspect-[4/5] max-w-md mx-auto rounded-[2rem] overflow-hidden"
-               style={{
-                 background: "linear-gradient(180deg, oklch(0.94 0.018 200) 0%, oklch(0.92 0.025 195) 100%)",
-                 boxShadow: "0 40px 80px -30px oklch(0.22 0.06 252 / 0.28)"
-               }}>
-            <img
-              src={headshot}
-              alt="Eslam Selmi"
-              className="absolute inset-x-0 bottom-0 h-[98%] w-full object-contain object-bottom"
+          <div className="relative w-full max-w-[340px] sm:max-w-[380px] mx-auto">
+            {/* Soft aurora backdrop */}
+            <div
+              className="absolute -inset-6 rounded-full blur-3xl opacity-70"
+              style={{
+                background:
+                  "conic-gradient(from 140deg, oklch(0.72 0.13 180 / 0.35), oklch(0.74 0.10 295 / 0.30), oklch(0.22 0.06 252 / 0.20), oklch(0.72 0.13 180 / 0.35))",
+              }}
             />
+            {/* Thin gradient ring */}
+            <div
+              className="relative rounded-full p-[2px]"
+              style={{
+                background:
+                  "conic-gradient(from 220deg, var(--accent), var(--lavender-deep), var(--navy), var(--accent))",
+              }}
+            >
+              <div
+                className="relative aspect-square rounded-full overflow-hidden"
+                style={{
+                  background:
+                    "radial-gradient(120% 100% at 50% 0%, oklch(0.96 0.015 200) 0%, oklch(0.92 0.025 195) 70%, oklch(0.88 0.04 260) 100%)",
+                  boxShadow: "0 30px 70px -30px oklch(0.22 0.06 252 / 0.45)",
+                }}
+              >
+                <img
+                  src={headshot}
+                  alt="Eslam Selmi"
+                  className="absolute inset-x-0 bottom-0 h-[104%] w-full object-contain object-bottom"
+                />
+                <div
+                  className="pointer-events-none absolute inset-0 rounded-full"
+                  style={{ boxShadow: "inset 0 -40px 60px -30px oklch(0.22 0.06 252 / 0.30)" }}
+                />
+              </div>
+            </div>
+
+            {/* Floating chip — Years */}
+            <motion.div
+              animate={{ y: [0, -8, 0] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -right-1 sm:-right-4 top-4 rounded-2xl px-4 py-2.5 bg-card/95 backdrop-blur border border-foreground/10 shadow-lg"
+            >
+              <div className="text-xl sm:text-2xl font-extrabold font-display leading-none" style={{ color: "var(--accent)" }}>9+</div>
+              <div className="text-[10px] text-muted-foreground mt-1 font-medium tracking-wide">{lang === "ar" ? "سنوات خبرة" : "Years"}</div>
+            </motion.div>
+
+            {/* Floating chip — Countries */}
+            <motion.div
+              animate={{ y: [0, 10, 0] }} transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -left-1 sm:-left-4 bottom-10 rounded-2xl px-4 py-2.5 bg-card/95 backdrop-blur border border-foreground/10 shadow-lg"
+            >
+              <div className="text-xl sm:text-2xl font-extrabold font-display leading-none" style={{ color: "var(--accent)" }}>12+</div>
+              <div className="text-[10px] text-muted-foreground mt-1 font-medium tracking-wide">{lang === "ar" ? "دولة" : "Countries"}</div>
+            </motion.div>
+
+            {/* Side pill — Sectors */}
+            <motion.div
+              animate={{ x: [0, -4, 0] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -left-2 sm:-left-6 top-[18%] rounded-full px-3.5 py-2 bg-primary text-primary-foreground shadow-lg flex items-center gap-2"
+            >
+              <span className="text-lg font-extrabold font-display leading-none">4</span>
+              <span className="text-[10px] uppercase tracking-wider opacity-85 font-semibold">{lang === "ar" ? "قطاعات" : "Sectors"}</span>
+            </motion.div>
           </div>
-
-          {/* Top floating stat — Years */}
-          <motion.div
-            animate={{ y: [0, -10, 0] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -right-2 sm:-right-6 top-6 rounded-2xl px-5 py-4 bg-card border border-foreground/10 shadow-xl min-w-[140px]"
-          >
-            <div className="text-2xl sm:text-3xl font-extrabold font-display" style={{ color: "var(--accent)" }}>9+</div>
-            <div className="text-xs text-muted-foreground mt-0.5 font-medium">{lang === "ar" ? "سنوات خبرة" : "Years experience"}</div>
-          </motion.div>
-
-          {/* Bottom floating stat */}
-          <motion.div
-            animate={{ y: [0, 12, 0] }} transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -left-2 sm:-left-6 bottom-8 rounded-2xl px-5 py-4 bg-card border border-foreground/10 shadow-xl min-w-[140px]"
-          >
-            <div className="text-2xl sm:text-3xl font-extrabold font-display" style={{ color: "var(--accent)" }}>12+</div>
-            <div className="text-xs text-muted-foreground mt-0.5 font-medium">{lang === "ar" ? "دولة" : "Countries"}</div>
-          </motion.div>
-
-          {/* Side badge — Sectors */}
-          <motion.div
-            animate={{ x: [0, -6, 0] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -left-2 sm:-left-8 top-1/2 -translate-y-1/2 rounded-2xl px-4 py-3 bg-primary text-primary-foreground shadow-xl"
-          >
-            <div className="text-xl font-extrabold font-display leading-none">4</div>
-            <div className="text-[10px] uppercase tracking-wider mt-1 opacity-80 font-semibold">{lang === "ar" ? "قطاعات" : "Sectors"}</div>
-          </motion.div>
         </motion.div>
       </div>
     </section>
@@ -982,6 +1008,13 @@ const PODCAST_EPISODES = [
     number: "01",
     titleKey: "podcast_ep1_title",
     descKey: "podcast_ep1_desc",
+    duration: "—",
+  },
+  {
+    id: "XAOMhy9vyOI",
+    number: "02",
+    titleKey: "podcast_ep2_title",
+    descKey: "podcast_ep2_desc",
     duration: "—",
   },
   {
