@@ -245,27 +245,35 @@ function CalendlyDialog() {
 }
 
 /* ---------- BRAND MARK ---------- */
-function BrandMark({ size = 40 }: { size?: number }) {
+function BrandMark({ size = 42 }: { size?: number }) {
   return (
-    <div className="flex items-center gap-2.5">
+    <div className="flex items-center gap-3">
       <svg width={size} height={size} viewBox="0 0 48 48" className="shrink-0" aria-label="Eslam Selmi">
         <defs>
           <linearGradient id="bmg" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="var(--navy)" />
+            <stop offset="55%" stopColor="var(--lavender-deep)" />
             <stop offset="100%" stopColor="var(--accent)" />
           </linearGradient>
         </defs>
-        <circle cx="24" cy="24" r="22" fill="none" stroke="url(#bmg)" strokeWidth="2" opacity="0.35" />
+        {/* rounded squircle plate */}
+        <rect x="2" y="2" width="44" height="44" rx="13" fill="url(#bmg)" />
+        {/* inner highlight */}
+        <rect x="2" y="2" width="44" height="44" rx="13" fill="none" stroke="white" strokeOpacity="0.15" strokeWidth="1" />
+        {/* monogram E + S interlocked */}
         <path
-          d="M12 30 C 16 22, 20 22, 24 24 C 28 26, 32 26, 36 18"
-          stroke="url(#bmg)" strokeWidth="2.8" strokeLinecap="round" fill="none"
+          d="M16 15 H30 M16 24 H26 M16 33 H30"
+          stroke="white" strokeWidth="2.4" strokeLinecap="round" fill="none"
         />
-        <circle cx="36" cy="18" r="3" fill="url(#bmg)" />
-        <circle cx="12" cy="30" r="2" fill="url(#bmg)" opacity="0.6" />
+        <path
+          d="M34 18 C 34 15, 31 14, 28 15.5 M28 30 C 28 33, 31 34, 34 32.5"
+          stroke="white" strokeOpacity="0.85" strokeWidth="2.2" strokeLinecap="round" fill="none"
+        />
+        <circle cx="34" cy="24" r="1.6" fill="white" />
       </svg>
       <span className="hidden sm:flex flex-col leading-none">
-        <span className="font-display text-[13px] font-bold tracking-[0.14em] text-foreground">Eslam Selmi</span>
-        <span className="text-[9px] tracking-[0.28em] uppercase text-muted-foreground mt-1">Head of L&amp;D</span>
+        <span className="font-display text-[14px] font-extrabold tracking-tight text-foreground">Eslam Selmi</span>
+        <span className="text-[9px] tracking-[0.32em] uppercase text-muted-foreground mt-1.5">L&amp;D Leader</span>
       </span>
     </div>
   );
