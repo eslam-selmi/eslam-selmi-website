@@ -82,11 +82,11 @@ const en: Dict = {
 
   // podcast
   podcast_eyebrow: "L&D Podcast",
-  podcast_title: "Conversations on learning, talent & growth.",
+  podcast_title: "Conversations on learning & growth.",
   podcast_now_playing: "Now playing",
   podcast_episodes: "Episodes",
   podcast_play: "Play episode",
-  podcast_more_soon: "More episodes coming soon — stay tuned.",
+  podcast_more_soon: "More episodes coming soon. Stay tuned.",
   podcast_ep1_title: "Episode 01 — Inside Learning & Development",
   podcast_ep1_desc: "Real stories from the field on building talent, performance and culture.",
   podcast_ep2_title: "Episode 02 — Building Learning Culture",
