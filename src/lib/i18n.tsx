@@ -124,7 +124,7 @@ const en: Dict = {
   // library
   library_eyebrow: "Free resources",
   library_title: "Knowledge Library",
-  library_desc: "A curated vault of e-books, frameworks, templates and resources I share with the community. Always growing — bookmark it.",
+  library_desc: "A curated vault of e-books, frameworks, templates and resources I share with the community. Always growing, so bookmark it.",
   library_btn: "Open the library",
   library_meta: "E-books · Templates · Frameworks",
   library_modal_title: "Knowledge Library",
