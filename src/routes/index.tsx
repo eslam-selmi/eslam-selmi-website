@@ -1074,7 +1074,7 @@ function Podcast() {
         </motion.div>
 
         {/* Episodes list */}
-        <motion.div {...fadeUp} className="space-y-3">
+        <motion.div {...fadeUp} className="space-y-3 min-w-0 w-full">
           <div className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground font-semibold mb-2">{t("podcast_episodes")}</div>
           {PODCAST_EPISODES.map((ep) => {
             const isActive = ep.id === active.id;
