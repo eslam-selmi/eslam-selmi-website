@@ -183,10 +183,7 @@ function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => 
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className={`bg-card/85 backdrop-blur-xl border border-foreground/10 rounded-full ps-3 pe-2 py-2 flex items-center justify-between gap-2 ${scrolled ? "shadow-[0_8px_30px_-12px_rgba(15,27,61,0.15)]" : ""}`}>
           <a href="#home" className="flex items-center gap-2.5 group shrink-0">
-            <img src={logo} alt="Eslam Selmi" className="size-9 object-contain" />
-            <span className="font-display italic tracking-tight hidden sm:inline text-lg text-foreground">
-              Eslam Selmi
-            </span>
+            <BrandMark />
           </a>
           <nav className="hidden xl:flex items-center gap-0.5">
             {NAV.map(n => (
