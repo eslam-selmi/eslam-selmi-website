@@ -286,9 +286,15 @@ function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => 
           </a>
           <nav className="hidden xl:flex items-center gap-0.5">
             {NAV.map(n => (
-              <a key={n.id} href={`#${n.id}`} className="px-2.5 py-1.5 text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-foreground/5">
-                {t(n.key)}
-              </a>
+              n.to ? (
+                <Link key={n.id} to={n.to} className="px-2.5 py-1.5 text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-foreground/5">
+                  {t(n.key)}
+                </Link>
+              ) : (
+                <a key={n.id} href={`#${n.id}`} className="px-2.5 py-1.5 text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-foreground/5">
+                  {t(n.key)}
+                </a>
+              )
             ))}
             <Link
               to="/graduates"
