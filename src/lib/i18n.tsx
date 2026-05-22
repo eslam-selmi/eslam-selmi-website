@@ -114,7 +114,7 @@ const en: Dict = {
 
   // current courses
   current_eyebrow: "Open now",
-  current_title: "Live courses — enroll today",
+  current_title: "Live courses, enroll today",
   current_desc: "Active cohorts running right now. Pick the program that fits you and apply in under a minute.",
   current_btn: "Browse & enroll",
   current_meta: "Limited seats · Live sessions",
