@@ -60,7 +60,7 @@ const JOURNEY = [
   { year: "2017", role: { en: "Senior L&D / L&D Specialist", ar: "أخصائي أول / أخصائي تعلم وتطوير" }, company: "G4S", country: "EG", logo: "https://logo.clearbit.com/g4s.com" },
   { year: "2022", role: { en: "L&D Specialist", ar: "أخصائي تعلم وتطوير" }, company: "Aramex", country: "EG", logo: "https://logo.clearbit.com/aramex.com" },
   { year: "2023", role: { en: "Control Supervisor", ar: "مشرف رقابة" }, company: "Badreldin Developments", country: "EG", logo: "https://logo.clearbit.com/badreldin.com" },
-  { year: "2026", role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: "Imtenan", country: "EG", logo: "https://logo.clearbit.com/imtenan.com" },
+  { year: "2024", role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: "Imtenan", country: "EG", logo: "https://logo.clearbit.com/imtenan.com" },
   { year: "NOW", role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: "KnowledgeCity", country: "SA", logo: "https://logo.clearbit.com/knowledgecity.com" },
 ];
 
@@ -167,6 +167,7 @@ function Portfolio() {
       <Footer />
       <WhatsAppFloat />
       <ScrollTop />
+      <DemoBanner />
     </div>
   );
 }
@@ -224,10 +225,12 @@ function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => 
             <button
               onClick={() => setLang(lang === "en" ? "ar" : "en" as Lang)}
               aria-label="Toggle language"
-              className="inline-flex items-center gap-1.5 rounded-full border border-foreground/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider hover:bg-foreground/5 transition"
+              className="group inline-flex items-center gap-1.5 rounded-full border border-foreground/15 px-3 py-1.5 hover:bg-foreground/5 hover:border-foreground/30 transition"
             >
-              <Languages className="size-3.5" />
-              {lang === "en" ? "AR" : "EN"}
+              <Languages className="size-3.5 opacity-70" />
+              <span className={`font-bold leading-none ${lang === "en" ? "text-[15px] font-display" : "text-[12px] tracking-wider"}`}>
+                {lang === "en" ? "ع" : "En"}
+              </span>
             </button>
             <button
               onClick={onThemeToggle}
@@ -307,17 +310,17 @@ function Hero() {
 
           <motion.h1
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.7 }}
-            className="font-display font-extrabold text-balance leading-[1.02] text-[clamp(2.6rem,7vw,6rem)] text-foreground"
+            className="font-display font-extrabold text-balance leading-[1.05] text-[clamp(2rem,4.6vw,4.25rem)] text-foreground"
           >
             {lang === "ar" ? (
               <>
                 إطلاق إمكانات المواهب مع{" "}
-                <span className="block sm:inline" style={{ color: "var(--accent)" }}>{nameAr}</span>
+                <span style={{ color: "var(--accent)" }}>{nameAr}</span>
               </>
             ) : (
               <>
                 Unlocking Talent Potential With{" "}
-                <span className="block sm:inline" style={{ color: "var(--accent)" }}>{nameEn}</span>
+                <span style={{ color: "var(--accent)" }}>{nameEn}</span>
               </>
             )}
           </motion.h1>
@@ -352,7 +355,7 @@ function Hero() {
                 <Mic className="size-3.5" />
                 <span className="absolute inset-0 rounded-full ring-2 ring-white/40 animate-ping" />
               </span>
-              <span className="relative">Listen — Podcast</span>
+              <span className="relative">{t("listen_podcast")}</span>
               <ArrowRight className="relative size-4 group-hover:translate-x-1 rtl-flip transition" />
             </a>
           </motion.div>
@@ -1163,6 +1166,83 @@ function ScrollTop() {
         >
           <ArrowUp className="size-5" />
         </motion.button>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* ---------- DEMO BANNER ---------- */
+function DemoBanner() {
+  const { t, lang, dir } = useI18n();
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.localStorage.getItem("demo-banner-seen")) return;
+    const showTimer = setTimeout(() => setShow(true), 700);
+    const hideTimer = setTimeout(() => {
+      setShow(false);
+      window.localStorage.setItem("demo-banner-seen", "1");
+    }, 7000);
+    return () => { clearTimeout(showTimer); clearTimeout(hideTimer); };
+  }, []);
+
+  const dismiss = () => {
+    setShow(false);
+    if (typeof window !== "undefined") window.localStorage.setItem("demo-banner-seen", "1");
+  };
+
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          initial={{ opacity: 0, y: 30, scale: 0.96 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 20, scale: 0.97 }}
+          transition={{ duration: 0.5, ease: [0.21, 0.5, 0.3, 1] }}
+          className={`fixed bottom-5 z-[60] max-w-[92vw] w-[380px] ${dir === "rtl" ? "right-5" : "left-5"}`}
+          role="status"
+          aria-live="polite"
+        >
+          <div className="relative rounded-2xl overflow-hidden border border-white/15 bg-[#0b1736]/95 backdrop-blur-xl text-white shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]">
+            <div
+              className="absolute inset-0 opacity-60 pointer-events-none"
+              style={{ background: "radial-gradient(ellipse 80% 60% at 100% 0%, oklch(0.72 0.13 180 / 0.35), transparent 65%), radial-gradient(ellipse 60% 50% at 0% 100%, oklch(0.55 0.2 290 / 0.25), transparent 65%)" }}
+            />
+            <div className="relative p-4 flex items-start gap-3">
+              <span className="relative shrink-0 mt-0.5">
+                <span className="absolute inset-0 rounded-full bg-[var(--accent)]/40 blur-md animate-pulse" />
+                <span className="relative grid place-items-center size-9 rounded-full bg-white/10 border border-white/20">
+                  <Sparkles className="size-4" style={{ color: "var(--accent)" }} />
+                </span>
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-display font-bold text-sm">{t("demo_title")}</span>
+                  <span className="inline-flex items-center gap-1 text-[9px] uppercase tracking-[0.2em] font-bold rounded-full px-2 py-0.5 bg-[var(--accent)]/20 text-[var(--accent)] border border-[var(--accent)]/30">
+                    <span className="size-1 rounded-full bg-[var(--accent)] animate-pulse" />
+                    {lang === "ar" ? "تجريبي" : "Demo"}
+                  </span>
+                </div>
+                <p className="text-xs text-white/80 mt-1 leading-relaxed">{t("demo_desc")}</p>
+              </div>
+              <button
+                onClick={dismiss}
+                aria-label="Dismiss"
+                className="shrink-0 size-7 grid place-items-center rounded-full hover:bg-white/10 text-white/70 hover:text-white transition"
+              >
+                <X className="size-3.5" />
+              </button>
+            </div>
+            <motion.div
+              initial={{ scaleX: 1 }}
+              animate={{ scaleX: 0 }}
+              transition={{ duration: 7, ease: "linear" }}
+              className="h-[2px] origin-left"
+              style={{ background: "linear-gradient(90deg, var(--accent), oklch(0.55 0.2 290))", transformOrigin: dir === "rtl" ? "right" : "left" }}
+            />
+          </div>
+        </motion.div>
       )}
     </AnimatePresence>
   );
