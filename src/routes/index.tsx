@@ -11,7 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useI18n, type Lang } from "@/lib/i18n";
 
 import headshot from "@/assets/portfolio/headshot.png";
-import logo from "@/assets/portfolio/logo.png";
+
 import trainingCollage from "@/assets/portfolio/training-collage.webp";
 import snap1 from "@/assets/portfolio/snap-1.jpg";
 import snap2 from "@/assets/portfolio/snap-2.jpg";
