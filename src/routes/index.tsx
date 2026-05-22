@@ -987,6 +987,20 @@ const PODCAST_EPISODES = [
     descKey: "podcast_ep1_desc",
     duration: "—",
   },
+  {
+    id: "yOYL9R84yyE",
+    number: "03",
+    titleKey: "podcast_ep3_title",
+    descKey: "podcast_ep3_desc",
+    duration: "—",
+  },
+  {
+    id: "IGlDz6mCcU0",
+    number: "04",
+    titleKey: "podcast_ep4_title",
+    descKey: "podcast_ep4_desc",
+    duration: "—",
+  },
 ];
 
 function Podcast() {
