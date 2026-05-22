@@ -253,34 +253,67 @@ function CalendlyDialog() {
 function BrandMark({ size = 44 }: { size?: number }) {
   return (
     <div className="flex items-center gap-2.5">
-      <svg width={size} height={size} viewBox="0 0 48 48" className="shrink-0" aria-label="Eslam Selmi">
+      <svg width={size} height={size} viewBox="0 0 56 56" className="shrink-0" aria-label="Eslam Selmi">
         <defs>
-          <linearGradient id="bmPlate" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="var(--navy-deep)" />
-            <stop offset="100%" stopColor="var(--navy)" />
-          </linearGradient>
+          <radialGradient id="bmPlate" cx="35%" cy="30%" r="80%">
+            <stop offset="0%" stopColor="#1a2a5e" />
+            <stop offset="55%" stopColor="var(--navy-deep)" />
+            <stop offset="100%" stopColor="#04081c" />
+          </radialGradient>
           <linearGradient id="bmGold" x1="0" y1="1" x2="1" y2="0">
-            <stop offset="0%" stopColor="var(--accent)" />
-            <stop offset="100%" stopColor="#ffe6a8" />
+            <stop offset="0%" stopColor="#a07a1d" />
+            <stop offset="45%" stopColor="var(--accent)" />
+            <stop offset="100%" stopColor="#ffe8a8" />
+          </linearGradient>
+          <linearGradient id="bmRing" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.95" />
+            <stop offset="50%" stopColor="var(--accent)" stopOpacity="0.15" />
+            <stop offset="100%" stopColor="var(--accent)" stopOpacity="0.95" />
           </linearGradient>
         </defs>
-        {/* Hexagonal shield plate */}
-        <path d="M24 1.5 L43 12 L43 36 L24 46.5 L5 36 L5 12 Z" fill="url(#bmPlate)" />
-        <path d="M24 1.5 L43 12 L43 36 L24 46.5 L5 36 L5 12 Z" fill="none" stroke="var(--accent)" strokeOpacity="0.55" strokeWidth="0.7" />
-        {/* E as ascending growth bars */}
-        <rect x="12" y="30" width="6"  height="6" rx="1.2" fill="url(#bmGold)" />
-        <rect x="12" y="22" width="10" height="4" rx="1"   fill="url(#bmGold)" opacity="0.85" />
-        <rect x="12" y="14" width="14" height="4" rx="1"   fill="url(#bmGold)" opacity="0.7" />
-        {/* S curve — strategy spark */}
-        <path d="M30 14 C 35 14, 37 19, 32.5 22.5 C 28 26, 31 31, 36 31"
-          stroke="url(#bmGold)" strokeWidth="2.4" strokeLinecap="round" fill="none" />
-        <circle cx="36" cy="31" r="1.6" fill="#fff" />
-        {/* corner accents */}
-        <circle cx="24" cy="1.5" r="1" fill="var(--accent)" />
+
+        {/* Circular medallion */}
+        <circle cx="28" cy="28" r="26" fill="url(#bmPlate)" />
+        {/* Thin gold orbit ring (rotates as a subtle reveal of dynamism) */}
+        <circle cx="28" cy="28" r="25" fill="none" stroke="url(#bmRing)" strokeWidth="0.9" />
+        {/* Inner soft ring */}
+        <circle cx="28" cy="28" r="22" fill="none" stroke="#fff" strokeOpacity="0.06" strokeWidth="0.6" />
+
+        {/* Single continuous "ES" monogram — one stroke that reads as E then flows into S.
+            Concept: a learning journey drawn in one breath — never broken. */}
+        <path
+          d="
+            M 18 16
+            L 30 16
+            M 18 16
+            L 18 40
+            M 18 40
+            L 30 40
+            M 18 28
+            L 27 28
+            M 38 16
+            C 32 16, 30 22, 36 25
+            C 42 28, 40 34, 34 34
+            C 30 34, 28 32, 28 30
+          "
+          fill="none"
+          stroke="url(#bmGold)"
+          strokeWidth="2.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+
+        {/* Spark — the moment of insight */}
+        <g>
+          <circle cx="40" cy="14" r="3" fill="var(--accent)" opacity="0.25" />
+          <circle cx="40" cy="14" r="1.6" fill="#fff" />
+        </g>
+
+        {/* Sub-base diamond accent (anchors the mark, hints at "foundation") */}
+        <path d="M28 47 L31 44 L28 41 L25 44 Z" fill="var(--accent)" opacity="0.85" />
       </svg>
-      <span className="hidden sm:flex flex-col leading-none">
-        <span className="font-display text-[14px] font-extrabold tracking-tight text-foreground">Eslam Selmi</span>
-        <span className="text-[9px] tracking-[0.32em] uppercase text-muted-foreground mt-1.5">L&amp;D Leader</span>
+      <span className="hidden sm:flex items-center leading-none">
+        <span className="font-display text-[15px] font-extrabold tracking-tight text-foreground">Eslam Selmi</span>
       </span>
     </div>
   );
@@ -1725,12 +1758,12 @@ function EmpowermentTools() {
                 key={tool.key}
                 initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }} transition={{ delay: i * 0.06 }}
-                className="rounded-2xl border border-white/20 bg-white/10 backdrop-blur p-4 flex flex-col items-start gap-2.5"
+                className="rounded-2xl border border-white/15 bg-white text-[#0b1736] p-4 flex flex-col items-start gap-2.5 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.5)]"
               >
-                <span className="size-10 grid place-items-center rounded-xl bg-white/15 border border-white/20">
+                <span className="size-10 grid place-items-center rounded-xl text-white" style={{ background: "linear-gradient(135deg, var(--navy-deep), var(--lavender-deep))" }}>
                   <tool.icon className="size-5" />
                 </span>
-                <div className="text-xs font-semibold leading-tight">{t(tool.key)}</div>
+                <div className="text-xs font-bold leading-tight text-[#0b1736]">{t(tool.key)}</div>
               </motion.div>
             ))}
           </div>
