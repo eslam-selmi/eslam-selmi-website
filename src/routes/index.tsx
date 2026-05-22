@@ -603,30 +603,45 @@ function About() {
   ];
   return (
     <Section id="about" eyebrow={t("about_eyebrow")} title={t("about_title")}>
-      <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-        <motion.div {...fadeUp} className="glass-panel sticky top-28 rounded-[2rem] p-7">
-          <p className="text-lg leading-relaxed text-foreground/75">
-            {t("about_intro")}
-          </p>
-          <div className="mt-8 grid grid-cols-2 gap-3">
-            <Stat n="9+" l={lang === "ar" ? "سنوات" : "Years"} />
-            <Stat n="4" l={lang === "ar" ? "قطاعات" : "Sectors"} />
+      {/* Editorial intro card */}
+      <motion.div {...fadeUp} className="relative overflow-hidden rounded-[2.5rem] border border-foreground/10 bg-gradient-to-br from-[var(--navy)] via-[#162045] to-[var(--lavender-deep)] text-white p-8 sm:p-12">
+        <div className="pointer-events-none absolute -top-24 -end-24 size-80 rounded-full bg-[var(--gold)]/25 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-32 -start-20 size-96 rounded-full bg-[var(--lavender)]/30 blur-3xl" />
+        <div className="pointer-events-none absolute inset-0 opacity-[0.08]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)", backgroundSize: "22px 22px" }} />
+
+        <div className="relative grid gap-10 lg:grid-cols-[1.4fr_1fr] lg:items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 px-3 py-1 text-[11px] uppercase tracking-[0.25em] text-white/80">
+              <span className="size-1.5 rounded-full bg-[var(--gold)]" /> {lang === "ar" ? "ملف القائد" : "Leader profile"}
+            </div>
+            <Quote className="mt-6 size-10 text-[var(--gold)]/80 rtl-flip" />
+            <p className="mt-4 font-display text-2xl sm:text-[28px] leading-[1.35] text-white/95">
+              {t("about_intro")}
+            </p>
           </div>
-        </motion.div>
-      <div className="grid sm:grid-cols-2 gap-4">
+
+          <div className="grid grid-cols-2 gap-3">
+            <BigStat n="9+" l={lang === "ar" ? "سنوات خبرة" : "Years of experience"} />
+            <BigStat n="12" l={lang === "ar" ? "دولة" : "Countries"} />
+            <BigStat n="4" l={lang === "ar" ? "قطاعات" : "Sectors"} />
+            <BigStat n="1.5K+" l={lang === "ar" ? "متدرّب" : "Trainees"} />
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Strengths */}
+      <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {strengths.map((s, i) => (
           <motion.div key={s.t.en} {...fadeUp} transition={{ duration: 0.6, delay: i * 0.08 }}
-            className="glass-panel rounded-3xl p-5 transition hover:-translate-y-1 group">
-            <div className="flex items-start gap-3">
-              <CheckCircle2 className="size-5 text-gold mt-0.5 shrink-0" />
-              <div>
-                <h3 className="font-semibold">{s.t[lang]}</h3>
-                <p className="text-sm text-muted-foreground mt-1">{s.d[lang]}</p>
-              </div>
+            className="relative glass-panel rounded-3xl p-6 group hover:-translate-y-1 transition overflow-hidden">
+            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[var(--gold)] via-[var(--lavender)] to-[var(--gold)] opacity-70" />
+            <div className="font-display text-3xl font-extrabold leading-none" style={{ color: "var(--accent)" }}>
+              {String(i + 1).padStart(2, "0")}
             </div>
+            <h3 className="mt-3 font-semibold text-base leading-tight">{s.t[lang]}</h3>
+            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.d[lang]}</p>
           </motion.div>
         ))}
-      </div>
       </div>
 
       <motion.div {...fadeUp} className="mt-12">
@@ -656,6 +671,15 @@ function About() {
         </div>
       </motion.div>
     </Section>
+  );
+}
+
+function BigStat({ n, l }: { n: string; l: string }) {
+  return (
+    <div className="rounded-2xl bg-white/10 border border-white/15 backdrop-blur-md p-4 text-center">
+      <div className="font-display text-3xl sm:text-4xl font-extrabold leading-none text-white">{n}</div>
+      <div className="mt-2 text-[10px] uppercase tracking-[0.22em] text-white/75">{l}</div>
+    </div>
   );
 }
 
