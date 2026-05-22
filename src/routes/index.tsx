@@ -1135,7 +1135,7 @@ const LIBRARY_DRIVE_ID = "1dhtjAdvchdH6DEIyT-VoDAWd2itLsnZq";
 const LIBRARY_EMBED_URL = `https://drive.google.com/embeddedfolderview?id=${LIBRARY_DRIVE_ID}#grid`;
 const LIBRARY_OPEN_URL = `https://drive.google.com/drive/folders/${LIBRARY_DRIVE_ID}?usp=sharing`;
 
-function Library() {
+export function Library() {
   const { t, dir } = useI18n();
   const [open, setOpen] = useState(false);
   useEffect(() => {
