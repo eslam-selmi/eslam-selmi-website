@@ -307,6 +307,19 @@ function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => 
                 {t(n.key)}
               </a>
             ))}
+            <a
+              href="#empowerment"
+              className="ms-2 group inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-extrabold tracking-tight border-2 transition-all hover:-translate-y-0.5"
+              style={{
+                borderColor: "var(--accent)",
+                color: "var(--accent)",
+                background: "linear-gradient(135deg, oklch(0.75 0.13 85 / 0.10), oklch(0.75 0.13 85 / 0.02))",
+                boxShadow: "0 0 0 3px oklch(0.75 0.13 85 / 0.08)",
+              }}
+            >
+              <Rocket className="size-3.5" />
+              {t("nav_empowerment")}
+            </a>
           </nav>
           <div className="flex items-center gap-1.5">
             <button
