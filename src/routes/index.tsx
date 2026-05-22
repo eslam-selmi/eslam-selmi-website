@@ -23,6 +23,30 @@ import snap5 from "@/assets/snapshots/snap-5.jpg";
 import snap6 from "@/assets/snapshots/snap-6.jpg";
 import snap7 from "@/assets/snapshots/snap-7.jpg";
 import snap8 from "@/assets/snapshots/snap-8.jpg";
+
+import logoAramex from "@/assets/clients/aramex.jpg";
+import logoG4s from "@/assets/clients/g4s.jpg";
+import logoAllerAqua from "@/assets/clients/aller-aqua.jpg";
+import logoEvno from "@/assets/clients/evno.jpg";
+import logoBadreldin from "@/assets/clients/badreldin.jpg";
+import logoAmazonEg from "@/assets/clients/amazon-eg.jpg";
+import logoAlmajarah from "@/assets/clients/almajarah.jpg";
+import logoImtenan from "@/assets/clients/imtenan.jpg";
+import logoDaralnokba from "@/assets/clients/daralnokba.jpg";
+import logoMallOfEgypt from "@/assets/clients/mall-of-egypt.jpg";
+
+const BRANDS = [
+  { src: logoAramex, name: "Aramex" },
+  { src: logoG4s, name: "G4S" },
+  { src: logoAmazonEg, name: "Amazon.eg" },
+  { src: logoImtenan, name: "Imtenan" },
+  { src: logoMallOfEgypt, name: "Mall of Egypt" },
+  { src: logoBadreldin, name: "Badreldin Developments" },
+  { src: logoAllerAqua, name: "Aller Aqua Egypt" },
+  { src: logoEvno, name: "Evno" },
+  { src: logoAlmajarah, name: "Al Majarah" },
+  { src: logoDaralnokba, name: "Daralnokba Recruitment" },
+];
 import snap9 from "@/assets/snapshots/snap-9.jpg";
 
 export const Route = createFileRoute("/")({ component: Portfolio });
