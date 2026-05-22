@@ -190,7 +190,7 @@ function Portfolio() {
       <EmpowermentTools />
       <CurrentCourses />
       <Library />
-      <LeadForm />
+      
       <Podcast />
       <Clients />
       <Snapshots />
