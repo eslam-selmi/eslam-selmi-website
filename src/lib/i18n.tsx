@@ -207,7 +207,7 @@ const ar: Dict = {
   journey_title: "من أخصائي إلى رئيس قطاع التعلم والتطوير",
 
   services_eyebrow: "الخدمات",
-  services_title: "هيا نصنع أثرًا حقيقيًا — اختر خدمتك الآن",
+  services_title: "اختر خدمتك",
   services_subtitle: "اضغط على أي خدمة لطلبها مباشرة عبر واتساب.",
   svc_request_btn: "اطلب هذه الخدمة",
   calendly_title: "احجز جلستك المجانية",
