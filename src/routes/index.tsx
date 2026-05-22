@@ -917,20 +917,27 @@ function Brands() {
   const row2 = [...BRANDS].reverse();
 
   const Chip = ({ b }: { b: { src: string; name: string } }) => (
-    <div className="shrink-0 mx-3 group">
-      <div className="relative h-24 w-44 md:h-28 md:w-52 rounded-2xl bg-white border border-border/30 shadow-sm overflow-hidden flex items-center justify-center px-5 py-3 transition-all duration-500 group-hover:shadow-xl group-hover:-translate-y-1">
+    <div className="shrink-0 mx-4 group">
+      <div
+        className="relative h-24 w-44 md:h-28 md:w-52 rounded-2xl bg-white border border-border/30 overflow-hidden flex items-center justify-center px-5 py-3 transition-all duration-500 group-hover:-translate-y-1.5"
+        style={{
+          boxShadow:
+            "0 18px 40px -12px color-mix(in oklab, var(--primary) 35%, transparent), 0 6px 16px -6px rgba(0,0,0,0.25)",
+        }}
+      >
         <img
           src={b.src}
           alt={b.name}
           loading="lazy"
-          className="max-w-full max-h-full object-contain grayscale opacity-70 transition-all duration-500 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105"
+          className="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105"
         />
       </div>
-      <p className="mt-2 text-center text-[11px] tracking-widest uppercase text-muted-foreground/70 opacity-0 group-hover:opacity-100 transition-opacity">
+      <p className="mt-3 text-center text-[11px] tracking-widest uppercase text-muted-foreground/70 opacity-0 group-hover:opacity-100 transition-opacity">
         {b.name}
       </p>
     </div>
   );
+
 
   return (
     <Section id="brands" eyebrow={t("brands_eyebrow")} title={t("brands_title")}>
