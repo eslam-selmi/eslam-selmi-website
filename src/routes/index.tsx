@@ -6,20 +6,22 @@ import {
   CheckCircle2, Menu, X, Calendar, Target, Lightbulb, HeartHandshake,
   GraduationCap, Award, Users, TrendingUp, BarChart3, UserCheck, Languages,
   ArrowUp, Loader2, Briefcase, BadgeCheck, Compass, Presentation, Moon, Sun,
+  Mic,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n, type Lang } from "@/lib/i18n";
 
 import headshot from "@/assets/portfolio/headshot.png";
 
-import trainingCollage from "@/assets/portfolio/training-collage.webp";
-import snap1 from "@/assets/portfolio/snap-1.jpg";
-import snap2 from "@/assets/portfolio/snap-2.jpg";
-import snap3 from "@/assets/portfolio/snap-3.jpg";
-import snap4 from "@/assets/portfolio/snap-4.jpg";
-import snap5 from "@/assets/portfolio/snap-5.jpg";
-import snap6 from "@/assets/portfolio/snap-6.jpg";
-import snap7 from "@/assets/portfolio/snap-7.jpg";
+import snap1 from "@/assets/snapshots/snap-1.jpg";
+import snap2 from "@/assets/snapshots/snap-2.jpg";
+import snap3 from "@/assets/snapshots/snap-3.jpg";
+import snap4 from "@/assets/snapshots/snap-4.jpg";
+import snap5 from "@/assets/snapshots/snap-5.jpg";
+import snap6 from "@/assets/snapshots/snap-6.jpg";
+import snap7 from "@/assets/snapshots/snap-7.jpg";
+import snap8 from "@/assets/snapshots/snap-8.jpg";
+import snap9 from "@/assets/snapshots/snap-9.jpg";
 
 export const Route = createFileRoute("/")({ component: Portfolio });
 
@@ -117,7 +119,7 @@ const PILLARS = [
   { icon: BarChart3, key: "kpi", color: "from-lavender/35 to-primary/10" },
 ];
 
-const SNAPSHOTS = [trainingCollage, snap1, snap2, snap3, snap4, snap5, snap6, snap7];
+const SNAPSHOTS = [snap1, snap2, snap5, snap3, snap8, snap4, snap7, snap9, snap6];
 
 type ThemeMode = "dark" | "light";
 
@@ -340,6 +342,19 @@ function Hero() {
               className="inline-flex items-center gap-2 rounded-xl border border-foreground/15 bg-card px-7 py-4 text-sm font-bold text-foreground hover:border-foreground/30 hover:bg-foreground/[0.03] transition">
               <MessageCircle className="size-4" /> WhatsApp
             </a>
+            <a
+              href="#podcast"
+              aria-label="Listen to the L&D Podcast"
+              className="group relative inline-flex items-center gap-2 rounded-xl px-7 py-4 text-sm font-bold text-white overflow-hidden shadow-[0_18px_40px_-14px_oklch(0.55_0.2_290/0.55)] hover:translate-y-[-2px] transition"
+              style={{ background: "linear-gradient(135deg, oklch(0.32 0.13 280), oklch(0.55 0.18 200))" }}
+            >
+              <span className="relative grid place-items-center size-6 rounded-full bg-white/15 backdrop-blur-sm">
+                <Mic className="size-3.5" />
+                <span className="absolute inset-0 rounded-full ring-2 ring-white/40 animate-ping" />
+              </span>
+              <span className="relative">Listen — Podcast</span>
+              <ArrowRight className="relative size-4 group-hover:translate-x-1 rtl-flip transition" />
+            </a>
           </motion.div>
 
           {/* Social row */}
@@ -534,7 +549,7 @@ function Journey() {
           const country = j.country === "SA"
             ? { flag: "sa", name: { en: "Saudi Arabia", ar: "السعودية" } }
             : { flag: "eg", name: { en: "Egypt", ar: "مصر" } };
-          const initials = j.company.split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase();
+          
           return (
             <motion.div
               key={j.year + j.company + i}
@@ -555,31 +570,10 @@ function Journey() {
                 </span>
               </div>
 
-              {/* Logo + company */}
-              <div className="flex items-center gap-4">
-                <div className="size-16 rounded-2xl bg-white border border-foreground/10 grid place-items-center p-2 shadow-sm shrink-0 overflow-hidden">
-                  <img
-                    src={j.logo}
-                    alt={j.company}
-                    loading="lazy"
-                    className="max-w-full max-h-full object-contain"
-                    onError={(e) => {
-                      const el = e.currentTarget;
-                      el.style.display = "none";
-                      const parent = el.parentElement;
-                      if (parent && !parent.querySelector(".fallback-initials")) {
-                        const span = document.createElement("span");
-                        span.className = "fallback-initials font-display font-extrabold text-primary text-lg";
-                        span.textContent = initials;
-                        parent.appendChild(span);
-                      }
-                    }}
-                  />
-                </div>
-                <div className="min-w-0">
-                  <div className="font-display font-bold text-lg leading-tight truncate">{j.company}</div>
-                  <div className="text-sm text-muted-foreground mt-1 leading-tight">{j.role[lang]}</div>
-                </div>
+              {/* Company */}
+              <div className="min-w-0">
+                <div className="font-display font-bold text-xl leading-tight">{j.company}</div>
+                <div className="text-sm text-muted-foreground mt-1.5 leading-snug">{j.role[lang]}</div>
               </div>
             </motion.div>
           );
@@ -1118,13 +1112,13 @@ function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
       <div className="absolute -end-40 top-20 size-80 rounded-full bg-accent/10 blur-3xl" />
       <div className="mx-auto max-w-7xl">
-        <motion.div {...fadeUp} className="mb-12 lg:mb-16 max-w-3xl">
+        <motion.div {...fadeUp} className="mb-12 lg:mb-16">
           <div className="inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-accent font-semibold mb-5">
             <span className="size-1 rounded-full bg-accent" />
             {eyebrow}
             <span className="h-px w-12 bg-accent/40" />
           </div>
-          <h2 className="font-display text-balance leading-[0.98] tracking-tight text-foreground text-[clamp(2.25rem,5vw,4.25rem)]">
+          <h2 className="font-display leading-[1.05] tracking-tight text-foreground text-[clamp(1.9rem,4.4vw,3.75rem)] whitespace-normal lg:whitespace-nowrap">
             {title}
           </h2>
         </motion.div>
