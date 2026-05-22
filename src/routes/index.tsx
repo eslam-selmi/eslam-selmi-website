@@ -207,7 +207,7 @@ function Portfolio() {
 }
 
 /* ---------- CALENDLY DIALOG ---------- */
-function CalendlyDialog() {
+export function CalendlyDialog() {
   const { t, dir } = useI18n();
   const [open, setOpen] = useState(false);
   useEffect(() => {
@@ -1359,7 +1359,7 @@ function ContactCard({ icon: Icon, label, lines, href }: { icon: any; label: str
 }
 
 /* ---------- FOOTER ---------- */
-function Footer() {
+export function Footer() {
   const { t } = useI18n();
   return (
     <footer className="border-t border-foreground/10 mt-10 bg-foreground/[0.025] backdrop-blur-xl">
@@ -1551,7 +1551,7 @@ function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string
 }
 
 /* ---------- WHATSAPP FLOAT ---------- */
-function WhatsAppFloat() {
+export function WhatsAppFloat() {
   const { t, dir } = useI18n();
   return (
     <a
@@ -1591,7 +1591,7 @@ function ScrollTop() {
 }
 
 /* ---------- LANGUAGE HINT TOAST ---------- */
-function LanguageHint() {
+export function LanguageHint() {
   const { lang, setLang, t, dir } = useI18n();
   const [show, setShow] = useState(false);
 
@@ -1681,7 +1681,7 @@ function LanguageHint() {
 }
 
 /* ---------- EMPOWERMENT TOOLS (for new graduates) ---------- */
-function EmpowermentTools() {
+export function EmpowermentTools() {
   const { t, dir } = useI18n();
   const [open, setOpen] = useState(false);
   useEffect(() => {
