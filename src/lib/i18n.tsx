@@ -333,7 +333,7 @@ const ar: Dict = {
   contact_linkedin: "لينكدإن",
   contact_linkedin_line: "تواصل مع إسلام",
 
-  footer_tag: "٢٠٢٦ — رئيس قطاع التعلم والتطوير والمواهب والأداء",
+  footer_tag: "رئيس قطاع التعلم والتطوير والمواهب والأداء",
   footer_rights: "جميع الحقوق محفوظة.",
 };
 
