@@ -946,11 +946,8 @@ function Footer() {
     <footer className="border-t border-foreground/10 mt-10 bg-foreground/[0.025] backdrop-blur-xl">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <img src={logo} alt="Eslam Selmi" className="size-10 object-contain" />
-          <div>
-            <div className="font-display italic text-lg leading-none">Eslam Selmi</div>
-            <div className="text-xs text-muted-foreground mt-1">{t("footer_tag")}</div>
-          </div>
+          <BrandMark size={36} />
+          <div className="hidden md:block text-xs text-muted-foreground max-w-xs">{t("footer_tag")}</div>
         </div>
         <div className="flex items-center gap-3">
           <a href={LINKEDIN} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"
