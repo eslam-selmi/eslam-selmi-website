@@ -253,6 +253,7 @@ const ar: Dict = {
   brands_eyebrow: "موثوق من",
   brands_title: "علامات عملت معها",
   brands_desc: "لمحة عن الشركات والشركاء الذين صمّمت وقدت معهم برامج التعلم والتطوير عبر المنطقة.",
+  brands_meta: "علامة وشريك",
 
   snapshots_eyebrow: "لقطات",
   snapshots_title: "لحظات من الميدان",
