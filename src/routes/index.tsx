@@ -182,6 +182,51 @@ function Portfolio() {
       <WhatsAppFloat />
       <ScrollTop />
       <DemoBanner />
+      <CalendlyDialog />
+    </div>
+  );
+}
+
+/* ---------- CALENDLY DIALOG ---------- */
+function CalendlyDialog() {
+  const { t, dir } = useI18n();
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const handler = () => setOpen(true);
+    window.addEventListener("open-calendly", handler);
+    return () => window.removeEventListener("open-calendly", handler);
+  }, []);
+  if (!open) return null;
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-sm"
+      onClick={() => setOpen(false)}
+      dir={dir}
+    >
+      <div
+        className="relative w-full max-w-3xl h-[85vh] rounded-2xl overflow-hidden bg-card shadow-2xl border border-foreground/10"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-5 py-3 border-b border-foreground/10 bg-card">
+          <div className="min-w-0">
+            <div className="font-display font-bold text-sm sm:text-base truncate">{t("calendly_title")}</div>
+            <div className="text-xs text-muted-foreground truncate">{t("calendly_desc")}</div>
+          </div>
+          <button
+            onClick={() => setOpen(false)}
+            aria-label="Close"
+            className="size-9 grid place-items-center rounded-full hover:bg-foreground/10 transition shrink-0"
+          >
+            <X className="size-4" />
+          </button>
+        </div>
+        <iframe
+          src={CALENDLY_URL}
+          title="Calendly booking"
+          className="w-full h-[calc(85vh-56px)] border-0"
+          loading="lazy"
+        />
+      </div>
     </div>
   );
 }
