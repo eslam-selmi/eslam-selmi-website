@@ -192,7 +192,7 @@ const ar: Dict = {
   nav_podcast: "البودكاست",
   nav_contact: "تواصل",
   book_cta: "احجز جلسة مجانية",
-  listen_podcast: "استمع — البودكاست",
+  listen_podcast: "استمع · البودكاست",
   demo_title: "نسخة تجريبية",
   demo_desc: "هذا الموقع نسخة تجريبية حية. قد يتغير المحتوى والروابط.",
 
