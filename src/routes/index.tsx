@@ -305,10 +305,10 @@ function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => 
             >
               <Linkedin className="size-4" />
             </a>
-            <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-              className="hidden md:inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-4 py-2 text-sm font-bold hover:opacity-90 transition">
+            <button onClick={openCalendly}
+              className="hidden md:inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-4 py-2 text-sm font-bold hover:opacity-90 transition cursor-pointer">
               <Calendar className="size-4" /> {t("book_cta")}
-            </a>
+            </button>
             <button className="xl:hidden p-2" onClick={() => setOpen(v => !v)} aria-label="Menu">
               {open ? <X className="size-5" /> : <Menu className="size-5" />}
             </button>
