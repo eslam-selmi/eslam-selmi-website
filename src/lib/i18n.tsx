@@ -122,7 +122,7 @@ const en: Dict = {
   current_modal_desc: "Select the program that fits you best and submit your application.",
 
   // library
-  library_eyebrow: "Free resources",
+  library_eyebrow: "Resources",
   library_title: "Knowledge Library",
   library_desc: "A curated vault of e-books, frameworks, templates and resources I share with the community. Always growing, so bookmark it.",
   library_btn: "Open the library",
