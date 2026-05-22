@@ -132,7 +132,7 @@ const en: Dict = {
   library_open_drive: "Open in Google Drive",
   nav_courses: "Courses",
   nav_library: "Library",
-  nav_empowerment: "Empowerment",
+  nav_empowerment: "New Grad?",
 
   // empowerment tools
   emp_eyebrow: "New graduates",
