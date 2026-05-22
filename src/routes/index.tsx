@@ -269,22 +269,35 @@ function BrandMark({ size = 52 }: { size?: number }) {
   );
 }
 
-function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => void }) {
+export function Nav({ theme, onThemeToggle }: { theme?: ThemeMode; onThemeToggle?: () => void } = {}) {
   const { t, lang, setLang } = useI18n();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [internalTheme, setInternalTheme] = useState<ThemeMode>("light");
+  const activeTheme = theme ?? internalTheme;
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll);
+    if (theme === undefined && typeof window !== "undefined") {
+      setInternalTheme(window.localStorage.getItem("theme-mode") === "dark" ? "dark" : "light");
+    }
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [theme]);
+  const handleThemeToggle = onThemeToggle ?? (() => {
+    const isDark = document.documentElement.classList.toggle("dark");
+    if (typeof window !== "undefined") window.localStorage.setItem("theme-mode", isDark ? "dark" : "light");
+    setInternalTheme(isDark ? "dark" : "light");
+  });
+  const pathname = typeof window !== "undefined" ? window.location.pathname : "/";
+  const isHome = pathname === "/";
+  const hashHref = (id: string) => (isHome ? `#${id}` : `/#${id}`);
   return (
     <header className={`fixed top-0 inset-x-0 z-50 transition-all ${scrolled ? "py-2" : "py-4"}`}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className={`bg-card/85 backdrop-blur-xl border border-foreground/10 rounded-full ps-3 pe-2 py-2 flex items-center justify-between gap-2 ${scrolled ? "shadow-[0_8px_30px_-12px_rgba(15,27,61,0.15)]" : ""}`}>
-          <a href="#home" className="flex items-center gap-2.5 group shrink-0">
+          <Link to="/" className="flex items-center gap-2.5 group shrink-0">
             <BrandMark />
-          </a>
+          </Link>
           <nav className="hidden xl:flex items-center gap-0.5">
             {NAV.map(n => (
               n.to ? (
@@ -292,7 +305,7 @@ function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => 
                   {t(n.key)}
                 </Link>
               ) : (
-                <a key={n.id} href={`#${n.id}`} className="px-2.5 py-1.5 text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-foreground/5">
+                <a key={n.id} href={hashHref(n.id)} className="px-2.5 py-1.5 text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-foreground/5">
                   {t(n.key)}
                 </a>
               )
@@ -323,11 +336,11 @@ function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => 
               </span>
             </button>
             <button
-              onClick={onThemeToggle}
+              onClick={handleThemeToggle}
               aria-label="Toggle theme"
               className="inline-flex size-9 items-center justify-center rounded-full border border-foreground/10 hover:bg-foreground/5 transition"
             >
-              {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
+              {activeTheme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
             </button>
             <a
               href={LINKEDIN} target="_blank" rel="noopener noreferrer"
@@ -351,7 +364,7 @@ function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => 
               n.to ? (
                 <Link key={n.id} to={n.to} onClick={() => setOpen(false)} className="px-3 py-2 rounded-lg hover:bg-foreground/5 text-sm">{t(n.key)}</Link>
               ) : (
-                <a key={n.id} href={`#${n.id}`} onClick={() => setOpen(false)} className="px-3 py-2 rounded-lg hover:bg-foreground/5 text-sm">{t(n.key)}</a>
+                <a key={n.id} href={hashHref(n.id)} onClick={() => setOpen(false)} className="px-3 py-2 rounded-lg hover:bg-foreground/5 text-sm">{t(n.key)}</a>
               )
             ))}
             <button onClick={(e) => { setOpen(false); openCalendly(e); }}

@@ -7,7 +7,7 @@ type Dict = Record<string, string | string[]>;
 const en: Dict = {
   // nav
   nav_home: "Home",
-  nav_about: "About",
+  nav_about: "Who I Am",
   nav_journey: "Journey",
   nav_services: "Services",
   nav_pillars: "Expertise",
@@ -35,7 +35,7 @@ const en: Dict = {
   status_role: "Head of L&D · KSA",
 
   // about
-  about_eyebrow: "About me",
+  about_eyebrow: "Who I am",
   about_title: "Driving human capital excellence",
   about_intro:
     "L&D Head, Talent & Performance Management Leader with 9+ years across Egypt, Saudi Arabia and 12 other countries. Expertise spans Education, Retail, FMCG and Logistics, partnering with global leaders like KnowledgeCity, G4S, Aramex and Imtenan.",
@@ -182,7 +182,7 @@ const en: Dict = {
 
 const ar: Dict = {
   nav_home: "الرئيسية",
-  nav_about: "نبذة",
+  nav_about: "من أنا",
   nav_journey: "المسيرة",
   nav_services: "الخدمات",
   nav_pillars: "الركائز",
@@ -208,7 +208,7 @@ const ar: Dict = {
   status_current: "حاليًا",
   status_role: "رئيس التعلم والتطوير · السعودية",
 
-  about_eyebrow: "نبذة عني",
+  about_eyebrow: "من أنا",
   about_title: "نقود التميّز في رأس المال البشري",
   about_intro:
     "رئيس قطاع التعلم والتطوير وخبير في إدارة المواهب وإدارة الأداء، بخبرة تتجاوز ٩ سنوات في مصر والمملكة العربية السعودية و١٢ دولة أخرى. خبرات تمتد عبر قطاعات التعليم، التجزئة، السلع الاستهلاكية، والخدمات اللوجستية، بالشراكة مع مؤسسات رائدة مثل KnowledgeCity وG4S وAramex وImtenan.",
