@@ -122,7 +122,7 @@ const en: Dict = {
   current_modal_desc: "Select the program that fits you best and submit your application.",
 
   // library
-  library_eyebrow: "Free resources",
+  library_eyebrow: "Resources",
   library_title: "Knowledge Library",
   library_desc: "A curated vault of e-books, frameworks, templates and resources I share with the community. Always growing, so bookmark it.",
   library_btn: "Open the library",
@@ -132,7 +132,7 @@ const en: Dict = {
   library_open_drive: "Open in Google Drive",
   nav_courses: "Courses",
   nav_library: "Library",
-  nav_empowerment: "Empowerment",
+  nav_empowerment: "New Grad?",
 
   // empowerment tools
   emp_eyebrow: "New graduates",
@@ -285,7 +285,7 @@ const ar: Dict = {
   current_modal_title: "اختر دورتك",
   current_modal_desc: "حدّد البرنامج الأنسب لك وأرسل طلب الاشتراك.",
 
-  library_eyebrow: "مصادر مجانية",
+  library_eyebrow: "مصادر",
   library_title: "مكتبة المعرفة",
   library_desc: "مكتبة مختارة من الكتب الإلكترونية والقوالب والأطر العملية والمصادر التي أشاركها مع المجتمع. تتجدّد باستمرار، فاحفظها للرجوع إليها.",
   library_btn: "ادخل المكتبة",
@@ -295,7 +295,7 @@ const ar: Dict = {
   library_open_drive: "افتح في Google Drive",
   nav_courses: "الدورات",
   nav_library: "المكتبة",
-  nav_empowerment: "التمكين",
+  nav_empowerment: "خريج جديد؟",
 
   emp_eyebrow: "للخريجين الجدد",
   emp_title: "أدوات التمكين",

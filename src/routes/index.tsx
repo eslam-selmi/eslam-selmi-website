@@ -49,7 +49,6 @@ const NAV = [
   { id: "journey", key: "nav_journey" },
   { id: "services", key: "nav_services" },
   { id: "programs", key: "nav_programs" },
-  { id: "empowerment", key: "nav_empowerment" },
   { id: "current-courses", key: "nav_courses" },
   { id: "library", key: "nav_library" },
   { id: "podcast", key: "nav_podcast" },
@@ -191,7 +190,7 @@ function Portfolio() {
       <EmpowermentTools />
       <CurrentCourses />
       <Library />
-      <LeadForm />
+      
       <Podcast />
       <Clients />
       <Snapshots />
@@ -251,46 +250,33 @@ function CalendlyDialog() {
 }
 
 /* ---------- BRAND MARK ---------- */
-function BrandMark({ size = 42 }: { size?: number }) {
+function BrandMark({ size = 44 }: { size?: number }) {
   return (
     <div className="flex items-center gap-2.5">
       <svg width={size} height={size} viewBox="0 0 48 48" className="shrink-0" aria-label="Eslam Selmi">
         <defs>
-          <linearGradient id="bmg" x1="0" y1="1" x2="1" y2="0">
-            <stop offset="0%" stopColor="var(--navy)" />
-            <stop offset="50%" stopColor="var(--lavender-deep)" />
-            <stop offset="100%" stopColor="var(--accent)" />
+          <linearGradient id="bmPlate" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="var(--navy-deep)" />
+            <stop offset="100%" stopColor="var(--navy)" />
           </linearGradient>
-          <linearGradient id="bms" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="white" stopOpacity="0.95" />
-            <stop offset="100%" stopColor="white" stopOpacity="0.75" />
+          <linearGradient id="bmGold" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0%" stopColor="var(--accent)" />
+            <stop offset="100%" stopColor="#ffe6a8" />
           </linearGradient>
         </defs>
-        {/* squircle plate */}
-        <rect x="2" y="2" width="44" height="44" rx="14" fill="url(#bmg)" />
-        <rect x="2.5" y="2.5" width="43" height="43" rx="13.5" fill="none" stroke="white" strokeOpacity="0.18" />
-
-        {/* Concept: an open book / page (knowledge) with a rising spark/arrow (growth) — leadership + learning */}
-        {/* Book base */}
-        <path
-          d="M11 33 C 16 30, 20 30, 24 32 C 28 30, 32 30, 37 33 L 37 17 C 32 14, 28 14, 24 16 C 20 14, 16 14, 11 17 Z"
-          fill="url(#bms)"
-        />
-        {/* Spine */}
-        <path d="M24 16 L 24 32" stroke="var(--navy)" strokeOpacity="0.35" strokeWidth="1" />
-
-        {/* Rising spark — growth arrow lifting from the book */}
-        <path
-          d="M24 14 L 24 7"
-          stroke="white" strokeWidth="2.2" strokeLinecap="round"
-        />
-        <path
-          d="M20.5 10.5 L 24 7 L 27.5 10.5"
-          stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="none"
-        />
-        {/* Spark glow */}
-        <circle cx="24" cy="7" r="2.2" fill="white" />
-        <circle cx="24" cy="7" r="3.6" fill="white" fillOpacity="0.25" />
+        {/* Hexagonal shield plate */}
+        <path d="M24 1.5 L43 12 L43 36 L24 46.5 L5 36 L5 12 Z" fill="url(#bmPlate)" />
+        <path d="M24 1.5 L43 12 L43 36 L24 46.5 L5 36 L5 12 Z" fill="none" stroke="var(--accent)" strokeOpacity="0.55" strokeWidth="0.7" />
+        {/* E as ascending growth bars */}
+        <rect x="12" y="30" width="6"  height="6" rx="1.2" fill="url(#bmGold)" />
+        <rect x="12" y="22" width="10" height="4" rx="1"   fill="url(#bmGold)" opacity="0.85" />
+        <rect x="12" y="14" width="14" height="4" rx="1"   fill="url(#bmGold)" opacity="0.7" />
+        {/* S curve — strategy spark */}
+        <path d="M30 14 C 35 14, 37 19, 32.5 22.5 C 28 26, 31 31, 36 31"
+          stroke="url(#bmGold)" strokeWidth="2.4" strokeLinecap="round" fill="none" />
+        <circle cx="36" cy="31" r="1.6" fill="#fff" />
+        {/* corner accents */}
+        <circle cx="24" cy="1.5" r="1" fill="var(--accent)" />
       </svg>
       <span className="hidden sm:flex flex-col leading-none">
         <span className="font-display text-[14px] font-extrabold tracking-tight text-foreground">Eslam Selmi</span>
@@ -321,6 +307,19 @@ function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => 
                 {t(n.key)}
               </a>
             ))}
+            <a
+              href="#empowerment"
+              className="ms-2 group inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-extrabold tracking-tight border-2 transition-all hover:-translate-y-0.5"
+              style={{
+                borderColor: "var(--accent)",
+                color: "var(--accent)",
+                background: "linear-gradient(135deg, oklch(0.75 0.13 85 / 0.10), oklch(0.75 0.13 85 / 0.02))",
+                boxShadow: "0 0 0 3px oklch(0.75 0.13 85 / 0.08)",
+              }}
+            >
+              <Rocket className="size-3.5" />
+              {t("nav_empowerment")}
+            </a>
           </nav>
           <div className="flex items-center gap-1.5">
             <button
@@ -481,45 +480,78 @@ function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* Right: Portrait — elegant compact circular frame */}
+        {/* Right: Portrait — editorial squircle with offset accents */}
         <motion.div
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}
           className="lg:col-span-5 order-1 lg:order-2 relative"
         >
-          <div className="relative w-full max-w-[340px] sm:max-w-[380px] mx-auto">
-            {/* Soft aurora backdrop */}
+          <div className="relative w-full max-w-[360px] sm:max-w-[400px] mx-auto aspect-[4/5]">
+            {/* Aurora backdrop */}
             <div
-              className="absolute -inset-6 rounded-full blur-3xl opacity-70"
+              className="absolute -inset-8 blur-3xl opacity-70"
               style={{
                 background:
-                  "conic-gradient(from 140deg, oklch(0.72 0.13 180 / 0.35), oklch(0.74 0.10 295 / 0.30), oklch(0.22 0.06 252 / 0.20), oklch(0.72 0.13 180 / 0.35))",
+                  "radial-gradient(60% 50% at 30% 20%, oklch(0.74 0.10 295 / 0.45), transparent 70%), radial-gradient(50% 50% at 80% 80%, oklch(0.72 0.13 180 / 0.40), transparent 70%)",
               }}
             />
-            {/* Thin gradient ring */}
+            {/* Offset gold geometric accent (behind) */}
             <div
-              className="relative rounded-full p-[2px]"
+              className="absolute -right-3 -bottom-3 w-[70%] h-[70%] -z-0"
               style={{
+                background: "linear-gradient(135deg, var(--accent), oklch(0.78 0.10 85))",
+                borderRadius: "2.5rem 0.5rem 2.5rem 0.5rem",
+                transform: "rotate(-6deg)",
+                opacity: 0.95,
+                boxShadow: "0 30px 60px -25px oklch(0.55 0.13 85 / 0.45)",
+              }}
+            />
+            {/* Offset navy plate (behind, opposite corner) */}
+            <div
+              className="absolute -left-4 -top-4 w-[55%] h-[55%] -z-0"
+              style={{
+                background: "linear-gradient(135deg, var(--navy-deep), var(--lavender-deep))",
+                borderRadius: "0.5rem 2rem 0.5rem 2rem",
+                transform: "rotate(5deg)",
+                opacity: 0.85,
+              }}
+            />
+            {/* Main portrait — squircle with double frame */}
+            <div
+              className="relative h-full w-full p-[3px]"
+              style={{
+                borderRadius: "2.25rem",
                 background:
-                  "conic-gradient(from 220deg, var(--accent), var(--lavender-deep), var(--navy), var(--accent))",
+                  "linear-gradient(160deg, var(--accent) 0%, oklch(0.96 0.04 90) 35%, var(--lavender-deep) 70%, var(--navy) 100%)",
+                boxShadow: "0 40px 90px -35px oklch(0.22 0.06 252 / 0.55)",
               }}
             >
               <div
-                className="relative aspect-square rounded-full overflow-hidden"
+                className="relative h-full w-full overflow-hidden"
                 style={{
+                  borderRadius: "2.1rem",
                   background:
-                    "radial-gradient(120% 100% at 50% 0%, oklch(0.96 0.015 200) 0%, oklch(0.92 0.025 195) 70%, oklch(0.88 0.04 260) 100%)",
-                  boxShadow: "0 30px 70px -30px oklch(0.22 0.06 252 / 0.45)",
+                    "linear-gradient(170deg, oklch(0.96 0.015 200) 0%, oklch(0.90 0.03 195) 60%, oklch(0.82 0.05 260) 100%)",
                 }}
               >
                 <img
                   src={headshot}
                   alt="Eslam Selmi"
-                  className="absolute inset-x-0 bottom-0 h-[104%] w-full object-contain object-bottom"
+                  className="absolute inset-x-0 bottom-0 h-[108%] w-full object-contain object-bottom"
                 />
+                {/* Thin inner stroke */}
                 <div
-                  className="pointer-events-none absolute inset-0 rounded-full"
-                  style={{ boxShadow: "inset 0 -40px 60px -30px oklch(0.22 0.06 252 / 0.30)" }}
+                  className="pointer-events-none absolute inset-1.5"
+                  style={{ borderRadius: "1.95rem", boxShadow: "inset 0 0 0 1px oklch(1 0 0 / 0.35)" }}
                 />
+                {/* Bottom gradient wash */}
+                <div
+                  className="pointer-events-none absolute inset-0"
+                  style={{ background: "linear-gradient(180deg, transparent 55%, oklch(0.22 0.06 252 / 0.35) 100%)" }}
+                />
+                {/* Corner monogram */}
+                <div
+                  className="absolute top-3 left-3 size-9 grid place-items-center rounded-xl backdrop-blur bg-white/15 border border-white/30 text-white font-display text-[13px] font-extrabold tracking-tight"
+                >ES</div>
               </div>
             </div>
 
@@ -1136,7 +1168,7 @@ function Library() {
             </div>
           </div>
           {/* Accent panel */}
-          <div className="relative hidden md:block p-10 overflow-hidden order-1 md:order-2" style={{ background: "linear-gradient(135deg, var(--lavender-deep) 0%, var(--navy-deep) 55%, var(--accent) 100%)" }}>
+          <div className="relative hidden md:block p-10 overflow-hidden order-1 md:order-2" style={{ background: "linear-gradient(135deg, var(--lavender-deep) 0%, var(--navy-deep) 55%, var(--navy) 100%)" }}>
             <div className="absolute inset-0 grain opacity-25 pointer-events-none" />
             <div className="relative h-full flex flex-col justify-between text-white">
               <div className="flex items-start justify-between">
@@ -1656,7 +1688,7 @@ function EmpowermentTools() {
     <Section id="empowerment" eyebrow={t("emp_eyebrow")} title={t("emp_title")}>
       <motion.div {...fadeUp}
         className="relative mx-auto max-w-6xl rounded-[2rem] overflow-hidden border border-foreground/10 shadow-[0_30px_80px_-40px_oklch(0.22_0.06_252/0.35)]"
-        style={{ background: "linear-gradient(135deg, var(--navy-deep) 0%, var(--lavender-deep) 55%, var(--accent) 110%)" }}
+        style={{ background: "linear-gradient(135deg, var(--navy-deep) 0%, var(--navy) 55%, var(--lavender-deep) 110%)" }}
       >
         <div className="absolute inset-0 grain opacity-25 pointer-events-none" />
         <div
