@@ -54,18 +54,21 @@ const COUNTRIES = [
 ];
 
 const JOURNEY = [
-  { year: "2017", role: { en: "L&D Specialist", ar: "أخصائي تعلم وتطوير" }, company: "Imtenan", country: "EG" },
-  { year: "2022", role: { en: "Senior L&D Specialist", ar: "أخصائي أول تعلم وتطوير" }, company: "Aramex", country: "EG" },
-  { year: "2023", role: { en: "Control Supervisor", ar: "مشرف رقابة" }, company: "G4S", country: "EG" },
-  { year: "2024", role: { en: "L&D Supervisor", ar: "مشرف التعلم والتطوير" }, company: "KnowledgeCity", country: "SA" },
-  { year: "2025", role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: "Imtenan", country: "EG" },
-  { year: "2026", role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: "KnowledgeCity", country: "SA" },
+  { year: "2017", role: { en: "Senior L&D / L&D Specialist", ar: "أخصائي أول / أخصائي تعلم وتطوير" }, company: "G4S", country: "EG", logo: "https://logo.clearbit.com/g4s.com" },
+  { year: "2022", role: { en: "L&D Specialist", ar: "أخصائي تعلم وتطوير" }, company: "Aramex", country: "EG", logo: "https://logo.clearbit.com/aramex.com" },
+  { year: "2023", role: { en: "Control Supervisor", ar: "مشرف رقابة" }, company: "Badreldin Developments", country: "EG", logo: "https://logo.clearbit.com/badreldin.com" },
+  { year: "2024", role: { en: "L&D Supervisor", ar: "مشرف التعلم والتطوير" }, company: "KnowledgeCity", country: "SA", logo: "https://logo.clearbit.com/knowledgecity.com" },
+  { year: "2026", role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: "Imtenan", country: "EG", logo: "https://logo.clearbit.com/imtenan.com" },
+  { year: "NOW", role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: "KnowledgeCity", country: "SA", logo: "https://logo.clearbit.com/knowledgecity.com" },
 ];
 
 const CREDENTIALS = [
   { name: { en: "PMP", ar: "إدارة المشاريع PMP" }, issuer: { en: "London College", ar: "كلية لندن" }, icon: BadgeCheck },
+  { name: { en: "PMI® Kick-Off Predictive", ar: "PMI® Kick-Off Predictive" }, issuer: { en: "Project Management Institute", ar: "معهد إدارة المشاريع" }, icon: BadgeCheck },
   { name: { en: "TOT — Training of Trainers", ar: "تدريب المدربين TOT" }, issuer: { en: "Certified Program", ar: "برنامج معتمد" }, icon: Presentation },
   { name: { en: "Performance & KPIs", ar: "إدارة الأداء والمؤشرات" }, issuer: { en: "ESLSCA University", ar: "جامعة ESLSCA" }, icon: BarChart3 },
+  { name: { en: "Workplace Learning with Coaching & Mentoring", ar: "التعلم في بيئة العمل بالكوتشينج والإرشاد" }, issuer: { en: "The Open University", ar: "الجامعة المفتوحة" }, icon: HeartHandshake },
+  { name: { en: "Risk Management Workshop", ar: "ورشة إدارة المخاطر" }, issuer: { en: "Masar Academy", ar: "أكاديمية مسار" }, icon: Target },
   { name: { en: "Design Thinking", ar: "التفكير التصميمي" }, issuer: { en: "HP LIFE", ar: "HP LIFE" }, icon: Lightbulb },
   { name: { en: "Instructional Design", ar: "التصميم التعليمي" }, issuer: { en: "Mentarcise", ar: "Mentarcise" }, icon: Layers },
   { name: { en: "IDPCC Certified", ar: "شهادة IDPCC" }, issuer: { en: "IDPCC", ar: "IDPCC" }, icon: Award },
