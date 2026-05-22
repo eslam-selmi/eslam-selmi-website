@@ -138,6 +138,12 @@ html[lang="ar"] {
   html[lang="ar"] h2,
   html[lang="ar"] h3,
   html[lang="ar"] .font-display { font-family: var(--font-heading-ar); font-weight: 800; letter-spacing: 0; }
+  /* Arabic must never inherit Tailwind tracking/uppercase — it breaks ligatures and adds spaces between letters */
+  html[lang="ar"] * {
+    letter-spacing: 0 !important;
+    word-spacing: normal !important;
+    text-transform: none !important;
+  }
 }
 
 @layer utilities {
