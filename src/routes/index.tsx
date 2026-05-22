@@ -1655,7 +1655,7 @@ function EmpowermentTools() {
     <Section id="empowerment" eyebrow={t("emp_eyebrow")} title={t("emp_title")}>
       <motion.div {...fadeUp}
         className="relative mx-auto max-w-6xl rounded-[2rem] overflow-hidden border border-foreground/10 shadow-[0_30px_80px_-40px_oklch(0.22_0.06_252/0.35)]"
-        style={{ background: "linear-gradient(135deg, var(--navy-deep) 0%, var(--lavender-deep) 55%, var(--accent) 110%)" }}
+        style={{ background: "linear-gradient(135deg, var(--navy-deep) 0%, var(--navy) 55%, var(--lavender-deep) 110%)" }}
       >
         <div className="absolute inset-0 grain opacity-25 pointer-events-none" />
         <div
