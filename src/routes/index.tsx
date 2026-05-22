@@ -49,9 +49,11 @@ const NAV = [
   { id: "journey", key: "nav_journey" },
   { id: "services", key: "nav_services" },
   { id: "programs", key: "nav_programs" },
+  { id: "current-courses", key: "nav_courses" },
+  { id: "library", key: "nav_library" },
+  { id: "podcast", key: "nav_podcast" },
   { id: "clients", key: "nav_clients" },
   { id: "snapshots", key: "nav_snapshots" },
-  { id: "podcast", key: "nav_podcast" },
   { id: "contact", key: "nav_contact" },
 ];
 
