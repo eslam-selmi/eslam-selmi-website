@@ -303,12 +303,12 @@ function Hero() {
           >
             {lang === "ar" ? (
               <>
-                مؤسسة أقوى مع{" "}
+                إطلاق إمكانات المواهب مع{" "}
                 <span className="block sm:inline" style={{ color: "var(--accent)" }}>{nameAr}</span>
               </>
             ) : (
               <>
-                A Stronger Business With{" "}
+                Unlocking Talent Potential With{" "}
                 <span className="block sm:inline" style={{ color: "var(--accent)" }}>{nameEn}</span>
               </>
             )}
