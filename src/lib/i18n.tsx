@@ -56,13 +56,13 @@ const en: Dict = {
 
   // journey
   journey_eyebrow: "My journey",
-  journey_title: "From specialist to head of L&D",
+  journey_title: "A decade of shaping L&D excellence",
 
   // services
   services_eyebrow: "Services",
   services_title: "Pick a service",
   services_subtitle: "Tap any service to request it instantly via WhatsApp.",
-  svc_request_btn: "Request this service",
+  svc_request_btn: "Invest in this service",
   calendly_title: "Book your free 1:1 session",
   calendly_desc: "Pick a time that works for you.",
 
