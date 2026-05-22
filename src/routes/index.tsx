@@ -342,6 +342,19 @@ function Hero() {
               className="inline-flex items-center gap-2 rounded-xl border border-foreground/15 bg-card px-7 py-4 text-sm font-bold text-foreground hover:border-foreground/30 hover:bg-foreground/[0.03] transition">
               <MessageCircle className="size-4" /> WhatsApp
             </a>
+            <a
+              href="#podcast"
+              aria-label="Listen to the L&D Podcast"
+              className="group relative inline-flex items-center gap-2 rounded-xl px-7 py-4 text-sm font-bold text-white overflow-hidden shadow-[0_18px_40px_-14px_oklch(0.55_0.2_290/0.55)] hover:translate-y-[-2px] transition"
+              style={{ background: "linear-gradient(135deg, oklch(0.32 0.13 280), oklch(0.55 0.18 200))" }}
+            >
+              <span className="relative grid place-items-center size-6 rounded-full bg-white/15 backdrop-blur-sm">
+                <Mic className="size-3.5" />
+                <span className="absolute inset-0 rounded-full ring-2 ring-white/40 animate-ping" />
+              </span>
+              <span className="relative">Listen — Podcast</span>
+              <ArrowRight className="relative size-4 group-hover:translate-x-1 rtl-flip transition" />
+            </a>
           </motion.div>
 
           {/* Social row */}
