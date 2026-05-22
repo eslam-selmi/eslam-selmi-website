@@ -892,12 +892,19 @@ function LeadForm() {
             {state === "invalid" && <span className="text-amber-400">{t("lead_invalid")}</span>}
           </div>
         </motion.div>
-        <motion.div {...fadeUp} className="glass-panel rounded-[2rem] p-6 grid grid-cols-3 gap-3">
-          {[Briefcase, Award, GraduationCap, Users, TrendingUp, BarChart3].map((Icon, i) => (
-            <div key={i} className="aspect-square rounded-2xl bg-gradient-to-br from-[var(--gold)]/20 to-primary/20 grid place-items-center text-gold">
-              <Icon className="size-7" />
+        <motion.div {...fadeUp} className="relative rounded-[2rem] bg-primary text-primary-foreground p-8 overflow-hidden">
+          <div className="absolute inset-0 bg-aurora opacity-40" />
+          <div className="relative">
+            <Sparkles className="size-6" style={{ color: "var(--accent)" }} />
+            <div className="mt-4 font-display text-2xl font-bold leading-tight">
+              {lang === "ar" ? "كن أول من يعرف عن الدورات الجديدة" : "Be the first to know about new cohorts"}
             </div>
-          ))}
+            <div className="mt-6 grid grid-cols-3 gap-3">
+              <CompactStat n="15+" l={lang === "ar" ? "برنامج" : "Programs"} />
+              <CompactStat n="12+" l={lang === "ar" ? "دولة" : "Countries"} />
+              <CompactStat n="8+" l={lang === "ar" ? "سنوات" : "Years"} />
+            </div>
+          </div>
         </motion.div>
       </div>
     </Section>
