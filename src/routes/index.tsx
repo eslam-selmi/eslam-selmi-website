@@ -42,7 +42,16 @@ const waServiceLink = (serviceEn: string, lang: "en" | "ar") => {
   return `${WHATSAPP_BASE}?text=${encodeURIComponent(msg)}`;
 };
 
+// Primary nav — kept short and focused. The full set lives in the mobile menu.
 const NAV = [
+  { id: "about", key: "nav_about" },
+  { id: "services", key: "nav_services" },
+  { id: "current-courses", key: "nav_courses" },
+  { id: "library", key: "nav_library" },
+  { id: "podcast", key: "nav_podcast" },
+  { id: "contact", key: "nav_contact" },
+];
+const NAV_FULL = [
   { id: "home", key: "nav_home" },
   { id: "about", key: "nav_about" },
   { id: "pillars", key: "nav_pillars" },
