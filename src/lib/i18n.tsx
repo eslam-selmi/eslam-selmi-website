@@ -132,6 +132,29 @@ const en: Dict = {
   library_open_drive: "Open in Google Drive",
   nav_courses: "Courses",
   nav_library: "Library",
+  nav_empowerment: "Empowerment",
+
+  // empowerment tools
+  emp_eyebrow: "New graduates",
+  emp_title: "Empowerment Tools",
+  emp_tagline: "Workplace-ready in weeks, not years.",
+  emp_desc: "A hands-on program that prepares fresh graduates to master the everyday tools of modern work — practical AI use, professional Outlook workflows, design with Canva, project tracking with Trello, and data work with Google Sheets & Forms.",
+  emp_btn: "Enroll now",
+  emp_meta: "Tools · Workflows · Confidence",
+  emp_tool_ai: "AI at work",
+  emp_tool_outlook: "Outlook mastery",
+  emp_tool_canva: "Canva design",
+  emp_tool_trello: "Trello & tasks",
+  emp_tool_sheets: "Sheets & Forms",
+  emp_tool_more: "More essentials",
+
+  // language hint toast
+  lang_hint_title_en: "Prefer English?",
+  lang_hint_title_ar: "تفضّل العربية؟",
+  lang_hint_desc_en: "You can switch the language anytime from here.",
+  lang_hint_desc_ar: "يمكنك تغيير لغة الموقع في أي وقت من هنا.",
+  lang_hint_switch_en: "Switch to English",
+  lang_hint_switch_ar: "التحويل للعربية",
 
   // lead form
   lead_eyebrow: "Stay in the loop",
