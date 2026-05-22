@@ -35,6 +35,7 @@ const NAV = [
   { id: "programs", key: "nav_programs" },
   { id: "clients", key: "nav_clients" },
   { id: "snapshots", key: "nav_snapshots" },
+  { id: "podcast", key: "nav_podcast" },
   { id: "contact", key: "nav_contact" },
 ];
 
