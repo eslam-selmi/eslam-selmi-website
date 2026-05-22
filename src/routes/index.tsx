@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -62,7 +62,7 @@ const NAV_FULL = [
   { id: "journey", key: "nav_journey" },
   { id: "services", key: "nav_services" },
   { id: "programs", key: "nav_programs" },
-  { id: "empowerment", key: "nav_empowerment" },
+  
   { id: "current-courses", key: "nav_courses" },
   { id: "library", key: "nav_library" },
   { id: "podcast", key: "nav_podcast" },
@@ -188,7 +188,7 @@ function Portfolio() {
       <Journey />
       <Services />
       <Programs />
-      <EmpowermentTools />
+      
       <CurrentCourses />
       <Library />
       
@@ -207,7 +207,7 @@ function Portfolio() {
 }
 
 /* ---------- CALENDLY DIALOG ---------- */
-function CalendlyDialog() {
+export function CalendlyDialog() {
   const { t, dir } = useI18n();
   const [open, setOpen] = useState(false);
   useEffect(() => {
@@ -291,8 +291,8 @@ function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => 
                 {t(n.key)}
               </a>
             ))}
-            <a
-              href="#empowerment"
+            <Link
+              to="/graduates"
               className="ms-2 group inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-extrabold tracking-tight border-2 transition-all hover:-translate-y-0.5"
               style={{
                 borderColor: "var(--accent)",
@@ -303,7 +303,7 @@ function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => 
             >
               <Rocket className="size-3.5" />
               {t("nav_empowerment")}
-            </a>
+            </Link>
           </nav>
           <div className="flex items-center gap-1.5">
             <button
@@ -1359,7 +1359,7 @@ function ContactCard({ icon: Icon, label, lines, href }: { icon: any; label: str
 }
 
 /* ---------- FOOTER ---------- */
-function Footer() {
+export function Footer() {
   const { t } = useI18n();
   return (
     <footer className="border-t border-foreground/10 mt-10 bg-foreground/[0.025] backdrop-blur-xl">
@@ -1551,7 +1551,7 @@ function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string
 }
 
 /* ---------- WHATSAPP FLOAT ---------- */
-function WhatsAppFloat() {
+export function WhatsAppFloat() {
   const { t, dir } = useI18n();
   return (
     <a
@@ -1591,7 +1591,7 @@ function ScrollTop() {
 }
 
 /* ---------- LANGUAGE HINT TOAST ---------- */
-function LanguageHint() {
+export function LanguageHint() {
   const { lang, setLang, t, dir } = useI18n();
   const [show, setShow] = useState(false);
 
@@ -1681,7 +1681,7 @@ function LanguageHint() {
 }
 
 /* ---------- EMPOWERMENT TOOLS (for new graduates) ---------- */
-function EmpowermentTools() {
+export function EmpowermentTools() {
   const { t, dir } = useI18n();
   const [open, setOpen] = useState(false);
   useEffect(() => {
