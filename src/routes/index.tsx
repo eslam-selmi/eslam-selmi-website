@@ -480,45 +480,78 @@ function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* Right: Portrait — elegant compact circular frame */}
+        {/* Right: Portrait — editorial squircle with offset accents */}
         <motion.div
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}
           className="lg:col-span-5 order-1 lg:order-2 relative"
         >
-          <div className="relative w-full max-w-[340px] sm:max-w-[380px] mx-auto">
-            {/* Soft aurora backdrop */}
+          <div className="relative w-full max-w-[360px] sm:max-w-[400px] mx-auto aspect-[4/5]">
+            {/* Aurora backdrop */}
             <div
-              className="absolute -inset-6 rounded-full blur-3xl opacity-70"
+              className="absolute -inset-8 blur-3xl opacity-70"
               style={{
                 background:
-                  "conic-gradient(from 140deg, oklch(0.72 0.13 180 / 0.35), oklch(0.74 0.10 295 / 0.30), oklch(0.22 0.06 252 / 0.20), oklch(0.72 0.13 180 / 0.35))",
+                  "radial-gradient(60% 50% at 30% 20%, oklch(0.74 0.10 295 / 0.45), transparent 70%), radial-gradient(50% 50% at 80% 80%, oklch(0.72 0.13 180 / 0.40), transparent 70%)",
               }}
             />
-            {/* Thin gradient ring */}
+            {/* Offset gold geometric accent (behind) */}
             <div
-              className="relative rounded-full p-[2px]"
+              className="absolute -right-3 -bottom-3 w-[70%] h-[70%] -z-0"
               style={{
+                background: "linear-gradient(135deg, var(--accent), oklch(0.78 0.10 85))",
+                borderRadius: "2.5rem 0.5rem 2.5rem 0.5rem",
+                transform: "rotate(-6deg)",
+                opacity: 0.95,
+                boxShadow: "0 30px 60px -25px oklch(0.55 0.13 85 / 0.45)",
+              }}
+            />
+            {/* Offset navy plate (behind, opposite corner) */}
+            <div
+              className="absolute -left-4 -top-4 w-[55%] h-[55%] -z-0"
+              style={{
+                background: "linear-gradient(135deg, var(--navy-deep), var(--lavender-deep))",
+                borderRadius: "0.5rem 2rem 0.5rem 2rem",
+                transform: "rotate(5deg)",
+                opacity: 0.85,
+              }}
+            />
+            {/* Main portrait — squircle with double frame */}
+            <div
+              className="relative h-full w-full p-[3px]"
+              style={{
+                borderRadius: "2.25rem",
                 background:
-                  "conic-gradient(from 220deg, var(--accent), var(--lavender-deep), var(--navy), var(--accent))",
+                  "linear-gradient(160deg, var(--accent) 0%, oklch(0.96 0.04 90) 35%, var(--lavender-deep) 70%, var(--navy) 100%)",
+                boxShadow: "0 40px 90px -35px oklch(0.22 0.06 252 / 0.55)",
               }}
             >
               <div
-                className="relative aspect-square rounded-full overflow-hidden"
+                className="relative h-full w-full overflow-hidden"
                 style={{
+                  borderRadius: "2.1rem",
                   background:
-                    "radial-gradient(120% 100% at 50% 0%, oklch(0.96 0.015 200) 0%, oklch(0.92 0.025 195) 70%, oklch(0.88 0.04 260) 100%)",
-                  boxShadow: "0 30px 70px -30px oklch(0.22 0.06 252 / 0.45)",
+                    "linear-gradient(170deg, oklch(0.96 0.015 200) 0%, oklch(0.90 0.03 195) 60%, oklch(0.82 0.05 260) 100%)",
                 }}
               >
                 <img
                   src={headshot}
                   alt="Eslam Selmi"
-                  className="absolute inset-x-0 bottom-0 h-[104%] w-full object-contain object-bottom"
+                  className="absolute inset-x-0 bottom-0 h-[108%] w-full object-contain object-bottom"
                 />
+                {/* Thin inner stroke */}
                 <div
-                  className="pointer-events-none absolute inset-0 rounded-full"
-                  style={{ boxShadow: "inset 0 -40px 60px -30px oklch(0.22 0.06 252 / 0.30)" }}
+                  className="pointer-events-none absolute inset-1.5"
+                  style={{ borderRadius: "1.95rem", boxShadow: "inset 0 0 0 1px oklch(1 0 0 / 0.35)" }}
                 />
+                {/* Bottom gradient wash */}
+                <div
+                  className="pointer-events-none absolute inset-0"
+                  style={{ background: "linear-gradient(180deg, transparent 55%, oklch(0.22 0.06 252 / 0.35) 100%)" }}
+                />
+                {/* Corner monogram */}
+                <div
+                  className="absolute top-3 left-3 size-9 grid place-items-center rounded-xl backdrop-blur bg-white/15 border border-white/30 text-white font-display text-[13px] font-extrabold tracking-tight"
+                >ES</div>
               </div>
             </div>
 
