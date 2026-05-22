@@ -176,6 +176,7 @@ function Portfolio() {
       <Snapshots />
       <Podcast />
       <BookCTA />
+      <CurrentCourses />
       <LeadForm />
       <Contact />
       <Footer />
