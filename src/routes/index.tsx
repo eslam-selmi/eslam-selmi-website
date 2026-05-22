@@ -45,26 +45,25 @@ const waServiceLink = (serviceEn: string, lang: "en" | "ar") => {
 };
 
 // Primary nav — kept short and focused. The full set lives in the mobile menu.
-const NAV = [
+const NAV: { id: string; key: string; to?: string }[] = [
   { id: "about", key: "nav_about" },
   { id: "journey", key: "nav_journey" },
   { id: "services", key: "nav_services" },
   { id: "programs", key: "nav_programs" },
   { id: "current-courses", key: "nav_courses" },
-  { id: "library", key: "nav_library" },
+  { id: "library", key: "nav_library", to: "/library" },
   { id: "podcast", key: "nav_podcast" },
   { id: "contact", key: "nav_contact" },
 ];
-const NAV_FULL = [
+const NAV_FULL: { id: string; key: string; to?: string }[] = [
   { id: "home", key: "nav_home" },
   { id: "about", key: "nav_about" },
   { id: "pillars", key: "nav_pillars" },
   { id: "journey", key: "nav_journey" },
   { id: "services", key: "nav_services" },
   { id: "programs", key: "nav_programs" },
-  
   { id: "current-courses", key: "nav_courses" },
-  { id: "library", key: "nav_library" },
+  { id: "library", key: "nav_library", to: "/library" },
   { id: "podcast", key: "nav_podcast" },
   { id: "clients", key: "nav_clients" },
   { id: "snapshots", key: "nav_snapshots" },
@@ -190,7 +189,7 @@ function Portfolio() {
       <Programs />
       
       <CurrentCourses />
-      <Library />
+      
       
       <Podcast />
       <Clients />
@@ -287,9 +286,15 @@ function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => 
           </a>
           <nav className="hidden xl:flex items-center gap-0.5">
             {NAV.map(n => (
-              <a key={n.id} href={`#${n.id}`} className="px-2.5 py-1.5 text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-foreground/5">
-                {t(n.key)}
-              </a>
+              n.to ? (
+                <Link key={n.id} to={n.to} className="px-2.5 py-1.5 text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-foreground/5">
+                  {t(n.key)}
+                </Link>
+              ) : (
+                <a key={n.id} href={`#${n.id}`} className="px-2.5 py-1.5 text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-foreground/5">
+                  {t(n.key)}
+                </a>
+              )
             ))}
             <Link
               to="/graduates"
@@ -342,7 +347,11 @@ function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => 
         {open && (
           <div className="xl:hidden mt-2 glass-strong rounded-2xl p-3 grid gap-1">
             {NAV_FULL.map(n => (
-              <a key={n.id} href={`#${n.id}`} onClick={() => setOpen(false)} className="px-3 py-2 rounded-lg hover:bg-foreground/5 text-sm">{t(n.key)}</a>
+              n.to ? (
+                <Link key={n.id} to={n.to} onClick={() => setOpen(false)} className="px-3 py-2 rounded-lg hover:bg-foreground/5 text-sm">{t(n.key)}</Link>
+              ) : (
+                <a key={n.id} href={`#${n.id}`} onClick={() => setOpen(false)} className="px-3 py-2 rounded-lg hover:bg-foreground/5 text-sm">{t(n.key)}</a>
+              )
             ))}
             <button onClick={(e) => { setOpen(false); openCalendly(e); }}
               className="mt-1 inline-flex items-center justify-center gap-2 rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-bold cursor-pointer">
@@ -1126,7 +1135,7 @@ const LIBRARY_DRIVE_ID = "1dhtjAdvchdH6DEIyT-VoDAWd2itLsnZq";
 const LIBRARY_EMBED_URL = `https://drive.google.com/embeddedfolderview?id=${LIBRARY_DRIVE_ID}#grid`;
 const LIBRARY_OPEN_URL = `https://drive.google.com/drive/folders/${LIBRARY_DRIVE_ID}?usp=sharing`;
 
-function Library() {
+export function Library() {
   const { t, dir } = useI18n();
   const [open, setOpen] = useState(false);
   useEffect(() => {
