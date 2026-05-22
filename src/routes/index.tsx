@@ -395,11 +395,11 @@ function Hero() {
             initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}
             className="flex flex-wrap gap-3 pt-2"
           >
-            <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-              className="group inline-flex items-center gap-2 rounded-xl bg-primary px-7 py-4 text-sm font-bold text-primary-foreground shadow-[0_18px_40px_-14px_oklch(0.22_0.06_252/0.5)] hover:translate-y-[-2px] transition">
+            <button onClick={openCalendly}
+              className="group inline-flex items-center gap-2 rounded-xl bg-primary px-7 py-4 text-sm font-bold text-primary-foreground shadow-[0_18px_40px_-14px_oklch(0.22_0.06_252/0.5)] hover:translate-y-[-2px] transition cursor-pointer">
               <Calendar className="size-4" /> {t("hero_btn_book")}
               <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
-            </a>
+            </button>
             <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-xl border border-foreground/15 bg-card px-7 py-4 text-sm font-bold text-foreground hover:border-foreground/30 hover:bg-foreground/[0.03] transition">
               <MessageCircle className="size-4" /> WhatsApp
