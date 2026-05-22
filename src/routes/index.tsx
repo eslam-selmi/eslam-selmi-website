@@ -520,7 +520,7 @@ function Hero() {
                 <img
                   src={headshot}
                   alt="Eslam Selmi"
-                  className="absolute inset-x-0 bottom-0 h-[112%] w-full object-contain object-bottom"
+                  className="absolute inset-x-0 bottom-0 h-[120%] w-full object-contain object-bottom"
                 />
                 {/* Thin inner stroke */}
                 <div
