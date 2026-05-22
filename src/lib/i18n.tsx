@@ -107,7 +107,7 @@ const en: Dict = {
   contact_linkedin_line: "Connect with Eslam",
 
   // footer
-  footer_tag: "Portfolio 2026 — Head of L&D, Talent & Performance",
+  footer_tag: "2026 — Head of L&D, Talent & Performance",
   footer_rights: "All rights reserved.",
 };
 
@@ -200,7 +200,7 @@ const ar: Dict = {
   contact_linkedin: "لينكدإن",
   contact_linkedin_line: "تواصل مع إسلام",
 
-  footer_tag: "بورتفوليو ٢٠٢٦ — رئيس قطاع التعلم والتطوير والمواهب والأداء",
+  footer_tag: "٢٠٢٦ — رئيس قطاع التعلم والتطوير والمواهب والأداء",
   footer_rights: "جميع الحقوق محفوظة.",
 };
 

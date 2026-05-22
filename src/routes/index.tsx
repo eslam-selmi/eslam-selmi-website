@@ -11,7 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useI18n, type Lang } from "@/lib/i18n";
 
 import headshot from "@/assets/portfolio/headshot.png";
-import logo from "@/assets/portfolio/logo.png";
+
 import trainingCollage from "@/assets/portfolio/training-collage.webp";
 import snap1 from "@/assets/portfolio/snap-1.jpg";
 import snap2 from "@/assets/portfolio/snap-2.jpg";
@@ -54,18 +54,21 @@ const COUNTRIES = [
 ];
 
 const JOURNEY = [
-  { year: "2017", role: { en: "L&D Specialist", ar: "أخصائي تعلم وتطوير" }, company: "Imtenan", country: "EG" },
-  { year: "2022", role: { en: "Senior L&D Specialist", ar: "أخصائي أول تعلم وتطوير" }, company: "Aramex", country: "EG" },
-  { year: "2023", role: { en: "Control Supervisor", ar: "مشرف رقابة" }, company: "G4S", country: "EG" },
-  { year: "2024", role: { en: "L&D Supervisor", ar: "مشرف التعلم والتطوير" }, company: "KnowledgeCity", country: "SA" },
-  { year: "2025", role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: "Imtenan", country: "EG" },
-  { year: "2026", role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: "KnowledgeCity", country: "SA" },
+  { year: "2017", role: { en: "Senior L&D / L&D Specialist", ar: "أخصائي أول / أخصائي تعلم وتطوير" }, company: "G4S", country: "EG", logo: "https://logo.clearbit.com/g4s.com" },
+  { year: "2022", role: { en: "L&D Specialist", ar: "أخصائي تعلم وتطوير" }, company: "Aramex", country: "EG", logo: "https://logo.clearbit.com/aramex.com" },
+  { year: "2023", role: { en: "Control Supervisor", ar: "مشرف رقابة" }, company: "Badreldin Developments", country: "EG", logo: "https://logo.clearbit.com/badreldin.com" },
+  { year: "2024", role: { en: "L&D Supervisor", ar: "مشرف التعلم والتطوير" }, company: "KnowledgeCity", country: "SA", logo: "https://logo.clearbit.com/knowledgecity.com" },
+  { year: "2026", role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: "Imtenan", country: "EG", logo: "https://logo.clearbit.com/imtenan.com" },
+  { year: "NOW", role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: "KnowledgeCity", country: "SA", logo: "https://logo.clearbit.com/knowledgecity.com" },
 ];
 
 const CREDENTIALS = [
   { name: { en: "PMP", ar: "إدارة المشاريع PMP" }, issuer: { en: "London College", ar: "كلية لندن" }, icon: BadgeCheck },
+  { name: { en: "PMI® Kick-Off Predictive", ar: "PMI® Kick-Off Predictive" }, issuer: { en: "Project Management Institute", ar: "معهد إدارة المشاريع" }, icon: BadgeCheck },
   { name: { en: "TOT — Training of Trainers", ar: "تدريب المدربين TOT" }, issuer: { en: "Certified Program", ar: "برنامج معتمد" }, icon: Presentation },
   { name: { en: "Performance & KPIs", ar: "إدارة الأداء والمؤشرات" }, issuer: { en: "ESLSCA University", ar: "جامعة ESLSCA" }, icon: BarChart3 },
+  { name: { en: "Workplace Learning with Coaching & Mentoring", ar: "التعلم في بيئة العمل بالكوتشينج والإرشاد" }, issuer: { en: "The Open University", ar: "الجامعة المفتوحة" }, icon: HeartHandshake },
+  { name: { en: "Risk Management Workshop", ar: "ورشة إدارة المخاطر" }, issuer: { en: "Masar Academy", ar: "أكاديمية مسار" }, icon: Target },
   { name: { en: "Design Thinking", ar: "التفكير التصميمي" }, issuer: { en: "HP LIFE", ar: "HP LIFE" }, icon: Lightbulb },
   { name: { en: "Instructional Design", ar: "التصميم التعليمي" }, issuer: { en: "Mentarcise", ar: "Mentarcise" }, icon: Layers },
   { name: { en: "IDPCC Certified", ar: "شهادة IDPCC" }, issuer: { en: "IDPCC", ar: "IDPCC" }, icon: Award },
@@ -165,7 +168,27 @@ function Portfolio() {
   );
 }
 
-/* ---------- NAV ---------- */
+/* ---------- BRAND MARK ---------- */
+function BrandMark({ size = 40 }: { size?: number }) {
+  return (
+    <div className="flex items-center gap-2.5">
+      <svg width={size} height={size} viewBox="0 0 48 48" className="shrink-0" aria-label="Eslam Selmi">
+        <defs>
+          <linearGradient id="bmg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="var(--navy)" />
+            <stop offset="100%" stopColor="var(--accent)" />
+          </linearGradient>
+        </defs>
+        <rect x="2" y="2" width="44" height="44" rx="12" fill="url(#bmg)" />
+        <path d="M14 32 L24 14 L34 32 M18.5 25 H29.5" stroke="white" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      </svg>
+      <span className="hidden sm:flex flex-col leading-none">
+        <span className="font-display text-[13px] font-bold tracking-[0.18em] uppercase text-foreground">Eslam Selmi</span>
+        <span className="text-[9px] tracking-[0.28em] uppercase text-muted-foreground mt-1">Head of L&amp;D</span>
+      </span>
+    </div>
+  );
+}
 function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => void }) {
   const { t, lang, setLang } = useI18n();
   const [open, setOpen] = useState(false);
@@ -180,10 +203,7 @@ function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => 
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className={`bg-card/85 backdrop-blur-xl border border-foreground/10 rounded-full ps-3 pe-2 py-2 flex items-center justify-between gap-2 ${scrolled ? "shadow-[0_8px_30px_-12px_rgba(15,27,61,0.15)]" : ""}`}>
           <a href="#home" className="flex items-center gap-2.5 group shrink-0">
-            <img src={logo} alt="Eslam Selmi" className="size-9 object-contain" />
-            <span className="font-display italic tracking-tight hidden sm:inline text-lg text-foreground">
-              Eslam Selmi
-            </span>
+            <BrandMark />
           </a>
           <nav className="hidden xl:flex items-center gap-0.5">
             {NAV.map(n => (
@@ -283,12 +303,12 @@ function Hero() {
           >
             {lang === "ar" ? (
               <>
-                مؤسسة أقوى مع{" "}
+                إطلاق إمكانات المواهب مع{" "}
                 <span className="block sm:inline" style={{ color: "var(--accent)" }}>{nameAr}</span>
               </>
             ) : (
               <>
-                A Stronger Business With{" "}
+                Unlocking Talent Potential With{" "}
                 <span className="block sm:inline" style={{ color: "var(--accent)" }}>{nameEn}</span>
               </>
             )}
@@ -353,13 +373,13 @@ function Hero() {
             />
           </div>
 
-          {/* Top floating stat */}
+          {/* Top floating stat — Years */}
           <motion.div
             animate={{ y: [0, -10, 0] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
             className="absolute -right-2 sm:-right-6 top-6 rounded-2xl px-5 py-4 bg-card border border-foreground/10 shadow-xl min-w-[140px]"
           >
-            <div className="text-2xl sm:text-3xl font-extrabold font-display" style={{ color: "var(--accent)" }}>3000+</div>
-            <div className="text-xs text-muted-foreground mt-0.5 font-medium">{t("stat_trainees")}</div>
+            <div className="text-2xl sm:text-3xl font-extrabold font-display" style={{ color: "var(--accent)" }}>8+</div>
+            <div className="text-xs text-muted-foreground mt-0.5 font-medium">{lang === "ar" ? "سنوات خبرة" : "Years experience"}</div>
           </motion.div>
 
           {/* Bottom floating stat */}
@@ -371,13 +391,13 @@ function Hero() {
             <div className="text-xs text-muted-foreground mt-0.5 font-medium">{lang === "ar" ? "دولة" : "Countries"}</div>
           </motion.div>
 
-          {/* Side badge — Years */}
+          {/* Side badge — Sectors */}
           <motion.div
             animate={{ x: [0, -6, 0] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
             className="absolute -left-2 sm:-left-8 top-1/2 -translate-y-1/2 rounded-2xl px-4 py-3 bg-primary text-primary-foreground shadow-xl"
           >
-            <div className="text-xl font-extrabold font-display leading-none">8+</div>
-            <div className="text-[10px] uppercase tracking-wider mt-1 opacity-80 font-semibold">{lang === "ar" ? "سنوات" : "Years"}</div>
+            <div className="text-xl font-extrabold font-display leading-none">4</div>
+            <div className="text-[10px] uppercase tracking-wider mt-1 opacity-80 font-semibold">{lang === "ar" ? "قطاعات" : "Sectors"}</div>
           </motion.div>
         </motion.div>
       </div>
@@ -391,6 +411,15 @@ function Stat({ n, l }: { n: string; l: string }) {
     <div className="glass rounded-2xl p-4 text-center">
       <div className="font-display text-3xl sm:text-4xl text-foreground">{n}</div>
       <div className="mt-1 text-[10px] uppercase tracking-[0.22em] text-muted-foreground">{l}</div>
+    </div>
+  );
+}
+
+function CompactStat({ n, l }: { n: string; l: string }) {
+  return (
+    <div className="rounded-2xl border border-foreground/10 bg-card p-3 text-center min-w-0">
+      <div className="font-display text-xl sm:text-2xl font-extrabold leading-none truncate" style={{ color: "var(--accent)" }}>{n}</div>
+      <div className="mt-1.5 text-[9px] uppercase tracking-[0.18em] text-muted-foreground truncate">{l}</div>
     </div>
   );
 }
@@ -494,64 +523,61 @@ function Journey() {
   const { t, lang } = useI18n();
   return (
     <Section id="journey" eyebrow={t("journey_eyebrow")} title={t("journey_title")}>
-      <div className="relative">
-        {/* Central rail */}
-        <div className="absolute start-5 sm:start-1/2 sm:-translate-x-1/2 top-2 bottom-2 w-[2px] bg-gradient-to-b from-[var(--lavender)]/10 via-[var(--lavender)]/50 to-[var(--gold)]/30 rounded-full" />
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {JOURNEY.map((j, i) => {
+          const country = j.country === "SA"
+            ? { flag: "sa", name: { en: "Saudi Arabia", ar: "السعودية" } }
+            : { flag: "eg", name: { en: "Egypt", ar: "مصر" } };
+          const initials = j.company.split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase();
+          return (
+            <motion.div
+              key={j.year + j.company + i}
+              {...fadeUp}
+              transition={{ delay: i * 0.07, duration: 0.55 }}
+              className="group relative rounded-3xl bg-card border border-foreground/10 p-6 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px_oklch(0.22_0.06_252/0.35)] transition-all overflow-hidden"
+            >
+              <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[var(--accent)] via-[var(--accent)]/40 to-transparent opacity-70" />
 
-        <div className="space-y-10 sm:space-y-14">
-          {JOURNEY.map((j, i) => {
-            const left = i % 2 === 0;
-            const country = j.country === "SA"
-              ? { flag: "sa", name: { en: "Saudi Arabia", ar: "السعودية" } }
-              : { flag: "eg", name: { en: "Egypt", ar: "مصر" } };
-            return (
-              <motion.div
-                key={j.year + j.company + i}
-                {...fadeUp}
-                transition={{ delay: i * 0.08, duration: 0.6 }}
-                className="relative grid sm:grid-cols-2 gap-6 sm:gap-16 items-center"
-              >
-                {/* Card */}
-                <div className={`${left ? "sm:order-1 sm:text-end sm:pe-4" : "sm:order-2 sm:ps-4"} ps-14 sm:ps-0`}>
-                  <div className="glass-panel rounded-3xl p-5 transition hover:-translate-y-1 group relative overflow-hidden">
-                    <div className={`absolute -top-12 ${left ? "-end-12" : "-start-12"} size-32 rounded-full bg-[var(--lavender)]/15 blur-2xl opacity-0 group-hover:opacity-100 transition`} />
-                    <div className={`relative flex items-center gap-3 ${left ? "sm:flex-row-reverse sm:text-start" : ""}`}>
-                      <div className="size-12 rounded-xl bg-gradient-to-br from-[var(--lavender-deep)]/40 to-[var(--gold)]/30 border border-foreground/15 grid place-items-center text-lavender font-display font-extrabold text-sm shrink-0">
-                        {j.company.slice(0, 2).toUpperCase()}
-                      </div>
-                      <div className="min-w-0">
-                        <div className="font-semibold leading-tight text-base">{j.company}</div>
-                        <div className="text-[11px] text-muted-foreground uppercase tracking-wider mt-1 inline-flex items-center gap-1.5">
-                          <img src={`https://flagcdn.com/${country.flag}.svg`} alt="" className="w-4 h-3 rounded-[2px] object-cover" />
-                          {country.name[lang]}
-                        </div>
-                      </div>
-                    </div>
-                    <div className={`relative mt-4 text-sm font-medium ${left ? "sm:text-end" : ""}`}>{j.role[lang]}</div>
-                  </div>
-                </div>
-
-                {/* Year side */}
-                <div className={`${left ? "sm:order-2 sm:ps-4" : "sm:order-1 sm:pe-4 sm:text-end"} hidden sm:block`}>
-                  <div className="inline-flex items-baseline gap-2">
-                    <span className="font-display text-5xl lg:text-6xl font-extrabold text-gradient-premium tracking-tight">{j.year}</span>
-                    <Compass className="size-4 text-lavender/70" />
-                  </div>
-                </div>
-
-                {/* Year (mobile, above card) */}
-                <div className="sm:hidden absolute start-14 -top-3 text-xs font-bold text-gradient-premium font-display">
+              {/* Top row: year + country flag */}
+              <div className="flex items-center justify-between mb-5">
+                <span className="font-display text-3xl font-extrabold tracking-tight" style={{ color: "var(--accent)" }}>
                   {j.year}
-                </div>
+                </span>
+                <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground bg-foreground/[0.04] rounded-full px-2.5 py-1">
+                  <img src={`https://flagcdn.com/${country.flag}.svg`} alt="" className="w-4 h-3 rounded-[2px] object-cover" />
+                  {country.name[lang]}
+                </span>
+              </div>
 
-                {/* Dot on rail */}
-                <div className="absolute start-5 sm:start-1/2 top-6 sm:top-1/2 -translate-x-1/2 sm:-translate-y-1/2 z-10">
-                  <div className="size-4 rounded-full bg-gradient-to-br from-[var(--lavender)] to-[var(--gold)] shadow-[0_0_20px] shadow-[var(--lavender)] ring-4 ring-background" />
+              {/* Logo + company */}
+              <div className="flex items-center gap-4">
+                <div className="size-16 rounded-2xl bg-white border border-foreground/10 grid place-items-center p-2 shadow-sm shrink-0 overflow-hidden">
+                  <img
+                    src={j.logo}
+                    alt={j.company}
+                    loading="lazy"
+                    className="max-w-full max-h-full object-contain"
+                    onError={(e) => {
+                      const el = e.currentTarget;
+                      el.style.display = "none";
+                      const parent = el.parentElement;
+                      if (parent && !parent.querySelector(".fallback-initials")) {
+                        const span = document.createElement("span");
+                        span.className = "fallback-initials font-display font-extrabold text-primary text-lg";
+                        span.textContent = initials;
+                        parent.appendChild(span);
+                      }
+                    }}
+                  />
                 </div>
-              </motion.div>
-            );
-          })}
-        </div>
+                <div className="min-w-0">
+                  <div className="font-display font-bold text-lg leading-tight truncate">{j.company}</div>
+                  <div className="text-sm text-muted-foreground mt-1 leading-tight">{j.role[lang]}</div>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
     </Section>
   );
@@ -619,10 +645,10 @@ function Clients() {
         <motion.div {...fadeUp}>
           <div className="font-display text-[8rem] lg:text-[10rem] leading-none font-bold text-gradient-gold">12</div>
           <p className="text-xl font-medium mt-2">{t("clients_sub")}</p>
-          <div className="mt-6 grid grid-cols-3 gap-4 max-w-sm">
-            <Stat n="3000+" l={t("stat_trainees")} />
-            <Stat n="12+" l={t("nav_clients")} />
-            <Stat n="15+" l={t("stat_programs")} />
+          <div className="mt-6 grid grid-cols-3 gap-3 max-w-md">
+            <CompactStat n="3000+" l={t("stat_trainees")} />
+            <CompactStat n="12+" l={t("nav_clients")} />
+            <CompactStat n="15+" l={t("stat_programs")} />
           </div>
           <div className="mt-6 inline-flex items-center gap-2 text-sm text-muted-foreground">
             <Globe2 className="size-4 text-gold" />
@@ -676,14 +702,14 @@ function Snapshots() {
     <button
       type="button"
       onClick={() => setActive(originalIndex)}
-      className="group relative shrink-0 w-[280px] sm:w-[340px] aspect-[4/3] overflow-hidden rounded-3xl border border-foreground/10 cursor-zoom-in shadow-[0_24px_70px_-38px_var(--foreground)]"
+      className="group relative shrink-0 w-[300px] sm:w-[360px] aspect-[4/5] overflow-hidden rounded-3xl border border-foreground/10 cursor-zoom-in shadow-[0_24px_70px_-38px_var(--foreground)] bg-foreground/[0.04]"
       aria-label={`Open snapshot ${originalIndex + 1}`}
     >
       <img
         src={src}
         alt={`Snapshot ${originalIndex + 1}`}
         loading="lazy"
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+        className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
       />
       <div className="image-scrim absolute inset-0 opacity-0 group-hover:opacity-100 transition" />
       <div className="absolute bottom-3 start-3 text-xs text-primary-foreground opacity-0 group-hover:opacity-100 transition font-semibold tracking-wider uppercase">
@@ -694,16 +720,16 @@ function Snapshots() {
 
   return (
     <Section id="snapshots" eyebrow={t("snapshots_eyebrow")} title={t("snapshots_title")}>
-      <div className="space-y-5 marquee-mask">
+      <div className="space-y-6 marquee-mask">
         <div className="overflow-hidden">
-          <div className={`flex gap-5 w-max ${marqueeClass} hover:[animation-play-state:paused]`}>
+          <div className={`flex gap-7 w-max ${marqueeClass} hover:[animation-play-state:paused]`}>
             {trackA.map((src, idx) => (
               <Card key={`a-${idx}`} src={src} i={idx} originalIndex={idx % SNAPSHOTS.length} />
             ))}
           </div>
         </div>
         <div className="overflow-hidden">
-          <div className={`flex gap-5 w-max ${marqueeSlowClass} hover:[animation-play-state:paused]`}>
+          <div className={`flex gap-7 w-max ${marqueeSlowClass} hover:[animation-play-state:paused]`}>
             {trackB.map((src, idx) => (
               <Card key={`b-${idx}`} src={src} i={idx} originalIndex={(SNAPSHOTS.length - 1 - (idx % SNAPSHOTS.length))} />
             ))}
@@ -766,35 +792,35 @@ function BookCTA() {
         <div className="absolute inset-0 grain" />
         <div className="relative grid lg:grid-cols-[1.4fr_1fr] gap-10 items-center">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/20 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.25em] text-primary-foreground/80">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.25em] text-primary-foreground">
               <Sparkles className="size-3.5" /> {t("book_badge")}
             </div>
-            <h2 className="mt-5 font-display text-balance leading-[1] text-primary-foreground text-[clamp(2.25rem,5vw,4rem)]">
-              {t("book_title_1")} <span className="serif-italic text-primary-foreground/75">{t("book_title_2")}</span> {t("book_title_3")}
+            <h2 className="mt-5 font-display font-extrabold text-balance leading-[1.05] text-primary-foreground text-[clamp(2.25rem,5vw,3.75rem)]">
+              {t("book_title_1")} <span style={{ color: "var(--accent)" }}>{t("book_title_2")}</span> {t("book_title_3")}
             </h2>
-            <p className="mt-5 text-primary-foreground/70 max-w-xl leading-relaxed">{t("book_desc")}</p>
+            <p className="mt-5 text-primary-foreground/85 max-w-xl leading-relaxed text-base">{t("book_desc")}</p>
             <div className="mt-7 flex flex-wrap gap-3">
               <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-                className="group inline-flex items-center gap-2 rounded-full bg-primary-foreground text-primary px-6 py-3 text-sm font-bold hover:bg-primary-foreground/90 transition">
+                className="group inline-flex items-center gap-2 rounded-full bg-primary-foreground text-primary px-6 py-3.5 text-sm font-bold hover:bg-primary-foreground/90 transition shadow-lg">
                 <MessageCircle className="size-4" /> {t("book_btn_whatsapp")}
                 <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
               </a>
-              <a href="tel:+966555376228" className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/20 px-6 py-3 text-sm font-bold hover:bg-primary-foreground/10 transition">
+              <a href="tel:+966555376228" className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 bg-primary-foreground/5 px-6 py-3.5 text-sm font-bold hover:bg-primary-foreground/15 transition">
                 <Phone className="size-4" /> +966 555 376 228
               </a>
             </div>
           </div>
           <div className="grid gap-3">
             {steps.map(({ i: Icon, t: tt, d }, idx) => (
-              <div key={tt} className="rounded-2xl border border-primary-foreground/15 bg-primary-foreground/10 p-4 flex items-start gap-3 backdrop-blur-xl">
-                <span className="size-9 rounded-full bg-primary-foreground/10 grid place-items-center text-primary-foreground shrink-0 font-display italic text-sm">
+              <div key={tt} className="rounded-2xl border border-primary-foreground/25 bg-primary-foreground/15 p-4 flex items-start gap-3 backdrop-blur-xl">
+                <span className="size-10 rounded-xl bg-primary-foreground text-primary grid place-items-center shrink-0 font-display font-extrabold text-sm">
                   0{idx + 1}
                 </span>
                 <div className="min-w-0">
-                  <div className="font-semibold text-sm flex items-center gap-2">
-                    <Icon className="size-3.5 opacity-70" /> {tt}
+                  <div className="font-semibold text-sm flex items-center gap-2 text-primary-foreground">
+                    <Icon className="size-3.5" /> {tt}
                   </div>
-                  <div className="text-xs text-primary-foreground/60 mt-1 leading-relaxed">{d}</div>
+                  <div className="text-xs text-primary-foreground/80 mt-1 leading-relaxed">{d}</div>
                 </div>
               </div>
             ))}
@@ -866,12 +892,19 @@ function LeadForm() {
             {state === "invalid" && <span className="text-amber-400">{t("lead_invalid")}</span>}
           </div>
         </motion.div>
-        <motion.div {...fadeUp} className="glass-panel rounded-[2rem] p-6 grid grid-cols-3 gap-3">
-          {[Briefcase, Award, GraduationCap, Users, TrendingUp, BarChart3].map((Icon, i) => (
-            <div key={i} className="aspect-square rounded-2xl bg-gradient-to-br from-[var(--gold)]/20 to-primary/20 grid place-items-center text-gold">
-              <Icon className="size-7" />
+        <motion.div {...fadeUp} className="relative rounded-[2rem] bg-primary text-primary-foreground p-8 overflow-hidden">
+          <div className="absolute inset-0 bg-aurora opacity-40" />
+          <div className="relative">
+            <Sparkles className="size-6" style={{ color: "var(--accent)" }} />
+            <div className="mt-4 font-display text-2xl font-bold leading-tight">
+              {lang === "ar" ? "كن أول من يعرف عن الدورات الجديدة" : "Be the first to know about new cohorts"}
             </div>
-          ))}
+            <div className="mt-6 grid grid-cols-3 gap-3">
+              <CompactStat n="15+" l={lang === "ar" ? "برنامج" : "Programs"} />
+              <CompactStat n="12+" l={lang === "ar" ? "دولة" : "Countries"} />
+              <CompactStat n="8+" l={lang === "ar" ? "سنوات" : "Years"} />
+            </div>
+          </div>
         </motion.div>
       </div>
     </Section>
@@ -913,11 +946,8 @@ function Footer() {
     <footer className="border-t border-foreground/10 mt-10 bg-foreground/[0.025] backdrop-blur-xl">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <img src={logo} alt="Eslam Selmi" className="size-10 object-contain" />
-          <div>
-            <div className="font-display italic text-lg leading-none">Eslam Selmi</div>
-            <div className="text-xs text-muted-foreground mt-1">{t("footer_tag")}</div>
-          </div>
+          <BrandMark size={36} />
+          <div className="hidden md:block text-xs text-muted-foreground max-w-xs">{t("footer_tag")}</div>
         </div>
         <div className="flex items-center gap-3">
           <a href={LINKEDIN} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"
