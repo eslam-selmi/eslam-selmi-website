@@ -250,46 +250,33 @@ function CalendlyDialog() {
 }
 
 /* ---------- BRAND MARK ---------- */
-function BrandMark({ size = 42 }: { size?: number }) {
+function BrandMark({ size = 44 }: { size?: number }) {
   return (
     <div className="flex items-center gap-2.5">
       <svg width={size} height={size} viewBox="0 0 48 48" className="shrink-0" aria-label="Eslam Selmi">
         <defs>
-          <linearGradient id="bmg" x1="0" y1="1" x2="1" y2="0">
-            <stop offset="0%" stopColor="var(--navy)" />
-            <stop offset="50%" stopColor="var(--lavender-deep)" />
-            <stop offset="100%" stopColor="var(--accent)" />
+          <linearGradient id="bmPlate" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="var(--navy-deep)" />
+            <stop offset="100%" stopColor="var(--navy)" />
           </linearGradient>
-          <linearGradient id="bms" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="white" stopOpacity="0.95" />
-            <stop offset="100%" stopColor="white" stopOpacity="0.75" />
+          <linearGradient id="bmGold" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0%" stopColor="var(--accent)" />
+            <stop offset="100%" stopColor="#ffe6a8" />
           </linearGradient>
         </defs>
-        {/* squircle plate */}
-        <rect x="2" y="2" width="44" height="44" rx="14" fill="url(#bmg)" />
-        <rect x="2.5" y="2.5" width="43" height="43" rx="13.5" fill="none" stroke="white" strokeOpacity="0.18" />
-
-        {/* Concept: an open book / page (knowledge) with a rising spark/arrow (growth) — leadership + learning */}
-        {/* Book base */}
-        <path
-          d="M11 33 C 16 30, 20 30, 24 32 C 28 30, 32 30, 37 33 L 37 17 C 32 14, 28 14, 24 16 C 20 14, 16 14, 11 17 Z"
-          fill="url(#bms)"
-        />
-        {/* Spine */}
-        <path d="M24 16 L 24 32" stroke="var(--navy)" strokeOpacity="0.35" strokeWidth="1" />
-
-        {/* Rising spark — growth arrow lifting from the book */}
-        <path
-          d="M24 14 L 24 7"
-          stroke="white" strokeWidth="2.2" strokeLinecap="round"
-        />
-        <path
-          d="M20.5 10.5 L 24 7 L 27.5 10.5"
-          stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="none"
-        />
-        {/* Spark glow */}
-        <circle cx="24" cy="7" r="2.2" fill="white" />
-        <circle cx="24" cy="7" r="3.6" fill="white" fillOpacity="0.25" />
+        {/* Hexagonal shield plate */}
+        <path d="M24 1.5 L43 12 L43 36 L24 46.5 L5 36 L5 12 Z" fill="url(#bmPlate)" />
+        <path d="M24 1.5 L43 12 L43 36 L24 46.5 L5 36 L5 12 Z" fill="none" stroke="var(--accent)" strokeOpacity="0.55" strokeWidth="0.7" />
+        {/* E as ascending growth bars */}
+        <rect x="12" y="30" width="6"  height="6" rx="1.2" fill="url(#bmGold)" />
+        <rect x="12" y="22" width="10" height="4" rx="1"   fill="url(#bmGold)" opacity="0.85" />
+        <rect x="12" y="14" width="14" height="4" rx="1"   fill="url(#bmGold)" opacity="0.7" />
+        {/* S curve — strategy spark */}
+        <path d="M30 14 C 35 14, 37 19, 32.5 22.5 C 28 26, 31 31, 36 31"
+          stroke="url(#bmGold)" strokeWidth="2.4" strokeLinecap="round" fill="none" />
+        <circle cx="36" cy="31" r="1.6" fill="#fff" />
+        {/* corner accents */}
+        <circle cx="24" cy="1.5" r="1" fill="var(--accent)" />
       </svg>
       <span className="hidden sm:flex flex-col leading-none">
         <span className="font-display text-[14px] font-extrabold tracking-tight text-foreground">Eslam Selmi</span>
