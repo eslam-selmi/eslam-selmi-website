@@ -796,40 +796,40 @@ function BookCTA() {
   return (
     <section id="book" className="px-4 sm:px-6 py-16">
       <motion.div {...fadeUp}
-        className="glass-panel relative mx-auto max-w-6xl rounded-[2.25rem] p-8 sm:p-12 lg:p-16 overflow-hidden bg-primary text-primary-foreground">
-        <div className="absolute inset-0 bg-aurora opacity-60" />
-        <div className="absolute inset-0 grain" />
+        className="relative mx-auto max-w-6xl rounded-[2.25rem] p-8 sm:p-12 lg:p-16 overflow-hidden bg-[#0b1736] text-white shadow-[0_40px_80px_-40px_rgba(11,23,54,0.6)]">
+        <div className="absolute inset-0 opacity-40" style={{ background: "radial-gradient(ellipse 60% 50% at 85% 10%, oklch(0.72 0.13 180 / 0.55), transparent 60%), radial-gradient(ellipse 50% 50% at 10% 90%, oklch(0.55 0.2 290 / 0.35), transparent 65%)" }} />
+        <div className="absolute inset-0 grain opacity-30" />
         <div className="relative grid lg:grid-cols-[1.4fr_1fr] gap-10 items-center">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.25em] text-primary-foreground">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.25em] text-white">
               <Sparkles className="size-3.5" /> {t("book_badge")}
             </div>
-            <h2 className="mt-5 font-display font-extrabold text-balance leading-[1.05] text-primary-foreground text-[clamp(2.25rem,5vw,3.75rem)]">
+            <h2 className="mt-5 font-display font-extrabold text-balance leading-[1.05] text-white text-[clamp(2.25rem,5vw,3.75rem)]">
               {t("book_title_1")} <span style={{ color: "var(--accent)" }}>{t("book_title_2")}</span> {t("book_title_3")}
             </h2>
-            <p className="mt-5 text-primary-foreground/85 max-w-xl leading-relaxed text-base">{t("book_desc")}</p>
+            <p className="mt-5 text-white/90 max-w-xl leading-relaxed text-base">{t("book_desc")}</p>
             <div className="mt-7 flex flex-wrap gap-3">
               <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-                className="group inline-flex items-center gap-2 rounded-full bg-primary-foreground text-primary px-6 py-3.5 text-sm font-bold hover:bg-primary-foreground/90 transition shadow-lg">
+                className="group inline-flex items-center gap-2 rounded-full bg-white text-[#0b1736] px-6 py-3.5 text-sm font-bold hover:bg-white/95 transition shadow-lg">
                 <MessageCircle className="size-4" /> {t("book_btn_whatsapp")}
                 <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
               </a>
-              <a href="tel:+966555376228" className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 bg-primary-foreground/5 px-6 py-3.5 text-sm font-bold hover:bg-primary-foreground/15 transition">
+              <a href="tel:+966555376228" className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 text-white px-6 py-3.5 text-sm font-bold hover:bg-white/20 transition">
                 <Phone className="size-4" /> +966 555 376 228
               </a>
             </div>
           </div>
           <div className="grid gap-3">
             {steps.map(({ i: Icon, t: tt, d }, idx) => (
-              <div key={tt} className="rounded-2xl border border-primary-foreground/25 bg-primary-foreground/15 p-4 flex items-start gap-3 backdrop-blur-xl">
-                <span className="size-10 rounded-xl bg-primary-foreground text-primary grid place-items-center shrink-0 font-display font-extrabold text-sm">
+              <div key={tt} className="rounded-2xl border border-white/25 bg-white/10 p-4 flex items-start gap-3 backdrop-blur-xl">
+                <span className="size-10 rounded-xl bg-white text-[#0b1736] grid place-items-center shrink-0 font-display font-extrabold text-sm">
                   0{idx + 1}
                 </span>
                 <div className="min-w-0">
-                  <div className="font-semibold text-sm flex items-center gap-2 text-primary-foreground">
+                  <div className="font-semibold text-sm flex items-center gap-2 text-white">
                     <Icon className="size-3.5" /> {tt}
                   </div>
-                  <div className="text-xs text-primary-foreground/80 mt-1 leading-relaxed">{d}</div>
+                  <div className="text-xs text-white/85 mt-1 leading-relaxed">{d}</div>
                 </div>
               </div>
             ))}
