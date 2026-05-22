@@ -224,10 +224,12 @@ function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => 
             <button
               onClick={() => setLang(lang === "en" ? "ar" : "en" as Lang)}
               aria-label="Toggle language"
-              className="inline-flex items-center gap-1.5 rounded-full border border-foreground/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider hover:bg-foreground/5 transition"
+              className="group inline-flex items-center gap-1.5 rounded-full border border-foreground/15 px-3 py-1.5 hover:bg-foreground/5 hover:border-foreground/30 transition"
             >
-              <Languages className="size-3.5" />
-              {lang === "en" ? "AR" : "EN"}
+              <Languages className="size-3.5 opacity-70" />
+              <span className={`font-bold leading-none ${lang === "en" ? "text-[15px] font-display" : "text-[12px] tracking-wider"}`}>
+                {lang === "en" ? "ع" : "En"}
+              </span>
             </button>
             <button
               onClick={onThemeToggle}
