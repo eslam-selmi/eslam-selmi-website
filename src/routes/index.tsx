@@ -942,6 +942,84 @@ function BookCTA() {
   );
 }
 
+/* ---------- CURRENT COURSES ---------- */
+const COURSES_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSePiL3_X7XaxWa6oAMlUc0TgT80z1mozFSExDzZnqvfmP4nRA/viewform?embedded=true";
+
+function CurrentCourses() {
+  const { t, dir } = useI18n();
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+  return (
+    <Section id="current-courses" eyebrow={t("current_eyebrow")} title={t("current_title")}>
+      <motion.div {...fadeUp}
+        className="relative mx-auto max-w-5xl rounded-[2rem] overflow-hidden p-8 sm:p-12 bg-gradient-to-br from-[var(--lavender-deep)] via-primary to-[var(--accent)] text-white shadow-[0_30px_80px_-30px_oklch(0.22_0.06_252/0.6)]">
+        <div className="absolute inset-0 grain opacity-20 pointer-events-none" />
+        <div className="relative grid md:grid-cols-[1.4fr_1fr] gap-8 items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full bg-white/15 border border-white/25 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.25em]">
+              <Sparkles className="size-3.5" /> {t("current_eyebrow")}
+            </div>
+            <h3 className="mt-4 font-display font-extrabold leading-[1.1] text-[clamp(1.5rem,3vw,2.25rem)]">
+              {t("current_title")}
+            </h3>
+            <p className="mt-4 text-white/90 max-w-xl leading-relaxed">{t("current_desc")}</p>
+          </div>
+          <div className="flex md:justify-end">
+            <button
+              onClick={() => setOpen(true)}
+              className="group inline-flex items-center gap-3 rounded-full bg-white text-[#0b1736] px-6 py-4 text-sm font-bold hover:bg-white/95 transition shadow-lg cursor-pointer"
+            >
+              <span className="grid place-items-center size-9 rounded-full bg-primary/15 text-primary">
+                <BookOpen className="size-5" />
+              </span>
+              {t("current_btn")}
+              <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
+            </button>
+          </div>
+        </div>
+      </motion.div>
+
+      {open && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-sm"
+          onClick={() => setOpen(false)}
+          dir={dir}
+        >
+          <div
+            className="relative w-full max-w-2xl h-[90vh] rounded-2xl overflow-hidden bg-card shadow-2xl border border-foreground/10 flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-5 py-3 border-b border-foreground/10 bg-card shrink-0">
+              <div className="min-w-0">
+                <div className="font-display font-bold text-sm sm:text-base truncate">{t("current_modal_title")}</div>
+                <div className="text-xs text-muted-foreground truncate">{t("current_modal_desc")}</div>
+              </div>
+              <button
+                onClick={() => setOpen(false)}
+                aria-label="Close"
+                className="size-9 grid place-items-center rounded-full hover:bg-foreground/10 transition shrink-0"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+            <iframe
+              src={COURSES_FORM_URL}
+              title="Current courses enrollment"
+              className="w-full flex-1 border-0 bg-white"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      )}
+    </Section>
+  );
+}
+
 /* ---------- LEAD FORM ---------- */
 function LeadForm() {
   const { t, lang } = useI18n();
