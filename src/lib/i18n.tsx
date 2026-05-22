@@ -60,7 +60,11 @@ const en: Dict = {
 
   // services
   services_eyebrow: "Services",
-  services_title: "How I can help",
+  services_title: "Let's build something impactful — pick a service",
+  services_subtitle: "Tap any service to request it instantly via WhatsApp.",
+  svc_request_btn: "Request this service",
+  calendly_title: "Book your free 1:1 session",
+  calendly_desc: "Pick a time that works for you.",
 
   // programs
   programs_eyebrow: "Programs",
