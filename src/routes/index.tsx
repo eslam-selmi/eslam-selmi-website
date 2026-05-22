@@ -910,30 +910,56 @@ function Clients() {
   );
 }
 
-/* ---------- BRANDS / LOGO WALL ---------- */
+/* ---------- BRANDS / LOGO MARQUEE ---------- */
 function Brands() {
   const { t } = useI18n();
+  const row1 = BRANDS;
+  const row2 = [...BRANDS].reverse();
+
+  const Chip = ({ b }: { b: { src: string; name: string } }) => (
+    <div className="shrink-0 mx-3 group">
+      <div className="relative h-24 w-44 md:h-28 md:w-52 rounded-2xl bg-white border border-border/30 shadow-sm overflow-hidden flex items-center justify-center px-5 py-3 transition-all duration-500 group-hover:shadow-xl group-hover:-translate-y-1">
+        <img
+          src={b.src}
+          alt={b.name}
+          loading="lazy"
+          className="max-w-full max-h-full object-contain grayscale opacity-70 transition-all duration-500 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105"
+        />
+      </div>
+      <p className="mt-2 text-center text-[11px] tracking-widest uppercase text-muted-foreground/70 opacity-0 group-hover:opacity-100 transition-opacity">
+        {b.name}
+      </p>
+    </div>
+  );
+
   return (
     <Section id="brands" eyebrow={t("brands_eyebrow")} title={t("brands_title")}>
-      <p className="text-muted-foreground max-w-2xl mb-10">{t("brands_desc")}</p>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        {BRANDS.map((b, i) => (
-          <motion.div
-            key={b.name}
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.04 }}
-            className="group relative aspect-[4/3] rounded-2xl bg-white border border-border/40 shadow-sm overflow-hidden flex items-center justify-center p-4 transition hover:-translate-y-1 hover:shadow-lg"
-          >
-            <img
-              src={b.src}
-              alt={b.name}
-              loading="lazy"
-              className="max-w-full max-h-full object-contain transition group-hover:scale-105"
-            />
-          </motion.div>
-        ))}
+      <div className="grid lg:grid-cols-[1fr_auto] gap-8 items-end mb-10">
+        <p className="text-muted-foreground max-w-2xl">{t("brands_desc")}</p>
+        <div className="flex items-center gap-3 text-sm">
+          <span className="font-display text-4xl font-bold text-gradient-gold leading-none">{BRANDS.length}+</span>
+          <span className="text-muted-foreground uppercase tracking-widest text-xs leading-tight">{t("brands_meta")}</span>
+        </div>
+      </div>
+
+      <div className="relative -mx-4 sm:-mx-6 lg:-mx-8 py-2">
+        {/* edge fades */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-24 z-10 bg-gradient-to-r from-background to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-24 z-10 bg-gradient-to-l from-background to-transparent" />
+
+        {/* row 1 */}
+        <div className="overflow-hidden">
+          <div className="flex w-max animate-marquee-x py-2" style={{ animationDuration: "45s" }}>
+            {[...row1, ...row1].map((b, i) => <Chip key={`r1-${i}`} b={b} />)}
+          </div>
+        </div>
+
+        {/* row 2 — opposite direction */}
+        <div className="overflow-hidden mt-4">
+          <div className="flex w-max animate-marquee-x-reverse py-2" style={{ animationDuration: "55s" }}>
+            {[...row2, ...row2].map((b, i) => <Chip key={`r2-${i}`} b={b} />)}
+          </div>
+        </div>
       </div>
     </Section>
   );
