@@ -253,71 +253,21 @@ function CalendlyDialog() {
 function BrandMark({ size = 44 }: { size?: number }) {
   return (
     <div className="flex items-center gap-2.5">
-      <svg width={size} height={size} viewBox="0 0 56 56" className="shrink-0" aria-label="Eslam Selmi">
-        <defs>
-          <radialGradient id="bmPlate" cx="35%" cy="30%" r="80%">
-            <stop offset="0%" stopColor="#1a2a5e" />
-            <stop offset="55%" stopColor="var(--navy-deep)" />
-            <stop offset="100%" stopColor="#04081c" />
-          </radialGradient>
-          <linearGradient id="bmGold" x1="0" y1="1" x2="1" y2="0">
-            <stop offset="0%" stopColor="#a07a1d" />
-            <stop offset="45%" stopColor="var(--accent)" />
-            <stop offset="100%" stopColor="#ffe8a8" />
-          </linearGradient>
-          <linearGradient id="bmRing" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.95" />
-            <stop offset="50%" stopColor="var(--accent)" stopOpacity="0.15" />
-            <stop offset="100%" stopColor="var(--accent)" stopOpacity="0.95" />
-          </linearGradient>
-        </defs>
-
-        {/* Circular medallion */}
-        <circle cx="28" cy="28" r="26" fill="url(#bmPlate)" />
-        {/* Thin gold orbit ring (rotates as a subtle reveal of dynamism) */}
-        <circle cx="28" cy="28" r="25" fill="none" stroke="url(#bmRing)" strokeWidth="0.9" />
-        {/* Inner soft ring */}
-        <circle cx="28" cy="28" r="22" fill="none" stroke="#fff" strokeOpacity="0.06" strokeWidth="0.6" />
-
-        {/* Single continuous "ES" monogram — one stroke that reads as E then flows into S.
-            Concept: a learning journey drawn in one breath — never broken. */}
-        <path
-          d="
-            M 18 16
-            L 30 16
-            M 18 16
-            L 18 40
-            M 18 40
-            L 30 40
-            M 18 28
-            L 27 28
-            M 38 16
-            C 32 16, 30 22, 36 25
-            C 42 28, 40 34, 34 34
-            C 30 34, 28 32, 28 30
-          "
-          fill="none"
-          stroke="url(#bmGold)"
-          strokeWidth="2.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-
-        {/* Spark — the moment of insight */}
-        <g>
-          <circle cx="40" cy="14" r="3" fill="var(--accent)" opacity="0.25" />
-          <circle cx="40" cy="14" r="1.6" fill="#fff" />
-        </g>
-
-        {/* Sub-base diamond accent (anchors the mark, hints at "foundation") */}
-        <path d="M28 47 L31 44 L28 41 L25 44 Z" fill="var(--accent)" opacity="0.85" />
-      </svg>
+      <img
+        src={brandLogo}
+        alt="Eslam Selmi"
+        width={size}
+        height={size}
+        className="shrink-0 object-contain drop-shadow-[0_4px_18px_rgba(80,120,255,0.35)]"
+        style={{ width: size, height: size }}
+      />
       <span className="hidden sm:flex items-center leading-none">
         <span className="font-display text-[15px] font-extrabold tracking-tight text-foreground">Eslam Selmi</span>
       </span>
     </div>
   );
 }
+
 function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => void }) {
   const { t, lang, setLang } = useI18n();
   const [open, setOpen] = useState(false);
