@@ -1304,7 +1304,16 @@ function Contact() {
   return (
     <Section id="contact" eyebrow={t("contact_eyebrow")} title={t("contact_title")}>
       <div className="grid sm:grid-cols-3 gap-4">
-        <ContactCard icon={Phone} label={t("contact_mobile")} lines={["🇸🇦 +966 555 376 228", "🇪🇬 +20 10 9727 9900"]} href="tel:+966555376228" />
+        <ContactCard icon={Phone} label={t("contact_mobile")} lines={[
+          <span key="sa" className="inline-flex items-center gap-2.5">
+            <img src="https://flagcdn.com/w40/sa.png" srcSet="https://flagcdn.com/w80/sa.png 2x" width={22} height={16} alt="Saudi Arabia" className="rounded-[3px] ring-1 ring-foreground/15 shadow-sm shrink-0" />
+            <span dir="ltr">+966 555 376 228</span>
+          </span>,
+          <span key="eg" className="inline-flex items-center gap-2.5">
+            <img src="https://flagcdn.com/w40/eg.png" srcSet="https://flagcdn.com/w80/eg.png 2x" width={22} height={16} alt="Egypt" className="rounded-[3px] ring-1 ring-foreground/15 shadow-sm shrink-0" />
+            <span dir="ltr">+20 10 9727 9900</span>
+          </span>,
+        ]} href="tel:+966555376228" />
         <ContactCard icon={Mail} label={t("contact_email")} lines={["eslam.m.selmi@gmail.com"]} href="mailto:eslam.m.selmi@gmail.com" />
         <ContactCard icon={Linkedin} label={t("contact_linkedin")} lines={[t("contact_linkedin_line")]} href={LINKEDIN} />
       </div>
