@@ -676,15 +676,28 @@ function Services() {
   const { t, lang } = useI18n();
   return (
     <Section id="services" eyebrow={t("services_eyebrow")} title={t("services_title")}>
+      <p className="-mt-6 mb-10 text-center text-base text-muted-foreground max-w-2xl mx-auto">
+        {t("services_subtitle")}
+      </p>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {SERVICES.map((s, i) => (
           <motion.div key={s.key} {...fadeUp} transition={{ delay: i * 0.08, duration: 0.6 }}
-            className="relative glass-panel rounded-3xl p-6 group overflow-hidden transition hover:-translate-y-1">
+            className="relative glass-panel rounded-3xl p-6 group overflow-hidden transition hover:-translate-y-1 flex flex-col">
             <div className="absolute -top-12 -end-12 size-32 rounded-full bg-[var(--gold)]/20 blur-2xl opacity-0 group-hover:opacity-100 transition" />
             <s.icon className="size-7 text-gold" />
             <div className="mt-4 text-xs text-muted-foreground font-mono">0{i + 1}</div>
             <h3 className="mt-1 font-semibold text-lg leading-tight">{s.title[lang]}</h3>
             <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.desc[lang]}</p>
+            <a
+              href={waServiceLink(s.title.en, lang)}
+              target="_blank" rel="noopener noreferrer"
+              className="mt-5 group/btn inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold hover:opacity-90 transition relative z-10"
+              aria-label={`${t("svc_request_btn")} — ${s.title[lang]}`}
+            >
+              <MessageCircle className="size-4" />
+              {t("svc_request_btn")}
+              <ArrowRight className="size-4 group-hover/btn:translate-x-1 rtl-flip transition" />
+            </a>
           </motion.div>
         ))}
       </div>
