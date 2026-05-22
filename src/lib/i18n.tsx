@@ -112,6 +112,14 @@ const en: Dict = {
   book_step_3_t: "No strings attached",
   book_step_3_d: "Free, no obligations — just value.",
 
+  // current courses
+  current_eyebrow: "Open now",
+  current_title: "Enroll in current courses",
+  current_desc: "Live cohorts running now — pick the course that fits you and apply in seconds.",
+  current_btn: "Browse & enroll",
+  current_modal_title: "Choose your course",
+  current_modal_desc: "Select the program that fits you best and submit your application.",
+
   // lead form
   lead_eyebrow: "Stay in the loop",
   lead_title: "Subscribe to upcoming courses",
