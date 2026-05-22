@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useI18n, type Lang } from "@/lib/i18n";
 
 import headshot from "@/assets/portfolio/headshot.png";
+import brandLogo from "@/assets/brand-logo.png";
 
 import snap1 from "@/assets/snapshots/snap-1.jpg";
 import snap2 from "@/assets/snapshots/snap-2.jpg";
@@ -253,71 +254,21 @@ function CalendlyDialog() {
 function BrandMark({ size = 44 }: { size?: number }) {
   return (
     <div className="flex items-center gap-2.5">
-      <svg width={size} height={size} viewBox="0 0 56 56" className="shrink-0" aria-label="Eslam Selmi">
-        <defs>
-          <radialGradient id="bmPlate" cx="35%" cy="30%" r="80%">
-            <stop offset="0%" stopColor="#1a2a5e" />
-            <stop offset="55%" stopColor="var(--navy-deep)" />
-            <stop offset="100%" stopColor="#04081c" />
-          </radialGradient>
-          <linearGradient id="bmGold" x1="0" y1="1" x2="1" y2="0">
-            <stop offset="0%" stopColor="#a07a1d" />
-            <stop offset="45%" stopColor="var(--accent)" />
-            <stop offset="100%" stopColor="#ffe8a8" />
-          </linearGradient>
-          <linearGradient id="bmRing" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.95" />
-            <stop offset="50%" stopColor="var(--accent)" stopOpacity="0.15" />
-            <stop offset="100%" stopColor="var(--accent)" stopOpacity="0.95" />
-          </linearGradient>
-        </defs>
-
-        {/* Circular medallion */}
-        <circle cx="28" cy="28" r="26" fill="url(#bmPlate)" />
-        {/* Thin gold orbit ring (rotates as a subtle reveal of dynamism) */}
-        <circle cx="28" cy="28" r="25" fill="none" stroke="url(#bmRing)" strokeWidth="0.9" />
-        {/* Inner soft ring */}
-        <circle cx="28" cy="28" r="22" fill="none" stroke="#fff" strokeOpacity="0.06" strokeWidth="0.6" />
-
-        {/* Single continuous "ES" monogram — one stroke that reads as E then flows into S.
-            Concept: a learning journey drawn in one breath — never broken. */}
-        <path
-          d="
-            M 18 16
-            L 30 16
-            M 18 16
-            L 18 40
-            M 18 40
-            L 30 40
-            M 18 28
-            L 27 28
-            M 38 16
-            C 32 16, 30 22, 36 25
-            C 42 28, 40 34, 34 34
-            C 30 34, 28 32, 28 30
-          "
-          fill="none"
-          stroke="url(#bmGold)"
-          strokeWidth="2.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-
-        {/* Spark — the moment of insight */}
-        <g>
-          <circle cx="40" cy="14" r="3" fill="var(--accent)" opacity="0.25" />
-          <circle cx="40" cy="14" r="1.6" fill="#fff" />
-        </g>
-
-        {/* Sub-base diamond accent (anchors the mark, hints at "foundation") */}
-        <path d="M28 47 L31 44 L28 41 L25 44 Z" fill="var(--accent)" opacity="0.85" />
-      </svg>
+      <img
+        src={brandLogo}
+        alt="Eslam Selmi"
+        width={size}
+        height={size}
+        className="shrink-0 object-contain drop-shadow-[0_4px_18px_rgba(80,120,255,0.35)]"
+        style={{ width: size, height: size }}
+      />
       <span className="hidden sm:flex items-center leading-none">
         <span className="font-display text-[15px] font-extrabold tracking-tight text-foreground">Eslam Selmi</span>
       </span>
     </div>
   );
 }
+
 function Nav({ theme, onThemeToggle }: { theme: ThemeMode; onThemeToggle: () => void }) {
   const { t, lang, setLang } = useI18n();
   const [open, setOpen] = useState(false);
@@ -569,7 +520,7 @@ function Hero() {
                 <img
                   src={headshot}
                   alt="Eslam Selmi"
-                  className="absolute inset-x-0 bottom-0 h-[108%] w-full object-contain object-bottom"
+                  className="absolute inset-x-0 bottom-0 h-[125%] w-full object-cover object-[center_25%] scale-105"
                 />
                 {/* Thin inner stroke */}
                 <div
@@ -1399,7 +1350,7 @@ function Footer() {
             <MessageCircle className="size-4" />
           </a>
         </div>
-        <div className="text-xs text-muted-foreground">© {new Date().getFullYear()} Eslam Selmi. {t("footer_rights")}</div>
+        <div className="text-xs text-muted-foreground">Eslam Selmi. {t("footer_rights")}</div>
       </div>
     </footer>
   );
@@ -1721,12 +1672,12 @@ function EmpowermentTools() {
     <Section id="empowerment" eyebrow={t("emp_eyebrow")} title={t("emp_title")}>
       <motion.div {...fadeUp}
         className="relative mx-auto max-w-6xl rounded-[2rem] overflow-hidden border border-foreground/10 shadow-[0_30px_80px_-40px_oklch(0.22_0.06_252/0.35)]"
-        style={{ background: "linear-gradient(135deg, var(--navy-deep) 0%, var(--navy) 55%, var(--lavender-deep) 110%)" }}
+        style={{ background: "linear-gradient(135deg, #0b1736 0%, #14224d 50%, #1f2a5a 100%)" }}
       >
-        <div className="absolute inset-0 grain opacity-25 pointer-events-none" />
+        <div className="absolute inset-0 grain opacity-20 pointer-events-none" />
         <div
-          className="absolute inset-0 opacity-50 pointer-events-none"
-          style={{ background: "radial-gradient(ellipse 60% 60% at 90% 10%, oklch(0.72 0.13 180 / 0.45), transparent 60%)" }}
+          className="absolute inset-0 opacity-60 pointer-events-none"
+          style={{ background: "radial-gradient(ellipse 55% 55% at 88% 8%, oklch(0.78 0.13 85 / 0.28), transparent 60%)" }}
         />
         <div className="relative p-7 sm:p-10 lg:p-14 grid lg:grid-cols-[1.1fr_1fr] gap-10 items-center text-white">
           <div>
