@@ -984,8 +984,8 @@ const PODCAST_EPISODES = [
 
 function Podcast() {
   const { t } = useI18n();
-  const [active, setActive] = React.useState(PODCAST_EPISODES[0]);
-  const [playing, setPlaying] = React.useState(false);
+  const [active, setActive] = useState(PODCAST_EPISODES[0]);
+  const [playing, setPlaying] = useState(false);
 
   return (
     <Section id="podcast" eyebrow={t("podcast_eyebrow")} title={t("podcast_title")}>
