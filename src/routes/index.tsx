@@ -466,7 +466,7 @@ function About() {
             {t("about_intro")}
           </p>
           <div className="mt-8 grid grid-cols-2 gap-3">
-            <Stat n="8+" l={lang === "ar" ? "سنوات" : "Years"} />
+            <Stat n="9+" l={lang === "ar" ? "سنوات" : "Years"} />
             <Stat n="4" l={lang === "ar" ? "قطاعات" : "Sectors"} />
           </div>
         </motion.div>
@@ -908,7 +908,7 @@ function LeadForm() {
             <div className="mt-6 grid grid-cols-3 gap-3">
               <CompactStat n="15+" l={lang === "ar" ? "برنامج" : "Programs"} />
               <CompactStat n="12+" l={lang === "ar" ? "دولة" : "Countries"} />
-              <CompactStat n="8+" l={lang === "ar" ? "سنوات" : "Years"} />
+              <CompactStat n="9+" l={lang === "ar" ? "سنوات" : "Years"} />
             </div>
           </div>
         </motion.div>
