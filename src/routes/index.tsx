@@ -1120,13 +1120,13 @@ function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
       <div className="absolute -end-40 top-20 size-80 rounded-full bg-accent/10 blur-3xl" />
       <div className="mx-auto max-w-7xl">
-        <motion.div {...fadeUp} className="mb-12 lg:mb-16 max-w-3xl">
+        <motion.div {...fadeUp} className="mb-12 lg:mb-16">
           <div className="inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-accent font-semibold mb-5">
             <span className="size-1 rounded-full bg-accent" />
             {eyebrow}
             <span className="h-px w-12 bg-accent/40" />
           </div>
-          <h2 className="font-display text-balance leading-[0.98] tracking-tight text-foreground text-[clamp(2.25rem,5vw,4.25rem)]">
+          <h2 className="font-display leading-[1.05] tracking-tight text-foreground text-[clamp(1.9rem,4.4vw,3.75rem)] whitespace-normal lg:whitespace-nowrap">
             {title}
           </h2>
         </motion.div>
