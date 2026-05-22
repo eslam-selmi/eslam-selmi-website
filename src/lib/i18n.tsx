@@ -17,6 +17,9 @@ const en: Dict = {
   nav_podcast: "Podcast",
   nav_contact: "Contact",
   book_cta: "Book free 1:1",
+  listen_podcast: "Listen — Podcast",
+  demo_title: "Demo preview",
+  demo_desc: "This site is a live demo. Content and links may evolve.",
 
   // hero
   hero_hello: "Hello,",
