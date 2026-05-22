@@ -174,12 +174,13 @@ function Portfolio() {
       <Journey />
       <Services />
       <Programs />
-      <Clients />
-      <Snapshots />
-      <Podcast />
-      <BookCTA />
       <CurrentCourses />
       <LeadForm />
+      <Library />
+      <Podcast />
+      <Clients />
+      <Snapshots />
+      <BookCTA />
       <Contact />
       <Footer />
       <WhatsAppFloat />
