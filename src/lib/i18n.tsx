@@ -25,7 +25,7 @@ const en: Dict = {
   hero_hello: "Hello,",
   hero_meet: "Meet",
   hero_intro:
-    "Head of L&D, Talent Management & Performance leader with 8+ years driving human capital excellence across 12 countries.",
+    "Head of L&D, Talent Management & Performance leader with 9+ years driving human capital excellence across 12 countries.",
   hero_btn_book: "Book free 1:1 session",
   hero_btn_programs: "Explore programs",
   stat_trainees: "Trainees",
@@ -38,7 +38,7 @@ const en: Dict = {
   about_eyebrow: "About me",
   about_title: "Driving human capital excellence",
   about_intro:
-    "L&D Head, Talent & Performance Management Leader with 8+ years across Egypt, Saudi Arabia and 12 other countries. Expertise spans Education, Retail, FMCG and Logistics — partnering with global leaders like KnowledgeCity, G4S, Aramex and Imtenan.",
+    "L&D Head, Talent & Performance Management Leader with 9+ years across Egypt, Saudi Arabia and 12 other countries. Expertise spans Education, Retail, FMCG and Logistics — partnering with global leaders like KnowledgeCity, G4S, Aramex and Imtenan.",
   about_credentials: "Educational credentials",
 
   // pillars
@@ -149,7 +149,7 @@ const ar: Dict = {
   hero_hello: "مرحبًا،",
   hero_meet: "تعرّف إلى",
   hero_intro:
-    "رئيس قطاع التعلم والتطوير، وخبير إدارة المواهب والأداء بخبرة تتجاوز ٨ سنوات في تطوير رأس المال البشري عبر ١٢ دولة.",
+    "رئيس قطاع التعلم والتطوير، وخبير إدارة المواهب والأداء بخبرة تتجاوز ٩ سنوات في تطوير رأس المال البشري عبر ١٢ دولة.",
   hero_btn_book: "احجز جلسة فردية مجانية",
   hero_btn_programs: "استكشف البرامج",
   stat_trainees: "متدرب",
@@ -161,7 +161,7 @@ const ar: Dict = {
   about_eyebrow: "نبذة عني",
   about_title: "نقود التميّز في رأس المال البشري",
   about_intro:
-    "رئيس قطاع التعلم والتطوير وخبير في إدارة المواهب وإدارة الأداء، بخبرة تتجاوز ٨ سنوات في مصر والمملكة العربية السعودية و١٢ دولة أخرى. خبرات تمتد عبر قطاعات التعليم، التجزئة، السلع الاستهلاكية، والخدمات اللوجستية، بالشراكة مع مؤسسات رائدة مثل KnowledgeCity وG4S وAramex وImtenan.",
+    "رئيس قطاع التعلم والتطوير وخبير في إدارة المواهب وإدارة الأداء، بخبرة تتجاوز ٩ سنوات في مصر والمملكة العربية السعودية و١٢ دولة أخرى. خبرات تمتد عبر قطاعات التعليم، التجزئة، السلع الاستهلاكية، والخدمات اللوجستية، بالشراكة مع مؤسسات رائدة مثل KnowledgeCity وG4S وAramex وImtenan.",
   about_credentials: "المؤهلات والشهادات",
 
   pillars_eyebrow: "ثلاث ركائز",

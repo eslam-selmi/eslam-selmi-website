@@ -73,7 +73,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Eslam Selmi — Head of L&D, Talent & Performance Management" },
+      { title: "Eslam Selmi" },
       { name: "description", content: "Eslam Selmi — Head of Learning & Development, Talent Management and Performance leader with 8+ years across Egypt, KSA and 12 countries. Book a free 1:1 session." },
       { name: "author", content: "Eslam Selmi" },
       { property: "og:title", content: "Eslam Selmi — Head of L&D, Talent & Performance Management" },
@@ -84,6 +84,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:description", content: "L&D, Talent Management, Performance & KPIs expert. 8+ years across 12 countries." },
     ],
     links: [
+      { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
       { rel: "stylesheet", href: appCss },
     ],
   }),

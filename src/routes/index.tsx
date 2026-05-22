@@ -402,7 +402,7 @@ function Hero() {
             animate={{ y: [0, -10, 0] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
             className="absolute -right-2 sm:-right-6 top-6 rounded-2xl px-5 py-4 bg-card border border-foreground/10 shadow-xl min-w-[140px]"
           >
-            <div className="text-2xl sm:text-3xl font-extrabold font-display" style={{ color: "var(--accent)" }}>8+</div>
+            <div className="text-2xl sm:text-3xl font-extrabold font-display" style={{ color: "var(--accent)" }}>9+</div>
             <div className="text-xs text-muted-foreground mt-0.5 font-medium">{lang === "ar" ? "سنوات خبرة" : "Years experience"}</div>
           </motion.div>
 
@@ -466,7 +466,7 @@ function About() {
             {t("about_intro")}
           </p>
           <div className="mt-8 grid grid-cols-2 gap-3">
-            <Stat n="8+" l={lang === "ar" ? "سنوات" : "Years"} />
+            <Stat n="9+" l={lang === "ar" ? "سنوات" : "Years"} />
             <Stat n="4" l={lang === "ar" ? "قطاعات" : "Sectors"} />
           </div>
         </motion.div>
@@ -908,7 +908,7 @@ function LeadForm() {
             <div className="mt-6 grid grid-cols-3 gap-3">
               <CompactStat n="15+" l={lang === "ar" ? "برنامج" : "Programs"} />
               <CompactStat n="12+" l={lang === "ar" ? "دولة" : "Countries"} />
-              <CompactStat n="8+" l={lang === "ar" ? "سنوات" : "Years"} />
+              <CompactStat n="9+" l={lang === "ar" ? "سنوات" : "Years"} />
             </div>
           </div>
         </motion.div>
@@ -1009,9 +1009,9 @@ function Podcast() {
     <Section id="podcast" eyebrow={t("podcast_eyebrow")} title={t("podcast_title")}>
       <div className="grid lg:grid-cols-[1.35fr_1fr] gap-6 lg:gap-8 items-start">
         {/* Player card */}
-        <motion.div {...fadeUp} className="relative">
-          <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-gradient-to-br from-accent/25 via-accent/5 to-transparent blur-2xl" />
-          <div className="glass-panel rounded-3xl overflow-hidden border border-foreground/10">
+        <motion.div {...fadeUp} className="relative min-w-0 w-full">
+          <div className="absolute -inset-2 sm:-inset-6 -z-10 rounded-[2rem] bg-gradient-to-br from-accent/25 via-accent/5 to-transparent blur-2xl" />
+          <div className="glass-panel rounded-2xl sm:rounded-3xl overflow-hidden border border-foreground/10">
             <div className="relative aspect-video bg-black">
               {playing ? (
                 <iframe
@@ -1074,7 +1074,7 @@ function Podcast() {
         </motion.div>
 
         {/* Episodes list */}
-        <motion.div {...fadeUp} className="space-y-3">
+        <motion.div {...fadeUp} className="space-y-3 min-w-0 w-full">
           <div className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground font-semibold mb-2">{t("podcast_episodes")}</div>
           {PODCAST_EPISODES.map((ep) => {
             const isActive = ep.id === active.id;
