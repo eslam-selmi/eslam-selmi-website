@@ -557,31 +557,10 @@ function Journey() {
                 </span>
               </div>
 
-              {/* Logo + company */}
-              <div className="flex items-center gap-4">
-                <div className="size-16 rounded-2xl bg-white border border-foreground/10 grid place-items-center p-2 shadow-sm shrink-0 overflow-hidden">
-                  <img
-                    src={j.logo}
-                    alt={j.company}
-                    loading="lazy"
-                    className="max-w-full max-h-full object-contain"
-                    onError={(e) => {
-                      const el = e.currentTarget;
-                      el.style.display = "none";
-                      const parent = el.parentElement;
-                      if (parent && !parent.querySelector(".fallback-initials")) {
-                        const span = document.createElement("span");
-                        span.className = "fallback-initials font-display font-extrabold text-primary text-lg";
-                        span.textContent = initials;
-                        parent.appendChild(span);
-                      }
-                    }}
-                  />
-                </div>
-                <div className="min-w-0">
-                  <div className="font-display font-bold text-lg leading-tight truncate">{j.company}</div>
-                  <div className="text-sm text-muted-foreground mt-1 leading-tight">{j.role[lang]}</div>
-                </div>
+              {/* Company */}
+              <div className="min-w-0">
+                <div className="font-display font-bold text-xl leading-tight">{j.company}</div>
+                <div className="text-sm text-muted-foreground mt-1.5 leading-snug">{j.role[lang]}</div>
               </div>
             </motion.div>
           );
