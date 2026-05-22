@@ -1321,13 +1321,13 @@ function Contact() {
   );
 }
 
-function ContactCard({ icon: Icon, label, lines, href }: { icon: any; label: string; lines: string[]; href: string }) {
+function ContactCard({ icon: Icon, label, lines, href }: { icon: any; label: string; lines: React.ReactNode[]; href: string }) {
   return (
     <motion.a {...fadeUp} href={href} target="_blank" rel="noopener noreferrer"
       className="glass-panel rounded-3xl p-6 transition hover:-translate-y-1 group block">
       <Icon className="size-6 text-gold" />
       <div className="mt-3 text-sm text-muted-foreground">{label}</div>
-      {lines.map(l => <div key={l} className="font-medium mt-1">{l}</div>)}
+      {lines.map((l, i) => <div key={i} className="font-medium mt-1">{l}</div>)}
       <div className="mt-4 inline-flex items-center gap-1 text-xs text-gold group-hover:gap-2 transition-all">
         Open <ArrowRight className="size-3 rtl-flip" />
       </div>
