@@ -1009,6 +1009,7 @@ const PODCAST_EPISODES = [
     titleKey: "podcast_ep1_title",
     descKey: "podcast_ep1_desc",
     duration: "—",
+  },
   {
     id: "XAOMhy9vyOI",
     number: "02",
