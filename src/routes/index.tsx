@@ -415,6 +415,15 @@ function Stat({ n, l }: { n: string; l: string }) {
   );
 }
 
+function CompactStat({ n, l }: { n: string; l: string }) {
+  return (
+    <div className="rounded-2xl border border-foreground/10 bg-card p-3 text-center min-w-0">
+      <div className="font-display text-xl sm:text-2xl font-extrabold leading-none truncate" style={{ color: "var(--accent)" }}>{n}</div>
+      <div className="mt-1.5 text-[9px] uppercase tracking-[0.18em] text-muted-foreground truncate">{l}</div>
+    </div>
+  );
+}
+
 
 /* ---------- ABOUT ---------- */
 function About() {
