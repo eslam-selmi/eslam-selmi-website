@@ -188,9 +188,10 @@ function Portfolio() {
       <Journey />
       <Services />
       <Programs />
+      <EmpowermentTools />
       <CurrentCourses />
-      <LeadForm />
       <Library />
+      <LeadForm />
       <Podcast />
       <Clients />
       <Snapshots />
@@ -199,8 +200,8 @@ function Portfolio() {
       <Footer />
       <WhatsAppFloat />
       <ScrollTop />
-      <DemoBanner />
       <CalendlyDialog />
+      <LanguageHint />
     </div>
   );
 }
