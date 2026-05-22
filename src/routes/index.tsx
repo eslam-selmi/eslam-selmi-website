@@ -891,10 +891,14 @@ function BookCTA() {
             </h2>
             <p className="mt-5 text-white/90 max-w-xl leading-relaxed text-base">{t("book_desc")}</p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
-                className="group inline-flex items-center gap-2 rounded-full bg-white text-[#0b1736] px-6 py-3.5 text-sm font-bold hover:bg-white/95 transition shadow-lg">
-                <MessageCircle className="size-4" /> {t("book_btn_whatsapp")}
+              <button onClick={openCalendly}
+                className="group inline-flex items-center gap-2 rounded-full bg-white text-[#0b1736] px-6 py-3.5 text-sm font-bold hover:bg-white/95 transition shadow-lg cursor-pointer">
+                <Calendar className="size-4" /> {t("book_cta")}
                 <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
+              </button>
+              <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 text-white px-6 py-3.5 text-sm font-bold hover:bg-white/20 transition">
+                <MessageCircle className="size-4" /> {t("book_btn_whatsapp")}
               </a>
               <a href="tel:+966555376228" className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 text-white px-6 py-3.5 text-sm font-bold hover:bg-white/20 transition">
                 <Phone className="size-4" /> +966 555 376 228
