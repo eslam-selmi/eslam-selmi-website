@@ -417,8 +417,8 @@ function CourseContent({ courseId }: { courseId: string }) {
     loadModules();
   }
 
-  async function updateModuleField(id: string, field: string, value: string) {
-    await supabase.from("course_modules").update({ [field]: value || null }).eq("id", id);
+  async function updateOnlineUrl(id: string, value: string) {
+    await supabase.from("course_modules").update({ online_url: value || null }).eq("id", id);
     loadModules();
   }
 
@@ -440,7 +440,7 @@ function CourseContent({ courseId }: { courseId: string }) {
           {modules.map((m, i) => (
             <ModuleCard key={m.id} m={m} index={i} items={items[m.id] ?? []}
               onToggle={() => toggleComplete(m)} onDelete={() => delModule(m.id)}
-              onChangeOnlineUrl={(url) => updateModuleField(m.id, "online_url", url)}
+              onChangeOnlineUrl={(url: string) => updateOnlineUrl(m.id, url)}
               onItemsChanged={loadModules} />
           ))}
         </div>
