@@ -84,7 +84,7 @@ const en: Dict = {
 
   // snapshots
   snapshots_eyebrow: "Snapshots",
-  snapshots_title: "From the field",
+  snapshots_title: "Moments that shaped the journey",
 
   // podcast
   podcast_eyebrow: "L&D Podcast",
