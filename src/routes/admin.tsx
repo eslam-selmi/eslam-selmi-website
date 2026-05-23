@@ -371,7 +371,7 @@ function CourseEditor({ course, onClose, refresh }: { course: Course; onClose: (
         <div className="px-6 pt-4 flex gap-1 border-b border-white/10">
           {[
             { id: "content", label: "المحتوى والأبواب", icon: Layers },
-            { id: "assignments", label: "الواجبات", icon: Layers },
+            { id: "assignments", label: "التكليفات", icon: Layers },
             { id: "sessions", label: "المحاضرات والمواعيد", icon: Calendar },
             { id: "settings", label: "إعدادات", icon: Settings2 },
           ].map((t) => (
@@ -1126,13 +1126,13 @@ function CourseAssignmentsAdmin({ courseId }: { courseId: string }) {
       due_date: due ? new Date(due).toISOString() : null, max_score: maxScore,
     });
     if (error) return toast.error(error.message);
-    toast.success("تم إنشاء الواجب");
+    toast.success("تم إنشاء التكليف");
     setTitle(""); setInstructions(""); setDue(""); setMaxScore(100);
     load();
   }
 
   async function delAssignment(id: string) {
-    if (!confirm("حذف الواجب وكل تسليماته؟")) return;
+    if (!confirm("حذف التكليف وكل تسليماته؟")) return;
     await supabase.from("assignments").delete().eq("id", id);
     load();
   }
@@ -1149,13 +1149,13 @@ function CourseAssignmentsAdmin({ courseId }: { courseId: string }) {
   return (
     <div className="space-y-4">
       <div className="rounded-xl border border-white/10 bg-white/5 p-4 space-y-2">
-        <p className="text-xs text-white/60 font-semibold">إنشاء واجب جديد</p>
+        <p className="text-xs text-white/60 font-semibold">إنشاء تكليف جديد</p>
         <select value={moduleId} onChange={(e) => setModuleId(e.target.value)}
           className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/15 text-sm">
           <option value="">— اختر الباب —</option>
           {modules.map((m) => <option key={m.id} value={m.id}>{m.title}</option>)}
         </select>
-        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="عنوان الواجب"
+        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="عنوان التكليف"
           className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/15 text-sm" />
         <textarea value={instructions} onChange={(e) => setInstructions(e.target.value)} placeholder="تعليمات / وصف"
           rows={2} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/15 text-sm" />
@@ -1171,7 +1171,7 @@ function CourseAssignmentsAdmin({ courseId }: { courseId: string }) {
       </div>
 
       {assignments.length === 0 ? (
-        <p className="text-sm text-white/40 text-center py-6">لا توجد واجبات بعد.</p>
+        <p className="text-sm text-white/40 text-center py-6">لا توجد تكليفات بعد.</p>
       ) : (
         <div className="space-y-3">
           {assignments.map((a) => {
