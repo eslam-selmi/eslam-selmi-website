@@ -465,7 +465,7 @@ function ModuleCard({ m, index, items, onToggle, onDelete, onChangeOnlineUrl, on
       const path = `${m.course_id}/${m.id}/${Date.now()}-${file.name}`;
       const { error: upErr } = await supabase.storage.from("course-files").upload(path, file);
       if (upErr) return toast.error(upErr.message);
-      url = supabase.storage.from("course-files").getPublicUrl(path).data.publicUrl;
+      url = path; // store storage path; signed URL generated on access
       (window as any).__pendingFile = null;
     }
     const { error } = await supabase.from("module_items").insert({
