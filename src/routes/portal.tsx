@@ -131,16 +131,25 @@ function PortalPage() {
         <section className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.04)] p-7 sm:p-9 backdrop-blur-xl">
           <div className="flex items-start justify-between gap-6 flex-wrap">
             <div>
-              <p className="text-xs tracking-widest text-[var(--gold)] mb-2">مرحباً بك</p>
-              <h1 className="text-3xl sm:text-4xl font-bold">{profile?.full_name || "متدرب جديد"}</h1>
-              <p className="text-white/60 mt-2 max-w-xl">تابع كورساتك ومحاضراتك وشهاداتك ومدفوعاتك من مكان واحد. ستصلك إشعارات لحظية بأي تحديث.</p>
+              <p className="text-xs tracking-widest text-[var(--gold)] mb-2">{lang === "ar" ? "مرحباً بك" : "Welcome"}</p>
+              <h1 className="text-3xl sm:text-4xl font-bold">{profile?.full_name || (lang === "ar" ? "متدرب جديد" : "New trainee")}</h1>
+              <p className="text-white/60 mt-2 max-w-xl">{lang === "ar"
+                ? "تابع كورساتك ومحاضراتك وشهاداتك ومدفوعاتك من مكان واحد. ستصلك إشعارات لحظية بأي تحديث."
+                : "Track your courses, sessions, certificates and payments in one place. You'll get live notifications for every update."}</p>
             </div>
-            <button onClick={() => setShowUpload(true)}
-              className="flex items-center gap-2 px-5 h-12 rounded-xl font-semibold transition-all hover:scale-[1.02]"
-              style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
-              <Upload className="w-4 h-4" /> رفع ملفات الاختبار
-            </button>
+            <div className="flex items-center gap-2">
+              <button onClick={() => setLang(lang === "ar" ? "en" : "ar")}
+                className="flex items-center gap-1.5 px-3 h-10 rounded-lg bg-white/5 border border-white/15 hover:bg-white/10 text-xs text-white/80">
+                <Languages className="w-4 h-4" /> {lang === "ar" ? "English" : "العربية"}
+              </button>
+              <button onClick={() => setShowUpload(true)}
+                className="flex items-center gap-2 px-5 h-12 rounded-xl font-semibold transition-all hover:scale-[1.02]"
+                style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
+                <Upload className="w-4 h-4" /> {lang === "ar" ? "رفع ملفات الاختبار" : "Upload test files"}
+              </button>
+            </div>
           </div>
+
         </section>
 
         <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
