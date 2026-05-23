@@ -854,11 +854,11 @@ function Services() {
               <a
                 href={waServiceLink(s.title.en, lang)}
                 target="_blank" rel="noopener noreferrer"
-                className="group/btn relative inline-flex w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-bold text-white overflow-hidden transition shadow-[0_12px_28px_-12px_oklch(0.55_0.2_290/0.55)] hover:translate-y-[-1px]"
-                style={{ background: "linear-gradient(120deg, var(--navy) 0%, var(--lavender-deep) 60%, var(--accent) 100%)" }}
+                className="group/btn relative inline-flex w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-extrabold overflow-hidden transition shadow-[0_12px_28px_-12px_rgba(212,170,80,0.55)] hover:translate-y-[-1px]"
+                style={{ background: "linear-gradient(120deg, var(--gold) 0%, #f4d98a 100%)", color: "#0a0f2c" }}
                 aria-label={`${t("svc_request_btn")} — ${s.title[lang]}`}
               >
-                <span className="absolute inset-0 bg-white/0 group-hover/btn:bg-white/10 transition" />
+                <span className="absolute inset-0 bg-white/0 group-hover/btn:bg-black/5 transition" />
                 <Rocket className="relative size-4" />
                 <span className="relative">{t("svc_request_btn")}</span>
                 <ArrowRight className="relative size-4 group-hover/btn:translate-x-1 rtl-flip transition" />
