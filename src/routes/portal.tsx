@@ -279,10 +279,6 @@ function PortalPage() {
           onConfirm={(code) => enroll(enrollingCourse.id, code)}
         />
       )}
-            </div>
-          )}
-        </section>
-      </div>
 
       {showUpload && <UploadModal onClose={() => setShowUpload(false)} />}
     </PortalShell>
