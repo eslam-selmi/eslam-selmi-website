@@ -36,18 +36,18 @@ import logoDaralnokba from "@/assets/clients/daralnokba.jpg";
 import logoMallOfEgypt from "@/assets/clients/mall-of-egypt.jpg";
 import logoNewBrand from "@/assets/clients/new-brand.jpg";
 
-const BRANDS = [
-  { src: logoAramex, name: "Aramex" },
-  { src: logoG4s, name: "G4S" },
-  { src: logoAmazonEg, name: "Amazon.eg" },
-  { src: logoImtenan, name: "Imtenan" },
-  { src: logoMallOfEgypt, name: "Mall of Egypt" },
-  { src: logoBadreldin, name: "Badreldin Developments" },
-  { src: logoAllerAqua, name: "Aller Aqua Egypt" },
-  { src: logoEvno, name: "Evno" },
-  { src: logoAlmajarah, name: "Al Majarah" },
-  { src: logoDaralnokba, name: "Daralnokba Recruitment" },
-  { src: logoNewBrand, name: "Partner" },
+const BRANDS: { src: string; name: string; nameAr: string; specEn: string; specAr: string }[] = [
+  { src: logoAramex, name: "Aramex", nameAr: "أرامكس", specEn: "Logistics", specAr: "خدمات لوجستية" },
+  { src: logoG4s, name: "G4S", nameAr: "جي فور إس", specEn: "Advanced Security Solutions", specAr: "حلول أمنية متطورة" },
+  { src: logoAmazonEg, name: "Amazon.eg", nameAr: "أمازون مصر", specEn: "E-commerce", specAr: "تجارة إلكترونية" },
+  { src: logoImtenan, name: "Imtenan", nameAr: "إمتنان", specEn: "FMCG", specAr: "سلع استهلاكية (FMCG)" },
+  { src: logoMallOfEgypt, name: "Mall of Egypt", nameAr: "مول مصر", specEn: "Retail & Malls", specAr: "تجزئة ومراكز تسوق" },
+  { src: logoBadreldin, name: "Badreldin Developments", nameAr: "بدر الدين للتطوير", specEn: "Real Estate Development", specAr: "تطوير عقاري" },
+  { src: logoAllerAqua, name: "Aller Aqua Egypt", nameAr: "ألر أكوا مصر", specEn: "Aquaculture Feed", specAr: "أعلاف الاستزراع السمكي" },
+  { src: logoEvno, name: "Evno", nameAr: "إيفنو", specEn: "Tech & Innovation", specAr: "تكنولوجيا وابتكار" },
+  { src: logoAlmajarah, name: "Al Majarah", nameAr: "المجرة", specEn: "Training & Consulting", specAr: "تدريب واستشارات" },
+  { src: logoDaralnokba, name: "Daralnokba Recruitment", nameAr: "دار النخبة للتوظيف", specEn: "Recruitment", specAr: "استقطاب وتوظيف" },
+  { src: logoNewBrand, name: "Partner", nameAr: "شريك", specEn: "Strategic Partner", specAr: "شريك استراتيجي" },
 ];
 import snap10 from "@/assets/snapshots/snap-10.jpg";
 import snap11 from "@/assets/snapshots/snap-11.jpg";
