@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import {
   Clock, CheckCircle2, XCircle, Download, Upload, BookOpen, Wallet, Loader2,
   ExternalLink, Sparkles, ArrowRight, Calendar, Layers, StickyNote, Link as LinkIcon,
-  Paperclip, Check, ChevronLeft, PlayCircle, Award,
+  Paperclip, Check, ChevronLeft, PlayCircle, Award, Linkedin, GraduationCap, Hourglass,
 } from "lucide-react";
 
 export const Route = createFileRoute("/portal")({
@@ -24,6 +24,7 @@ type Course = {
   id: string; title: string; description: string | null; price: number | null;
   currency: string; starts_at: string | null; ends_at: string | null;
   installments_count: number; online_url: string | null; cover_emoji: string | null;
+  total_hours: number | null;
 };
 type Enrollment = {
   id: string; course_id: string; status: "pending" | "approved" | "rejected";
@@ -77,6 +78,13 @@ function PortalPage() {
   const enrolledIds = useMemo(() => new Set(enrollments.map((e) => e.course_id)), [enrollments]);
   const availableCourses = courses.filter((c) => !enrolledIds.has(c.id));
 
+  const stats = useMemo(() => {
+    const approved = enrollments.filter((e) => e.status === "approved");
+    const certs = enrollments.filter((e) => e.certificate_issued).length;
+    const hours = approved.reduce((s, e) => s + Number(e.courses?.total_hours ?? 0), 0);
+    return { active: approved.length, pending: enrollments.filter((e) => e.status === "pending").length, certs, hours };
+  }, [enrollments]);
+
   async function enroll(courseId: string) {
     if (!user) return;
     const { error } = await supabase.from("enrollments").insert({ user_id: user.id, course_id: courseId });
@@ -129,6 +137,13 @@ function PortalPage() {
           </div>
         </section>
 
+        <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <StatCard icon={GraduationCap} label="كورسات نشطة" value={stats.active} accent="emerald" />
+          <StatCard icon={Hourglass} label="طلبات معلّقة" value={stats.pending} accent="amber" />
+          <StatCard icon={Clock} label="إجمالي الساعات" value={stats.hours} accent="sky" />
+          <StatCard icon={Award} label="شهادات صادرة" value={stats.certs} accent="gold" />
+        </section>
+
         <section>
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><BookOpen className="w-5 h-5 text-[var(--gold)]" /> كورساتي</h2>
           {loadingData ? <p className="text-white/50 text-sm">جاري التحميل...</p> :
@@ -163,9 +178,14 @@ function PortalPage() {
                     </div>
                   </div>
                   {c.description && <p className="text-sm text-white/60 line-clamp-3 flex-1">{c.description}</p>}
-                  {(c.starts_at || c.ends_at) && (
-                    <p className="text-[11px] text-white/50 mt-2 flex items-center gap-1"><Calendar className="w-3 h-3" /> {c.starts_at || "—"} → {c.ends_at || "—"}</p>
-                  )}
+                  <div className="flex flex-wrap items-center gap-2 mt-3 text-[11px] text-white/55">
+                    {(c.starts_at || c.ends_at) && (
+                      <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {c.starts_at || "—"} → {c.ends_at || "—"}</span>
+                    )}
+                    {Number(c.total_hours) > 0 && (
+                      <span className="flex items-center gap-1 text-[var(--gold)]/90"><Clock className="w-3 h-3" /> {c.total_hours} ساعة</span>
+                    )}
+                  </div>
                   <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
                     <span className="text-[var(--gold)] font-semibold text-sm">
                       {Number(c.price) > 0 ? `${Number(c.price).toLocaleString()} ${c.currency}` : "مجاني"}
@@ -292,6 +312,7 @@ function CourseDetail({ enrollment, onBack, onDownloadCert }: { enrollment: Enro
               )}
               <span className="text-[var(--gold)] font-semibold">{coursePrice > 0 ? `${coursePrice.toLocaleString()} ${c.currency}` : "مجاني"}</span>
               <span>{c.installments_count === 1 ? "دفعة كاملة" : `${c.installments_count} أقساط`}</span>
+              {Number(c.total_hours) > 0 && <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5 text-[var(--gold)]" /> {c.total_hours} ساعة تدريبية</span>}
             </div>
             {c.online_url && (
               <a href={c.online_url} target="_blank" rel="noopener"
@@ -438,11 +459,19 @@ function CourseDetail({ enrollment, onBack, onDownloadCert }: { enrollment: Enro
         <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
           <h3 className="font-bold mb-3 flex items-center gap-2"><Award className="w-4 h-4 text-[var(--gold)]" /> الشهادة</h3>
           {enrollment.certificate_issued && enrollment.certificate_url ? (
-            <button onClick={() => onDownloadCert(enrollment.certificate_url!)}
-              className="w-full h-12 rounded-xl font-semibold flex items-center justify-center gap-2"
-              style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
-              <Download className="w-4 h-4" /> تحميل الشهادة
-            </button>
+            <div className="space-y-2.5">
+              <button onClick={() => onDownloadCert(enrollment.certificate_url!)}
+                className="w-full h-12 rounded-xl font-semibold flex items-center justify-center gap-2"
+                style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
+                <Download className="w-4 h-4" /> تحميل الشهادة
+              </button>
+              <a
+                href={buildLinkedInShareUrl(c.title, Number(c.total_hours ?? 0))}
+                target="_blank" rel="noopener"
+                className="w-full h-11 rounded-xl font-semibold flex items-center justify-center gap-2 bg-[#0a66c2] hover:bg-[#0958a8] text-white transition">
+                <Linkedin className="w-4 h-4" /> شارك إنجازك على LinkedIn
+              </a>
+            </div>
           ) : (
             <p className="text-sm text-white/50 bg-white/5 border border-white/10 rounded-lg p-4 text-center">
               الشهادة ستُصدَر بعد إكمال متطلبات الكورس. سيصلك إشعار بمجرد إصدارها.
@@ -452,6 +481,37 @@ function CourseDetail({ enrollment, onBack, onDownloadCert }: { enrollment: Enro
       </section>
     </div>
   );
+}
+
+function StatCard({ icon: Icon, label, value, accent }: { icon: any; label: string; value: number; accent: "emerald" | "amber" | "sky" | "gold" }) {
+  const tone = {
+    emerald: "from-emerald-400/15 to-emerald-400/5 border-emerald-400/25 text-emerald-300",
+    amber: "from-amber-400/15 to-amber-400/5 border-amber-400/25 text-amber-300",
+    sky: "from-sky-400/15 to-sky-400/5 border-sky-400/25 text-sky-300",
+    gold: "from-[var(--gold)]/20 to-[var(--gold)]/5 border-[var(--gold)]/30 text-[var(--gold)]",
+  }[accent];
+  return (
+    <div className={`rounded-2xl border bg-gradient-to-br ${tone} p-4 flex items-center gap-3`}>
+      <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+        <Icon className="w-5 h-5" />
+      </div>
+      <div className="min-w-0">
+        <p className="text-2xl font-bold leading-none">{value}</p>
+        <p className="text-[11px] text-white/60 mt-1">{label}</p>
+      </div>
+    </div>
+  );
+}
+
+function buildLinkedInShareUrl(courseTitle: string, hours: number) {
+  const siteUrl = typeof window !== "undefined" ? window.location.origin : "https://eslam-selmi.lovable.app";
+  const text =
+`🎓 Just completed the "${courseTitle}" course${hours > 0 ? `, accumulating ${hours} training hours` : ""} with Eslam Selmi Academy.
+
+Grateful for the depth of practical L&D, talent and performance management content. On to the next milestone!
+
+#LearningAndDevelopment #TalentManagement #Performance #ContinuousLearning #EslamSelmiAcademy`;
+  return `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(siteUrl)}&summary=${encodeURIComponent(text)}`;
 }
 
 function UploadModal({ onClose }: { onClose: () => void }) {
