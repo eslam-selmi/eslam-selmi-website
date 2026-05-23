@@ -335,14 +335,15 @@ function EnrollmentCard({ en, onOpen, onWithdraw }: { en: Enrollment; onOpen: ()
       {en.status === "pending" && (
         <>
           <p className="mt-3 text-xs text-amber-200/80 bg-amber-300/5 border border-amber-300/15 rounded-lg p-3">
-            لم تتم الموافقة على انضمامك حتى الآن. يمكنك تصفح عناوين المحاضرات (المحتوى مقفل 🔒) أو سحب الطلب.
+            {isAr ? "لم تتم الموافقة على انضمامك حتى الآن. يمكنك تصفح عناوين المحاضرات (المحتوى مقفل 🔒) أو سحب الطلب."
+                  : "Your enrollment isn't approved yet. You can preview lecture titles (content locked 🔒) or withdraw the request."}
           </p>
           <div className="flex gap-2 mt-3">
             <button onClick={onOpen} className="flex-1 text-xs h-10 rounded-lg bg-white/5 border border-white/15 hover:bg-white/10">
-              معاينة المحاضرات 🔒
+              {isAr ? "معاينة المحاضرات 🔒" : "Preview lectures 🔒"}
             </button>
             <button onClick={() => onWithdraw(en.id)} className="text-xs px-3 h-10 rounded-lg bg-rose-500/15 text-rose-300 border border-rose-500/30 hover:bg-rose-500/25">
-              انسحاب
+              {isAr ? "انسحاب" : "Withdraw"}
             </button>
           </div>
         </>
@@ -353,21 +354,25 @@ function EnrollmentCard({ en, onOpen, onWithdraw }: { en: Enrollment; onOpen: ()
         <button onClick={onOpen}
           className="mt-4 w-full h-11 rounded-xl font-semibold flex items-center justify-center gap-2"
           style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
-          فتح الكورس <ArrowRight className="w-4 h-4 rtl-flip" />
+          {isAr ? "فتح الكورس" : "Open course"} <ArrowRight className="w-4 h-4 rtl-flip" />
         </button>
       )}
+
     </div>
   );
 }
 
 // ============= COURSE DETAIL (trainee) =============
 function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrollment: Enrollment; onBack: () => void; onDownloadCert: (url: string) => void; onRefresh: () => void }) {
+  const { lang } = useI18n();
+  const isAr = lang === "ar";
   const c = enrollment.courses!;
   const [modules, setModules] = useState<any[]>([]);
   const [items, setItems] = useState<Record<string, any[]>>({});
   const [sessions, setSessions] = useState<any[]>([]);
   const [payments, setPayments] = useState<any[]>([]);
   const [installments, setInstallments] = useState<any[]>([]);
+
 
   async function load() {
     const [mRes, sRes, pRes, iRes] = await Promise.all([
@@ -404,7 +409,7 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
   return (
     <div className="space-y-7">
       <button onClick={onBack} className="flex items-center gap-1.5 text-sm text-white/60 hover:text-white">
-        <ChevronLeft className="w-4 h-4 rtl-flip" /> العودة لكورساتي
+        <ChevronLeft className="w-4 h-4 rtl-flip" /> {isAr ? "العودة لكورساتي" : "Back to my courses"}
       </button>
 
       <section className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.04)] p-6 sm:p-8 backdrop-blur-xl">
@@ -419,14 +424,14 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
               {(c.starts_at || c.ends_at) && (
                 <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5 text-[var(--gold)]" /> {c.starts_at || "—"} → {c.ends_at || "—"}</span>
               )}
-              <span className="text-[var(--gold)] font-semibold">{coursePrice > 0 ? `${coursePrice.toLocaleString()} ${c.currency}` : "مجاني"}</span>
-              <span>{c.installments_count === 1 ? "دفعة كاملة" : `${c.installments_count} أقساط`}</span>
-              {Number(c.total_hours) > 0 && <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5 text-[var(--gold)]" /> {c.total_hours} ساعة تدريبية</span>}
+              <span className="text-[var(--gold)] font-semibold">{coursePrice > 0 ? `${coursePrice.toLocaleString()} ${c.currency}` : (isAr ? "مجاني" : "Free")}</span>
+              <span>{c.installments_count === 1 ? (isAr ? "دفعة كاملة" : "Single payment") : (isAr ? `${c.installments_count} أقساط` : `${c.installments_count} installments`)}</span>
+              {Number(c.total_hours) > 0 && <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5 text-[var(--gold)]" /> {c.total_hours} {isAr ? "ساعة تدريبية" : "training hrs"}</span>}
             </div>
             {c.online_url && (
               <a href={c.online_url} target="_blank" rel="noopener"
                 className="mt-4 inline-flex items-center gap-2 text-sm px-4 h-10 rounded-xl bg-[var(--gold)]/15 border border-[var(--gold)]/40 text-[var(--gold)] hover:bg-[var(--gold)]/25 transition">
-                <PlayCircle className="w-4 h-4" /> رابط المحاضرة <ExternalLink className="w-3 h-3" />
+                <PlayCircle className="w-4 h-4" /> {isAr ? "رابط المحاضرة" : "Lecture link"} <ExternalLink className="w-3 h-3" />
               </a>
             )}
           </div>
@@ -435,7 +440,7 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
         {modules.length > 0 && (
           <div className="mt-6">
             <div className="flex justify-between text-xs text-white/60 mb-2">
-              <span>التقدّم</span><span className="font-semibold text-[var(--gold)]">{progressPct}% ({completedCount}/{modules.length})</span>
+              <span>{isAr ? "التقدّم" : "Progress"}</span><span className="font-semibold text-[var(--gold)]">{progressPct}% ({completedCount}/{modules.length})</span>
             </div>
             <div className="h-2 rounded-full bg-white/10 overflow-hidden">
               <div className="h-full transition-all rounded-full" style={{ width: `${progressPct}%`, background: "linear-gradient(90deg, var(--gold), #b8923f)" }} />
@@ -444,11 +449,12 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
         )}
       </section>
 
+
       {/* Sessions */}
       <section>
-        <h2 className="text-lg font-bold mb-3 flex items-center gap-2"><Calendar className="w-5 h-5 text-[var(--gold)]" /> المحاضرات القادمة</h2>
+        <h2 className="text-lg font-bold mb-3 flex items-center gap-2"><Calendar className="w-5 h-5 text-[var(--gold)]" /> {isAr ? "المحاضرات القادمة" : "Upcoming sessions"}</h2>
         {sessions.length === 0 ? (
-          <p className="text-sm text-white/50 rounded-xl border border-dashed border-white/15 p-6 text-center">لم تُجدول محاضرات بعد.</p>
+          <p className="text-sm text-white/50 rounded-xl border border-dashed border-white/15 p-6 text-center">{isAr ? "لم تُجدول محاضرات بعد." : "No sessions scheduled yet."}</p>
         ) : (
           <div className="grid sm:grid-cols-2 gap-3">
             {sessions.map((s) => {
@@ -460,11 +466,11 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
                     <Clock className="w-5 h-5 text-[var(--gold)] mt-0.5 shrink-0" />
                     <div className="flex-1 min-w-0">
                       <h4 className="font-semibold">{trSessionTitles[sessions.indexOf(s)] || s.title}</h4>
-                      <p className="text-xs text-white/60 mt-1">{dt.toLocaleString("ar-EG")} · {s.duration_minutes}د</p>
+                      <p className="text-xs text-white/60 mt-1">{dt.toLocaleString(isAr ? "ar-EG" : "en-GB")} · {s.duration_minutes}{isAr ? "د" : "m"}</p>
                       {s.online_url && !past && (
                         <a href={s.online_url} target="_blank" rel="noopener"
                           className="mt-3 inline-flex items-center gap-1.5 text-xs px-3 h-8 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold">
-                          الانضمام <ExternalLink className="w-3 h-3" />
+                          {isAr ? "الانضمام" : "Join"} <ExternalLink className="w-3 h-3" />
                         </a>
                       )}
                     </div>
@@ -478,9 +484,9 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
 
       {/* Modules / content */}
       <section>
-        <h2 className="text-lg font-bold mb-3 flex items-center gap-2"><Layers className="w-5 h-5 text-[var(--gold)]" /> محتوى الكورس</h2>
+        <h2 className="text-lg font-bold mb-3 flex items-center gap-2"><Layers className="w-5 h-5 text-[var(--gold)]" /> {isAr ? "محتوى الكورس" : "Course content"}</h2>
         {modules.length === 0 ? (
-          <p className="text-sm text-white/50 rounded-xl border border-dashed border-white/15 p-6 text-center">المحتوى قيد التحضير.</p>
+          <p className="text-sm text-white/50 rounded-xl border border-dashed border-white/15 p-6 text-center">{isAr ? "المحتوى قيد التحضير." : "Content is being prepared."}</p>
         ) : (
           <div className="space-y-3">
             {modules.map((m: any, i: number) => (
@@ -491,14 +497,15 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
                   </div>
                   <div className="flex-1 min-w-0">
                     <h4 className="font-bold">{trModuleTitles[i] || m.title}</h4>
-                    {m.completed_by_admin && <p className="text-[11px] text-emerald-300/80 mt-0.5">✓ تم إكمال هذا الجزء</p>}
+                    {m.completed_by_admin && <p className="text-[11px] text-emerald-300/80 mt-0.5">✓ {isAr ? "تم إكمال هذا الجزء" : "This module is complete"}</p>}
                   </div>
                   {m.online_url && (
                     <a href={m.online_url} target="_blank" rel="noopener" className="text-xs px-3 h-9 rounded-lg bg-[var(--gold)]/15 text-[var(--gold)] border border-[var(--gold)]/30 flex items-center gap-1">
-                      <PlayCircle className="w-3.5 h-3.5" /> رابط المحاضرة
+                      <PlayCircle className="w-3.5 h-3.5" /> {isAr ? "رابط المحاضرة" : "Lecture"}
                     </a>
                   )}
                 </div>
+
 
                 {(items[m.id]?.length ?? 0) > 0 && (
                   <ul className="mt-4 space-y-1.5 ms-12">
@@ -537,37 +544,38 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
       {/* Payments + Certificate */}
       <section className="grid lg:grid-cols-2 gap-4">
         <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-          <h3 className="font-bold mb-3 flex items-center gap-2"><Wallet className="w-4 h-4 text-[var(--gold)]" /> المدفوعات</h3>
+          <h3 className="font-bold mb-3 flex items-center gap-2"><Wallet className="w-4 h-4 text-[var(--gold)]" /> {isAr ? "المدفوعات" : "Payments"}</h3>
           {coursePrice > 0 && (
             <p className="text-xs text-white/60 mb-3">
-              مدفوع <span className="text-[var(--gold)] font-semibold">{totalPaid.toLocaleString()} {c.currency}</span> من {coursePrice.toLocaleString()} {c.currency}
+              {isAr ? "مدفوع" : "Paid"} <span className="text-[var(--gold)] font-semibold">{totalPaid.toLocaleString()} {c.currency}</span> {isAr ? "من" : "of"} {coursePrice.toLocaleString()} {c.currency}
             </p>
           )}
-          {payments.length === 0 ? <p className="text-xs text-white/40">لا توجد مدفوعات مسجلة بعد.</p> :
+          {payments.length === 0 ? <p className="text-xs text-white/40">{isAr ? "لا توجد مدفوعات مسجلة بعد." : "No payments recorded yet."}</p> :
             <ul className="space-y-1.5">
               {payments.map((p) => (
                 <li key={p.id} className="flex justify-between text-xs bg-white/5 rounded px-2.5 py-2">
                   <span className="font-semibold">{Number(p.amount).toLocaleString()} {p.currency}</span>
-                  <span className="text-white/40">{new Date(p.paid_at).toLocaleDateString("ar-EG")}</span>
+                  <span className="text-white/40">{new Date(p.paid_at).toLocaleDateString(isAr ? "ar-EG" : "en-GB")}</span>
                 </li>
               ))}
             </ul>
           }
           {installments.length > 0 && (
             <>
-              <p className="text-xs text-white/50 mt-4 mb-2">الأقساط</p>
+              <p className="text-xs text-white/50 mt-4 mb-2">{isAr ? "الأقساط" : "Installments"}</p>
               <ul className="space-y-1.5">
                 {installments.map((i) => (
                   <li key={i.id} className="flex justify-between items-center text-xs bg-white/5 rounded px-2.5 py-2">
                     <span className="font-semibold">{Number(i.amount).toLocaleString()} {i.currency}</span>
                     <span className="text-white/40">{i.due_date ?? "—"}</span>
-                    <span className={i.paid ? "text-emerald-300" : "text-amber-300"}>{i.paid ? "مدفوع" : "مستحق"}</span>
+                    <span className={i.paid ? "text-emerald-300" : "text-amber-300"}>{i.paid ? (isAr ? "مدفوع" : "Paid") : (isAr ? "مستحق" : "Due")}</span>
                   </li>
                 ))}
               </ul>
             </>
           )}
         </div>
+
 
         <CertificatePanel
           enrollment={enrollment}
@@ -610,6 +618,8 @@ function CertificatePanel({
   allModulesDone: boolean; totalModules: number; completedModules: number;
   onDownloadCert: (url: string) => void; onRefresh: () => void;
 }) {
+  const { lang } = useI18n();
+  const isAr = lang === "ar";
   const [nameAr, setNameAr] = useState(enrollment.name_ar ?? "");
   const [nameEn, setNameEn] = useState(enrollment.name_en ?? "");
   const [saving, setSaving] = useState(false);
@@ -619,44 +629,44 @@ function CertificatePanel({
   const requested = !!enrollment.certificate_requested_at && !issued;
 
   async function saveNames() {
-    if (!nameAr.trim() || !nameEn.trim()) return toast.error("اكتب الاسم بالعربي والإنجليزي");
+    if (!nameAr.trim() || !nameEn.trim()) return toast.error(isAr ? "اكتب الاسم بالعربي والإنجليزي" : "Enter your name in both Arabic and English");
     setSaving(true);
     const { error } = await supabase.from("enrollments")
       .update({ name_ar: nameAr.trim(), name_en: nameEn.trim() })
       .eq("id", enrollment.id);
     setSaving(false);
     if (error) return toast.error(error.message);
-    toast.success("تم حفظ الاسم");
+    toast.success(isAr ? "تم حفظ الاسم" : "Name saved");
     onRefresh();
   }
 
   async function requestCertificate() {
-    if (!allModulesDone) return toast.error("لازم تكمل كل الدروس الأول");
-    if (!namesSaved) return toast.error("اكتب اسمك بالعربي والإنجليزي الأول");
+    if (!allModulesDone) return toast.error(isAr ? "لازم تكمل كل الدروس الأول" : "Finish all modules first");
+    if (!namesSaved) return toast.error(isAr ? "اكتب اسمك بالعربي والإنجليزي الأول" : "Save your name in Arabic and English first");
     setRequesting(true);
     const { error } = await supabase.from("enrollments")
       .update({ certificate_requested_at: new Date().toISOString() })
       .eq("id", enrollment.id);
     setRequesting(false);
     if (error) return toast.error(error.message);
-    toast.success("تم إرسال طلب الشهادة للأدمن ✅");
+    toast.success(isAr ? "تم إرسال طلب الشهادة للأدمن ✅" : "Certificate request sent to admin ✅");
     onRefresh();
   }
 
   return (
     <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-      <h3 className="font-bold mb-3 flex items-center gap-2"><Award className="w-4 h-4 text-[var(--gold)]" /> الشهادة</h3>
+      <h3 className="font-bold mb-3 flex items-center gap-2"><Award className="w-4 h-4 text-[var(--gold)]" /> {isAr ? "الشهادة" : "Certificate"}</h3>
 
       {issued ? (
         <div className="space-y-2.5">
           <p className="text-xs text-emerald-300 flex items-center gap-1.5 mb-2">
-            <CheckCircle2 className="w-3.5 h-3.5" /> شهادتك جاهزة — اختر اللغة للتحميل
+            <CheckCircle2 className="w-3.5 h-3.5" /> {isAr ? "شهادتك جاهزة — اختر اللغة للتحميل" : "Your certificate is ready — pick a language to download"}
           </p>
           {enrollment.certificate_url_ar && (
             <button onClick={() => onDownloadCert(enrollment.certificate_url_ar!)}
               className="w-full h-11 rounded-xl font-semibold flex items-center justify-center gap-2"
               style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
-              <Download className="w-4 h-4" /> تحميل النسخة العربية
+              <Download className="w-4 h-4" /> {isAr ? "تحميل النسخة العربية" : "Download Arabic version"}
             </button>
           )}
           {enrollment.certificate_url_en && (
@@ -669,13 +679,13 @@ function CertificatePanel({
             <button onClick={() => onDownloadCert(enrollment.certificate_url!)}
               className="w-full h-11 rounded-xl font-semibold flex items-center justify-center gap-2"
               style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
-              <Download className="w-4 h-4" /> تحميل الشهادة
+              <Download className="w-4 h-4" /> {isAr ? "تحميل الشهادة" : "Download certificate"}
             </button>
           )}
           <a href={buildLinkedInShareUrl(course.title, Number(course.total_hours ?? 0))}
             target="_blank" rel="noopener"
             className="w-full h-11 rounded-xl font-semibold flex items-center justify-center gap-2 bg-[#0a66c2] hover:bg-[#0958a8] text-white transition">
-            <Linkedin className="w-4 h-4" /> شارك إنجازك على LinkedIn
+            <Linkedin className="w-4 h-4" /> {isAr ? "شارك إنجازك على LinkedIn" : "Share on LinkedIn"}
           </a>
         </div>
       ) : (
@@ -683,24 +693,24 @@ function CertificatePanel({
           {!namesSaved && (
             <div className="rounded-xl border border-[var(--gold)]/30 bg-[var(--gold)]/5 p-3 space-y-2">
               <p className="text-xs text-[var(--gold)] flex items-center gap-1.5">
-                <AlertCircle className="w-3.5 h-3.5" /> اكتب اسمك بالضبط زي ما تحبه يظهر على الشهادة
+                <AlertCircle className="w-3.5 h-3.5" /> {isAr ? "اكتب اسمك بالضبط زي ما تحبه يظهر على الشهادة" : "Write your name exactly as you want it on the certificate"}
               </p>
               <input value={nameAr} onChange={(e) => setNameAr(e.target.value)}
-                placeholder="الاسم بالعربي" dir="rtl"
+                placeholder={isAr ? "الاسم بالعربي" : "Name in Arabic"} dir="rtl"
                 className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/15 text-sm focus:outline-none focus:border-[var(--gold)]/60" />
               <input value={nameEn} onChange={(e) => setNameEn(e.target.value)}
                 placeholder="Full name in English" dir="ltr"
                 className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/15 text-sm focus:outline-none focus:border-[var(--gold)]/60" />
               <button onClick={saveNames} disabled={saving}
                 className="w-full h-10 rounded-lg text-xs font-semibold bg-[var(--gold)] text-[#0b1736] disabled:opacity-50">
-                {saving ? "..." : "حفظ الاسم"}
+                {saving ? "..." : (isAr ? "حفظ الاسم" : "Save name")}
               </button>
             </div>
           )}
 
           {namesSaved && (
             <div className="rounded-xl bg-white/5 border border-white/10 p-3 text-xs text-white/70 space-y-1">
-              <p>الاسم على الشهادة:</p>
+              <p>{isAr ? "الاسم على الشهادة:" : "Name on certificate:"}</p>
               <p className="text-white font-semibold">{enrollment.name_ar}</p>
               <p className="text-white font-semibold" dir="ltr">{enrollment.name_en}</p>
             </div>
@@ -708,19 +718,19 @@ function CertificatePanel({
 
           {requested ? (
             <div className="rounded-xl bg-amber-300/10 border border-amber-300/30 p-3 text-xs text-amber-200 flex items-center gap-2">
-              <Hourglass className="w-3.5 h-3.5" /> طلبك مُرسل للأدمن، هتوصلك الشهادة قريب
+              <Hourglass className="w-3.5 h-3.5" /> {isAr ? "طلبك مُرسل للأدمن، هتوصلك الشهادة قريب" : "Request sent — admin will issue your certificate soon"}
             </div>
           ) : (
             <>
               {!allModulesDone && totalModules > 0 && (
                 <p className="text-[11px] text-white/55 text-center">
-                  متبقى {totalModules - completedModules} درس قبل ما تقدر تطلب الشهادة
+                  {isAr ? `متبقى ${totalModules - completedModules} درس قبل ما تقدر تطلب الشهادة` : `${totalModules - completedModules} module(s) remaining before you can request the certificate`}
                 </p>
               )}
               <button onClick={requestCertificate} disabled={!allModulesDone || !namesSaved || requesting}
                 className="w-full h-12 rounded-xl font-semibold flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
                 style={{ background: allModulesDone && namesSaved ? "linear-gradient(135deg, var(--gold), #b8923f)" : "rgba(255,255,255,0.05)", color: allModulesDone && namesSaved ? "#0b1736" : "rgba(255,255,255,0.5)" }}>
-                <Send className="w-4 h-4" /> {requesting ? "جاري الإرسال..." : "طلب إصدار الشهادة"}
+                <Send className="w-4 h-4" /> {requesting ? (isAr ? "جاري الإرسال..." : "Sending...") : (isAr ? "طلب إصدار الشهادة" : "Request certificate")}
               </button>
             </>
           )}
@@ -729,6 +739,7 @@ function CertificatePanel({
     </div>
   );
 }
+
 
 function buildLinkedInShareUrl(courseTitle: string, hours: number) {
   const siteUrl = typeof window !== "undefined" ? window.location.origin : "https://eslam-selmi.lovable.app";
@@ -742,30 +753,34 @@ Grateful for the depth of practical L&D, talent and performance management conte
 }
 
 function UploadModal({ onClose }: { onClose: () => void }) {
+  const { lang, dir } = useI18n();
+  const isAr = lang === "ar";
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-      <div onClick={(e) => e.stopPropagation()} dir="rtl"
+      <div onClick={(e) => e.stopPropagation()} dir={dir}
         className="relative w-full max-w-lg rounded-3xl border border-white/15 bg-[rgba(11,23,54,0.96)] p-8 text-white shadow-2xl">
         <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-[var(--gold)] to-transparent" />
         <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 border border-[var(--gold)]/40 mx-auto"
           style={{ background: "linear-gradient(135deg, rgba(212,178,89,0.25), transparent)" }}>
           <Upload className="w-7 h-7 text-[var(--gold)]" />
         </div>
-        <h3 className="text-2xl font-bold text-center">رفع ملفات الاختبار</h3>
+        <h3 className="text-2xl font-bold text-center">{isAr ? "رفع ملفات الاختبار" : "Upload test files"}</h3>
         <p className="text-white/70 text-center mt-3 leading-relaxed text-sm">
-          ارفع الملفات المطلوبة منك كاختبار على مجلد Google Drive المخصص. سيتم مراجعتها وإخطارك بالنتيجة.
+          {isAr ? "ارفع الملفات المطلوبة منك كاختبار على مجلد Google Drive المخصص. سيتم مراجعتها وإخطارك بالنتيجة."
+                : "Upload your test files to the dedicated Google Drive folder. They'll be reviewed and you'll be notified with the result."}
         </p>
         <a href={DRIVE_URL} target="_blank" rel="noopener"
           className="mt-6 w-full h-12 rounded-xl flex items-center justify-center gap-2 font-semibold transition hover:scale-[1.01]"
           style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
-          فتح مجلد الرفع <ExternalLink className="w-4 h-4" />
+          {isAr ? "فتح مجلد الرفع" : "Open upload folder"} <ExternalLink className="w-4 h-4" />
         </a>
-        <button onClick={onClose} className="mt-3 w-full text-xs text-white/60 hover:text-white py-2">إغلاق</button>
+        <button onClick={onClose} className="mt-3 w-full text-xs text-white/60 hover:text-white py-2">{isAr ? "إغلاق" : "Close"}</button>
       </div>
     </div>
   );
 }
+
 
 // ============= ASSIGNMENTS (trainee view) =============
 type Assignment = {
@@ -782,6 +797,8 @@ type Submission = {
 
 function AssignmentsSection({ courseId }: { courseId: string }) {
   const { user } = useAuth();
+  const { lang } = useI18n();
+  const isAr = lang === "ar";
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [subs, setSubs] = useState<Record<string, Submission>>({});
   const [loading, setLoading] = useState(true);
@@ -816,7 +833,7 @@ function AssignmentsSection({ courseId }: { courseId: string }) {
 
   return (
     <section>
-      <h2 className="text-lg font-bold mb-3 flex items-center gap-2"><FileText className="w-5 h-5 text-[var(--gold)]" /> التكليفات</h2>
+      <h2 className="text-lg font-bold mb-3 flex items-center gap-2"><FileText className="w-5 h-5 text-[var(--gold)]" /> {isAr ? "التكليفات" : "Assignments"}</h2>
       <div className="space-y-3">
         {assignments.map((a) => (
           <AssignmentCard key={a.id} a={a} sub={subs[a.id]} userId={user!.id} onChange={load} />
@@ -826,7 +843,10 @@ function AssignmentsSection({ courseId }: { courseId: string }) {
   );
 }
 
+
 function AssignmentCard({ a, sub, userId, onChange }: { a: Assignment; sub: Submission | undefined; userId: string; onChange: () => void }) {
+  const { lang } = useI18n();
+  const isAr = lang === "ar";
   const [content, setContent] = useState(sub?.content ?? "");
   const [link, setLink] = useState(sub?.link ?? "");
   const [saving, setSaving] = useState(false);
@@ -834,7 +854,7 @@ function AssignmentCard({ a, sub, userId, onChange }: { a: Assignment; sub: Subm
   const graded = sub && sub.score !== null;
 
   async function submit() {
-    if (!content.trim() && !link.trim()) return toast.error("اكتب إجابة أو ضع رابط");
+    if (!content.trim() && !link.trim()) return toast.error(isAr ? "اكتب إجابة أو ضع رابط" : "Write an answer or paste a link");
     setSaving(true);
     if (sub) {
       const { error } = await supabase.from("assignment_submissions")
@@ -846,7 +866,7 @@ function AssignmentCard({ a, sub, userId, onChange }: { a: Assignment; sub: Subm
         .insert({ assignment_id: a.id, user_id: userId, content: content || null, link: link || null });
       if (error) { setSaving(false); return toast.error(error.message); }
     }
-    toast.success("تم إرسال التسليم");
+    toast.success(isAr ? "تم إرسال التسليم" : "Submission sent");
     setSaving(false);
     onChange();
   }
@@ -858,21 +878,21 @@ function AssignmentCard({ a, sub, userId, onChange }: { a: Assignment; sub: Subm
           <h4 className="font-bold flex items-center gap-2"><FileText className="w-4 h-4 text-[var(--gold)]" /> {a.title}</h4>
           {a.instructions && <p className="text-sm text-white/65 mt-2 whitespace-pre-wrap">{a.instructions}</p>}
           <div className="flex flex-wrap gap-3 mt-2 text-[11px] text-white/55">
-            {a.due_date && <span className={overdue ? "text-rose-300" : ""}><Calendar className="inline w-3 h-3 me-1" />{new Date(a.due_date).toLocaleDateString("ar-EG")}</span>}
-            <span>درجة قصوى: <span className="text-[var(--gold)]">{a.max_score}</span></span>
+            {a.due_date && <span className={overdue ? "text-rose-300" : ""}><Calendar className="inline w-3 h-3 me-1" />{new Date(a.due_date).toLocaleDateString(isAr ? "ar-EG" : "en-GB")}</span>}
+            <span>{isAr ? "درجة قصوى" : "Max score"}: <span className="text-[var(--gold)]">{a.max_score}</span></span>
           </div>
         </div>
         {graded && (
           <div className="text-center px-4 py-2 rounded-xl bg-emerald-500/15 border border-emerald-400/30">
             <p className="text-2xl font-bold text-emerald-300">{sub.score}<span className="text-xs text-white/50">/{a.max_score}</span></p>
-            <p className="text-[10px] text-emerald-300/70 mt-1">تم التقييم</p>
+            <p className="text-[10px] text-emerald-300/70 mt-1">{isAr ? "تم التقييم" : "Graded"}</p>
           </div>
         )}
       </div>
 
       {graded && sub.feedback && (
         <div className="mt-3 p-3 rounded-lg bg-white/5 border border-white/10 text-xs">
-          <p className="text-white/50 mb-1">ملاحظات المدرّب:</p>
+          <p className="text-white/50 mb-1">{isAr ? "ملاحظات المدرّب:" : "Trainer feedback:"}</p>
           <p className="text-white/85 whitespace-pre-wrap">{sub.feedback}</p>
         </div>
       )}
@@ -880,19 +900,21 @@ function AssignmentCard({ a, sub, userId, onChange }: { a: Assignment; sub: Subm
       {!graded && (
         <div className="mt-4 space-y-2">
           <textarea value={content} onChange={(e) => setContent(e.target.value)}
-            placeholder="اكتب إجابتك أو وصف تسليمك..."
+            placeholder={isAr ? "اكتب إجابتك أو وصف تسليمك..." : "Write your answer or describe your submission..."}
             rows={3}
             className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/15 text-sm focus:outline-none focus:border-[var(--gold)]/60" />
           <input value={link} onChange={(e) => setLink(e.target.value)}
-            placeholder="رابط (Drive / GitHub / ...)" dir="ltr"
+            placeholder={isAr ? "رابط (Drive / GitHub / ...)" : "Link (Drive / GitHub / ...)"} dir="ltr"
             className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/15 text-sm focus:outline-none focus:border-[var(--gold)]/60" />
           <div className="flex items-center justify-between">
             <p className="text-[11px] text-white/50">
-              {sub ? `آخر تسليم: ${new Date(sub.submitted_at).toLocaleString("ar-EG")} — يمكنك تعديله حتى يتم التقييم` : "لم تسلّم بعد"}
+              {sub ? (isAr ? `آخر تسليم: ${new Date(sub.submitted_at).toLocaleString("ar-EG")} — يمكنك تعديله حتى يتم التقييم`
+                          : `Last submitted: ${new Date(sub.submitted_at).toLocaleString("en-GB")} — editable until graded`)
+                   : (isAr ? "لم تسلّم بعد" : "Not submitted yet")}
             </p>
             <button onClick={submit} disabled={saving}
               className="px-4 h-9 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold text-sm flex items-center gap-1.5 disabled:opacity-50">
-              <Send className="w-3.5 h-3.5" /> {sub ? "تحديث" : "إرسال"}
+              <Send className="w-3.5 h-3.5" /> {sub ? (isAr ? "تحديث" : "Update") : (isAr ? "إرسال" : "Submit")}
             </button>
           </div>
         </div>
@@ -901,10 +923,13 @@ function AssignmentCard({ a, sub, userId, onChange }: { a: Assignment; sub: Subm
   );
 }
 
+
 // ============================================================
 // Enroll Modal — handles optional coupon code with live preview
 // ============================================================
 function EnrollModal({ course, onClose, onConfirm }: { course: Course; onClose: () => void; onConfirm: (code?: string) => void }) {
+  const { lang, dir } = useI18n();
+  const isAr = lang === "ar";
   const [code, setCode] = useState("");
   const [checking, setChecking] = useState(false);
   const [preview, setPreview] = useState<{ ok: boolean; discount?: number; final?: number; error?: string } | null>(null);
@@ -921,16 +946,23 @@ function EnrollModal({ course, onClose, onConfirm }: { course: Course; onClose: 
     const payload = data as any;
     if (error) return setPreview({ ok: false, error: error.message });
     if (payload?.ok) setPreview({ ok: true, discount: Number(payload.discount_amount), final: Number(payload.final_price) });
-    else setPreview({ ok: false, error: payload?.error || "كود غير صالح" });
+    else setPreview({ ok: false, error: payload?.error || (isAr ? "كود غير صالح" : "Invalid code") });
   }
 
-  const errorLabels: Record<string, string> = {
+  const errorLabels: Record<string, string> = isAr ? {
     invalid_code: "كود غير صحيح",
     expired: "الكوبون منتهي الصلاحية",
     exhausted: "تم استنفاد عدد مرات الاستخدام",
     wrong_course: "هذا الكوبون لا يصلح لهذا الكورس",
     already_used: "لقد استخدمت هذا الكوبون من قبل",
     unauthenticated: "الرجاء تسجيل الدخول",
+  } : {
+    invalid_code: "Invalid code",
+    expired: "Coupon has expired",
+    exhausted: "Coupon usage limit reached",
+    wrong_course: "This coupon isn't valid for this course",
+    already_used: "You've already used this coupon",
+    unauthenticated: "Please sign in",
   };
 
   async function submit() {
@@ -941,26 +973,26 @@ function EnrollModal({ course, onClose, onConfirm }: { course: Course; onClose: 
 
   return (
     <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4" onClick={onClose}>
-      <div className="bg-[#0b1736] border border-white/15 rounded-2xl w-full max-w-md p-6 space-y-5" onClick={(e) => e.stopPropagation()}>
+      <div dir={dir} className="bg-[#0b1736] border border-white/15 rounded-2xl w-full max-w-md p-6 space-y-5" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-xs text-[var(--gold)] mb-1">تأكيد طلب الالتحاق</p>
+            <p className="text-xs text-[var(--gold)] mb-1">{isAr ? "تأكيد طلب الالتحاق" : "Confirm enrollment request"}</p>
             <h3 className="text-lg font-bold">{course.title}</h3>
           </div>
           <button onClick={onClose} className="p-1 rounded hover:bg-white/10"><X className="w-4 h-4" /></button>
         </div>
 
         <div className="rounded-xl bg-white/5 border border-white/10 p-4 space-y-2 text-sm">
-          <div className="flex justify-between"><span className="text-white/60">السعر</span>
-            <span className="font-semibold">{rawPrice > 0 ? `${rawPrice.toLocaleString()} ${course.currency}` : "مجاني"}</span>
+          <div className="flex justify-between"><span className="text-white/60">{isAr ? "السعر" : "Price"}</span>
+            <span className="font-semibold">{rawPrice > 0 ? `${rawPrice.toLocaleString()} ${course.currency}` : (isAr ? "مجاني" : "Free")}</span>
           </div>
           {preview?.ok && (
             <>
-              <div className="flex justify-between text-emerald-300"><span>خصم الكوبون</span>
+              <div className="flex justify-between text-emerald-300"><span>{isAr ? "خصم الكوبون" : "Coupon discount"}</span>
                 <span>−{preview.discount?.toLocaleString()} {course.currency}</span>
               </div>
               <div className="flex justify-between pt-2 border-t border-white/10 text-[var(--gold)] font-bold">
-                <span>الإجمالي</span>
+                <span>{isAr ? "الإجمالي" : "Total"}</span>
                 <span>{preview.final?.toLocaleString()} {course.currency}</span>
               </div>
             </>
@@ -969,7 +1001,7 @@ function EnrollModal({ course, onClose, onConfirm }: { course: Course; onClose: 
 
         {rawPrice > 0 && (
           <div>
-            <label className="text-xs text-white/60 block mb-1.5">كوبون خصم (اختياري)</label>
+            <label className="text-xs text-white/60 block mb-1.5">{isAr ? "كوبون خصم (اختياري)" : "Discount coupon (optional)"}</label>
             <div className="flex gap-2">
               <input
                 value={code}
@@ -981,7 +1013,7 @@ function EnrollModal({ course, onClose, onConfirm }: { course: Course; onClose: 
               />
               <button onClick={check} disabled={checking || !code.trim()}
                 className="px-4 h-11 rounded-lg bg-white/10 border border-white/15 text-sm font-semibold disabled:opacity-50">
-                {checking ? <Loader2 className="w-4 h-4 animate-spin" /> : "تحقق"}
+                {checking ? <Loader2 className="w-4 h-4 animate-spin" /> : (isAr ? "تحقق" : "Check")}
               </button>
             </div>
             {preview && !preview.ok && (
@@ -991,20 +1023,21 @@ function EnrollModal({ course, onClose, onConfirm }: { course: Course; onClose: 
             )}
             {preview?.ok && (
               <p className="text-xs text-emerald-300 mt-1.5 flex items-center gap-1">
-                <Check className="w-3 h-3" /> تم تطبيق الكوبون
+                <Check className="w-3 h-3" /> {isAr ? "تم تطبيق الكوبون" : "Coupon applied"}
               </p>
             )}
           </div>
         )}
 
         <div className="flex gap-2 pt-2">
-          <button onClick={onClose} className="flex-1 h-11 rounded-lg bg-white/5 border border-white/15 text-sm">إلغاء</button>
+          <button onClick={onClose} className="flex-1 h-11 rounded-lg bg-white/5 border border-white/15 text-sm">{isAr ? "إلغاء" : "Cancel"}</button>
           <button onClick={submit} disabled={submitting}
             className="flex-1 h-11 rounded-lg bg-[var(--gold)] text-[#0b1736] text-sm font-semibold disabled:opacity-50">
-            {submitting ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : "تأكيد الطلب"}
+            {submitting ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : (isAr ? "تأكيد الطلب" : "Confirm request")}
           </button>
         </div>
       </div>
+
     </div>
   );
 }
