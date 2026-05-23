@@ -544,37 +544,38 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
       {/* Payments + Certificate */}
       <section className="grid lg:grid-cols-2 gap-4">
         <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-          <h3 className="font-bold mb-3 flex items-center gap-2"><Wallet className="w-4 h-4 text-[var(--gold)]" /> المدفوعات</h3>
+          <h3 className="font-bold mb-3 flex items-center gap-2"><Wallet className="w-4 h-4 text-[var(--gold)]" /> {isAr ? "المدفوعات" : "Payments"}</h3>
           {coursePrice > 0 && (
             <p className="text-xs text-white/60 mb-3">
-              مدفوع <span className="text-[var(--gold)] font-semibold">{totalPaid.toLocaleString()} {c.currency}</span> من {coursePrice.toLocaleString()} {c.currency}
+              {isAr ? "مدفوع" : "Paid"} <span className="text-[var(--gold)] font-semibold">{totalPaid.toLocaleString()} {c.currency}</span> {isAr ? "من" : "of"} {coursePrice.toLocaleString()} {c.currency}
             </p>
           )}
-          {payments.length === 0 ? <p className="text-xs text-white/40">لا توجد مدفوعات مسجلة بعد.</p> :
+          {payments.length === 0 ? <p className="text-xs text-white/40">{isAr ? "لا توجد مدفوعات مسجلة بعد." : "No payments recorded yet."}</p> :
             <ul className="space-y-1.5">
               {payments.map((p) => (
                 <li key={p.id} className="flex justify-between text-xs bg-white/5 rounded px-2.5 py-2">
                   <span className="font-semibold">{Number(p.amount).toLocaleString()} {p.currency}</span>
-                  <span className="text-white/40">{new Date(p.paid_at).toLocaleDateString("ar-EG")}</span>
+                  <span className="text-white/40">{new Date(p.paid_at).toLocaleDateString(isAr ? "ar-EG" : "en-GB")}</span>
                 </li>
               ))}
             </ul>
           }
           {installments.length > 0 && (
             <>
-              <p className="text-xs text-white/50 mt-4 mb-2">الأقساط</p>
+              <p className="text-xs text-white/50 mt-4 mb-2">{isAr ? "الأقساط" : "Installments"}</p>
               <ul className="space-y-1.5">
                 {installments.map((i) => (
                   <li key={i.id} className="flex justify-between items-center text-xs bg-white/5 rounded px-2.5 py-2">
                     <span className="font-semibold">{Number(i.amount).toLocaleString()} {i.currency}</span>
                     <span className="text-white/40">{i.due_date ?? "—"}</span>
-                    <span className={i.paid ? "text-emerald-300" : "text-amber-300"}>{i.paid ? "مدفوع" : "مستحق"}</span>
+                    <span className={i.paid ? "text-emerald-300" : "text-amber-300"}>{i.paid ? (isAr ? "مدفوع" : "Paid") : (isAr ? "مستحق" : "Due")}</span>
                   </li>
                 ))}
               </ul>
             </>
           )}
         </div>
+
 
         <CertificatePanel
           enrollment={enrollment}
