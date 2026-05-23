@@ -258,7 +258,7 @@ function PortalPage() {
             <div className="rounded-2xl border border-dashed border-white/15 p-8 text-center text-white/50">لا توجد كورسات جديدة حالياً.</div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {availableCourses.map((c) => (
+              {trAvailable.map((c) => (
                 <div key={c.id} className="group rounded-2xl border border-white/10 bg-white/5 p-5 hover:border-[var(--gold)]/40 transition flex flex-col">
                   <div className="flex items-start gap-3 mb-3">
                     <div className="w-12 h-12 rounded-xl bg-[var(--gold)]/10 border border-[var(--gold)]/30 flex items-center justify-center text-2xl shrink-0">
