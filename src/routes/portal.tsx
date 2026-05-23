@@ -54,6 +54,7 @@ function PortalPage() {
   const [loadingData, setLoadingData] = useState(true);
   const [showUpload, setShowUpload] = useState(false);
   const [viewing, setViewing] = useState<Enrollment | null>(null);
+  const [enrollingCourse, setEnrollingCourse] = useState<Course | null>(null);
 
 
   useEffect(() => {
