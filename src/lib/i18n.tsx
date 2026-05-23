@@ -60,7 +60,7 @@ const en: Dict = {
 
   // services
   services_eyebrow: "Services",
-  services_title: "Pick a service",
+  services_title: "How I help you grow",
   services_subtitle: "Tap any service to request it instantly via WhatsApp.",
   svc_request_btn: "Invest in this service",
   calendly_title: "Book your free 1:1 session",
@@ -78,13 +78,13 @@ const en: Dict = {
 
   // brands
   brands_eyebrow: "Trusted by",
-  brands_title: "Brands I've worked with",
+  brands_title: "Brands that trusted my craft",
   brands_desc: "A snapshot of companies and partners I've designed, delivered and led L&D programs with across the region.",
   brands_meta: "Brands & partners",
 
   // snapshots
   snapshots_eyebrow: "Snapshots",
-  snapshots_title: "Executive moments",
+  snapshots_title: "From the field",
 
   // podcast
   podcast_eyebrow: "L&D Podcast",
@@ -175,11 +175,11 @@ const en: Dict = {
 
   // contact
   contact_eyebrow: "Get in touch",
-  contact_title: "Let's collaborate",
+  contact_title: "Let's create impact together",
   contact_mobile: "Mobile",
   contact_email: "Email",
   contact_linkedin: "LinkedIn",
-  contact_linkedin_line: "Connect with Eslam",
+  contact_linkedin_line: "Connect with me",
 
   // footer
   footer_tag: "Head of L&D, Talent & Performance",
