@@ -489,7 +489,7 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
                     {m.completed_by_admin ? <Check className="w-4 h-4" /> : i + 1}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-bold">{m.title}</h4>
+                    <h4 className="font-bold">{trModuleTitles[i] || m.title}</h4>
                     {m.completed_by_admin && <p className="text-[11px] text-emerald-300/80 mt-0.5">✓ تم إكمال هذا الجزء</p>}
                   </div>
                   {m.online_url && (
