@@ -9,7 +9,7 @@ import { generateCertificatePdf } from "@/lib/certificate";
 import {
   Plus, Trash2, CheckCircle2, Upload, Wallet, Loader2, Users, BookOpen, Award,
   FileText, X, ToggleLeft, ToggleRight, Calendar, Layers, Link as LinkIcon,
-  StickyNote, Paperclip, Pencil, Check, Clock, Settings2, Sparkles,
+  StickyNote, Paperclip, Pencil, Check, Clock, Settings2, Sparkles, Ticket, Percent,
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
