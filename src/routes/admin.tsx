@@ -867,9 +867,28 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
     const { error } = await supabase.from("enrollments").update({ blocked: next }).eq("id", enrollment.id);
     if (error) return toast.error(error.message);
     setBlocked(next);
-    toast.success(next ? "تم قفل وصول المتدرب" : "تم استعادة وصول المتدرب");
+    toast.success(next ? "تم قفل وصول المتدرب للكورس" : "تم استعادة وصول المتدرب للكورس");
     refresh();
   }
+
+  // Account-level block (locks the trainee out of the whole platform)
+  const [accountBlocked, setAccountBlocked] = useState(false);
+  useEffect(() => {
+    supabase.from("profiles").select("account_blocked").eq("id", enrollment.user_id).maybeSingle()
+      .then(({ data }) => setAccountBlocked(Boolean((data as any)?.account_blocked)));
+  }, [enrollment.user_id]);
+  async function toggleAccountBlocked() {
+    const next = !accountBlocked;
+    const msg = next
+      ? "إيقاف حساب المتدرب من الدخول للمنصة بالكامل؟ سيتم إنهاء جلسته فوراً."
+      : "إعادة تفعيل حساب المتدرب؟";
+    if (!confirm(msg)) return;
+    const { error } = await supabase.from("profiles").update({ account_blocked: next } as any).eq("id", enrollment.user_id);
+    if (error) return toast.error(error.message);
+    setAccountBlocked(next);
+    toast.success(next ? "تم إيقاف حساب المتدرب" : "تم إعادة تفعيل الحساب");
+  }
+
   async function removeEnrollment() {
     if (!confirm("حذف هذا المتدرب من الكورس نهائياً؟ سيتم حذف كل بيانات الالتحاق والمدفوعات.")) return;
     const { error } = await supabase.from("enrollments").delete().eq("id", enrollment.id);
