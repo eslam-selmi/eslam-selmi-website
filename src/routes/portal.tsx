@@ -480,28 +480,15 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
           )}
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-          <h3 className="font-bold mb-3 flex items-center gap-2"><Award className="w-4 h-4 text-[var(--gold)]" /> الشهادة</h3>
-          {enrollment.certificate_issued && enrollment.certificate_url ? (
-            <div className="space-y-2.5">
-              <button onClick={() => onDownloadCert(enrollment.certificate_url!)}
-                className="w-full h-12 rounded-xl font-semibold flex items-center justify-center gap-2"
-                style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
-                <Download className="w-4 h-4" /> تحميل الشهادة
-              </button>
-              <a
-                href={buildLinkedInShareUrl(c.title, Number(c.total_hours ?? 0))}
-                target="_blank" rel="noopener"
-                className="w-full h-11 rounded-xl font-semibold flex items-center justify-center gap-2 bg-[#0a66c2] hover:bg-[#0958a8] text-white transition">
-                <Linkedin className="w-4 h-4" /> شارك إنجازك على LinkedIn
-              </a>
-            </div>
-          ) : (
-            <p className="text-sm text-white/50 bg-white/5 border border-white/10 rounded-lg p-4 text-center">
-              الشهادة ستُصدَر بعد إكمال متطلبات الكورس. سيصلك إشعار بمجرد إصدارها.
-            </p>
-          )}
-        </div>
+        <CertificatePanel
+          enrollment={enrollment}
+          course={c}
+          allModulesDone={modules.length > 0 && modules.every((m: any) => m.completed_by_admin)}
+          totalModules={modules.length}
+          completedModules={completedCount}
+          onDownloadCert={onDownloadCert}
+          onRefresh={onRefresh}
+        />
       </section>
     </div>
   );
