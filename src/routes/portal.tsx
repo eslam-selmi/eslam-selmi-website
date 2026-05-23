@@ -362,9 +362,15 @@ function CourseDetail({ enrollment, onBack, onDownloadCert }: { enrollment: Enro
                         <div className="flex-1 min-w-0">
                           <p className="font-medium">{it.title}</p>
                           {it.content && <p className="text-xs text-white/60 whitespace-pre-wrap mt-1">{it.content}</p>}
-                          {it.url && (
+                          {it.url && (it.kind === "file" ? (
+                            <button onClick={async () => {
+                              const { data, error } = await supabase.storage.from("course-files").createSignedUrl(it.url, 120);
+                              if (error) return toast.error(error.message);
+                              window.open(data.signedUrl, "_blank", "noopener");
+                            }} className="text-xs text-[var(--gold)] hover:underline mt-1 block truncate text-start" dir="ltr">{it.title}</button>
+                          ) : (
                             <a href={it.url} target="_blank" rel="noopener" className="text-xs text-[var(--gold)] hover:underline mt-1 block truncate" dir="ltr">{it.url}</a>
-                          )}
+                          ))}
                         </div>
                       </li>
                     ))}
