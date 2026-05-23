@@ -34,6 +34,7 @@ import logoAlmajarah from "@/assets/clients/almajarah.jpg";
 import logoImtenan from "@/assets/clients/imtenan.jpg";
 import logoDaralnokba from "@/assets/clients/daralnokba.jpg";
 import logoMallOfEgypt from "@/assets/clients/mall-of-egypt.jpg";
+import logoNewBrand from "@/assets/clients/new-brand.jpg";
 
 const BRANDS = [
   { src: logoAramex, name: "Aramex" },
@@ -46,6 +47,7 @@ const BRANDS = [
   { src: logoEvno, name: "Evno" },
   { src: logoAlmajarah, name: "Al Majarah" },
   { src: logoDaralnokba, name: "Daralnokba Recruitment" },
+  { src: logoNewBrand, name: "Partner" },
 ];
 import snap9 from "@/assets/snapshots/snap-9.jpg";
 
@@ -185,11 +187,11 @@ const fadeUp = {
 };
 
 function Portfolio() {
-  const [theme, setTheme] = useState<ThemeMode>("light");
+  const [theme, setTheme] = useState<ThemeMode>("dark");
 
   useEffect(() => {
     const saved = typeof window !== "undefined" ? window.localStorage.getItem("theme-mode") : null;
-    const next: ThemeMode = saved === "dark" ? "dark" : "light";
+    const next: ThemeMode = saved === "light" ? "light" : "dark";
     setTheme(next);
     document.documentElement.classList.toggle("dark", next === "dark");
   }, []);
@@ -298,13 +300,13 @@ export function Nav({ theme, onThemeToggle }: { theme?: ThemeMode; onThemeToggle
   const { t, lang, setLang } = useI18n();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [internalTheme, setInternalTheme] = useState<ThemeMode>("light");
+  const [internalTheme, setInternalTheme] = useState<ThemeMode>("dark");
   const activeTheme = theme ?? internalTheme;
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll);
     if (theme === undefined && typeof window !== "undefined") {
-      setInternalTheme(window.localStorage.getItem("theme-mode") === "dark" ? "dark" : "light");
+      setInternalTheme(window.localStorage.getItem("theme-mode") === "light" ? "light" : "dark");
     }
     return () => window.removeEventListener("scroll", onScroll);
   }, [theme]);
@@ -385,13 +387,35 @@ export function Nav({ theme, onThemeToggle }: { theme?: ThemeMode; onThemeToggle
         </div>
         {open && (
           <div className="xl:hidden mt-2 glass-strong rounded-2xl p-3 grid gap-1">
-            {NAV_FULL.map(n => (
-              n.to ? (
+            {NAV_FULL.map(n => {
+              if (n.id === "empowerment") {
+                return (
+                  <Link
+                    key={n.id}
+                    to={n.to!}
+                    onClick={() => setOpen(false)}
+                    className="my-1 inline-flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-extrabold tracking-tight border-2 transition-all"
+                    style={{
+                      borderColor: "var(--accent)",
+                      color: "var(--accent)",
+                      background: "linear-gradient(135deg, oklch(0.75 0.13 85 / 0.12), oklch(0.75 0.13 85 / 0.03))",
+                      boxShadow: "0 0 0 3px oklch(0.75 0.13 85 / 0.08)",
+                    }}
+                  >
+                    <span className="size-7 grid place-items-center rounded-lg bg-[var(--accent)]/15 border border-[var(--accent)]/30">
+                      <Rocket className="size-3.5" />
+                    </span>
+                    <span className="flex-1">{t(n.key)}</span>
+                    <ArrowRight className="size-4 rtl-flip opacity-70" />
+                  </Link>
+                );
+              }
+              return n.to ? (
                 <Link key={n.id} to={n.to} onClick={() => setOpen(false)} className="px-3 py-2 rounded-lg hover:bg-foreground/5 text-sm">{t(n.key)}</Link>
               ) : (
                 <a key={n.id} href={hashHref(n.id)} onClick={() => setOpen(false)} className="px-3 py-2 rounded-lg hover:bg-foreground/5 text-sm">{t(n.key)}</a>
-              )
-            ))}
+              );
+            })}
             <button onClick={(e) => { setOpen(false); openCalendly(e); }}
               className="mt-1 inline-flex items-center justify-center gap-2 rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-bold cursor-pointer">
               <Calendar className="size-4" /> {t("book_cta")}
@@ -928,7 +952,8 @@ function Brands() {
         <img
           src={b.src}
           alt={b.name}
-          loading="lazy"
+          loading="eager"
+          decoding="async"
           className="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105"
         />
       </div>
@@ -1008,7 +1033,8 @@ function Snapshots() {
       <img
         src={src}
         alt={`Snapshot ${originalIndex + 1}`}
-        loading="lazy"
+        loading="eager"
+        decoding="async"
         className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
       />
       <div className="image-scrim absolute inset-0 opacity-0 group-hover:opacity-100 transition" />

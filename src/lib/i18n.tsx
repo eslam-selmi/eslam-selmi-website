@@ -60,7 +60,7 @@ const en: Dict = {
 
   // services
   services_eyebrow: "Services",
-  services_title: "Pick a service",
+  services_title: "How I help you grow",
   services_subtitle: "Tap any service to request it instantly via WhatsApp.",
   svc_request_btn: "Invest in this service",
   calendly_title: "Book your free 1:1 session",
@@ -78,13 +78,13 @@ const en: Dict = {
 
   // brands
   brands_eyebrow: "Trusted by",
-  brands_title: "Brands I've worked with",
+  brands_title: "Brands that trusted my craft",
   brands_desc: "A snapshot of companies and partners I've designed, delivered and led L&D programs with across the region.",
   brands_meta: "Brands & partners",
 
   // snapshots
   snapshots_eyebrow: "Snapshots",
-  snapshots_title: "Executive moments",
+  snapshots_title: "From the field",
 
   // podcast
   podcast_eyebrow: "L&D Podcast",
@@ -175,11 +175,11 @@ const en: Dict = {
 
   // contact
   contact_eyebrow: "Get in touch",
-  contact_title: "Let's collaborate",
+  contact_title: "Let's create impact together",
   contact_mobile: "Mobile",
   contact_email: "Email",
   contact_linkedin: "LinkedIn",
-  contact_linkedin_line: "Connect with Eslam",
+  contact_linkedin_line: "Connect with me",
 
   // footer
   footer_tag: "Head of L&D, Talent & Performance",
@@ -224,7 +224,7 @@ const ar: Dict = {
   pillars_title: "المواهب · الأداء · المؤشرات",
   pillar_talent: "إدارة المواهب",
   pillar_talent_desc:
-    "تخطيط التعاقب الوظيفي، رسم خرائط الجدارات، هندسة استقطاب الكفاءات، تحديد المواهب الواعدة، واستراتيجيات استبقاء الموظفين.",
+    "تصميم وتنفيذ برامج التدريب والتطوير، تخطيط التعاقب الوظيفي، رسم خرائط الجدارات، هندسة استقطاب الكفاءات، تحديد المواهب الواعدة، واستراتيجيات استبقاء الموظفين.",
   pillar_perf: "إدارة الأداء",
   pillar_perf_desc:
     "أطر التغذية الراجعة المستمرة، تحديث نظم تقييم الأداء، مواءمة الأهداف المؤسسية، وتطوير السلوكيات الوظيفية.",
@@ -236,7 +236,7 @@ const ar: Dict = {
   journey_title: "عقد من بناء التميّز في التعلم والتطوير",
 
   services_eyebrow: "الخدمات",
-  services_title: "اختر خدمتك",
+  services_title: "كيف أساعدك تنمو",
   services_subtitle: "اضغط على أي خدمة لطلبها مباشرة عبر واتساب.",
   svc_request_btn: "استثمر في هذه الخدمة",
   calendly_title: "احجز جلستك المجانية",
@@ -251,12 +251,12 @@ const ar: Dict = {
   clients_sub: "تعلّم عالمي يُقدَّم عبر الإنترنت وحضوريًا.",
 
   brands_eyebrow: "موثوق من",
-  brands_title: "علامات عملت معها",
+  brands_title: "شركاء صنعت معهم الأثر",
   brands_desc: "لمحة عن الشركات والشركاء الذين صمّمت وقدت معهم برامج التعلم والتطوير عبر المنطقة.",
   brands_meta: "علامة وشريك",
 
   snapshots_eyebrow: "لقطات",
-  snapshots_title: "لحظات من الميدان",
+  snapshots_title: "من قلب الميدان",
 
   podcast_eyebrow: "بودكاست التعلم والتطوير",
   podcast_title: "حوارات في التعلم والنمو.",
@@ -338,11 +338,11 @@ const ar: Dict = {
   lead_invalid: "يُرجى إدخال بريد إلكتروني صحيح.",
 
   contact_eyebrow: "تواصل معي",
-  contact_title: "هيا نتعاون",
+  contact_title: "خلّينا نصنع الأثر معًا",
   contact_mobile: "الجوّال",
   contact_email: "البريد الإلكتروني",
   contact_linkedin: "لينكدإن",
-  contact_linkedin_line: "تواصل مع إسلام",
+  contact_linkedin_line: "تواصل معي",
 
   footer_tag: "رئيس قطاع التعلم والتطوير والمواهب والأداء",
   footer_rights: "جميع الحقوق محفوظة.",
@@ -360,7 +360,7 @@ interface I18nCtx {
 const Ctx = createContext<I18nCtx | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>("en");
+  const [lang, setLangState] = useState<Lang>("ar");
 
   useEffect(() => {
     const saved = (typeof window !== "undefined" && window.localStorage.getItem("lang")) as Lang | null;
