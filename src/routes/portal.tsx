@@ -452,9 +452,9 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
 
       {/* Sessions */}
       <section>
-        <h2 className="text-lg font-bold mb-3 flex items-center gap-2"><Calendar className="w-5 h-5 text-[var(--gold)]" /> المحاضرات القادمة</h2>
+        <h2 className="text-lg font-bold mb-3 flex items-center gap-2"><Calendar className="w-5 h-5 text-[var(--gold)]" /> {isAr ? "المحاضرات القادمة" : "Upcoming sessions"}</h2>
         {sessions.length === 0 ? (
-          <p className="text-sm text-white/50 rounded-xl border border-dashed border-white/15 p-6 text-center">لم تُجدول محاضرات بعد.</p>
+          <p className="text-sm text-white/50 rounded-xl border border-dashed border-white/15 p-6 text-center">{isAr ? "لم تُجدول محاضرات بعد." : "No sessions scheduled yet."}</p>
         ) : (
           <div className="grid sm:grid-cols-2 gap-3">
             {sessions.map((s) => {
@@ -466,11 +466,11 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
                     <Clock className="w-5 h-5 text-[var(--gold)] mt-0.5 shrink-0" />
                     <div className="flex-1 min-w-0">
                       <h4 className="font-semibold">{trSessionTitles[sessions.indexOf(s)] || s.title}</h4>
-                      <p className="text-xs text-white/60 mt-1">{dt.toLocaleString("ar-EG")} · {s.duration_minutes}د</p>
+                      <p className="text-xs text-white/60 mt-1">{dt.toLocaleString(isAr ? "ar-EG" : "en-GB")} · {s.duration_minutes}{isAr ? "د" : "m"}</p>
                       {s.online_url && !past && (
                         <a href={s.online_url} target="_blank" rel="noopener"
                           className="mt-3 inline-flex items-center gap-1.5 text-xs px-3 h-8 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold">
-                          الانضمام <ExternalLink className="w-3 h-3" />
+                          {isAr ? "الانضمام" : "Join"} <ExternalLink className="w-3 h-3" />
                         </a>
                       )}
                     </div>
@@ -484,9 +484,9 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
 
       {/* Modules / content */}
       <section>
-        <h2 className="text-lg font-bold mb-3 flex items-center gap-2"><Layers className="w-5 h-5 text-[var(--gold)]" /> محتوى الكورس</h2>
+        <h2 className="text-lg font-bold mb-3 flex items-center gap-2"><Layers className="w-5 h-5 text-[var(--gold)]" /> {isAr ? "محتوى الكورس" : "Course content"}</h2>
         {modules.length === 0 ? (
-          <p className="text-sm text-white/50 rounded-xl border border-dashed border-white/15 p-6 text-center">المحتوى قيد التحضير.</p>
+          <p className="text-sm text-white/50 rounded-xl border border-dashed border-white/15 p-6 text-center">{isAr ? "المحتوى قيد التحضير." : "Content is being prepared."}</p>
         ) : (
           <div className="space-y-3">
             {modules.map((m: any, i: number) => (
@@ -497,14 +497,15 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
                   </div>
                   <div className="flex-1 min-w-0">
                     <h4 className="font-bold">{trModuleTitles[i] || m.title}</h4>
-                    {m.completed_by_admin && <p className="text-[11px] text-emerald-300/80 mt-0.5">✓ تم إكمال هذا الجزء</p>}
+                    {m.completed_by_admin && <p className="text-[11px] text-emerald-300/80 mt-0.5">✓ {isAr ? "تم إكمال هذا الجزء" : "This module is complete"}</p>}
                   </div>
                   {m.online_url && (
                     <a href={m.online_url} target="_blank" rel="noopener" className="text-xs px-3 h-9 rounded-lg bg-[var(--gold)]/15 text-[var(--gold)] border border-[var(--gold)]/30 flex items-center gap-1">
-                      <PlayCircle className="w-3.5 h-3.5" /> رابط المحاضرة
+                      <PlayCircle className="w-3.5 h-3.5" /> {isAr ? "رابط المحاضرة" : "Lecture"}
                     </a>
                   )}
                 </div>
+
 
                 {(items[m.id]?.length ?? 0) > 0 && (
                   <ul className="mt-4 space-y-1.5 ms-12">
