@@ -919,20 +919,37 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
             <div className="flex justify-between"><span className="text-white/50">سعر الكورس</span><span className="text-[var(--gold)] font-semibold">{coursePrice.toLocaleString()} {courseCur}</span></div>
             <div className="flex justify-between"><span className="text-white/50">المدفوع</span>
               <span className={fullyPaid ? "text-emerald-300 font-semibold" : "text-amber-300"}>
-                {totalPaid.toLocaleString()} {courseCur} {fullyPaid && "✓ مكتمل"}
+                {totalPaid.toLocaleString()} {courseCur} {fullyPaid && "✓ مكتمل الدفع"}
               </span>
             </div>
+            {!fullyPaid && coursePrice > 0 && (
+              <div className="flex justify-between">
+                <span className="text-white/50">المتبقي</span>
+                <span className="text-rose-300 font-semibold">
+                  {Math.max(0, coursePrice - totalPaid).toLocaleString()} {courseCur}
+                </span>
+              </div>
+            )}
             <div className="flex justify-between"><span className="text-white/50">نظام الدفع</span>
               <span>{enrollment.courses?.installments_count === 1 ? "دفعة كاملة" : `${enrollment.courses?.installments_count} أقساط`}</span>
             </div>
+            {accountBlocked && (
+              <div className="flex justify-between items-center pt-1.5 mt-1.5 border-t border-rose-500/20">
+                <span className="text-rose-300">حالة الحساب</span>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">⛔ موقوف من المنصة</span>
+              </div>
+            )}
           </section>
 
-          <section className="rounded-2xl border border-rose-300/20 bg-rose-300/5 p-4 flex flex-wrap gap-2">
-            <button onClick={toggleBlocked} className={`flex-1 min-w-[180px] h-10 rounded-lg text-xs font-semibold ${blocked ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" : "bg-amber-500/20 text-amber-300 border border-amber-500/30"}`}>
-              {blocked ? "↩ إلغاء الحظر — استعادة الوصول" : "⏸ قفل/حظر الوصول مؤقتاً"}
+          <section className="rounded-2xl border border-rose-300/20 bg-rose-300/5 p-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <button onClick={toggleBlocked} className={`h-10 rounded-lg text-xs font-semibold ${blocked ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" : "bg-amber-500/20 text-amber-300 border border-amber-500/30"}`}>
+              {blocked ? "↩ إلغاء قفل الكورس" : "⏸ قفل الوصول لهذا الكورس"}
             </button>
-            <button onClick={removeEnrollment} className="flex-1 min-w-[180px] h-10 rounded-lg text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30">
-              🗑 حذف المتدرب نهائياً
+            <button onClick={toggleAccountBlocked} className={`h-10 rounded-lg text-xs font-semibold ${accountBlocked ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" : "bg-rose-500/20 text-rose-300 border border-rose-500/30"}`}>
+              {accountBlocked ? "✓ إعادة تفعيل الحساب" : "⛔ إيقاف الحساب من المنصة"}
+            </button>
+            <button onClick={removeEnrollment} className="sm:col-span-2 h-10 rounded-lg text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30">
+              🗑 حذف المتدرب من هذا الكورس نهائياً
             </button>
           </section>
 
