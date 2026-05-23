@@ -120,11 +120,11 @@ const COUNTRIES = [
 ];
 
 const JOURNEY = [
-  { year: { en: "2017", ar: "2017" }, role: { en: "Senior L&D / L&D Specialist", ar: "أخصائي أول / أخصائي تعلم وتطوير" }, company: { en: "G4S", ar: "جي فور إس" }, industry: { en: "Advanced Security Solutions", ar: "حلول أمنية متطورة" }, country: "EG", logo: "https://logo.clearbit.com/g4s.com" },
-  { year: { en: "2022", ar: "2022" }, role: { en: "L&D Specialist", ar: "أخصائي تعلم وتطوير" }, company: { en: "Aramex", ar: "أرامكس" }, industry: { en: "Transport & Logistics", ar: "نقل ولوجيستيات" }, country: "EG", logo: "https://logo.clearbit.com/aramex.com" },
-  { year: { en: "2023", ar: "2023" }, role: { en: "Department Supervisor & Learning Liaison", ar: "مشرف إدارة ومنسّق التعلم والتطوير" }, company: { en: "Badreldin Developments", ar: "بدر الدين" }, industry: { en: "Real Estate & Retail", ar: "تطوير عقاري وريتيل" }, country: "EG", logo: "https://logo.clearbit.com/badreldin.com" },
-  { year: { en: "2025", ar: "2025" }, role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: { en: "Imtenan", ar: "إمتنان" }, industry: { en: "FMCG", ar: "FMCG" }, country: "EG", logo: "https://logo.clearbit.com/imtenan.com" },
-  { year: { en: "NOW", ar: "حاليًا" }, role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: { en: "KnowledgeCity", ar: "مدينة المعرفة" }, industry: { en: "Schools & Training", ar: "مدارس وتدريب" }, country: "SA", logo: "https://logo.clearbit.com/knowledgecity.com" },
+  { year: { en: "2017", ar: "2017" }, role: { en: "Senior L&D / L&D Specialist", ar: "أخصائي أول / أخصائي تعلم وتطوير" }, company: { en: "G4S", ar: "جي فور إس" }, industry: { en: "Advanced Security Solutions", ar: "الحلول الأمنية المتكاملة" }, country: "EG", logo: "https://logo.clearbit.com/g4s.com" },
+  { year: { en: "2022", ar: "2022" }, role: { en: "L&D Specialist", ar: "أخصائي تعلم وتطوير" }, company: { en: "Aramex", ar: "أرامكس" }, industry: { en: "Transport & Logistics", ar: "حلول النقل والخدمات اللوجستية" }, country: "EG", logo: "https://logo.clearbit.com/aramex.com" },
+  { year: { en: "2023", ar: "2023" }, role: { en: "Department Supervisor & Learning Liaison", ar: "مشرف إدارة ومنسّق التعلم والتطوير" }, company: { en: "Badreldin Developments", ar: "بدر الدين" }, industry: { en: "Real Estate & Retail", ar: "القطاع العقاري والتجزئة" }, country: "EG", logo: "https://logo.clearbit.com/badreldin.com" },
+  { year: { en: "2025", ar: "2025" }, role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: { en: "Imtenan", ar: "إمتنان" }, industry: { en: "FMCG", ar: "قطاع السلع الاستهلاكية (FMCG)" }, country: "EG", logo: "https://logo.clearbit.com/imtenan.com" },
+  { year: { en: "NOW", ar: "حاليًا" }, role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: { en: "KnowledgeCity", ar: "مدينة المعرفة" }, industry: { en: "Schools & Training", ar: "قطاع التعليم والتدريب" }, country: "SA", logo: "https://logo.clearbit.com/knowledgecity.com" },
 ];
 
 const CREDENTIALS = [
