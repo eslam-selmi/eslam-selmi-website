@@ -1056,7 +1056,7 @@ function Snapshots() {
   return (
     <Section id="snapshots" eyebrow={t("snapshots_eyebrow")} title={t("snapshots_title")}>
       <div className="space-y-6 marquee-mask">
-        <div className="overflow-hidden">
+        <div className="overflow-hidden" dir="ltr">
           <div className={`flex gap-7 w-max ${marqueeClass} hover:[animation-play-state:paused]`} style={{ animationDuration: "34s" }}>
             {trackA.map((set, copy) => (
               <div key={`a-copy-${copy}`} className="flex shrink-0 gap-7" aria-hidden={copy > 0}>
@@ -1067,7 +1067,7 @@ function Snapshots() {
             ))}
           </div>
         </div>
-        <div className="overflow-hidden">
+        <div className="overflow-hidden" dir="ltr">
           <div className={`flex gap-7 w-max ${marqueeSlowClass} hover:[animation-play-state:paused]`} style={{ animationDuration: "44s" }}>
             {trackB.map((set, copy) => (
               <div key={`b-copy-${copy}`} className="flex shrink-0 gap-7" aria-hidden={copy > 0}>
