@@ -348,7 +348,7 @@ function CoursesPanel({ courses, refresh, onEdit }: { courses: Course[]; refresh
 
 // ============= COURSE EDITOR (chapters/items/sessions/settings) =============
 function CourseEditor({ course, onClose, refresh }: { course: Course; onClose: () => void; refresh: () => void }) {
-  const [section, setSection] = useState<"content" | "sessions" | "settings">("content");
+  const [section, setSection] = useState<"content" | "assignments" | "sessions" | "settings">("content");
   return (
     <div className="fixed inset-0 z-50 flex" dir="rtl">
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
@@ -367,6 +367,7 @@ function CourseEditor({ course, onClose, refresh }: { course: Course; onClose: (
         <div className="px-6 pt-4 flex gap-1 border-b border-white/10">
           {[
             { id: "content", label: "المحتوى والأبواب", icon: Layers },
+            { id: "assignments", label: "الواجبات", icon: Layers },
             { id: "sessions", label: "المحاضرات والمواعيد", icon: Calendar },
             { id: "settings", label: "إعدادات", icon: Settings2 },
           ].map((t) => (
@@ -381,9 +382,11 @@ function CourseEditor({ course, onClose, refresh }: { course: Course; onClose: (
 
         <div className="p-6">
           {section === "content" && <CourseContent courseId={course.id} />}
+          {section === "assignments" && <CourseAssignmentsAdmin courseId={course.id} />}
           {section === "sessions" && <CourseSessions courseId={course.id} />}
           {section === "settings" && <CourseSettings course={course} onSaved={() => { refresh(); }} />}
         </div>
+
       </aside>
     </div>
   );
@@ -973,5 +976,158 @@ function Select({ label, value, onChange, options }: { label: string; value: str
         {options.map((o) => <option key={o.v} value={o.v} className="bg-[#0b1736]">{o.l}</option>)}
       </select>
     </label>
+  );
+}
+
+function CourseAssignmentsAdmin({ courseId }: { courseId: string }) {
+  const [modules, setModules] = useState<any[]>([]);
+  const [assignments, setAssignments] = useState<any[]>([]);
+  const [subs, setSubs] = useState<any[]>([]);
+  const [profiles, setProfiles] = useState<Record<string, any>>({});
+  const [moduleId, setModuleId] = useState<string>("");
+  const [title, setTitle] = useState("");
+  const [instructions, setInstructions] = useState("");
+  const [due, setDue] = useState("");
+  const [maxScore, setMaxScore] = useState(100);
+
+  async function load() {
+    const [mRes, aRes] = await Promise.all([
+      supabase.from("course_modules").select("id,title").eq("course_id", courseId).order("order_index"),
+      supabase.from("assignments").select("*").eq("course_id", courseId).order("created_at"),
+    ]);
+    setModules(mRes.data ?? []);
+    const a = aRes.data ?? [];
+    setAssignments(a);
+    if (a.length) {
+      const sRes = await supabase.from("assignment_submissions").select("*").in("assignment_id", a.map((x: any) => x.id));
+      const sList = sRes.data ?? [];
+      setSubs(sList);
+      const ids = Array.from(new Set(sList.map((s: any) => s.user_id)));
+      if (ids.length) {
+        const pRes = await supabase.from("profiles").select("id,full_name,email").in("id", ids);
+        const map: Record<string, any> = {};
+        (pRes.data ?? []).forEach((p: any) => { map[p.id] = p; });
+        setProfiles(map);
+      }
+    } else { setSubs([]); setProfiles({}); }
+  }
+  useEffect(() => { load(); }, [courseId]);
+
+  async function addAssignment() {
+    if (!moduleId || !title.trim()) return toast.error("اختر باب وأدخل عنوان");
+    const { error } = await supabase.from("assignments").insert({
+      course_id: courseId, module_id: moduleId, title, instructions: instructions || null,
+      due_date: due ? new Date(due).toISOString() : null, max_score: maxScore,
+    });
+    if (error) return toast.error(error.message);
+    toast.success("تم إنشاء الواجب");
+    setTitle(""); setInstructions(""); setDue(""); setMaxScore(100);
+    load();
+  }
+
+  async function delAssignment(id: string) {
+    if (!confirm("حذف الواجب وكل تسليماته؟")) return;
+    await supabase.from("assignments").delete().eq("id", id);
+    load();
+  }
+
+  async function gradeSubmission(subId: string, score: number, feedback: string) {
+    const { error } = await supabase.from("assignment_submissions")
+      .update({ score, feedback: feedback || null, graded_at: new Date().toISOString() })
+      .eq("id", subId);
+    if (error) return toast.error(error.message);
+    toast.success("تم التقييم");
+    load();
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-xl border border-white/10 bg-white/5 p-4 space-y-2">
+        <p className="text-xs text-white/60 font-semibold">إنشاء واجب جديد</p>
+        <select value={moduleId} onChange={(e) => setModuleId(e.target.value)}
+          className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/15 text-sm">
+          <option value="">— اختر الباب —</option>
+          {modules.map((m) => <option key={m.id} value={m.id}>{m.title}</option>)}
+        </select>
+        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="عنوان الواجب"
+          className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/15 text-sm" />
+        <textarea value={instructions} onChange={(e) => setInstructions(e.target.value)} placeholder="تعليمات / وصف"
+          rows={2} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/15 text-sm" />
+        <div className="flex gap-2">
+          <input type="datetime-local" value={due} onChange={(e) => setDue(e.target.value)}
+            className="flex-1 h-10 px-3 rounded-lg bg-white/5 border border-white/15 text-sm" />
+          <input type="number" value={maxScore} onChange={(e) => setMaxScore(Number(e.target.value))}
+            placeholder="درجة قصوى" className="w-28 h-10 px-3 rounded-lg bg-white/5 border border-white/15 text-sm" />
+          <button onClick={addAssignment} className="px-4 h-10 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold text-sm">
+            <Plus className="w-4 h-4 inline" /> إضافة
+          </button>
+        </div>
+      </div>
+
+      {assignments.length === 0 ? (
+        <p className="text-sm text-white/40 text-center py-6">لا توجد واجبات بعد.</p>
+      ) : (
+        <div className="space-y-3">
+          {assignments.map((a) => {
+            const aSubs = subs.filter((s) => s.assignment_id === a.id);
+            return (
+              <div key={a.id} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <h5 className="font-bold">{a.title}</h5>
+                    {a.instructions && <p className="text-xs text-white/55 mt-1 whitespace-pre-wrap">{a.instructions}</p>}
+                    <p className="text-[11px] text-white/45 mt-1">
+                      {a.due_date ? `تسليم: ${new Date(a.due_date).toLocaleString("ar-EG")}` : "بدون موعد"} · درجة قصوى {a.max_score}
+                    </p>
+                  </div>
+                  <button onClick={() => delAssignment(a.id)} className="text-rose-300 hover:bg-rose-500/10 p-1.5 rounded-lg">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="mt-3 border-t border-white/5 pt-3">
+                  <p className="text-[11px] text-white/50 mb-2">التسليمات ({aSubs.length})</p>
+                  {aSubs.length === 0 ? <p className="text-[11px] text-white/40">لم يسلّم أي متدرب بعد.</p> : (
+                    <div className="space-y-2">
+                      {aSubs.map((s) => (
+                        <SubmissionRow key={s.id} s={s} maxScore={a.max_score}
+                          profile={profiles[s.user_id]} onGrade={gradeSubmission} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SubmissionRow({ s, maxScore, profile, onGrade }: { s: any; maxScore: number; profile: any; onGrade: (id: string, score: number, fb: string) => void }) {
+  const [score, setScore] = useState<string>(s.score?.toString() ?? "");
+  const [fb, setFb] = useState<string>(s.feedback ?? "");
+  return (
+    <div className="rounded-lg bg-white/5 border border-white/10 p-3">
+      <div className="flex items-start justify-between gap-2 flex-wrap">
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-semibold">{profile?.full_name || profile?.email || s.user_id.slice(0, 8)}</p>
+          <p className="text-[10px] text-white/45 mt-0.5">{new Date(s.submitted_at).toLocaleString("ar-EG")}</p>
+        </div>
+        {s.score !== null && <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">مُقيّم: {s.score}/{maxScore}</span>}
+      </div>
+      {s.content && <p className="text-xs text-white/75 mt-2 whitespace-pre-wrap p-2 bg-white/5 rounded">{s.content}</p>}
+      {s.link && <a href={s.link} target="_blank" rel="noopener" className="text-xs text-[var(--gold)] hover:underline block mt-1 truncate" dir="ltr">{s.link}</a>}
+      <div className="flex gap-2 mt-2">
+        <input type="number" value={score} onChange={(e) => setScore(e.target.value)} placeholder={`/${maxScore}`}
+          className="w-20 h-8 px-2 rounded bg-white/5 border border-white/15 text-xs" />
+        <input value={fb} onChange={(e) => setFb(e.target.value)} placeholder="ملاحظات"
+          className="flex-1 h-8 px-2 rounded bg-white/5 border border-white/15 text-xs" />
+        <button onClick={() => { const n = Number(score); if (!isNaN(n)) onGrade(s.id, n, fb); }}
+          className="px-3 h-8 rounded bg-[var(--gold)] text-[#0b1736] text-xs font-semibold">
+          حفظ
+        </button>
+      </div>
+    </div>
   );
 }
