@@ -618,6 +618,8 @@ function CertificatePanel({
   allModulesDone: boolean; totalModules: number; completedModules: number;
   onDownloadCert: (url: string) => void; onRefresh: () => void;
 }) {
+  const { lang } = useI18n();
+  const isAr = lang === "ar";
   const [nameAr, setNameAr] = useState(enrollment.name_ar ?? "");
   const [nameEn, setNameEn] = useState(enrollment.name_en ?? "");
   const [saving, setSaving] = useState(false);
@@ -627,44 +629,44 @@ function CertificatePanel({
   const requested = !!enrollment.certificate_requested_at && !issued;
 
   async function saveNames() {
-    if (!nameAr.trim() || !nameEn.trim()) return toast.error("اكتب الاسم بالعربي والإنجليزي");
+    if (!nameAr.trim() || !nameEn.trim()) return toast.error(isAr ? "اكتب الاسم بالعربي والإنجليزي" : "Enter your name in both Arabic and English");
     setSaving(true);
     const { error } = await supabase.from("enrollments")
       .update({ name_ar: nameAr.trim(), name_en: nameEn.trim() })
       .eq("id", enrollment.id);
     setSaving(false);
     if (error) return toast.error(error.message);
-    toast.success("تم حفظ الاسم");
+    toast.success(isAr ? "تم حفظ الاسم" : "Name saved");
     onRefresh();
   }
 
   async function requestCertificate() {
-    if (!allModulesDone) return toast.error("لازم تكمل كل الدروس الأول");
-    if (!namesSaved) return toast.error("اكتب اسمك بالعربي والإنجليزي الأول");
+    if (!allModulesDone) return toast.error(isAr ? "لازم تكمل كل الدروس الأول" : "Finish all modules first");
+    if (!namesSaved) return toast.error(isAr ? "اكتب اسمك بالعربي والإنجليزي الأول" : "Save your name in Arabic and English first");
     setRequesting(true);
     const { error } = await supabase.from("enrollments")
       .update({ certificate_requested_at: new Date().toISOString() })
       .eq("id", enrollment.id);
     setRequesting(false);
     if (error) return toast.error(error.message);
-    toast.success("تم إرسال طلب الشهادة للأدمن ✅");
+    toast.success(isAr ? "تم إرسال طلب الشهادة للأدمن ✅" : "Certificate request sent to admin ✅");
     onRefresh();
   }
 
   return (
     <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-      <h3 className="font-bold mb-3 flex items-center gap-2"><Award className="w-4 h-4 text-[var(--gold)]" /> الشهادة</h3>
+      <h3 className="font-bold mb-3 flex items-center gap-2"><Award className="w-4 h-4 text-[var(--gold)]" /> {isAr ? "الشهادة" : "Certificate"}</h3>
 
       {issued ? (
         <div className="space-y-2.5">
           <p className="text-xs text-emerald-300 flex items-center gap-1.5 mb-2">
-            <CheckCircle2 className="w-3.5 h-3.5" /> شهادتك جاهزة — اختر اللغة للتحميل
+            <CheckCircle2 className="w-3.5 h-3.5" /> {isAr ? "شهادتك جاهزة — اختر اللغة للتحميل" : "Your certificate is ready — pick a language to download"}
           </p>
           {enrollment.certificate_url_ar && (
             <button onClick={() => onDownloadCert(enrollment.certificate_url_ar!)}
               className="w-full h-11 rounded-xl font-semibold flex items-center justify-center gap-2"
               style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
-              <Download className="w-4 h-4" /> تحميل النسخة العربية
+              <Download className="w-4 h-4" /> {isAr ? "تحميل النسخة العربية" : "Download Arabic version"}
             </button>
           )}
           {enrollment.certificate_url_en && (
@@ -677,13 +679,13 @@ function CertificatePanel({
             <button onClick={() => onDownloadCert(enrollment.certificate_url!)}
               className="w-full h-11 rounded-xl font-semibold flex items-center justify-center gap-2"
               style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
-              <Download className="w-4 h-4" /> تحميل الشهادة
+              <Download className="w-4 h-4" /> {isAr ? "تحميل الشهادة" : "Download certificate"}
             </button>
           )}
           <a href={buildLinkedInShareUrl(course.title, Number(course.total_hours ?? 0))}
             target="_blank" rel="noopener"
             className="w-full h-11 rounded-xl font-semibold flex items-center justify-center gap-2 bg-[#0a66c2] hover:bg-[#0958a8] text-white transition">
-            <Linkedin className="w-4 h-4" /> شارك إنجازك على LinkedIn
+            <Linkedin className="w-4 h-4" /> {isAr ? "شارك إنجازك على LinkedIn" : "Share on LinkedIn"}
           </a>
         </div>
       ) : (
@@ -691,24 +693,24 @@ function CertificatePanel({
           {!namesSaved && (
             <div className="rounded-xl border border-[var(--gold)]/30 bg-[var(--gold)]/5 p-3 space-y-2">
               <p className="text-xs text-[var(--gold)] flex items-center gap-1.5">
-                <AlertCircle className="w-3.5 h-3.5" /> اكتب اسمك بالضبط زي ما تحبه يظهر على الشهادة
+                <AlertCircle className="w-3.5 h-3.5" /> {isAr ? "اكتب اسمك بالضبط زي ما تحبه يظهر على الشهادة" : "Write your name exactly as you want it on the certificate"}
               </p>
               <input value={nameAr} onChange={(e) => setNameAr(e.target.value)}
-                placeholder="الاسم بالعربي" dir="rtl"
+                placeholder={isAr ? "الاسم بالعربي" : "Name in Arabic"} dir="rtl"
                 className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/15 text-sm focus:outline-none focus:border-[var(--gold)]/60" />
               <input value={nameEn} onChange={(e) => setNameEn(e.target.value)}
                 placeholder="Full name in English" dir="ltr"
                 className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/15 text-sm focus:outline-none focus:border-[var(--gold)]/60" />
               <button onClick={saveNames} disabled={saving}
                 className="w-full h-10 rounded-lg text-xs font-semibold bg-[var(--gold)] text-[#0b1736] disabled:opacity-50">
-                {saving ? "..." : "حفظ الاسم"}
+                {saving ? "..." : (isAr ? "حفظ الاسم" : "Save name")}
               </button>
             </div>
           )}
 
           {namesSaved && (
             <div className="rounded-xl bg-white/5 border border-white/10 p-3 text-xs text-white/70 space-y-1">
-              <p>الاسم على الشهادة:</p>
+              <p>{isAr ? "الاسم على الشهادة:" : "Name on certificate:"}</p>
               <p className="text-white font-semibold">{enrollment.name_ar}</p>
               <p className="text-white font-semibold" dir="ltr">{enrollment.name_en}</p>
             </div>
@@ -716,19 +718,19 @@ function CertificatePanel({
 
           {requested ? (
             <div className="rounded-xl bg-amber-300/10 border border-amber-300/30 p-3 text-xs text-amber-200 flex items-center gap-2">
-              <Hourglass className="w-3.5 h-3.5" /> طلبك مُرسل للأدمن، هتوصلك الشهادة قريب
+              <Hourglass className="w-3.5 h-3.5" /> {isAr ? "طلبك مُرسل للأدمن، هتوصلك الشهادة قريب" : "Request sent — admin will issue your certificate soon"}
             </div>
           ) : (
             <>
               {!allModulesDone && totalModules > 0 && (
                 <p className="text-[11px] text-white/55 text-center">
-                  متبقى {totalModules - completedModules} درس قبل ما تقدر تطلب الشهادة
+                  {isAr ? `متبقى ${totalModules - completedModules} درس قبل ما تقدر تطلب الشهادة` : `${totalModules - completedModules} module(s) remaining before you can request the certificate`}
                 </p>
               )}
               <button onClick={requestCertificate} disabled={!allModulesDone || !namesSaved || requesting}
                 className="w-full h-12 rounded-xl font-semibold flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
                 style={{ background: allModulesDone && namesSaved ? "linear-gradient(135deg, var(--gold), #b8923f)" : "rgba(255,255,255,0.05)", color: allModulesDone && namesSaved ? "#0b1736" : "rgba(255,255,255,0.5)" }}>
-                <Send className="w-4 h-4" /> {requesting ? "جاري الإرسال..." : "طلب إصدار الشهادة"}
+                <Send className="w-4 h-4" /> {requesting ? (isAr ? "جاري الإرسال..." : "Sending...") : (isAr ? "طلب إصدار الشهادة" : "Request certificate")}
               </button>
             </>
           )}
@@ -737,6 +739,7 @@ function CertificatePanel({
     </div>
   );
 }
+
 
 function buildLinkedInShareUrl(courseTitle: string, hours: number) {
   const siteUrl = typeof window !== "undefined" ? window.location.origin : "https://eslam-selmi.lovable.app";
