@@ -170,6 +170,9 @@ function StatCard({ icon: Icon, label, value, color }: { icon: any; label: strin
 function EnrollmentsTable({
   enrollments, onOpen, refresh,
 }: { enrollments: EnrollmentRow[]; onOpen: (e: EnrollmentRow) => void; refresh: () => void }) {
+  const { lang } = useI18n();
+  const t = (a: string, b: string) => (lang === "ar" ? a : b);
+
   async function setStatus(id: string, status: "approved" | "rejected") {
     const { error } = await supabase.from("enrollments").update({ status }).eq("id", id);
     if (error) return toast.error(error.message);
@@ -243,6 +246,9 @@ function StatusPill({ status }: { status: string }) {
 
 // ============= COURSES PANEL =============
 function CoursesPanel({ courses, refresh, onEdit }: { courses: Course[]; refresh: () => void; onEdit: (c: Course) => void }) {
+  const { lang } = useI18n();
+  const t = (a: string, b: string) => (lang === "ar" ? a : b);
+
   const [form, setForm] = useState({
     title: "", description: "", price: "", currency: "EGP",
     starts_at: "", ends_at: "", installments_count: "1", online_url: "", cover_emoji: "🎓",
@@ -362,6 +368,9 @@ function CoursesPanel({ courses, refresh, onEdit }: { courses: Course[]; refresh
 
 // ============= COURSE EDITOR (chapters/items/sessions/settings) =============
 function CourseEditor({ course, onClose, refresh }: { course: Course; onClose: () => void; refresh: () => void }) {
+  const { lang } = useI18n();
+  const t = (a: string, b: string) => (lang === "ar" ? a : b);
+
   const [section, setSection] = useState<"content" | "assignments" | "sessions" | "settings">("content");
   return (
     <div className="fixed inset-0 z-50 flex" dir="rtl">
@@ -691,6 +700,9 @@ function CourseSessions({ courseId }: { courseId: string }) {
 }
 
 function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => void }) {
+  const { lang } = useI18n();
+  const t = (a: string, b: string) => (lang === "ar" ? a : b);
+
   const [f, setF] = useState({
     title: course.title, description: course.description ?? "",
     price: String(course.price ?? 0), currency: course.currency,
@@ -745,6 +757,9 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
 
 // ============= ENROLLMENT DRAWER =============
 function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: EnrollmentRow; onClose: () => void; refresh: () => void }) {
+  const { lang } = useI18n();
+  const t = (a: string, b: string) => (lang === "ar" ? a : b);
+
   const [payments, setPayments] = useState<any[]>([]);
   const [installments, setInstallments] = useState<any[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -1246,6 +1261,9 @@ function CourseAssignmentsAdmin({ courseId }: { courseId: string }) {
 }
 
 function SubmissionRow({ s, maxScore, profile, onGrade }: { s: any; maxScore: number; profile: any; onGrade: (id: string, score: number, fb: string) => void }) {
+  const { lang } = useI18n();
+  const t = (a: string, b: string) => (lang === "ar" ? a : b);
+
   const [score, setScore] = useState<string>(s.score?.toString() ?? "");
   const [fb, setFb] = useState<string>(s.feedback ?? "");
   return (
@@ -1411,6 +1429,9 @@ function CouponsPanel({ courses }: { courses: Course[] }) {
 }
 
 function NewCouponModal({ courses, onClose, onSaved }: { courses: Course[]; onClose: () => void; onSaved: () => void }) {
+  const { lang } = useI18n();
+  const t = (a: string, b: string) => (lang === "ar" ? a : b);
+
   const [code, setCode] = useState("");
   const [discountType, setDiscountType] = useState<"percent" | "fixed">("percent");
   const [discountValue, setDiscountValue] = useState("10");
