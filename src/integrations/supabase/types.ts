@@ -484,6 +484,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          account_blocked: boolean
           created_at: string
           email: string | null
           full_name: string | null
@@ -492,6 +493,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          account_blocked?: boolean
           created_at?: string
           email?: string | null
           full_name?: string | null
@@ -500,6 +502,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          account_blocked?: boolean
           created_at?: string
           email?: string | null
           full_name?: string | null
