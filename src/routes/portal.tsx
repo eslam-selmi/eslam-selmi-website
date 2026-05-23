@@ -458,7 +458,7 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
                   <div className="flex items-start gap-3">
                     <Clock className="w-5 h-5 text-[var(--gold)] mt-0.5 shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold">{s.title}</h4>
+                      <h4 className="font-semibold">{trSessionTitles[sessions.indexOf(s)] || s.title}</h4>
                       <p className="text-xs text-white/60 mt-1">{dt.toLocaleString("ar-EG")} · {s.duration_minutes}د</p>
                       {s.online_url && !past && (
                         <a href={s.online_url} target="_blank" rel="noopener"
