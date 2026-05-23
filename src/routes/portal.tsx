@@ -845,6 +845,8 @@ function AssignmentsSection({ courseId }: { courseId: string }) {
 
 
 function AssignmentCard({ a, sub, userId, onChange }: { a: Assignment; sub: Submission | undefined; userId: string; onChange: () => void }) {
+  const { lang } = useI18n();
+  const isAr = lang === "ar";
   const [content, setContent] = useState(sub?.content ?? "");
   const [link, setLink] = useState(sub?.link ?? "");
   const [saving, setSaving] = useState(false);
@@ -852,7 +854,7 @@ function AssignmentCard({ a, sub, userId, onChange }: { a: Assignment; sub: Subm
   const graded = sub && sub.score !== null;
 
   async function submit() {
-    if (!content.trim() && !link.trim()) return toast.error("اكتب إجابة أو ضع رابط");
+    if (!content.trim() && !link.trim()) return toast.error(isAr ? "اكتب إجابة أو ضع رابط" : "Write an answer or paste a link");
     setSaving(true);
     if (sub) {
       const { error } = await supabase.from("assignment_submissions")
@@ -864,7 +866,7 @@ function AssignmentCard({ a, sub, userId, onChange }: { a: Assignment; sub: Subm
         .insert({ assignment_id: a.id, user_id: userId, content: content || null, link: link || null });
       if (error) { setSaving(false); return toast.error(error.message); }
     }
-    toast.success("تم إرسال التسليم");
+    toast.success(isAr ? "تم إرسال التسليم" : "Submission sent");
     setSaving(false);
     onChange();
   }
@@ -876,21 +878,21 @@ function AssignmentCard({ a, sub, userId, onChange }: { a: Assignment; sub: Subm
           <h4 className="font-bold flex items-center gap-2"><FileText className="w-4 h-4 text-[var(--gold)]" /> {a.title}</h4>
           {a.instructions && <p className="text-sm text-white/65 mt-2 whitespace-pre-wrap">{a.instructions}</p>}
           <div className="flex flex-wrap gap-3 mt-2 text-[11px] text-white/55">
-            {a.due_date && <span className={overdue ? "text-rose-300" : ""}><Calendar className="inline w-3 h-3 me-1" />{new Date(a.due_date).toLocaleDateString("ar-EG")}</span>}
-            <span>درجة قصوى: <span className="text-[var(--gold)]">{a.max_score}</span></span>
+            {a.due_date && <span className={overdue ? "text-rose-300" : ""}><Calendar className="inline w-3 h-3 me-1" />{new Date(a.due_date).toLocaleDateString(isAr ? "ar-EG" : "en-GB")}</span>}
+            <span>{isAr ? "درجة قصوى" : "Max score"}: <span className="text-[var(--gold)]">{a.max_score}</span></span>
           </div>
         </div>
         {graded && (
           <div className="text-center px-4 py-2 rounded-xl bg-emerald-500/15 border border-emerald-400/30">
             <p className="text-2xl font-bold text-emerald-300">{sub.score}<span className="text-xs text-white/50">/{a.max_score}</span></p>
-            <p className="text-[10px] text-emerald-300/70 mt-1">تم التقييم</p>
+            <p className="text-[10px] text-emerald-300/70 mt-1">{isAr ? "تم التقييم" : "Graded"}</p>
           </div>
         )}
       </div>
 
       {graded && sub.feedback && (
         <div className="mt-3 p-3 rounded-lg bg-white/5 border border-white/10 text-xs">
-          <p className="text-white/50 mb-1">ملاحظات المدرّب:</p>
+          <p className="text-white/50 mb-1">{isAr ? "ملاحظات المدرّب:" : "Trainer feedback:"}</p>
           <p className="text-white/85 whitespace-pre-wrap">{sub.feedback}</p>
         </div>
       )}
@@ -898,19 +900,21 @@ function AssignmentCard({ a, sub, userId, onChange }: { a: Assignment; sub: Subm
       {!graded && (
         <div className="mt-4 space-y-2">
           <textarea value={content} onChange={(e) => setContent(e.target.value)}
-            placeholder="اكتب إجابتك أو وصف تسليمك..."
+            placeholder={isAr ? "اكتب إجابتك أو وصف تسليمك..." : "Write your answer or describe your submission..."}
             rows={3}
             className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/15 text-sm focus:outline-none focus:border-[var(--gold)]/60" />
           <input value={link} onChange={(e) => setLink(e.target.value)}
-            placeholder="رابط (Drive / GitHub / ...)" dir="ltr"
+            placeholder={isAr ? "رابط (Drive / GitHub / ...)" : "Link (Drive / GitHub / ...)"} dir="ltr"
             className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/15 text-sm focus:outline-none focus:border-[var(--gold)]/60" />
           <div className="flex items-center justify-between">
             <p className="text-[11px] text-white/50">
-              {sub ? `آخر تسليم: ${new Date(sub.submitted_at).toLocaleString("ar-EG")} — يمكنك تعديله حتى يتم التقييم` : "لم تسلّم بعد"}
+              {sub ? (isAr ? `آخر تسليم: ${new Date(sub.submitted_at).toLocaleString("ar-EG")} — يمكنك تعديله حتى يتم التقييم`
+                          : `Last submitted: ${new Date(sub.submitted_at).toLocaleString("en-GB")} — editable until graded`)
+                   : (isAr ? "لم تسلّم بعد" : "Not submitted yet")}
             </p>
             <button onClick={submit} disabled={saving}
               className="px-4 h-9 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold text-sm flex items-center gap-1.5 disabled:opacity-50">
-              <Send className="w-3.5 h-3.5" /> {sub ? "تحديث" : "إرسال"}
+              <Send className="w-3.5 h-3.5" /> {sub ? (isAr ? "تحديث" : "Update") : (isAr ? "إرسال" : "Submit")}
             </button>
           </div>
         </div>
@@ -918,6 +922,7 @@ function AssignmentCard({ a, sub, userId, onChange }: { a: Assignment; sub: Subm
     </div>
   );
 }
+
 
 // ============================================================
 // Enroll Modal — handles optional coupon code with live preview
