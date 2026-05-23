@@ -178,9 +178,14 @@ function PortalPage() {
                     </div>
                   </div>
                   {c.description && <p className="text-sm text-white/60 line-clamp-3 flex-1">{c.description}</p>}
-                  {(c.starts_at || c.ends_at) && (
-                    <p className="text-[11px] text-white/50 mt-2 flex items-center gap-1"><Calendar className="w-3 h-3" /> {c.starts_at || "—"} → {c.ends_at || "—"}</p>
-                  )}
+                  <div className="flex flex-wrap items-center gap-2 mt-3 text-[11px] text-white/55">
+                    {(c.starts_at || c.ends_at) && (
+                      <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {c.starts_at || "—"} → {c.ends_at || "—"}</span>
+                    )}
+                    {Number(c.total_hours) > 0 && (
+                      <span className="flex items-center gap-1 text-[var(--gold)]/90"><Clock className="w-3 h-3" /> {c.total_hours} ساعة</span>
+                    )}
+                  </div>
                   <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
                     <span className="text-[var(--gold)] font-semibold text-sm">
                       {Number(c.price) > 0 ? `${Number(c.price).toLocaleString()} ${c.currency}` : "مجاني"}
