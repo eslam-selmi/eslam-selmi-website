@@ -85,6 +85,14 @@ function PortalPage() {
     refresh();
   }
 
+  async function withdraw(enrollmentId: string) {
+    const { error } = await supabase.from("enrollments").delete().eq("id", enrollmentId);
+    if (error) return toast.error(error.message);
+    toast.success("تم سحب الطلب");
+    refresh();
+  }
+
+
   async function downloadCert(url: string) {
     const { data, error } = await supabase.storage.from("certificates").createSignedUrl(url, 60);
     if (error || !data) return toast.error("تعذّر تحميل الشهادة");
@@ -130,7 +138,7 @@ function PortalPage() {
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 gap-4">
-              {enrollments.map((en) => <EnrollmentCard key={en.id} en={en} onOpen={() => setViewing(en)} />)}
+              {enrollments.map((en) => <EnrollmentCard key={en.id} en={en} onOpen={() => setViewing(en)} onWithdraw={withdraw} />)}
             </div>
           )}
         </section>
