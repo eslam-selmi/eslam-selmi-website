@@ -49,7 +49,11 @@ const BRANDS = [
   { src: logoDaralnokba, name: "Daralnokba Recruitment" },
   { src: logoNewBrand, name: "Partner" },
 ];
-import snap9 from "@/assets/snapshots/snap-9.jpg";
+import snap10 from "@/assets/snapshots/snap-10.jpg";
+import snap11 from "@/assets/snapshots/snap-11.jpg";
+import snap12 from "@/assets/snapshots/snap-12.jpg";
+import snap13 from "@/assets/snapshots/snap-13.jpg";
+import snap14 from "@/assets/snapshots/snap-14.jpg";
 
 export const Route = createFileRoute("/")({ component: Portfolio });
 
@@ -175,7 +179,7 @@ const PILLARS = [
   { icon: BarChart3, key: "kpi", color: "from-lavender/35 to-primary/10" },
 ];
 
-const SNAPSHOTS = [snap1, snap2, snap5, snap3, snap8, snap4, snap7, snap9, snap6];
+const SNAPSHOTS = [snap1, snap10, snap2, snap11, snap5, snap12, snap3, snap13, snap8, snap14, snap4, snap7, snap6];
 
 type ThemeMode = "dark" | "light";
 
