@@ -820,7 +820,7 @@ function Journey() {
 
               {/* Company */}
               <div className="min-w-0">
-                <div className="font-display font-bold text-xl leading-tight">{j.company}</div>
+                <div className="font-display font-bold text-xl leading-tight">{j.company[lang]}</div>
                 <div className="text-sm text-muted-foreground mt-1.5 leading-snug">{j.role[lang]}</div>
               </div>
             </motion.div>
