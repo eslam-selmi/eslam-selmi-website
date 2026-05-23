@@ -980,7 +980,7 @@ function Brands() {
         <div className="pointer-events-none absolute inset-y-0 right-0 w-24 z-10 bg-gradient-to-l from-background to-transparent" />
 
         {/* row 1 */}
-        <div className="overflow-hidden">
+        <div className="overflow-hidden" dir="ltr">
           <div className="flex w-max gap-8 marquee-track py-2" style={{ animationDuration: "45s" }}>
             {[0, 1, 2].map((copy) => (
               <div key={`r1-copy-${copy}`} className="flex shrink-0 gap-8" aria-hidden={copy > 0}>
@@ -991,7 +991,7 @@ function Brands() {
         </div>
 
         {/* row 2 — opposite direction */}
-        <div className="overflow-hidden mt-4">
+        <div className="overflow-hidden mt-4" dir="ltr">
           <div className="flex w-max gap-8 marquee-track-reverse py-2" style={{ animationDuration: "55s" }}>
             {[0, 1, 2].map((copy) => (
               <div key={`r2-copy-${copy}`} className="flex shrink-0 gap-8" aria-hidden={copy > 0}>
@@ -1056,7 +1056,7 @@ function Snapshots() {
   return (
     <Section id="snapshots" eyebrow={t("snapshots_eyebrow")} title={t("snapshots_title")}>
       <div className="space-y-6 marquee-mask">
-        <div className="overflow-hidden">
+        <div className="overflow-hidden" dir="ltr">
           <div className={`flex gap-7 w-max ${marqueeClass} hover:[animation-play-state:paused]`} style={{ animationDuration: "34s" }}>
             {trackA.map((set, copy) => (
               <div key={`a-copy-${copy}`} className="flex shrink-0 gap-7" aria-hidden={copy > 0}>
@@ -1067,7 +1067,7 @@ function Snapshots() {
             ))}
           </div>
         </div>
-        <div className="overflow-hidden">
+        <div className="overflow-hidden" dir="ltr">
           <div className={`flex gap-7 w-max ${marqueeSlowClass} hover:[animation-play-state:paused]`} style={{ animationDuration: "44s" }}>
             {trackB.map((set, copy) => (
               <div key={`b-copy-${copy}`} className="flex shrink-0 gap-7" aria-hidden={copy > 0}>
