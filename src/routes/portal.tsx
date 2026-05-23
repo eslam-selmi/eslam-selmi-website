@@ -196,7 +196,7 @@ function PortalPage() {
 
   if (viewing) {
     // always read the freshest enrollment so name/cert updates flow into the detail view
-    const fresh = enrollments.find((e) => e.id === viewing.id) ?? viewing;
+    const fresh = trEnrollments.find((e) => e.id === viewing.id) ?? enrollments.find((e) => e.id === viewing.id) ?? viewing;
     return (
       <PortalShell userId={user.id} role="trainee" userLabel={profile?.full_name || profile?.email}>
         <CourseDetail enrollment={fresh} onBack={() => { setViewing(null); refresh(); }} onDownloadCert={downloadCert} onRefresh={refresh} />
