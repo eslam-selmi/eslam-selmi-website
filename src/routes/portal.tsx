@@ -178,7 +178,7 @@ function PortalPage() {
   );
 }
 
-function EnrollmentCard({ en, onOpen }: { en: Enrollment; onOpen: () => void }) {
+function EnrollmentCard({ en, onOpen, onWithdraw }: { en: Enrollment; onOpen: () => void; onWithdraw: (id: string) => void }) {
   const statusBadge = {
     pending: { label: "قيد المراجعة", icon: Clock, color: "text-amber-300 bg-amber-300/10 border-amber-300/30" },
     approved: { label: "مقبول", icon: CheckCircle2, color: "text-emerald-300 bg-emerald-300/10 border-emerald-300/30" },
@@ -202,9 +202,19 @@ function EnrollmentCard({ en, onOpen }: { en: Enrollment; onOpen: () => void }) 
       </div>
 
       {en.status === "pending" && (
-        <p className="mt-3 text-xs text-amber-200/80 bg-amber-300/5 border border-amber-300/15 rounded-lg p-3">
-          لم تتم الموافقة على انضمامك حتى الآن. سنخطرك بمجرد المراجعة.
-        </p>
+        <>
+          <p className="mt-3 text-xs text-amber-200/80 bg-amber-300/5 border border-amber-300/15 rounded-lg p-3">
+            لم تتم الموافقة على انضمامك حتى الآن. يمكنك تصفح عناوين المحاضرات (المحتوى مقفل 🔒) أو سحب الطلب.
+          </p>
+          <div className="flex gap-2 mt-3">
+            <button onClick={onOpen} className="flex-1 text-xs h-10 rounded-lg bg-white/5 border border-white/15 hover:bg-white/10">
+              معاينة المحاضرات 🔒
+            </button>
+            <button onClick={() => onWithdraw(en.id)} className="text-xs px-3 h-10 rounded-lg bg-rose-500/15 text-rose-300 border border-rose-500/30 hover:bg-rose-500/25">
+              انسحاب
+            </button>
+          </div>
+        </>
       )}
       {en.status === "rejected" && en.notes && <p className="mt-3 text-sm text-rose-200/80">{en.notes}</p>}
 

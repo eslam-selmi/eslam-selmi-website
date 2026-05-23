@@ -25,10 +25,12 @@ type Course = {
   id: string; title: string; description: string | null; price: number | null;
   currency: string; active: boolean; starts_at: string | null; ends_at: string | null;
   installments_count: number; online_url: string | null; cover_emoji: string | null;
+  total_hours: number | null;
 };
 type EnrollmentRow = {
   id: string; user_id: string; course_id: string; status: "pending" | "approved" | "rejected";
   certificate_url: string | null; certificate_issued: boolean; notes: string | null; created_at: string;
+  blocked: boolean;
   courses: Course | null;
   profiles: { full_name: string | null; email: string | null; phone: string | null } | null;
 };
@@ -50,10 +52,21 @@ function AdminPage() {
   async function refresh() {
     const [c, e] = await Promise.all([
       supabase.from("courses").select("*").order("created_at", { ascending: false }),
-      supabase.from("enrollments").select("*, courses(*), profiles(full_name,email,phone)").order("created_at", { ascending: false }),
+      supabase.from("enrollments").select("*, courses(*)").order("created_at", { ascending: false }),
     ]);
+    const enrollList = (e.data as any[]) ?? [];
+    // Fetch profiles separately to avoid PostgREST embed issues (no direct FK previously)
+    const userIds = Array.from(new Set(enrollList.map((x) => x.user_id)));
+    let profileMap: Record<string, any> = {};
+    if (userIds.length) {
+      const { data: profs } = await supabase
+        .from("profiles")
+        .select("id, full_name, email, phone")
+        .in("id", userIds);
+      profileMap = Object.fromEntries((profs ?? []).map((p: any) => [p.id, p]));
+    }
     setCourses((c.data as Course[]) ?? []);
-    setEnrollments((e.data as any) ?? []);
+    setEnrollments(enrollList.map((r) => ({ ...r, profiles: profileMap[r.user_id] ?? null })));
   }
   useEffect(() => { if (role === "admin") refresh(); }, [role]);
 
@@ -219,6 +232,7 @@ function CoursesPanel({ courses, refresh, onEdit }: { courses: Course[]; refresh
   const [form, setForm] = useState({
     title: "", description: "", price: "", currency: "EGP",
     starts_at: "", ends_at: "", installments_count: "1", online_url: "", cover_emoji: "🎓",
+    total_hours: "",
   });
   const [busy, setBusy] = useState(false);
 
@@ -235,12 +249,13 @@ function CoursesPanel({ courses, refresh, onEdit }: { courses: Course[]; refresh
       installments_count: Number(form.installments_count) || 1,
       online_url: form.online_url || null,
       cover_emoji: form.cover_emoji || "🎓",
+      total_hours: form.total_hours ? Number(form.total_hours) : 0,
       active: true,
     });
     setBusy(false);
     if (error) return toast.error(error.message);
     toast.success("تمت إضافة الكورس");
-    setForm({ title: "", description: "", price: "", currency: "EGP", starts_at: "", ends_at: "", installments_count: "1", online_url: "", cover_emoji: "🎓" });
+    setForm({ title: "", description: "", price: "", currency: "EGP", starts_at: "", ends_at: "", installments_count: "1", online_url: "", cover_emoji: "🎓", total_hours: "" });
     refresh();
   }
 
@@ -320,7 +335,8 @@ function CoursesPanel({ courses, refresh, onEdit }: { courses: Course[]; refresh
           <Input label="تاريخ البدء" type="date" value={form.starts_at} onChange={(v) => setForm({ ...form, starts_at: v })} />
           <Input label="تاريخ الانتهاء" type="date" value={form.ends_at} onChange={(v) => setForm({ ...form, ends_at: v })} />
         </div>
-        <Input label="رابط المنصة الأونلاين (اختياري)" value={form.online_url} onChange={(v) => setForm({ ...form, online_url: v })} />
+        <Input label="رابط الكورس (المنصة)" value={form.online_url} onChange={(v) => setForm({ ...form, online_url: v })} />
+        <Input label="عدد ساعات الكورس" type="number" value={form.total_hours} onChange={(v) => setForm({ ...form, total_hours: v })} />
         <button disabled={busy} type="submit" className="w-full h-11 rounded-xl font-semibold disabled:opacity-60"
           style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
           {busy ? "..." : "إضافة الكورس"}
@@ -655,6 +671,7 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
     starts_at: course.starts_at ?? "", ends_at: course.ends_at ?? "",
     installments_count: String(course.installments_count), online_url: course.online_url ?? "",
     cover_emoji: course.cover_emoji ?? "🎓",
+    total_hours: String(course.total_hours ?? 0),
   });
 
   async function save() {
@@ -664,6 +681,7 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
       starts_at: f.starts_at || null, ends_at: f.ends_at || null,
       installments_count: Number(f.installments_count) || 1,
       online_url: f.online_url || null, cover_emoji: f.cover_emoji || "🎓",
+      total_hours: Number(f.total_hours) || 0,
     }).eq("id", course.id);
     if (error) return toast.error(error.message);
     toast.success("تم الحفظ");
@@ -688,7 +706,10 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
         <Input label="تاريخ البدء" type="date" value={f.starts_at} onChange={(v) => setF({ ...f, starts_at: v })} />
         <Input label="تاريخ الانتهاء" type="date" value={f.ends_at} onChange={(v) => setF({ ...f, ends_at: v })} />
       </div>
-      <Input label="رابط المنصة العام" value={f.online_url} onChange={(v) => setF({ ...f, online_url: v })} />
+      <div className="grid grid-cols-2 gap-3">
+        <Input label="رابط الكورس" value={f.online_url} onChange={(v) => setF({ ...f, online_url: v })} />
+        <Input label="عدد ساعات الكورس" type="number" value={f.total_hours} onChange={(v) => setF({ ...f, total_hours: v })} />
+      </div>
       <button onClick={save} className="w-full h-11 rounded-xl font-semibold" style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
         حفظ التعديلات
       </button>
@@ -787,6 +808,24 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
   async function delInst(id: string) { await supabase.from("installments").delete().eq("id", id); refreshLists(); }
   async function delPay(id: string) { await supabase.from("payments").delete().eq("id", id); refreshLists(); }
 
+  const [blocked, setBlocked] = useState(enrollment.blocked);
+  async function toggleBlocked() {
+    const next = !blocked;
+    const { error } = await supabase.from("enrollments").update({ blocked: next }).eq("id", enrollment.id);
+    if (error) return toast.error(error.message);
+    setBlocked(next);
+    toast.success(next ? "تم قفل وصول المتدرب" : "تم استعادة وصول المتدرب");
+    refresh();
+  }
+  async function removeEnrollment() {
+    if (!confirm("حذف هذا المتدرب من الكورس نهائياً؟ سيتم حذف كل بيانات الالتحاق والمدفوعات.")) return;
+    const { error } = await supabase.from("enrollments").delete().eq("id", enrollment.id);
+    if (error) return toast.error(error.message);
+    toast.success("تم حذف المتدرب من الكورس");
+    refresh();
+    onClose();
+  }
+
   return (
     <div className="fixed inset-0 z-50 flex" dir="rtl">
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
@@ -804,6 +843,7 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
             <div className="flex justify-between"><span className="text-white/50">البريد</span><span dir="ltr">{enrollment.profiles?.email}</span></div>
             <div className="flex justify-between"><span className="text-white/50">الهاتف</span><span dir="ltr">{enrollment.profiles?.phone || "—"}</span></div>
             <div className="flex justify-between items-center"><span className="text-white/50">الحالة</span><StatusPill status={enrollment.status} /></div>
+            {blocked && <div className="flex justify-between items-center"><span className="text-white/50">الوصول</span><span className="text-xs px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">محظور مؤقتاً</span></div>}
             <div className="flex justify-between"><span className="text-white/50">سعر الكورس</span><span className="text-[var(--gold)] font-semibold">{coursePrice.toLocaleString()} {courseCur}</span></div>
             <div className="flex justify-between"><span className="text-white/50">المدفوع</span>
               <span className={fullyPaid ? "text-emerald-300 font-semibold" : "text-amber-300"}>
@@ -813,6 +853,15 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
             <div className="flex justify-between"><span className="text-white/50">نظام الدفع</span>
               <span>{enrollment.courses?.installments_count === 1 ? "دفعة كاملة" : `${enrollment.courses?.installments_count} أقساط`}</span>
             </div>
+          </section>
+
+          <section className="rounded-2xl border border-rose-300/20 bg-rose-300/5 p-4 flex flex-wrap gap-2">
+            <button onClick={toggleBlocked} className={`flex-1 min-w-[180px] h-10 rounded-lg text-xs font-semibold ${blocked ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" : "bg-amber-500/20 text-amber-300 border border-amber-500/30"}`}>
+              {blocked ? "↩ إلغاء الحظر — استعادة الوصول" : "⏸ قفل/حظر الوصول مؤقتاً"}
+            </button>
+            <button onClick={removeEnrollment} className="flex-1 min-w-[180px] h-10 rounded-lg text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30">
+              🗑 حذف المتدرب نهائياً
+            </button>
           </section>
 
           <section>
