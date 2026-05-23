@@ -10,7 +10,7 @@ import {
   Clock, CheckCircle2, XCircle, Download, Upload, BookOpen, Wallet, Loader2,
   ExternalLink, Sparkles, ArrowRight, Calendar, Layers, StickyNote, Link as LinkIcon,
   Paperclip, Check, ChevronLeft, PlayCircle, Award, Linkedin, GraduationCap, Hourglass,
-  Languages, FileText, Send, AlertCircle, X,
+  FileText, Send, AlertCircle, X,
 } from "lucide-react";
 
 
@@ -217,10 +217,6 @@ function PortalPage() {
                 : "Track your courses, sessions, certificates and payments in one place. You'll get live notifications for every update."}</p>
             </div>
             <div className="flex items-center gap-2">
-              <button onClick={() => setLang(lang === "ar" ? "en" : "ar")}
-                className="flex items-center gap-1.5 px-3 h-10 rounded-lg bg-white/5 border border-white/15 hover:bg-white/10 text-xs text-white/80">
-                <Languages className="w-4 h-4" /> {lang === "ar" ? "English" : "العربية"}
-              </button>
               <button onClick={() => setShowUpload(true)}
                 className="flex items-center gap-2 px-5 h-12 rounded-xl font-semibold transition-all hover:scale-[1.02]"
                 style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
@@ -229,21 +225,22 @@ function PortalPage() {
             </div>
           </div>
 
+
         </section>
 
         <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <StatCard icon={GraduationCap} label="كورسات نشطة" value={stats.active} accent="emerald" />
-          <StatCard icon={Hourglass} label="طلبات معلّقة" value={stats.pending} accent="amber" />
-          <StatCard icon={Clock} label="ساعات تدريبية مكتملة" value={`${stats.hoursEarned} / ${stats.hoursTotal}`} suffix="ساعة" accent="sky" />
-          <StatCard icon={Award} label="شهادات صادرة" value={stats.certs} accent="gold" />
+          <StatCard icon={GraduationCap} label={lang === "ar" ? "كورسات نشطة" : "Active courses"} value={stats.active} accent="emerald" />
+          <StatCard icon={Hourglass} label={lang === "ar" ? "طلبات معلّقة" : "Pending requests"} value={stats.pending} accent="amber" />
+          <StatCard icon={Clock} label={lang === "ar" ? "ساعات تدريبية مكتملة" : "Training hours done"} value={`${stats.hoursEarned} / ${stats.hoursTotal}`} suffix={lang === "ar" ? "ساعة" : "hrs"} accent="sky" />
+          <StatCard icon={Award} label={lang === "ar" ? "شهادات صادرة" : "Certificates"} value={stats.certs} accent="gold" />
         </section>
 
         <section>
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><BookOpen className="w-5 h-5 text-[var(--gold)]" /> كورساتي</h2>
-          {loadingData ? <p className="text-white/50 text-sm">جاري التحميل...</p> :
+          <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><BookOpen className="w-5 h-5 text-[var(--gold)]" /> {lang === "ar" ? "كورساتي" : "My Courses"}</h2>
+          {loadingData ? <p className="text-white/50 text-sm">{lang === "ar" ? "جاري التحميل..." : "Loading..."}</p> :
            enrollments.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-white/15 p-8 text-center text-white/50">
-              لا توجد كورسات بعد. اختر كورساً من الأسفل لتقديم طلب الالتحاق.
+              {lang === "ar" ? "لا توجد كورسات بعد. اختر كورساً من الأسفل لتقديم طلب الالتحاق." : "No courses yet. Pick a course below to request enrollment."}
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 gap-4">
@@ -253,9 +250,9 @@ function PortalPage() {
         </section>
 
         <section>
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><Sparkles className="w-5 h-5 text-[var(--gold)]" /> كورسات متاحة</h2>
+          <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><Sparkles className="w-5 h-5 text-[var(--gold)]" /> {lang === "ar" ? "كورسات متاحة" : "Available courses"}</h2>
           {availableCourses.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-white/15 p-8 text-center text-white/50">لا توجد كورسات جديدة حالياً.</div>
+            <div className="rounded-2xl border border-dashed border-white/15 p-8 text-center text-white/50">{lang === "ar" ? "لا توجد كورسات جديدة حالياً." : "No new courses right now."}</div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {trAvailable.map((c) => (
@@ -267,7 +264,7 @@ function PortalPage() {
                     <div className="flex-1 min-w-0">
                       <h3 className="font-bold text-lg leading-tight">{c.title}</h3>
                       <p className="text-[10px] text-[var(--gold)]/80 mt-1">
-                        {c.installments_count === 1 ? "دفعة كاملة" : `${c.installments_count} أقساط`}
+                        {c.installments_count === 1 ? (lang === "ar" ? "دفعة كاملة" : "Single payment") : (lang === "ar" ? `${c.installments_count} أقساط` : `${c.installments_count} installments`)}
                       </p>
                     </div>
                   </div>
@@ -277,15 +274,15 @@ function PortalPage() {
                       <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {c.starts_at || "—"} → {c.ends_at || "—"}</span>
                     )}
                     {Number(c.total_hours) > 0 && (
-                      <span className="flex items-center gap-1 text-[var(--gold)]/90"><Clock className="w-3 h-3" /> {c.total_hours} ساعة</span>
+                      <span className="flex items-center gap-1 text-[var(--gold)]/90"><Clock className="w-3 h-3" /> {c.total_hours} {lang === "ar" ? "ساعة" : "hrs"}</span>
                     )}
                   </div>
                   <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
                     <span className="text-[var(--gold)] font-semibold text-sm">
-                      {Number(c.price) > 0 ? `${Number(c.price).toLocaleString()} ${c.currency}` : "مجاني"}
+                      {Number(c.price) > 0 ? `${Number(c.price).toLocaleString()} ${c.currency}` : (lang === "ar" ? "مجاني" : "Free")}
                     </span>
                     <button onClick={() => setEnrollingCourse(c)} className="text-xs px-3 h-8 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold hover:opacity-90">
-                      تقديم طلب
+                      {lang === "ar" ? "تقديم طلب" : "Apply"}
                     </button>
                   </div>
                 </div>
@@ -293,6 +290,7 @@ function PortalPage() {
             </div>
           )}
         </section>
+
       </div>
 
       {enrollingCourse && (
@@ -309,11 +307,14 @@ function PortalPage() {
 }
 
 function EnrollmentCard({ en, onOpen, onWithdraw }: { en: Enrollment; onOpen: () => void; onWithdraw: (id: string) => void }) {
+  const { lang } = useI18n();
+  const isAr = lang === "ar";
   const statusBadge = {
-    pending: { label: "قيد المراجعة", icon: Clock, color: "text-amber-300 bg-amber-300/10 border-amber-300/30" },
-    approved: { label: "مقبول", icon: CheckCircle2, color: "text-emerald-300 bg-emerald-300/10 border-emerald-300/30" },
-    rejected: { label: "مرفوض", icon: XCircle, color: "text-rose-300 bg-rose-300/10 border-rose-300/30" },
+    pending: { label: isAr ? "قيد المراجعة" : "Under review", icon: Clock, color: "text-amber-300 bg-amber-300/10 border-amber-300/30" },
+    approved: { label: isAr ? "مقبول" : "Approved", icon: CheckCircle2, color: "text-emerald-300 bg-emerald-300/10 border-emerald-300/30" },
+    rejected: { label: isAr ? "مرفوض" : "Rejected", icon: XCircle, color: "text-rose-300 bg-rose-300/10 border-rose-300/30" },
   }[en.status];
+
   const SIcon = statusBadge.icon;
   const c = en.courses;
 
