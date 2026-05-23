@@ -348,7 +348,7 @@ function CoursesPanel({ courses, refresh, onEdit }: { courses: Course[]; refresh
 
 // ============= COURSE EDITOR (chapters/items/sessions/settings) =============
 function CourseEditor({ course, onClose, refresh }: { course: Course; onClose: () => void; refresh: () => void }) {
-  const [section, setSection] = useState<"content" | "sessions" | "settings">("content");
+  const [section, setSection] = useState<"content" | "assignments" | "sessions" | "settings">("content");
   return (
     <div className="fixed inset-0 z-50 flex" dir="rtl">
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
