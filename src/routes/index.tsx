@@ -387,13 +387,35 @@ export function Nav({ theme, onThemeToggle }: { theme?: ThemeMode; onThemeToggle
         </div>
         {open && (
           <div className="xl:hidden mt-2 glass-strong rounded-2xl p-3 grid gap-1">
-            {NAV_FULL.map(n => (
-              n.to ? (
+            {NAV_FULL.map(n => {
+              if (n.id === "empowerment") {
+                return (
+                  <Link
+                    key={n.id}
+                    to={n.to!}
+                    onClick={() => setOpen(false)}
+                    className="my-1 inline-flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-extrabold tracking-tight border-2 transition-all"
+                    style={{
+                      borderColor: "var(--accent)",
+                      color: "var(--accent)",
+                      background: "linear-gradient(135deg, oklch(0.75 0.13 85 / 0.12), oklch(0.75 0.13 85 / 0.03))",
+                      boxShadow: "0 0 0 3px oklch(0.75 0.13 85 / 0.08)",
+                    }}
+                  >
+                    <span className="size-7 grid place-items-center rounded-lg bg-[var(--accent)]/15 border border-[var(--accent)]/30">
+                      <Rocket className="size-3.5" />
+                    </span>
+                    <span className="flex-1">{t(n.key)}</span>
+                    <ArrowRight className="size-4 rtl-flip opacity-70" />
+                  </Link>
+                );
+              }
+              return n.to ? (
                 <Link key={n.id} to={n.to} onClick={() => setOpen(false)} className="px-3 py-2 rounded-lg hover:bg-foreground/5 text-sm">{t(n.key)}</Link>
               ) : (
                 <a key={n.id} href={hashHref(n.id)} onClick={() => setOpen(false)} className="px-3 py-2 rounded-lg hover:bg-foreground/5 text-sm">{t(n.key)}</a>
-              )
-            ))}
+              );
+            })}
             <button onClick={(e) => { setOpen(false); openCalendly(e); }}
               className="mt-1 inline-flex items-center justify-center gap-2 rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-bold cursor-pointer">
               <Calendar className="size-4" /> {t("book_cta")}
