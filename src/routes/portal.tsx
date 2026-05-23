@@ -41,6 +41,7 @@ const DRIVE_URL = "https://drive.google.com/drive/folders/1_GB18CPhfYZQt06orG1pI
 
 function PortalPage() {
   const { user, role, loading } = useAuth();
+  const { lang, setLang } = useI18n();
   const nav = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [courses, setCourses] = useState<Course[]>([]);
@@ -48,6 +49,7 @@ function PortalPage() {
   const [loadingData, setLoadingData] = useState(true);
   const [showUpload, setShowUpload] = useState(false);
   const [viewing, setViewing] = useState<Enrollment | null>(null);
+
 
   useEffect(() => {
     if (!loading && !user) nav({ to: "/auth" });
