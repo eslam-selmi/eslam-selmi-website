@@ -367,6 +367,7 @@ function CourseEditor({ course, onClose, refresh }: { course: Course; onClose: (
         <div className="px-6 pt-4 flex gap-1 border-b border-white/10">
           {[
             { id: "content", label: "المحتوى والأبواب", icon: Layers },
+            { id: "assignments", label: "الواجبات", icon: Layers },
             { id: "sessions", label: "المحاضرات والمواعيد", icon: Calendar },
             { id: "settings", label: "إعدادات", icon: Settings2 },
           ].map((t) => (
@@ -381,9 +382,11 @@ function CourseEditor({ course, onClose, refresh }: { course: Course; onClose: (
 
         <div className="p-6">
           {section === "content" && <CourseContent courseId={course.id} />}
+          {section === "assignments" && <CourseAssignmentsAdmin courseId={course.id} />}
           {section === "sessions" && <CourseSessions courseId={course.id} />}
           {section === "settings" && <CourseSettings course={course} onSaved={() => { refresh(); }} />}
         </div>
+
       </aside>
     </div>
   );
