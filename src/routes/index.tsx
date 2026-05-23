@@ -800,7 +800,7 @@ function Journey() {
           
           return (
             <motion.div
-              key={j.year + j.company + i}
+              key={j.year.en + j.company.en + i}
               {...fadeUp}
               transition={{ delay: i * 0.07, duration: 0.55 }}
               className="group relative rounded-3xl bg-card border border-foreground/10 p-6 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px_oklch(0.22_0.06_252/0.35)] transition-all overflow-hidden"
