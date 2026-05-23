@@ -298,7 +298,7 @@ function BrandMark({ size = 62 }: { size?: number }) {
         style={{ width: size, height: size }}
       />
       <span className="flex items-center leading-none">
-        <span className="font-sans text-[14px] sm:text-[15px] font-semibold tracking-tight text-foreground whitespace-nowrap">{displayName}</span>
+        <span className="font-display text-[15px] sm:text-[17px] font-bold tracking-tight text-foreground whitespace-nowrap">{displayName}</span>
       </span>
     </div>
   );
