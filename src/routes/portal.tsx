@@ -436,6 +436,10 @@ function CourseDetail({ enrollment, onBack, onDownloadCert }: { enrollment: Enro
         )}
       </section>
 
+      <AssignmentsSection courseId={c.id} userId={enrollment.user_id ?? ""} />
+
+
+
       {/* Payments + Certificate */}
       <section className="grid lg:grid-cols-2 gap-4">
         <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
