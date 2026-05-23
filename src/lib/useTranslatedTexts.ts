@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { translateTexts } from "@/lib/translate.functions";
 import { useI18n } from "@/lib/i18n";
 
-const CACHE_KEY = "lov_translate_cache_v1";
+const CACHE_KEY = "lov_translate_cache_v2";
 
 function readCache(): Record<string, string> {
   if (typeof window === "undefined") return {};
@@ -14,23 +14,36 @@ function writeCache(c: Record<string, string>) {
 }
 function keyOf(text: string, target: string) { return `${target}::${text}`; }
 
+// Auto-detect: if text contains any Arabic letters, source is "ar", else "en".
+const ARABIC_RE = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+function detectSource(text: string): "ar" | "en" {
+  return ARABIC_RE.test(text) ? "ar" : "en";
+}
+
 /**
  * Translate an array of dynamic admin-written strings to the current UI language.
- * - If lang is "ar", returns originals (content is already Arabic).
- * - If lang is "en", translates via Lovable AI Gateway (cached in localStorage).
+ * Auto-detects source per string. Skips strings already in the target language.
+ * Cached in localStorage.
  */
 export function useTranslatedTexts(texts: string[]): string[] {
   const { lang } = useI18n();
   const translate = useServerFn(translateTexts);
   const [out, setOut] = useState<string[]>(texts);
+  const joined = useMemo(() => texts.join("\u0001"), [texts]);
 
   useEffect(() => {
-    if (lang === "ar") { setOut(texts); return; }
     if (texts.length === 0) { setOut(texts); return; }
 
     const cache = readCache();
-    const result: (string | null)[] = texts.map((t) => cache[keyOf(t, lang)] ?? null);
-    const missingIdx = result.map((v, i) => (v === null ? i : -1)).filter((i) => i >= 0);
+    // For each text: if already in target lang, keep as-is. Otherwise look up cache.
+    const result: (string | null)[] = texts.map((t) => {
+      if (!t || !t.trim()) return t;
+      if (detectSource(t) === lang) return t; // already in target language
+      return cache[keyOf(t, lang)] ?? null;
+    });
+    const missingIdx = result
+      .map((v, i) => (v === null ? i : -1))
+      .filter((i) => i >= 0);
 
     if (missingIdx.length === 0) {
       setOut(result as string[]);
@@ -46,9 +59,12 @@ export function useTranslatedTexts(texts: string[]): string[] {
       .then((res) => {
         if (cancelled) return;
         const filled = [...result];
-        missingIdx.forEach((origIdx, j) => { filled[origIdx] = res.translations[j] ?? texts[origIdx]; });
         const newCache = { ...cache };
-        missingIdx.forEach((origIdx, j) => { newCache[keyOf(texts[origIdx], lang)] = res.translations[j] ?? texts[origIdx]; });
+        missingIdx.forEach((origIdx, j) => {
+          const tr = res.translations[j] ?? texts[origIdx];
+          filled[origIdx] = tr;
+          newCache[keyOf(texts[origIdx], lang)] = tr;
+        });
         writeCache(newCache);
         setOut(filled as string[]);
       })
@@ -56,7 +72,7 @@ export function useTranslatedTexts(texts: string[]): string[] {
 
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lang, texts.join("\u0001")]);
+  }, [lang, joined]);
 
   return out;
 }
