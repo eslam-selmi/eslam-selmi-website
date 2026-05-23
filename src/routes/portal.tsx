@@ -797,6 +797,8 @@ type Submission = {
 
 function AssignmentsSection({ courseId }: { courseId: string }) {
   const { user } = useAuth();
+  const { lang } = useI18n();
+  const isAr = lang === "ar";
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [subs, setSubs] = useState<Record<string, Submission>>({});
   const [loading, setLoading] = useState(true);
@@ -831,7 +833,7 @@ function AssignmentsSection({ courseId }: { courseId: string }) {
 
   return (
     <section>
-      <h2 className="text-lg font-bold mb-3 flex items-center gap-2"><FileText className="w-5 h-5 text-[var(--gold)]" /> التكليفات</h2>
+      <h2 className="text-lg font-bold mb-3 flex items-center gap-2"><FileText className="w-5 h-5 text-[var(--gold)]" /> {isAr ? "التكليفات" : "Assignments"}</h2>
       <div className="space-y-3">
         {assignments.map((a) => (
           <AssignmentCard key={a.id} a={a} sub={subs[a.id]} userId={user!.id} onChange={load} />
@@ -840,6 +842,7 @@ function AssignmentsSection({ courseId }: { courseId: string }) {
     </section>
   );
 }
+
 
 function AssignmentCard({ a, sub, userId, onChange }: { a: Assignment; sub: Submission | undefined; userId: string; onChange: () => void }) {
   const [content, setContent] = useState(sub?.content ?? "");
