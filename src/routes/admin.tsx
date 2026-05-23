@@ -922,7 +922,17 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
             <div className="flex justify-between"><span className="text-white/50">الهاتف</span><span dir="ltr">{enrollment.profiles?.phone || "—"}</span></div>
             <div className="flex justify-between items-center"><span className="text-white/50">الحالة</span><StatusPill status={enrollment.status} /></div>
             {blocked && <div className="flex justify-between items-center"><span className="text-white/50">الوصول</span><span className="text-xs px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">محظور مؤقتاً</span></div>}
-            <div className="flex justify-between"><span className="text-white/50">سعر الكورس</span><span className="text-[var(--gold)] font-semibold">{coursePrice.toLocaleString()} {courseCur}</span></div>
+            <div className="flex justify-between"><span className="text-white/50">سعر الكورس</span>
+              <span className="text-[var(--gold)] font-semibold">
+                {discount > 0 && <span className="text-white/40 line-through me-2 text-xs">{rawPrice.toLocaleString()}</span>}
+                {coursePrice.toLocaleString()} {courseCur}
+              </span>
+            </div>
+            {couponCode && (
+              <div className="flex justify-between"><span className="text-white/50">كوبون مطبّق</span>
+                <span className="text-emerald-300 font-mono text-xs">{couponCode} (−{discount.toLocaleString()} {courseCur})</span>
+              </div>
+            )}
             <div className="flex justify-between"><span className="text-white/50">المدفوع</span>
               <span className={fullyPaid ? "text-emerald-300 font-semibold" : "text-amber-300"}>
                 {totalPaid.toLocaleString()} {courseCur} {fullyPaid && "✓ مكتمل الدفع"}
