@@ -22,6 +22,7 @@ function AuthPage() {
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [busy, setBusy] = useState(false);
+  const [confirmEmail, setConfirmEmail] = useState<string | null>(null);
   const nav = useNavigate();
   const { user, role, loading } = useAuth();
 
@@ -36,7 +37,7 @@ function AuthPage() {
     setBusy(true);
     try {
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -45,7 +46,12 @@ function AuthPage() {
           },
         });
         if (error) throw error;
-        toast.success("تم إنشاء الحساب بنجاح. جاري التحويل...");
+        // If session is null, email confirmation is required
+        if (!data.session) {
+          setConfirmEmail(email);
+        } else {
+          toast.success("تم إنشاء الحساب بنجاح. جاري التحويل...");
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
