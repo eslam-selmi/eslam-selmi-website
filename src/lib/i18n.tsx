@@ -256,7 +256,7 @@ const ar: Dict = {
   brands_meta: "علامة وشريك",
 
   snapshots_eyebrow: "لقطات",
-  snapshots_title: "من قلب الميدان",
+  snapshots_title: "لحظات شكّلت المسيرة",
 
   podcast_eyebrow: "بودكاست التعلم والتطوير",
   podcast_title: "حوارات في التعلم والنمو.",
