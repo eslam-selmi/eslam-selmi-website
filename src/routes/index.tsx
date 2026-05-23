@@ -37,12 +37,12 @@ import logoMallOfEgypt from "@/assets/clients/mall-of-egypt.jpg";
 import logoNewBrand from "@/assets/clients/new-brand.jpg";
 
 const BRANDS: { src: string; name: string; nameAr: string; specEn: string; specAr: string }[] = [
-  { src: logoAramex, name: "Aramex", nameAr: "أرامكس", specEn: "Logistics", specAr: "خدمات لوجستية" },
+  { src: logoAramex, name: "Aramex", nameAr: "أرامكس", specEn: "Transport & Logistics", specAr: "نقل ولوجيستيات" },
   { src: logoG4s, name: "G4S", nameAr: "جي فور إس", specEn: "Advanced Security Solutions", specAr: "حلول أمنية متطورة" },
   { src: logoAmazonEg, name: "Amazon.eg", nameAr: "أمازون مصر", specEn: "E-commerce", specAr: "تجارة إلكترونية" },
-  { src: logoImtenan, name: "Imtenan", nameAr: "إمتنان", specEn: "FMCG", specAr: "سلع استهلاكية (FMCG)" },
+  { src: logoImtenan, name: "Imtenan", nameAr: "إمتنان", specEn: "FMCG", specAr: "FMCG" },
   { src: logoMallOfEgypt, name: "Mall of Egypt", nameAr: "مول مصر", specEn: "Retail & Malls", specAr: "تجزئة ومراكز تسوق" },
-  { src: logoBadreldin, name: "Badreldin Developments", nameAr: "بدر الدين للتطوير", specEn: "Real Estate Development", specAr: "تطوير عقاري" },
+  { src: logoBadreldin, name: "Badreldin Developments", nameAr: "بدر الدين", specEn: "Real Estate & Retail", specAr: "تطوير عقاري وريتيل" },
   { src: logoAllerAqua, name: "Aller Aqua Egypt", nameAr: "ألر أكوا مصر", specEn: "Aquaculture Feed", specAr: "أعلاف الاستزراع السمكي" },
   { src: logoEvno, name: "Evno", nameAr: "إيفنو", specEn: "Tech & Innovation", specAr: "تكنولوجيا وابتكار" },
   { src: logoAlmajarah, name: "Al Majarah", nameAr: "المجرة", specEn: "Training & Consulting", specAr: "تدريب واستشارات" },
@@ -53,7 +53,7 @@ import snap10 from "@/assets/snapshots/snap-10.jpg";
 import snap11 from "@/assets/snapshots/snap-11.jpg";
 import snap12 from "@/assets/snapshots/snap-12.jpg";
 import snap13 from "@/assets/snapshots/snap-13.jpg";
-import snap14 from "@/assets/snapshots/snap-14.jpg";
+
 import snap15 from "@/assets/snapshots/snap-15.jpg";
 import snap16 from "@/assets/snapshots/snap-16.jpg";
 
@@ -120,11 +120,11 @@ const COUNTRIES = [
 ];
 
 const JOURNEY = [
-  { year: { en: "2017", ar: "2017" }, role: { en: "Senior L&D / L&D Specialist", ar: "أخصائي أول / أخصائي تعلم وتطوير" }, company: { en: "G4S", ar: "جي فور إس" }, country: "EG", logo: "https://logo.clearbit.com/g4s.com" },
-  { year: { en: "2022", ar: "2022" }, role: { en: "L&D Specialist", ar: "أخصائي تعلم وتطوير" }, company: { en: "Aramex", ar: "أرامكس" }, country: "EG", logo: "https://logo.clearbit.com/aramex.com" },
-  { year: { en: "2023", ar: "2023" }, role: { en: "Department Supervisor & Learning Liaison", ar: "مشرف إدارة ومنسّق التعلم والتطوير" }, company: { en: "Badreldin Developments", ar: "بدر الدين للتطوير" }, country: "EG", logo: "https://logo.clearbit.com/badreldin.com" },
-  { year: { en: "2025", ar: "2025" }, role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: { en: "Imtenan", ar: "إمتنان" }, country: "EG", logo: "https://logo.clearbit.com/imtenan.com" },
-  { year: { en: "NOW", ar: "حاليًا" }, role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: { en: "KnowledgeCity", ar: "مدينة المعرفة" }, country: "SA", logo: "https://logo.clearbit.com/knowledgecity.com" },
+  { year: { en: "2017", ar: "2017" }, role: { en: "Senior L&D / L&D Specialist", ar: "أخصائي أول / أخصائي تعلم وتطوير" }, company: { en: "G4S", ar: "جي فور إس" }, industry: { en: "Advanced Security Solutions", ar: "حلول أمنية متطورة" }, country: "EG", logo: "https://logo.clearbit.com/g4s.com" },
+  { year: { en: "2022", ar: "2022" }, role: { en: "L&D Specialist", ar: "أخصائي تعلم وتطوير" }, company: { en: "Aramex", ar: "أرامكس" }, industry: { en: "Transport & Logistics", ar: "نقل ولوجيستيات" }, country: "EG", logo: "https://logo.clearbit.com/aramex.com" },
+  { year: { en: "2023", ar: "2023" }, role: { en: "Department Supervisor & Learning Liaison", ar: "مشرف إدارة ومنسّق التعلم والتطوير" }, company: { en: "Badreldin Developments", ar: "بدر الدين" }, industry: { en: "Real Estate & Retail", ar: "تطوير عقاري وريتيل" }, country: "EG", logo: "https://logo.clearbit.com/badreldin.com" },
+  { year: { en: "2025", ar: "2025" }, role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: { en: "Imtenan", ar: "إمتنان" }, industry: { en: "FMCG", ar: "FMCG" }, country: "EG", logo: "https://logo.clearbit.com/imtenan.com" },
+  { year: { en: "NOW", ar: "حاليًا" }, role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: { en: "KnowledgeCity", ar: "مدينة المعرفة" }, industry: { en: "Schools & Training", ar: "مدارس وتدريب" }, country: "SA", logo: "https://logo.clearbit.com/knowledgecity.com" },
 ];
 
 const CREDENTIALS = [
@@ -181,8 +181,7 @@ const PILLARS = [
   { icon: TrendingUp, key: "perf", color: "from-gold/35 to-accent/10" },
   { icon: BarChart3, key: "kpi", color: "from-lavender/35 to-primary/10" },
 ];
-
-const SNAPSHOTS = [snap1, snap15, snap10, snap2, snap16, snap11, snap5, snap12, snap3, snap13, snap8, snap14, snap4, snap7, snap6];
+const SNAPSHOTS = [snap1, snap15, snap10, snap2, snap16, snap11, snap5, snap12, snap3, snap13, snap8, snap4, snap7, snap6];
 
 type ThemeMode = "dark" | "light";
 
@@ -299,7 +298,7 @@ function BrandMark({ size = 62 }: { size?: number }) {
         style={{ width: size, height: size }}
       />
       <span className="flex items-center leading-none">
-        <span className="font-sans text-[14px] sm:text-[15px] font-semibold tracking-tight text-foreground whitespace-nowrap">{displayName}</span>
+        <span className="font-display text-[15px] sm:text-[17px] font-bold tracking-tight text-foreground whitespace-nowrap">{displayName}</span>
       </span>
     </div>
   );
@@ -823,6 +822,7 @@ function Journey() {
               {/* Company */}
               <div className="min-w-0">
                 <div className="font-display font-bold text-xl leading-tight">{j.company[lang]}</div>
+                <div className="text-[11px] uppercase tracking-[0.18em] font-bold mt-1.5" style={{ color: "var(--gold)" }}>{j.industry[lang]}</div>
                 <div className="text-sm text-muted-foreground mt-1.5 leading-snug">{j.role[lang]}</div>
               </div>
             </motion.div>
