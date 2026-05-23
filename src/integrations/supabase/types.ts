@@ -109,6 +109,78 @@ export type Database = {
           },
         ]
       }
+      coupon_redemptions: {
+        Row: {
+          coupon_id: string
+          discount_amount: number
+          enrollment_id: string
+          id: string
+          redeemed_at: string
+          user_id: string
+        }
+        Insert: {
+          coupon_id: string
+          discount_amount: number
+          enrollment_id: string
+          id?: string
+          redeemed_at?: string
+          user_id: string
+        }
+        Update: {
+          coupon_id?: string
+          discount_amount?: number
+          enrollment_id?: string
+          id?: string
+          redeemed_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      coupons: {
+        Row: {
+          active: boolean
+          code: string
+          course_id: string | null
+          created_at: string
+          discount_type: Database["public"]["Enums"]["coupon_discount_type"]
+          discount_value: number
+          expires_at: string | null
+          id: string
+          max_uses: number | null
+          note: string | null
+          updated_at: string
+          used_count: number
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          course_id?: string | null
+          created_at?: string
+          discount_type?: Database["public"]["Enums"]["coupon_discount_type"]
+          discount_value: number
+          expires_at?: string | null
+          id?: string
+          max_uses?: number | null
+          note?: string | null
+          updated_at?: string
+          used_count?: number
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          course_id?: string | null
+          created_at?: string
+          discount_type?: Database["public"]["Enums"]["coupon_discount_type"]
+          discount_value?: number
+          expires_at?: string | null
+          id?: string
+          max_uses?: number | null
+          note?: string | null
+          updated_at?: string
+          used_count?: number
+        }
+        Relationships: []
+      }
       course_leads: {
         Row: {
           created_at: string
@@ -268,8 +340,10 @@ export type Database = {
           certificate_url: string | null
           certificate_url_ar: string | null
           certificate_url_en: string | null
+          coupon_code: string | null
           course_id: string
           created_at: string
+          discount_amount: number
           id: string
           name_ar: string | null
           name_en: string | null
@@ -285,8 +359,10 @@ export type Database = {
           certificate_url?: string | null
           certificate_url_ar?: string | null
           certificate_url_en?: string | null
+          coupon_code?: string | null
           course_id: string
           created_at?: string
+          discount_amount?: number
           id?: string
           name_ar?: string | null
           name_en?: string | null
@@ -302,8 +378,10 @@ export type Database = {
           certificate_url?: string | null
           certificate_url_ar?: string | null
           certificate_url_en?: string | null
+          coupon_code?: string | null
           course_id?: string
           created_at?: string
+          discount_amount?: number
           id?: string
           name_ar?: string | null
           name_en?: string | null
@@ -538,6 +616,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      apply_coupon_to_enrollment: {
+        Args: { _code: string; _enrollment_id: string }
+        Returns: Json
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -558,9 +640,14 @@ export type Database = {
         }
         Returns: undefined
       }
+      validate_coupon: {
+        Args: { _code: string; _course_id: string }
+        Returns: Json
+      }
     }
     Enums: {
       app_role: "admin" | "trainee"
+      coupon_discount_type: "percent" | "fixed"
       enrollment_status: "pending" | "approved" | "rejected"
     }
     CompositeTypes: {
@@ -690,6 +777,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "trainee"],
+      coupon_discount_type: ["percent", "fixed"],
       enrollment_status: ["pending", "approved", "rejected"],
     },
   },
