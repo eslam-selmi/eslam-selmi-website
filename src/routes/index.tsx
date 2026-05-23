@@ -952,7 +952,8 @@ function Brands() {
         <img
           src={b.src}
           alt={b.name}
-          loading="lazy"
+          loading="eager"
+          decoding="async"
           className="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105"
         />
       </div>
@@ -1032,7 +1033,8 @@ function Snapshots() {
       <img
         src={src}
         alt={`Snapshot ${originalIndex + 1}`}
-        loading="lazy"
+        loading="eager"
+        decoding="async"
         className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
       />
       <div className="image-scrim absolute inset-0 opacity-0 group-hover:opacity-100 transition" />
