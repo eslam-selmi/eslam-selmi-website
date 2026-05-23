@@ -84,7 +84,7 @@ const en: Dict = {
 
   // snapshots
   snapshots_eyebrow: "Snapshots",
-  snapshots_title: "From the field",
+  snapshots_title: "Moments that shaped the journey",
 
   // podcast
   podcast_eyebrow: "L&D Podcast",
@@ -256,7 +256,7 @@ const ar: Dict = {
   brands_meta: "علامة وشريك",
 
   snapshots_eyebrow: "لقطات",
-  snapshots_title: "من قلب الميدان",
+  snapshots_title: "لحظات شكّلت المسيرة",
 
   podcast_eyebrow: "بودكاست التعلم والتطوير",
   podcast_title: "حوارات في التعلم والنمو.",

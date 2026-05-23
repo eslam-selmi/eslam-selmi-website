@@ -54,6 +54,9 @@ import snap11 from "@/assets/snapshots/snap-11.jpg";
 import snap12 from "@/assets/snapshots/snap-12.jpg";
 import snap13 from "@/assets/snapshots/snap-13.jpg";
 import snap14 from "@/assets/snapshots/snap-14.jpg";
+import snap15 from "@/assets/snapshots/snap-15.jpg";
+import snap16 from "@/assets/snapshots/snap-16.jpg";
+import snap17 from "@/assets/snapshots/snap-17.jpg";
 
 export const Route = createFileRoute("/")({ component: Portfolio });
 
@@ -179,7 +182,7 @@ const PILLARS = [
   { icon: BarChart3, key: "kpi", color: "from-lavender/35 to-primary/10" },
 ];
 
-const SNAPSHOTS = [snap1, snap10, snap2, snap11, snap5, snap12, snap3, snap13, snap8, snap14, snap4, snap7, snap6];
+const SNAPSHOTS = [snap1, snap15, snap10, snap2, snap16, snap11, snap5, snap12, snap17, snap3, snap13, snap8, snap14, snap4, snap7, snap6];
 
 type ThemeMode = "dark" | "light";
 
@@ -282,17 +285,22 @@ export function CalendlyDialog() {
 }
 
 /* ---------- BRAND MARK ---------- */
-function BrandMark({ size = 52 }: { size?: number }) {
+function BrandMark({ size = 62 }: { size?: number }) {
   return (
-    <div className="flex items-center gap-1.5">
-      <img
-        src={brandLogo}
-        alt="Eslam Selmi"
-        width={size}
-        height={size}
-        className="shrink-0 object-contain drop-shadow-[0_4px_18px_rgba(80,120,255,0.35)]"
-        style={{ width: size, height: size }}
-      />
+    <div className="flex items-center gap-2">
+      <div
+        className="shrink-0 grid place-items-center rounded-full bg-white/0 dark:bg-white/95 dark:ring-1 dark:ring-white/40 dark:shadow-[0_4px_18px_rgba(255,255,255,0.18)] transition-colors"
+        style={{ width: size, height: size, padding: 2 }}
+      >
+        <img
+          src={brandLogo}
+          alt="Eslam Selmi"
+          width={size}
+          height={size}
+          className="object-contain drop-shadow-[0_4px_18px_rgba(80,120,255,0.35)]"
+          style={{ width: "100%", height: "100%" }}
+        />
+      </div>
       <span className="hidden sm:flex items-center leading-none">
         <span className="font-sans text-[15px] font-semibold tracking-tight text-foreground">Eslam Selmi</span>
       </span>
