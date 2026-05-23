@@ -232,6 +232,7 @@ function CoursesPanel({ courses, refresh, onEdit }: { courses: Course[]; refresh
   const [form, setForm] = useState({
     title: "", description: "", price: "", currency: "EGP",
     starts_at: "", ends_at: "", installments_count: "1", online_url: "", cover_emoji: "🎓",
+    total_hours: "",
   });
   const [busy, setBusy] = useState(false);
 
@@ -248,12 +249,13 @@ function CoursesPanel({ courses, refresh, onEdit }: { courses: Course[]; refresh
       installments_count: Number(form.installments_count) || 1,
       online_url: form.online_url || null,
       cover_emoji: form.cover_emoji || "🎓",
+      total_hours: form.total_hours ? Number(form.total_hours) : 0,
       active: true,
     });
     setBusy(false);
     if (error) return toast.error(error.message);
     toast.success("تمت إضافة الكورس");
-    setForm({ title: "", description: "", price: "", currency: "EGP", starts_at: "", ends_at: "", installments_count: "1", online_url: "", cover_emoji: "🎓" });
+    setForm({ title: "", description: "", price: "", currency: "EGP", starts_at: "", ends_at: "", installments_count: "1", online_url: "", cover_emoji: "🎓", total_hours: "" });
     refresh();
   }
 
