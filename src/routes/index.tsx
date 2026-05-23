@@ -181,8 +181,7 @@ const PILLARS = [
   { icon: TrendingUp, key: "perf", color: "from-gold/35 to-accent/10" },
   { icon: BarChart3, key: "kpi", color: "from-lavender/35 to-primary/10" },
 ];
-
-const SNAPSHOTS = [snap1, snap15, snap10, snap2, snap16, snap11, snap5, snap12, snap3, snap13, snap8, snap14, snap4, snap7, snap6];
+const SNAPSHOTS = [snap1, snap15, snap10, snap2, snap16, snap11, snap5, snap12, snap3, snap13, snap8, snap4, snap7, snap6];
 
 type ThemeMode = "dark" | "light";
 
