@@ -31,6 +31,9 @@ type EnrollmentRow = {
   id: string; user_id: string; course_id: string; status: "pending" | "approved" | "rejected";
   certificate_url: string | null; certificate_issued: boolean; notes: string | null; created_at: string;
   blocked: boolean;
+  name_ar: string | null; name_en: string | null;
+  certificate_url_ar: string | null; certificate_url_en: string | null;
+  certificate_requested_at: string | null;
   courses: Course | null;
   profiles: { full_name: string | null; email: string | null; phone: string | null } | null;
 };
