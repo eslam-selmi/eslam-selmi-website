@@ -37,12 +37,12 @@ import logoMallOfEgypt from "@/assets/clients/mall-of-egypt.jpg";
 import logoNewBrand from "@/assets/clients/new-brand.jpg";
 
 const BRANDS: { src: string; name: string; nameAr: string; specEn: string; specAr: string }[] = [
-  { src: logoAramex, name: "Aramex", nameAr: "أرامكس", specEn: "Logistics", specAr: "خدمات لوجستية" },
+  { src: logoAramex, name: "Aramex", nameAr: "أرامكس", specEn: "Transport & Logistics", specAr: "نقل ولوجيستيات" },
   { src: logoG4s, name: "G4S", nameAr: "جي فور إس", specEn: "Advanced Security Solutions", specAr: "حلول أمنية متطورة" },
   { src: logoAmazonEg, name: "Amazon.eg", nameAr: "أمازون مصر", specEn: "E-commerce", specAr: "تجارة إلكترونية" },
-  { src: logoImtenan, name: "Imtenan", nameAr: "إمتنان", specEn: "FMCG", specAr: "سلع استهلاكية (FMCG)" },
+  { src: logoImtenan, name: "Imtenan", nameAr: "إمتنان", specEn: "FMCG", specAr: "FMCG" },
   { src: logoMallOfEgypt, name: "Mall of Egypt", nameAr: "مول مصر", specEn: "Retail & Malls", specAr: "تجزئة ومراكز تسوق" },
-  { src: logoBadreldin, name: "Badreldin Developments", nameAr: "بدر الدين للتطوير", specEn: "Real Estate Development", specAr: "تطوير عقاري" },
+  { src: logoBadreldin, name: "Badreldin Developments", nameAr: "بدر الدين", specEn: "Real Estate & Retail", specAr: "تطوير عقاري وريتيل" },
   { src: logoAllerAqua, name: "Aller Aqua Egypt", nameAr: "ألر أكوا مصر", specEn: "Aquaculture Feed", specAr: "أعلاف الاستزراع السمكي" },
   { src: logoEvno, name: "Evno", nameAr: "إيفنو", specEn: "Tech & Innovation", specAr: "تكنولوجيا وابتكار" },
   { src: logoAlmajarah, name: "Al Majarah", nameAr: "المجرة", specEn: "Training & Consulting", specAr: "تدريب واستشارات" },
