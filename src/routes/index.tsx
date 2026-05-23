@@ -8,6 +8,7 @@ import {
   ArrowUp, Loader2, Briefcase, BadgeCheck, Compass, Presentation, Moon, Sun,
   Mic, BookOpen, Library as LibraryIcon, FileText, Download, ExternalLink,
   Rocket, Wand2, Mail as MailIcon, Palette, Trello, Table2, Bot, Quote,
+  ShieldCheck, KeyRound, LogIn,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n, type Lang } from "@/lib/i18n";
@@ -307,7 +308,16 @@ function BrandMark({ size = 62 }: { size?: number }) {
 export function Nav({ theme, onThemeToggle }: { theme?: ThemeMode; onThemeToggle?: () => void } = {}) {
   const { t, lang, setLang } = useI18n();
   const [open, setOpen] = useState(false);
+  const [portalOpen, setPortalOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const portalRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (portalRef.current && !portalRef.current.contains(e.target as Node)) setPortalOpen(false);
+    };
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, []);
   const [internalTheme, setInternalTheme] = useState<ThemeMode>("dark");
   const activeTheme = theme ?? internalTheme;
   useEffect(() => {
@@ -384,6 +394,104 @@ export function Nav({ theme, onThemeToggle }: { theme?: ThemeMode; onThemeToggle
             >
               <Linkedin className="size-4" />
             </a>
+
+            {/* Portal access — elegant gold-ringed dropdown */}
+            <div className="relative" ref={portalRef}>
+              <button
+                onClick={() => setPortalOpen(v => !v)}
+                aria-label={lang === "ar" ? "بوابة الدخول" : "Portal access"}
+                aria-expanded={portalOpen}
+                className="relative inline-flex size-9 items-center justify-center rounded-full transition-all group"
+                style={{
+                  background: "linear-gradient(135deg, oklch(0.75 0.13 85 / 0.18), oklch(0.75 0.13 85 / 0.04))",
+                  border: "1.5px solid oklch(0.75 0.13 85 / 0.55)",
+                  boxShadow: portalOpen
+                    ? "0 0 0 4px oklch(0.75 0.13 85 / 0.18), 0 6px 20px -8px oklch(0.75 0.13 85 / 0.55)"
+                    : "0 0 0 0 transparent",
+                }}
+              >
+                <KeyRound className="size-[15px]" style={{ color: "var(--accent)" }} />
+                <span
+                  className="absolute -top-0.5 -end-0.5 size-2 rounded-full"
+                  style={{ background: "var(--accent)", boxShadow: "0 0 8px var(--accent)" }}
+                />
+              </button>
+              <AnimatePresence>
+                {portalOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                    transition={{ duration: 0.18, ease: "easeOut" }}
+                    className="absolute end-0 mt-3 w-64 rounded-2xl overflow-hidden z-50"
+                    style={{
+                      background: "rgba(11,23,54,0.96)",
+                      border: "1px solid oklch(0.75 0.13 85 / 0.35)",
+                      boxShadow: "0 20px 50px -12px rgba(0,0,0,0.5), 0 0 0 1px oklch(0.75 0.13 85 / 0.12)",
+                      backdropFilter: "blur(16px)",
+                    }}
+                  >
+                    <div
+                      className="px-4 py-3 border-b text-[11px] font-bold tracking-[0.18em] uppercase"
+                      style={{
+                        borderColor: "oklch(0.75 0.13 85 / 0.18)",
+                        color: "oklch(0.75 0.13 85)",
+                        background: "linear-gradient(90deg, oklch(0.75 0.13 85 / 0.10), transparent)",
+                      }}
+                    >
+                      {lang === "ar" ? "بوابة الدخول" : "Access Portal"}
+                    </div>
+                    <Link
+                      to="/auth"
+                      onClick={() => setPortalOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 transition-colors group"
+                      style={{ color: "white" }}
+                      onMouseEnter={(e) => (e.currentTarget.style.background = "oklch(0.75 0.13 85 / 0.10)")}
+                      onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                    >
+                      <span
+                        className="size-9 grid place-items-center rounded-xl shrink-0"
+                        style={{
+                          background: "linear-gradient(135deg, oklch(0.75 0.13 85 / 0.25), oklch(0.75 0.13 85 / 0.08))",
+                          border: "1px solid oklch(0.75 0.13 85 / 0.40)",
+                        }}
+                      >
+                        <ShieldCheck className="size-4" style={{ color: "var(--accent)" }} />
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-bold leading-tight">{lang === "ar" ? "دخول الإدارة" : "Admin Login"}</div>
+                        <div className="text-[11px] opacity-60 leading-tight mt-0.5">{lang === "ar" ? "لوحة تحكم المسؤول" : "Administrator dashboard"}</div>
+                      </div>
+                      <ArrowRight className="size-4 opacity-50 group-hover:opacity-100 group-hover:translate-x-0.5 rtl-flip transition-all" />
+                    </Link>
+                    <Link
+                      to="/auth"
+                      onClick={() => setPortalOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 transition-colors group border-t"
+                      style={{ color: "white", borderColor: "oklch(0.75 0.13 85 / 0.12)" }}
+                      onMouseEnter={(e) => (e.currentTarget.style.background = "oklch(0.75 0.13 85 / 0.10)")}
+                      onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                    >
+                      <span
+                        className="size-9 grid place-items-center rounded-xl shrink-0"
+                        style={{
+                          background: "linear-gradient(135deg, oklch(0.75 0.13 85 / 0.25), oklch(0.75 0.13 85 / 0.08))",
+                          border: "1px solid oklch(0.75 0.13 85 / 0.40)",
+                        }}
+                      >
+                        <GraduationCap className="size-4" style={{ color: "var(--accent)" }} />
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-bold leading-tight">{lang === "ar" ? "دخول المتدربين" : "Trainee Login"}</div>
+                        <div className="text-[11px] opacity-60 leading-tight mt-0.5">{lang === "ar" ? "بوابة المتدربين والشهادات" : "Trainees & certificates"}</div>
+                      </div>
+                      <ArrowRight className="size-4 opacity-50 group-hover:opacity-100 group-hover:translate-x-0.5 rtl-flip transition-all" />
+                    </Link>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
             <button onClick={openCalendly}
               className="hidden md:inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-4 py-2 text-sm font-bold hover:opacity-90 transition cursor-pointer">
               <Calendar className="size-4" /> {t("book_cta")}
@@ -428,6 +536,34 @@ export function Nav({ theme, onThemeToggle }: { theme?: ThemeMode; onThemeToggle
               className="mt-1 inline-flex items-center justify-center gap-2 rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-bold cursor-pointer">
               <Calendar className="size-4" /> {t("book_cta")}
             </button>
+            <div className="mt-2 pt-2 border-t border-foreground/10 grid grid-cols-2 gap-2">
+              <Link
+                to="/auth"
+                onClick={() => setOpen(false)}
+                className="inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition"
+                style={{
+                  background: "linear-gradient(135deg, oklch(0.75 0.13 85 / 0.18), oklch(0.75 0.13 85 / 0.05))",
+                  border: "1px solid oklch(0.75 0.13 85 / 0.45)",
+                  color: "var(--accent)",
+                }}
+              >
+                <ShieldCheck className="size-4" />
+                {lang === "ar" ? "دخول الإدارة" : "Admin"}
+              </Link>
+              <Link
+                to="/auth"
+                onClick={() => setOpen(false)}
+                className="inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition"
+                style={{
+                  background: "linear-gradient(135deg, oklch(0.75 0.13 85 / 0.18), oklch(0.75 0.13 85 / 0.05))",
+                  border: "1px solid oklch(0.75 0.13 85 / 0.45)",
+                  color: "var(--accent)",
+                }}
+              >
+                <GraduationCap className="size-4" />
+                {lang === "ar" ? "المتدربين" : "Trainees"}
+              </Link>
+            </div>
           </div>
         )}
       </div>
