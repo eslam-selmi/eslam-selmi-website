@@ -247,9 +247,20 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
   0% { transform: translateX(-50%); }
   100% { transform: translateX(0); }
 }
+@keyframes marquee-loop {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-100% / 3)); }
+}
+@keyframes marquee-loop-reverse {
+  0% { transform: translateX(calc(-100% / 3)); }
+  100% { transform: translateX(0); }
+}
 .animate-marquee { animation: marquee-x 40s linear infinite; }
 .animate-marquee-slow { animation: marquee-x 60s linear infinite; }
 .animate-marquee-rtl { animation: marquee-x-rtl 40s linear infinite; }
+.marquee-track { animation: marquee-loop 40s linear infinite; }
+.marquee-track-reverse,
+.marquee-track-rtl { animation: marquee-loop-reverse 40s linear infinite; }
 .marquee-mask {
   -webkit-mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
           mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
