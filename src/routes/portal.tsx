@@ -133,11 +133,23 @@ function PortalPage() {
     };
   }, [enrollments, modules]);
 
-  async function enroll(courseId: string) {
+  async function enroll(courseId: string, couponCode?: string) {
     if (!user) return;
-    const { error } = await supabase.from("enrollments").insert({ user_id: user.id, course_id: courseId });
+    const { data, error } = await supabase
+      .from("enrollments")
+      .insert({ user_id: user.id, course_id: courseId })
+      .select("id")
+      .single();
     if (error) return toast.error(error.message);
+    if (couponCode && data?.id) {
+      const res = await supabase.rpc("apply_coupon_to_enrollment", { _enrollment_id: data.id, _code: couponCode });
+      const payload = res.data as any;
+      if (res.error) toast.error(res.error.message);
+      else if (payload && payload.ok === false) toast.error("تعذّر تطبيق الكوبون: " + payload.error);
+      else toast.success(`تم تطبيق الكوبون · خصم ${payload?.discount_amount ?? 0}`);
+    }
     toast.success("تم تقديم طلب الالتحاق. ستصلك إشعار فور المراجعة.");
+    setEnrollingCourse(null);
     refresh();
   }
 
