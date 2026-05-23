@@ -16,7 +16,7 @@ import {
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: t("لوحة الإدارة · أكاديمية إسلام سلمي", "Admin Panel · Eslam Selmi Academy") },
+      { title: "لوحة الإدارة · أكاديمية إسلام سلمي" },
       { name: "robots", content: "noindex" },
     ],
   }),
