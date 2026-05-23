@@ -409,7 +409,7 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
   return (
     <div className="space-y-7">
       <button onClick={onBack} className="flex items-center gap-1.5 text-sm text-white/60 hover:text-white">
-        <ChevronLeft className="w-4 h-4 rtl-flip" /> العودة لكورساتي
+        <ChevronLeft className="w-4 h-4 rtl-flip" /> {isAr ? "العودة لكورساتي" : "Back to my courses"}
       </button>
 
       <section className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.04)] p-6 sm:p-8 backdrop-blur-xl">
@@ -424,14 +424,14 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
               {(c.starts_at || c.ends_at) && (
                 <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5 text-[var(--gold)]" /> {c.starts_at || "—"} → {c.ends_at || "—"}</span>
               )}
-              <span className="text-[var(--gold)] font-semibold">{coursePrice > 0 ? `${coursePrice.toLocaleString()} ${c.currency}` : "مجاني"}</span>
-              <span>{c.installments_count === 1 ? "دفعة كاملة" : `${c.installments_count} أقساط`}</span>
-              {Number(c.total_hours) > 0 && <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5 text-[var(--gold)]" /> {c.total_hours} ساعة تدريبية</span>}
+              <span className="text-[var(--gold)] font-semibold">{coursePrice > 0 ? `${coursePrice.toLocaleString()} ${c.currency}` : (isAr ? "مجاني" : "Free")}</span>
+              <span>{c.installments_count === 1 ? (isAr ? "دفعة كاملة" : "Single payment") : (isAr ? `${c.installments_count} أقساط` : `${c.installments_count} installments`)}</span>
+              {Number(c.total_hours) > 0 && <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5 text-[var(--gold)]" /> {c.total_hours} {isAr ? "ساعة تدريبية" : "training hrs"}</span>}
             </div>
             {c.online_url && (
               <a href={c.online_url} target="_blank" rel="noopener"
                 className="mt-4 inline-flex items-center gap-2 text-sm px-4 h-10 rounded-xl bg-[var(--gold)]/15 border border-[var(--gold)]/40 text-[var(--gold)] hover:bg-[var(--gold)]/25 transition">
-                <PlayCircle className="w-4 h-4" /> رابط المحاضرة <ExternalLink className="w-3 h-3" />
+                <PlayCircle className="w-4 h-4" /> {isAr ? "رابط المحاضرة" : "Lecture link"} <ExternalLink className="w-3 h-3" />
               </a>
             )}
           </div>
@@ -440,7 +440,7 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
         {modules.length > 0 && (
           <div className="mt-6">
             <div className="flex justify-between text-xs text-white/60 mb-2">
-              <span>التقدّم</span><span className="font-semibold text-[var(--gold)]">{progressPct}% ({completedCount}/{modules.length})</span>
+              <span>{isAr ? "التقدّم" : "Progress"}</span><span className="font-semibold text-[var(--gold)]">{progressPct}% ({completedCount}/{modules.length})</span>
             </div>
             <div className="h-2 rounded-full bg-white/10 overflow-hidden">
               <div className="h-full transition-all rounded-full" style={{ width: `${progressPct}%`, background: "linear-gradient(90deg, var(--gold), #b8923f)" }} />
@@ -448,6 +448,7 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
           </div>
         )}
       </section>
+
 
       {/* Sessions */}
       <section>
