@@ -9,7 +9,7 @@ import { generateCertificatePdf } from "@/lib/certificate";
 import {
   Plus, Trash2, CheckCircle2, Upload, Wallet, Loader2, Users, BookOpen, Award,
   FileText, X, ToggleLeft, ToggleRight, Calendar, Layers, Link as LinkIcon,
-  StickyNote, Paperclip, Pencil, Check, Clock, Settings2, Sparkles,
+  StickyNote, Paperclip, Pencil, Check, Clock, Settings2, Sparkles, Ticket, Percent,
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
@@ -42,7 +42,7 @@ type EnrollmentRow = {
 function AdminPage() {
   const { user, role, loading } = useAuth();
   const nav = useNavigate();
-  const [tab, setTab] = useState<"enrollments" | "courses">("enrollments");
+  const [tab, setTab] = useState<"enrollments" | "courses" | "coupons">("enrollments");
   const [courses, setCourses] = useState<Course[]>([]);
   const [enrollments, setEnrollments] = useState<EnrollmentRow[]>([]);
   const [drawer, setDrawer] = useState<EnrollmentRow | null>(null);
@@ -118,10 +118,11 @@ function AdminPage() {
           <StatCard icon={BookOpen} label="إجمالي الكورسات" value={courses.length} color="lavender" />
         </div>
 
-        <div className="flex gap-2 border-b border-white/10">
+        <div className="flex gap-2 border-b border-white/10 flex-wrap">
           {[
             { id: "enrollments", label: `طلبات وانضمامات (${enrollments.length})` },
             { id: "courses", label: `الكورسات (${courses.length})` },
+            { id: "coupons", label: "كوبونات الخصم" },
           ].map((t) => (
             <button
               key={t.id}
@@ -135,8 +136,10 @@ function AdminPage() {
 
         {tab === "enrollments" ? (
           <EnrollmentsTable enrollments={enrollments} onOpen={setDrawer} refresh={refresh} />
-        ) : (
+        ) : tab === "courses" ? (
           <CoursesPanel courses={courses} refresh={refresh} onEdit={setEditingCourse} />
+        ) : (
+          <CouponsPanel courses={courses} />
         )}
       </div>
 
@@ -751,8 +754,11 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
   useEffect(() => { refreshLists(); }, [enrollment.id]);
 
   const totalPaid = payments.reduce((s, p) => s + Number(p.amount || 0), 0);
-  const coursePrice = Number(enrollment.courses?.price ?? 0);
+  const rawPrice = Number(enrollment.courses?.price ?? 0);
+  const discount = Number((enrollment as any).discount_amount ?? 0);
+  const coursePrice = Math.max(0, rawPrice - discount);
   const fullyPaid = coursePrice > 0 && totalPaid >= coursePrice;
+  const couponCode = (enrollment as any).coupon_code as string | null;
 
   async function uploadCert(file: File) {
     setUploading(true);
@@ -916,7 +922,17 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
             <div className="flex justify-between"><span className="text-white/50">الهاتف</span><span dir="ltr">{enrollment.profiles?.phone || "—"}</span></div>
             <div className="flex justify-between items-center"><span className="text-white/50">الحالة</span><StatusPill status={enrollment.status} /></div>
             {blocked && <div className="flex justify-between items-center"><span className="text-white/50">الوصول</span><span className="text-xs px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">محظور مؤقتاً</span></div>}
-            <div className="flex justify-between"><span className="text-white/50">سعر الكورس</span><span className="text-[var(--gold)] font-semibold">{coursePrice.toLocaleString()} {courseCur}</span></div>
+            <div className="flex justify-between"><span className="text-white/50">سعر الكورس</span>
+              <span className="text-[var(--gold)] font-semibold">
+                {discount > 0 && <span className="text-white/40 line-through me-2 text-xs">{rawPrice.toLocaleString()}</span>}
+                {coursePrice.toLocaleString()} {courseCur}
+              </span>
+            </div>
+            {couponCode && (
+              <div className="flex justify-between"><span className="text-white/50">كوبون مطبّق</span>
+                <span className="text-emerald-300 font-mono text-xs">{couponCode} (−{discount.toLocaleString()} {courseCur})</span>
+              </div>
+            )}
             <div className="flex justify-between"><span className="text-white/50">المدفوع</span>
               <span className={fullyPaid ? "text-emerald-300 font-semibold" : "text-amber-300"}>
                 {totalPaid.toLocaleString()} {courseCur} {fullyPaid && "✓ مكتمل الدفع"}
@@ -1237,3 +1253,243 @@ function SubmissionRow({ s, maxScore, profile, onGrade }: { s: any; maxScore: nu
     </div>
   );
 }
+
+// ============================================================
+// Coupons Panel
+// ============================================================
+type CouponRow = {
+  id: string;
+  code: string;
+  discount_type: "percent" | "fixed";
+  discount_value: number;
+  course_id: string | null;
+  max_uses: number | null;
+  used_count: number;
+  expires_at: string | null;
+  active: boolean;
+  note: string | null;
+  created_at: string;
+};
+
+function CouponsPanel({ courses }: { courses: Course[] }) {
+  const [rows, setRows] = useState<CouponRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showNew, setShowNew] = useState(false);
+
+  async function load() {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("coupons")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) toast.error(error.message);
+    setRows((data as CouponRow[]) ?? []);
+    setLoading(false);
+  }
+  useEffect(() => { load(); }, []);
+
+  async function toggleActive(c: CouponRow) {
+    const { error } = await supabase.from("coupons").update({ active: !c.active }).eq("id", c.id);
+    if (error) return toast.error(error.message);
+    load();
+  }
+  async function remove(id: string) {
+    if (!confirm("هل أنت متأكد من حذف هذا الكوبون؟")) return;
+    const { error } = await supabase.from("coupons").delete().eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success("تم الحذف");
+    load();
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex items-center gap-2">
+          <Ticket className="w-5 h-5 text-[var(--gold)]" />
+          <h2 className="text-lg font-bold">كوبونات الخصم</h2>
+          <span className="text-xs text-white/50">({rows.length})</span>
+        </div>
+        <button onClick={() => setShowNew(true)}
+          className="flex items-center gap-2 px-4 h-10 rounded-lg bg-[var(--gold)] text-[#0b1736] text-sm font-semibold">
+          <Plus className="w-4 h-4" /> كوبون جديد
+        </button>
+      </div>
+
+      {loading ? (
+        <p className="text-white/50 text-sm">جاري التحميل...</p>
+      ) : rows.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-white/15 p-8 text-center text-white/50">
+          لا توجد كوبونات بعد. أنشئ كوبوناً جديداً للبدء.
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-white/10 overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-white/5 text-white/60 text-xs">
+              <tr>
+                <th className="text-right p-3 font-medium">الكود</th>
+                <th className="text-right p-3 font-medium">الخصم</th>
+                <th className="text-right p-3 font-medium">الكورس</th>
+                <th className="text-right p-3 font-medium">الاستخدام</th>
+                <th className="text-right p-3 font-medium">انتهاء</th>
+                <th className="text-right p-3 font-medium">الحالة</th>
+                <th className="text-right p-3 font-medium"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((c) => {
+                const course = courses.find((x) => x.id === c.course_id);
+                const exhausted = c.max_uses !== null && c.used_count >= c.max_uses;
+                const expired = c.expires_at !== null && new Date(c.expires_at) <= new Date();
+                return (
+                  <tr key={c.id} className="border-t border-white/10">
+                    <td className="p-3 font-mono font-bold text-[var(--gold)]">{c.code}</td>
+                    <td className="p-3">
+                      {c.discount_type === "percent" ? `${c.discount_value}%` : `${c.discount_value} EGP`}
+                    </td>
+                    <td className="p-3 text-xs text-white/70">{course?.title ?? "جميع الكورسات"}</td>
+                    <td className="p-3 text-xs">
+                      {c.used_count} / {c.max_uses ?? "∞"}
+                    </td>
+                    <td className="p-3 text-xs text-white/60">
+                      {c.expires_at ? new Date(c.expires_at).toLocaleDateString("ar-EG") : "—"}
+                    </td>
+                    <td className="p-3">
+                      {!c.active ? (
+                        <span className="text-xs px-2 py-1 rounded bg-white/10 text-white/60">معطّل</span>
+                      ) : expired ? (
+                        <span className="text-xs px-2 py-1 rounded bg-red-500/20 text-red-300">منتهي</span>
+                      ) : exhausted ? (
+                        <span className="text-xs px-2 py-1 rounded bg-amber-500/20 text-amber-300">مستنفد</span>
+                      ) : (
+                        <span className="text-xs px-2 py-1 rounded bg-emerald-500/20 text-emerald-300">نشط</span>
+                      )}
+                    </td>
+                    <td className="p-3">
+                      <div className="flex gap-1 justify-end">
+                        <button onClick={() => toggleActive(c)}
+                          className="p-2 rounded hover:bg-white/10" title={c.active ? "إيقاف" : "تفعيل"}>
+                          {c.active ? <ToggleRight className="w-4 h-4 text-emerald-300" /> : <ToggleLeft className="w-4 h-4 text-white/50" />}
+                        </button>
+                        <button onClick={() => remove(c.id)} className="p-2 rounded hover:bg-red-500/20 text-red-300">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {showNew && <NewCouponModal courses={courses} onClose={() => setShowNew(false)} onSaved={() => { setShowNew(false); load(); }} />}
+    </div>
+  );
+}
+
+function NewCouponModal({ courses, onClose, onSaved }: { courses: Course[]; onClose: () => void; onSaved: () => void }) {
+  const [code, setCode] = useState("");
+  const [discountType, setDiscountType] = useState<"percent" | "fixed">("percent");
+  const [discountValue, setDiscountValue] = useState("10");
+  const [courseId, setCourseId] = useState<string>("");
+  const [maxUses, setMaxUses] = useState("");
+  const [expiresAt, setExpiresAt] = useState("");
+  const [note, setNote] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  async function save() {
+    const trimmed = code.trim().toUpperCase();
+    if (!trimmed) return toast.error("أدخل كود الكوبون");
+    const val = Number(discountValue);
+    if (isNaN(val) || val <= 0) return toast.error("قيمة خصم غير صحيحة");
+    if (discountType === "percent" && val > 100) return toast.error("النسبة يجب ألا تتجاوز 100%");
+    setSaving(true);
+    const { error } = await supabase.from("coupons").insert({
+      code: trimmed,
+      discount_type: discountType,
+      discount_value: val,
+      course_id: courseId || null,
+      max_uses: maxUses ? Number(maxUses) : null,
+      expires_at: expiresAt ? new Date(expiresAt).toISOString() : null,
+      note: note || null,
+    });
+    setSaving(false);
+    if (error) return toast.error(error.message.includes("duplicate") ? "هذا الكود مستخدم بالفعل" : error.message);
+    toast.success("تم إنشاء الكوبون");
+    onSaved();
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-[#0b1736] border border-white/15 rounded-2xl w-full max-w-lg p-6 space-y-4" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-bold flex items-center gap-2"><Ticket className="w-5 h-5 text-[var(--gold)]" /> كوبون خصم جديد</h3>
+          <button onClick={onClose} className="p-1 rounded hover:bg-white/10"><X className="w-4 h-4" /></button>
+        </div>
+
+        <div>
+          <label className="text-xs text-white/60 block mb-1">الكود</label>
+          <input value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} placeholder="SUMMER25"
+            className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/15 font-mono uppercase tracking-wider" />
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="text-xs text-white/60 block mb-1">نوع الخصم</label>
+            <select value={discountType} onChange={(e) => setDiscountType(e.target.value as any)}
+              className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/15">
+              <option value="percent">نسبة مئوية %</option>
+              <option value="fixed">مبلغ ثابت EGP</option>
+            </select>
+          </div>
+          <div>
+            <label className="text-xs text-white/60 block mb-1">القيمة</label>
+            <div className="relative">
+              <input type="number" value={discountValue} onChange={(e) => setDiscountValue(e.target.value)}
+                className="w-full h-10 px-3 pr-9 rounded-lg bg-white/5 border border-white/15" />
+              <Percent className="w-4 h-4 text-white/40 absolute left-3 top-1/2 -translate-y-1/2" />
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label className="text-xs text-white/60 block mb-1">الكورس (اختياري)</label>
+          <select value={courseId} onChange={(e) => setCourseId(e.target.value)}
+            className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/15">
+            <option value="">جميع الكورسات</option>
+            {courses.map((c) => <option key={c.id} value={c.id}>{c.title}</option>)}
+          </select>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="text-xs text-white/60 block mb-1">حد الاستخدام (اختياري)</label>
+            <input type="number" value={maxUses} onChange={(e) => setMaxUses(e.target.value)} placeholder="غير محدود"
+              className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/15" />
+          </div>
+          <div>
+            <label className="text-xs text-white/60 block mb-1">تاريخ الانتهاء (اختياري)</label>
+            <input type="date" value={expiresAt} onChange={(e) => setExpiresAt(e.target.value)}
+              className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/15" />
+          </div>
+        </div>
+
+        <div>
+          <label className="text-xs text-white/60 block mb-1">ملاحظة داخلية (اختياري)</label>
+          <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="مثال: حملة الصيف"
+            className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/15" />
+        </div>
+
+        <div className="flex gap-2 pt-2">
+          <button onClick={onClose} className="flex-1 h-11 rounded-lg bg-white/5 border border-white/15 text-sm">إلغاء</button>
+          <button onClick={save} disabled={saving}
+            className="flex-1 h-11 rounded-lg bg-[var(--gold)] text-[#0b1736] text-sm font-semibold disabled:opacity-50">
+            {saving ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : "إنشاء الكوبون"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
