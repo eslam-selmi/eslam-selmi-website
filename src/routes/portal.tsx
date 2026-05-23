@@ -335,14 +335,15 @@ function EnrollmentCard({ en, onOpen, onWithdraw }: { en: Enrollment; onOpen: ()
       {en.status === "pending" && (
         <>
           <p className="mt-3 text-xs text-amber-200/80 bg-amber-300/5 border border-amber-300/15 rounded-lg p-3">
-            لم تتم الموافقة على انضمامك حتى الآن. يمكنك تصفح عناوين المحاضرات (المحتوى مقفل 🔒) أو سحب الطلب.
+            {isAr ? "لم تتم الموافقة على انضمامك حتى الآن. يمكنك تصفح عناوين المحاضرات (المحتوى مقفل 🔒) أو سحب الطلب."
+                  : "Your enrollment isn't approved yet. You can preview lecture titles (content locked 🔒) or withdraw the request."}
           </p>
           <div className="flex gap-2 mt-3">
             <button onClick={onOpen} className="flex-1 text-xs h-10 rounded-lg bg-white/5 border border-white/15 hover:bg-white/10">
-              معاينة المحاضرات 🔒
+              {isAr ? "معاينة المحاضرات 🔒" : "Preview lectures 🔒"}
             </button>
             <button onClick={() => onWithdraw(en.id)} className="text-xs px-3 h-10 rounded-lg bg-rose-500/15 text-rose-300 border border-rose-500/30 hover:bg-rose-500/25">
-              انسحاب
+              {isAr ? "انسحاب" : "Withdraw"}
             </button>
           </div>
         </>
@@ -353,9 +354,10 @@ function EnrollmentCard({ en, onOpen, onWithdraw }: { en: Enrollment; onOpen: ()
         <button onClick={onOpen}
           className="mt-4 w-full h-11 rounded-xl font-semibold flex items-center justify-center gap-2"
           style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
-          فتح الكورس <ArrowRight className="w-4 h-4 rtl-flip" />
+          {isAr ? "فتح الكورس" : "Open course"} <ArrowRight className="w-4 h-4 rtl-flip" />
         </button>
       )}
+
     </div>
   );
 }
