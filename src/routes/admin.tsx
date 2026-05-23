@@ -108,7 +108,7 @@ function AdminPage() {
               <Users className="w-5 h-5 text-amber-300" />
             </div>
             <div className="flex-1">
-              <p className="font-bold text-amber-100">{pending} طلب{pending > 2 ? t("ات", "s") : ""} انضمام بانتظار مراجعتك</p>
+              <p className="font-bold text-amber-100">{pending} {t("طلب", "request")}{pending > 2 ? t("ات", "s") : ""} {t("انضمام بانتظار مراجعتك", "enrollment(s) awaiting your review")}</p>
               <p className="text-xs text-amber-200/70">{t("راجع الطلبات الجديدة في تبويب طلبات الانضمام بالأسفل.", "Review new requests in the enrollments tab below.")}</p>
             </div>
             <button onClick={() => setTab("enrollments")} className="text-xs px-3 h-9 rounded-lg bg-amber-300 text-amber-950 font-semibold">{t("عرض", "View")}</button>
@@ -124,8 +124,8 @@ function AdminPage() {
 
         <div className="flex gap-2 border-b border-white/10 flex-wrap">
           {[
-            { id: "enrollments", label: `طلبات وانضمامات (${enrollments.length})` },
-            { id: "courses", label: `الكورسات (${courses.length})` },
+            { id: "enrollments", label: `${t("طلبات وانضمامات", "Requests & enrollments")} (${enrollments.length})` },
+            { id: "courses", label: `${t("الكورسات", "Courses")} (${courses.length})` },
             { id: "coupons", label: t("كوبونات الخصم", "Discount coupons") },
           ].map((t) => (
             <button
@@ -316,7 +316,7 @@ function CoursesPanel({ courses, refresh, onEdit }: { courses: Course[]; refresh
                 </div>
                 <div className="flex flex-col gap-1">
                   <button onClick={() => onEdit(c)} className="flex items-center gap-1.5 text-xs px-3 h-9 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold">
-                    <Settings2 className="w-3.5 h-3.5" /> إدارة المحتوى
+                    <Settings2 className="w-3.5 h-3.5" /> {t("إدارة المحتوى", "Manage content")}
                   </button>
                   <div className="flex gap-1 justify-end">
                     <button onClick={() => toggleActive(c)} className="p-2 rounded-lg hover:bg-white/5" title={c.active ? t("إيقاف", "Disable") : t("تفعيل", "Enable")}>
@@ -463,7 +463,7 @@ function CourseContent({ courseId }: { courseId: string }) {
           placeholder={t("عنوان باب جديد...", "New module title...")}
           className="flex-1 h-10 px-3 rounded-lg bg-white/5 border border-white/15 text-sm focus:outline-none focus:border-[var(--gold)]/60" />
         <button onClick={addModule} className="px-4 h-10 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold text-sm flex items-center gap-1.5">
-          <Plus className="w-4 h-4" /> إضافة باب
+          <Plus className="w-4 h-4" /> {t("إضافة باب", "Add module")}
         </button>
       </div>
 
@@ -615,7 +615,7 @@ function ModuleCard({ m, index, items, onToggle, onDelete, onChangeOnlineUrl, on
             </div>
           ) : (
             <button onClick={() => setShowAddItem(true)} className="text-xs text-[var(--gold)] hover:underline flex items-center gap-1">
-              <Plus className="w-3 h-3" /> إضافة بند (ملاحظة / رابط / ملف)
+              <Plus className="w-3 h-3" /> {t("إضافة بند (ملاحظة / رابط / ملف)", "Add item (note / link / file)")}
             </button>
           )}
         </div>
@@ -665,7 +665,7 @@ function CourseSessions({ courseId }: { courseId: string }) {
         </div>
         <Input label={t("رابط الانضمام", "Join link")} value={form.online_url} onChange={(v) => setForm({ ...form, online_url: v })} />
         <button type="submit" className="w-full h-10 rounded-xl text-sm font-semibold" style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
-          إضافة المحاضرة
+          {t("إضافة المحاضرة", "Add session")}
         </button>
       </form>
 
@@ -677,7 +677,7 @@ function CourseSessions({ courseId }: { courseId: string }) {
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-sm">{s.title}</p>
                 <p className="text-xs text-white/55">
-                  {new Date(s.starts_at).toLocaleString("ar-EG")} · {s.duration_minutes}د
+                  {new Date(s.starts_at).toLocaleString("ar-EG")} · {s.duration_minutes}{t("د", "m")}
                 </p>
                 {s.online_url && <a href={s.online_url} target="_blank" rel="noopener" className="text-[11px] text-[var(--gold)] truncate block" dir="ltr">{s.online_url}</a>}
               </div>
@@ -737,7 +737,7 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
         <Input label={t("عدد ساعات الكورس", "Total hours")} type="number" value={f.total_hours} onChange={(v) => setF({ ...f, total_hours: v })} />
       </div>
       <button onClick={save} className="w-full h-11 rounded-xl font-semibold" style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
-        حفظ التعديلات
+        {t("حفظ التعديلات", "Save changes")}
       </button>
     </div>
   );
@@ -981,7 +981,7 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
               {accountBlocked ? t("✓ إعادة تفعيل الحساب", "✓ Reactivate account") : t("⛔ إيقاف الحساب من المنصة", "⛔ Suspend account from platform")}
             </button>
             <button onClick={removeEnrollment} className="sm:col-span-2 h-10 rounded-lg text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30">
-              🗑 حذف المتدرب من هذا الكورس نهائياً
+              {t("🗑 حذف المتدرب من هذا الكورس نهائياً", "🗑 Permanently remove trainee from this course")}
             </button>
           </section>
 
@@ -989,7 +989,7 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
             <h4 className="font-bold mb-3 flex items-center gap-2"><Award className="w-4 h-4 text-[var(--gold)]" /> {t("الشهادة", "Certificate")}</h4>
             {!fullyPaid && coursePrice > 0 && (
               <div className="text-xs text-amber-200/80 bg-amber-300/5 border border-amber-300/15 rounded-lg p-3 mb-3">
-                💡 يفضّل اكتمال الدفع قبل إصدار الشهادة. المتبقي: {(coursePrice - totalPaid).toLocaleString()} {courseCur}
+                {t("💡 يفضّل اكتمال الدفع قبل إصدار الشهادة. المتبقي:", "💡 Payment should be completed before issuing certificate. Remaining:")} {(coursePrice - totalPaid).toLocaleString()} {courseCur}
               </div>
             )}
             <div className="rounded-2xl border border-[var(--gold)]/30 bg-[var(--gold)]/5 p-4 space-y-3 mb-3">
@@ -1056,7 +1056,7 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
               <h4 className="font-bold flex items-center gap-2"><FileText className="w-4 h-4 text-[var(--gold)]" /> {t("الأقساط", "Installments")}</h4>
               {installments.length === 0 && (enrollment.courses?.installments_count ?? 1) > 1 && coursePrice > 0 && (
                 <button onClick={autoSplitInstallments} className="text-[11px] px-3 h-8 rounded-lg bg-[var(--gold)]/15 text-[var(--gold)] border border-[var(--gold)]/30">
-                  ⚡ توليد جدول تلقائي ({enrollment.courses?.installments_count} أقساط)
+                  {t("⚡ توليد جدول تلقائي", "⚡ Auto-generate schedule")} ({enrollment.courses?.installments_count} {t("أقساط", "installments")})
                 </button>
               )}
             </div>
@@ -1200,7 +1200,7 @@ function CourseAssignmentsAdmin({ courseId }: { courseId: string }) {
           <input type="number" value={maxScore} onChange={(e) => setMaxScore(Number(e.target.value))}
             placeholder={t("درجة قصوى", "Max score")} className="w-28 h-10 px-3 rounded-lg bg-white/5 border border-white/15 text-sm" />
           <button onClick={addAssignment} className="px-4 h-10 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold text-sm">
-            <Plus className="w-4 h-4 inline" /> إضافة
+            <Plus className="w-4 h-4 inline" /> {t("إضافة", "Add")}
           </button>
         </div>
       </div>
@@ -1218,7 +1218,7 @@ function CourseAssignmentsAdmin({ courseId }: { courseId: string }) {
                     <h5 className="font-bold">{a.title}</h5>
                     {a.instructions && <p className="text-xs text-white/55 mt-1 whitespace-pre-wrap">{a.instructions}</p>}
                     <p className="text-[11px] text-white/45 mt-1">
-                      {a.due_date ? `تسليم: ${new Date(a.due_date).toLocaleString("ar-EG")}` : t("بدون موعد", "No due date")} · درجة قصوى {a.max_score}
+                      {a.due_date ? `${t("تسليم", "Due")}: ${new Date(a.due_date).toLocaleString(lang === "ar" ? "ar-EG" : "en-GB")}` : t("بدون موعد", "No due date")} · {t("درجة قصوى", "Max score")} {a.max_score}
                     </p>
                   </div>
                   <button onClick={() => delAssignment(a.id)} className="text-rose-300 hover:bg-rose-500/10 p-1.5 rounded-lg">
@@ -1226,7 +1226,7 @@ function CourseAssignmentsAdmin({ courseId }: { courseId: string }) {
                   </button>
                 </div>
                 <div className="mt-3 border-t border-white/5 pt-3">
-                  <p className="text-[11px] text-white/50 mb-2">التسليمات ({aSubs.length})</p>
+                  <p className="text-[11px] text-white/50 mb-2">{t("التسليمات", "Submissions")} ({aSubs.length})</p>
                   {aSubs.length === 0 ? <p className="text-[11px] text-white/40">{t("لم يسلّم أي متدرب بعد.", "No trainee has submitted yet.")}</p> : (
                     <div className="space-y-2">
                       {aSubs.map((s) => (
@@ -1255,7 +1255,7 @@ function SubmissionRow({ s, maxScore, profile, onGrade }: { s: any; maxScore: nu
           <p className="text-xs font-semibold">{profile?.full_name || profile?.email || s.user_id.slice(0, 8)}</p>
           <p className="text-[10px] text-white/45 mt-0.5">{new Date(s.submitted_at).toLocaleString("ar-EG")}</p>
         </div>
-        {s.score !== null && <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">مُقيّم: {s.score}/{maxScore}</span>}
+        {s.score !== null && <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">{t("مُقيّم", "Graded")}: {s.score}/{maxScore}</span>}
       </div>
       {s.content && <p className="text-xs text-white/75 mt-2 whitespace-pre-wrap p-2 bg-white/5 rounded">{s.content}</p>}
       {s.link && <a href={s.link} target="_blank" rel="noopener" className="text-xs text-[var(--gold)] hover:underline block mt-1 truncate" dir="ltr">{s.link}</a>}
@@ -1266,7 +1266,7 @@ function SubmissionRow({ s, maxScore, profile, onGrade }: { s: any; maxScore: nu
           className="flex-1 h-8 px-2 rounded bg-white/5 border border-white/15 text-xs" />
         <button onClick={() => { const n = Number(score); if (!isNaN(n)) onGrade(s.id, n, fb); }}
           className="px-3 h-8 rounded bg-[var(--gold)] text-[#0b1736] text-xs font-semibold">
-          حفظ
+          {t("حفظ", "Save")}
         </button>
       </div>
     </div>
@@ -1333,7 +1333,7 @@ function CouponsPanel({ courses }: { courses: Course[] }) {
         </div>
         <button onClick={() => setShowNew(true)}
           className="flex items-center gap-2 px-4 h-10 rounded-lg bg-[var(--gold)] text-[#0b1736] text-sm font-semibold">
-          <Plus className="w-4 h-4" /> كوبون جديد
+          <Plus className="w-4 h-4" /> {t("كوبون جديد", "New coupon")}
         </button>
       </div>
 
@@ -1341,7 +1341,7 @@ function CouponsPanel({ courses }: { courses: Course[] }) {
         <p className="text-white/50 text-sm">{t("جاري التحميل...", "Loading...")}</p>
       ) : rows.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-white/15 p-8 text-center text-white/50">
-          لا توجد كوبونات بعد. أنشئ كوبوناً جديداً للبدء.
+          {t("لا توجد كوبونات بعد. أنشئ كوبوناً جديداً للبدء.", "No coupons yet. Create a new one to get started.")}
         </div>
       ) : (
         <div className="rounded-2xl border border-white/10 overflow-x-auto">
