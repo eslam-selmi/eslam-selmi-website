@@ -37,12 +37,12 @@ import logoMallOfEgypt from "@/assets/clients/mall-of-egypt.jpg";
 import logoNewBrand from "@/assets/clients/new-brand.jpg";
 
 const BRANDS: { src: string; name: string; nameAr: string; specEn: string; specAr: string }[] = [
-  { src: logoAramex, name: "Aramex", nameAr: "أرامكس", specEn: "Transport & Logistics", specAr: "نقل ولوجيستيات" },
-  { src: logoG4s, name: "G4S", nameAr: "جي فور إس", specEn: "Advanced Security Solutions", specAr: "حلول أمنية متطورة" },
+  { src: logoAramex, name: "Aramex", nameAr: "أرامكس", specEn: "Transport & Logistics", specAr: "حلول النقل والخدمات اللوجستية" },
+  { src: logoG4s, name: "G4S", nameAr: "جي فور إس", specEn: "Advanced Security Solutions", specAr: "الحلول الأمنية المتكاملة" },
   { src: logoAmazonEg, name: "Amazon.eg", nameAr: "أمازون مصر", specEn: "E-commerce", specAr: "تجارة إلكترونية" },
-  { src: logoImtenan, name: "Imtenan", nameAr: "إمتنان", specEn: "FMCG", specAr: "FMCG" },
+  { src: logoImtenan, name: "Imtenan", nameAr: "إمتنان", specEn: "FMCG", specAr: "قطاع السلع الاستهلاكية (FMCG)" },
   { src: logoMallOfEgypt, name: "Mall of Egypt", nameAr: "مول مصر", specEn: "Retail & Malls", specAr: "تجزئة ومراكز تسوق" },
-  { src: logoBadreldin, name: "Badreldin Developments", nameAr: "بدر الدين", specEn: "Real Estate & Retail", specAr: "تطوير عقاري وريتيل" },
+  { src: logoBadreldin, name: "Badreldin Developments", nameAr: "بدر الدين", specEn: "Real Estate & Retail", specAr: "القطاع العقاري والتجزئة" },
   { src: logoAllerAqua, name: "Aller Aqua Egypt", nameAr: "ألر أكوا مصر", specEn: "Aquaculture Feed", specAr: "أعلاف الاستزراع السمكي" },
   { src: logoEvno, name: "Evno", nameAr: "إيفنو", specEn: "Tech & Innovation", specAr: "تكنولوجيا وابتكار" },
   { src: logoAlmajarah, name: "Al Majarah", nameAr: "المجرة", specEn: "Training & Consulting", specAr: "تدريب واستشارات" },
@@ -120,11 +120,11 @@ const COUNTRIES = [
 ];
 
 const JOURNEY = [
-  { year: { en: "2017", ar: "2017" }, role: { en: "Senior L&D / L&D Specialist", ar: "أخصائي أول / أخصائي تعلم وتطوير" }, company: { en: "G4S", ar: "جي فور إس" }, industry: { en: "Advanced Security Solutions", ar: "حلول أمنية متطورة" }, country: "EG", logo: "https://logo.clearbit.com/g4s.com" },
-  { year: { en: "2022", ar: "2022" }, role: { en: "L&D Specialist", ar: "أخصائي تعلم وتطوير" }, company: { en: "Aramex", ar: "أرامكس" }, industry: { en: "Transport & Logistics", ar: "نقل ولوجيستيات" }, country: "EG", logo: "https://logo.clearbit.com/aramex.com" },
-  { year: { en: "2023", ar: "2023" }, role: { en: "Department Supervisor & Learning Liaison", ar: "مشرف إدارة ومنسّق التعلم والتطوير" }, company: { en: "Badreldin Developments", ar: "بدر الدين" }, industry: { en: "Real Estate & Retail", ar: "تطوير عقاري وريتيل" }, country: "EG", logo: "https://logo.clearbit.com/badreldin.com" },
-  { year: { en: "2025", ar: "2025" }, role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: { en: "Imtenan", ar: "إمتنان" }, industry: { en: "FMCG", ar: "FMCG" }, country: "EG", logo: "https://logo.clearbit.com/imtenan.com" },
-  { year: { en: "NOW", ar: "حاليًا" }, role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: { en: "KnowledgeCity", ar: "مدينة المعرفة" }, industry: { en: "Schools & Training", ar: "مدارس وتدريب" }, country: "SA", logo: "https://logo.clearbit.com/knowledgecity.com" },
+  { year: { en: "2017", ar: "2017" }, role: { en: "Senior L&D / L&D Specialist", ar: "أخصائي أول / أخصائي تعلم وتطوير" }, company: { en: "G4S", ar: "جي فور إس" }, industry: { en: "Advanced Security Solutions", ar: "الحلول الأمنية المتكاملة" }, country: "EG", logo: "https://logo.clearbit.com/g4s.com" },
+  { year: { en: "2022", ar: "2022" }, role: { en: "L&D Specialist", ar: "أخصائي تعلم وتطوير" }, company: { en: "Aramex", ar: "أرامكس" }, industry: { en: "Transport & Logistics", ar: "حلول النقل والخدمات اللوجستية" }, country: "EG", logo: "https://logo.clearbit.com/aramex.com" },
+  { year: { en: "2023", ar: "2023" }, role: { en: "Department Supervisor & Learning Liaison", ar: "مشرف إدارة ومنسّق التعلم والتطوير" }, company: { en: "Badreldin Developments", ar: "بدر الدين" }, industry: { en: "Real Estate & Retail", ar: "القطاع العقاري والتجزئة" }, country: "EG", logo: "https://logo.clearbit.com/badreldin.com" },
+  { year: { en: "2025", ar: "2025" }, role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: { en: "Imtenan", ar: "إمتنان" }, industry: { en: "FMCG", ar: "قطاع السلع الاستهلاكية (FMCG)" }, country: "EG", logo: "https://logo.clearbit.com/imtenan.com" },
+  { year: { en: "NOW", ar: "حاليًا" }, role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: { en: "KnowledgeCity", ar: "مدينة المعرفة" }, industry: { en: "Schools & Training", ar: "قطاع التعليم والتدريب" }, country: "SA", logo: "https://logo.clearbit.com/knowledgecity.com" },
 ];
 
 const CREDENTIALS = [
@@ -854,13 +854,25 @@ function Services() {
               <a
                 href={waServiceLink(s.title.en, lang)}
                 target="_blank" rel="noopener noreferrer"
-                className="group/btn relative inline-flex w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-extrabold overflow-hidden transition shadow-[0_12px_28px_-12px_rgba(212,170,80,0.55)] hover:translate-y-[-1px]"
-                style={{ background: "linear-gradient(120deg, var(--gold) 0%, #f4d98a 100%)", color: "#0a0f2c" }}
+                className="group/btn relative inline-flex w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold overflow-hidden transition-all duration-300 hover:translate-y-[-1px]"
+                style={{
+                  background: "linear-gradient(135deg, rgba(11,23,54,0.95) 0%, rgba(20,35,80,0.95) 100%)",
+                  color: "var(--gold)",
+                  border: "1px solid color-mix(in oklab, var(--gold) 45%, transparent)",
+                  boxShadow: "0 10px 30px -14px color-mix(in oklab, var(--gold) 60%, transparent), inset 0 1px 0 color-mix(in oklab, var(--gold) 20%, transparent)",
+                }}
                 aria-label={`${t("svc_request_btn")} — ${s.title[lang]}`}
               >
-                <span className="absolute inset-0 bg-white/0 group-hover/btn:bg-black/5 transition" />
+                <span
+                  className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"
+                  style={{ background: "linear-gradient(135deg, color-mix(in oklab, var(--gold) 18%, transparent), transparent 60%)" }}
+                />
+                <span
+                  className="absolute -inset-px rounded-full opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500 pointer-events-none"
+                  style={{ background: "radial-gradient(120px 40px at 50% 0%, color-mix(in oklab, var(--gold) 35%, transparent), transparent 70%)" }}
+                />
                 <Rocket className="relative size-4" />
-                <span className="relative">{t("svc_request_btn")}</span>
+                <span className="relative tracking-wide">{t("svc_request_btn")}</span>
                 <ArrowRight className="relative size-4 group-hover/btn:translate-x-1 rtl-flip transition" />
               </a>
             </div>
@@ -1793,41 +1805,74 @@ export function LanguageHint() {
     <AnimatePresence>
       {show && (
         <motion.div
-          initial={{ opacity: 0, y: 30, scale: 0.96 }}
+          initial={{ opacity: 0, y: -20, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 20, scale: 0.97 }}
-          transition={{ duration: 0.45, ease: [0.21, 0.5, 0.3, 1] }}
-          className={`fixed top-24 z-[60] max-w-[92vw] w-[340px] ${dir === "rtl" ? "left-5" : "right-5"}`}
+          exit={{ opacity: 0, y: -10, scale: 0.96 }}
+          transition={{ duration: 0.5, ease: [0.21, 0.5, 0.3, 1] }}
+          className={`fixed top-24 z-[60] max-w-[92vw] w-[360px] ${dir === "rtl" ? "left-5" : "right-5"}`}
           role="status"
           aria-live="polite"
           dir={toastDir}
         >
-          <div className="relative rounded-2xl overflow-hidden border border-white/15 bg-[#0b1736]/95 backdrop-blur-xl text-white shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)]">
+          {/* outer glow */}
+          <div
+            className="absolute -inset-1 rounded-[1.5rem] opacity-70 blur-2xl pointer-events-none"
+            style={{ background: "linear-gradient(135deg, color-mix(in oklab, var(--gold) 40%, transparent), color-mix(in oklab, var(--accent) 35%, transparent))" }}
+          />
+          <div
+            className="relative rounded-2xl overflow-hidden backdrop-blur-2xl text-white shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)]"
+            style={{
+              background: "linear-gradient(160deg, rgba(11,23,54,0.92) 0%, rgba(8,16,40,0.96) 100%)",
+              border: "1px solid color-mix(in oklab, var(--gold) 25%, rgba(255,255,255,0.08))",
+            }}
+          >
+            {/* decorative gradient orbs */}
             <div
-              className="absolute inset-0 opacity-60 pointer-events-none"
-              style={{ background: "radial-gradient(ellipse 80% 60% at 100% 0%, oklch(0.72 0.13 180 / 0.35), transparent 65%), radial-gradient(ellipse 60% 50% at 0% 100%, oklch(0.55 0.2 290 / 0.25), transparent 65%)" }}
+              className="absolute inset-0 opacity-80 pointer-events-none"
+              style={{
+                background:
+                  "radial-gradient(ellipse 70% 60% at 100% 0%, color-mix(in oklab, var(--gold) 30%, transparent), transparent 60%), radial-gradient(ellipse 60% 50% at 0% 100%, color-mix(in oklab, var(--accent) 30%, transparent), transparent 65%)",
+              }}
             />
-            <div className="relative p-4 flex items-start gap-3">
+            {/* subtle grain border highlight */}
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none" />
+
+            <div className="relative p-5 flex items-start gap-3.5">
               <span className="relative shrink-0 mt-0.5">
-                <span className="absolute inset-0 rounded-full bg-[var(--accent)]/40 blur-md animate-pulse" />
-                <span className="relative grid place-items-center size-9 rounded-full bg-white/10 border border-white/20">
-                  <Languages className="size-4" style={{ color: "var(--accent)" }} />
+                <span
+                  className="absolute inset-0 rounded-full blur-md animate-pulse"
+                  style={{ background: "color-mix(in oklab, var(--gold) 55%, transparent)" }}
+                />
+                <span
+                  className="relative grid place-items-center size-10 rounded-full"
+                  style={{
+                    background: "linear-gradient(135deg, color-mix(in oklab, var(--gold) 25%, transparent), color-mix(in oklab, var(--accent) 25%, transparent))",
+                    border: "1px solid color-mix(in oklab, var(--gold) 50%, transparent)",
+                  }}
+                >
+                  <Languages className="size-[18px]" style={{ color: "var(--gold)" }} />
                 </span>
               </span>
               <div className="min-w-0 flex-1">
-                <div className="font-display font-bold text-sm">{title}</div>
-                <p className="text-xs text-white/80 mt-1 leading-relaxed">{desc}</p>
+                <div className="font-display font-bold text-[15px] leading-tight">{title}</div>
+                <p className="text-[12.5px] text-white/75 mt-1.5 leading-relaxed">{desc}</p>
                 <button
                   onClick={switchLang}
-                  className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white text-[#0b1736] px-3 py-1.5 text-xs font-bold hover:bg-white/95 transition"
+                  className="group/lng mt-3.5 inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-bold transition-all duration-300 hover:translate-y-[-1px]"
+                  style={{
+                    background: "linear-gradient(135deg, var(--gold) 0%, #f4d98a 100%)",
+                    color: "#0a0f2c",
+                    boxShadow: "0 10px 24px -10px color-mix(in oklab, var(--gold) 70%, transparent)",
+                  }}
                 >
                   <Languages className="size-3.5" /> {switchLabel}
+                  <ArrowRight className="size-3.5 rtl-flip group-hover/lng:translate-x-0.5 transition" />
                 </button>
               </div>
               <button
                 onClick={dismiss}
                 aria-label="Dismiss"
-                className="shrink-0 size-7 grid place-items-center rounded-full hover:bg-white/10 text-white/70 hover:text-white transition"
+                className="shrink-0 size-7 grid place-items-center rounded-full hover:bg-white/10 text-white/60 hover:text-white transition"
               >
                 <X className="size-3.5" />
               </button>
@@ -1835,9 +1880,12 @@ export function LanguageHint() {
             <motion.div
               initial={{ scaleX: 1 }}
               animate={{ scaleX: 0 }}
-              transition={{ duration: 5, ease: "linear" }}
+              transition={{ duration: 6.5, ease: "linear" }}
               className="h-[2px] origin-left"
-              style={{ background: "linear-gradient(90deg, var(--accent), oklch(0.55 0.2 290))", transformOrigin: toastDir === "rtl" ? "right" : "left" }}
+              style={{
+                background: "linear-gradient(90deg, var(--gold), color-mix(in oklab, var(--accent) 80%, transparent))",
+                transformOrigin: toastDir === "rtl" ? "right" : "left",
+              }}
             />
           </div>
         </motion.div>

@@ -38,7 +38,7 @@ const en: Dict = {
   about_eyebrow: "Who I am",
   about_title: "Driving human capital excellence",
   about_intro:
-    "L&D Head, Talent & Performance Management Leader with 9+ years across Egypt, Saudi Arabia and 12 other countries. Expertise spans Education, Retail, FMCG and Logistics, partnering with global leaders like KnowledgeCity, G4S, Aramex and Imtenan.",
+    "L&D Head, Talent & Performance Management Leader with 9+ years across Egypt, Saudi Arabia and many other countries. Expertise spans Education, Retail, FMCG and Logistics, partnering with global leaders like KnowledgeCity, G4S, Aramex and Imtenan.",
   about_credentials: "Educational credentials",
 
   // pillars
@@ -205,7 +205,7 @@ const ar: Dict = {
   hero_hello: "مرحبًا،",
   hero_meet: "تعرّف إلى",
   hero_intro:
-    "رئيس قطاع التعلم والتطوير، وخبير إدارة المواهب والأداء بخبرة تتجاوز ٩ سنوات في تطوير رأس المال البشري عبر ١٢ دولة.",
+    "رئيس قطاع التعلم والتطوير، وخبير إدارة المواهب والأداء بخبرة تتجاوز ٩ سنوات في تطوير رأس المال البشري عبر العديد من الدول.",
   hero_btn_book: "احجز جلسة فردية مجانية",
   hero_btn_programs: "استكشف البرامج",
   stat_trainees: "متدرب",
@@ -290,7 +290,7 @@ const ar: Dict = {
 
   current_eyebrow: "متاح الآن",
   current_title: "دورات مباشرة، سجّل اليوم",
-  current_desc: "دفعات مفتوحة الآن. اختر البرنامج المناسب لك وقدّم طلبك في أقل من دقيقة.",
+  current_desc: "انطلق في رحلتك التطويرية اليوم — التحق بإحدى دوراتنا المتاحة حاليًا وابدأ خطوتك الأولى نحو التميّز في أقل من دقيقة.",
   current_btn: "تصفّح وسجّل الآن",
   current_meta: "مقاعد محدودة · جلسات مباشرة",
   current_modal_title: "اختر دورتك",
