@@ -5,10 +5,11 @@ import { useAuth } from "@/lib/portal-auth";
 // notifications surfaced via PortalShell
 import { PortalShell } from "@/components/PortalShell";
 import { toast } from "sonner";
+import { generateCertificatePdf } from "@/lib/certificate";
 import {
   Plus, Trash2, CheckCircle2, Upload, Wallet, Loader2, Users, BookOpen, Award,
   FileText, X, ToggleLeft, ToggleRight, Calendar, Layers, Link as LinkIcon,
-  StickyNote, Paperclip, Pencil, Check, Clock, Settings2,
+  StickyNote, Paperclip, Pencil, Check, Clock, Settings2, Sparkles,
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
