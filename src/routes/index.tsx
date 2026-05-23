@@ -286,18 +286,20 @@ export function CalendlyDialog() {
 
 /* ---------- BRAND MARK ---------- */
 function BrandMark({ size = 62 }: { size?: number }) {
+  const { lang } = useI18n();
+  const displayName = lang === "ar" ? "إسلام سلمي" : "Eslam Selmi";
   return (
     <div className="flex items-center gap-2">
       <img
         src={brandLogo}
-        alt="Eslam Selmi"
+        alt={displayName}
         width={size}
         height={size}
-        className="shrink-0 object-contain drop-shadow-[0_2px_8px_rgba(80,120,255,0.35)] dark:drop-shadow-[0_0_14px_rgba(180,210,255,0.85)] dark:[filter:drop-shadow(0_0_6px_rgba(255,255,255,0.55))_drop-shadow(0_0_18px_rgba(140,180,255,0.6))_brightness(1.15)]"
+        className="shrink-0 object-contain drop-shadow-[0_1px_3px_rgba(80,120,255,0.2)] dark:[filter:drop-shadow(0_0_3px_rgba(255,255,255,0.25))_drop-shadow(0_0_8px_rgba(160,190,255,0.28))_brightness(1.08)]"
         style={{ width: size, height: size }}
       />
-      <span className="hidden sm:flex items-center leading-none">
-        <span className="font-sans text-[15px] font-semibold tracking-tight text-foreground">Eslam Selmi</span>
+      <span className="flex items-center leading-none">
+        <span className="font-sans text-[14px] sm:text-[15px] font-semibold tracking-tight text-foreground whitespace-nowrap">{displayName}</span>
       </span>
     </div>
   );
