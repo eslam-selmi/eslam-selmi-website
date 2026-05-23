@@ -261,12 +261,24 @@ function PortalPage() {
                     <span className="text-[var(--gold)] font-semibold text-sm">
                       {Number(c.price) > 0 ? `${Number(c.price).toLocaleString()} ${c.currency}` : "مجاني"}
                     </span>
-                    <button onClick={() => enroll(c.id)} className="text-xs px-3 h-8 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold hover:opacity-90">
+                    <button onClick={() => setEnrollingCourse(c)} className="text-xs px-3 h-8 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold hover:opacity-90">
                       تقديم طلب
                     </button>
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+        </section>
+      </div>
+
+      {enrollingCourse && (
+        <EnrollModal
+          course={enrollingCourse}
+          onClose={() => setEnrollingCourse(null)}
+          onConfirm={(code) => enroll(enrollingCourse.id, code)}
+        />
+      )}
             </div>
           )}
         </section>
