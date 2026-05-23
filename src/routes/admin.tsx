@@ -68,9 +68,7 @@ function AdminPage() {
     return () => { supabase.removeChannel(ch); };
   }, [role]);
 
-  // Highlight new pending enrollments
-  const { unread } = useNotifications(user?.id);
-  void unread;
+  // (Notifications are surfaced through the PortalShell bell — no duplicate subscription here.)
 
   if (loading || !user || role !== "admin") {
     return <div className="min-h-screen bg-[#0b1736] flex items-center justify-center text-white"><Loader2 className="w-8 h-8 animate-spin text-[var(--gold)]" /></div>;
