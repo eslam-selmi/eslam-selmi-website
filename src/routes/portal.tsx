@@ -107,7 +107,30 @@ function PortalPage() {
   }, [user?.id]);
 
   const enrolledIds = useMemo(() => new Set(enrollments.map((e) => e.course_id)), [enrollments]);
-  const availableCourses = courses.filter((c) => !enrolledIds.has(c.id));
+  const availableCourses = useMemo(() => courses.filter((c) => !enrolledIds.has(c.id)), [courses, enrolledIds]);
+
+  // Batched translation of available + enrolled course titles & descriptions
+  const courseTextsFlat = useMemo(() => {
+    const arr: string[] = [];
+    availableCourses.forEach((c) => { arr.push(c.title || ""); arr.push(c.description || ""); });
+    enrollments.forEach((e) => { arr.push(e.courses?.title || ""); arr.push(e.courses?.description || ""); });
+    return arr;
+  }, [availableCourses, enrollments]);
+  const courseTextsTr = useTranslatedTexts(courseTextsFlat);
+  const trAvailable = useMemo(() => availableCourses.map((c, i) => ({
+    ...c,
+    title: courseTextsTr[i * 2] || c.title,
+    description: courseTextsTr[i * 2 + 1] || c.description,
+  })), [availableCourses, courseTextsTr]);
+  const enrollmentOffset = availableCourses.length * 2;
+  const trEnrollments = useMemo(() => enrollments.map((e, i) => ({
+    ...e,
+    courses: e.courses ? {
+      ...e.courses,
+      title: courseTextsTr[enrollmentOffset + i * 2] || e.courses.title,
+      description: courseTextsTr[enrollmentOffset + i * 2 + 1] || e.courses.description,
+    } : e.courses,
+  })), [enrollments, courseTextsTr, enrollmentOffset]);
 
   const stats = useMemo(() => {
     const approved = enrollments.filter((e) => e.status === "approved");
