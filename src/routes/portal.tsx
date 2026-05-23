@@ -276,7 +276,7 @@ function PortalPage() {
         <EnrollModal
           course={enrollingCourse}
           onClose={() => setEnrollingCourse(null)}
-          onConfirm={(code) => enroll(enrollingCourse.id, code)}
+          onConfirm={(code: string | undefined) => enroll(enrollingCourse.id, code)}
         />
       )}
 
