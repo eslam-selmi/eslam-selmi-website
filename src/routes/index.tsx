@@ -1026,10 +1026,11 @@ function Snapshots() {
   const half = Math.ceil(SNAPSHOTS.length / 2);
   const setA = SNAPSHOTS.slice(0, half);
   const setB = SNAPSHOTS.slice(half);
-  const trackA = [...setA, ...setA, ...setA];
-  const trackB = [...setB.slice().reverse(), ...setB.slice().reverse(), ...setB.slice().reverse()];
-  const marqueeClass = dir === "rtl" ? "animate-marquee-rtl" : "animate-marquee";
-  const marqueeSlowClass = dir === "rtl" ? "animate-marquee-rtl" : "animate-marquee-slow";
+  const trackA = [setA, setA, setA];
+  const trackBSet = setB.slice().reverse();
+  const trackB = [trackBSet, trackBSet, trackBSet];
+  const marqueeClass = dir === "rtl" ? "marquee-track-rtl" : "marquee-track";
+  const marqueeSlowClass = dir === "rtl" ? "marquee-track-rtl" : "marquee-track";
 
   const Card = ({ src, i, originalIndex }: { src: string; i: number; originalIndex: number }) => (
     <button
@@ -1056,16 +1057,24 @@ function Snapshots() {
     <Section id="snapshots" eyebrow={t("snapshots_eyebrow")} title={t("snapshots_title")}>
       <div className="space-y-6 marquee-mask">
         <div className="overflow-hidden">
-          <div className={`flex gap-7 w-max ${marqueeClass} hover:[animation-play-state:paused]`}>
-            {trackA.map((src, idx) => (
-              <Card key={`a-${idx}`} src={src} i={idx} originalIndex={SNAPSHOTS.indexOf(src)} />
+          <div className={`flex gap-7 w-max ${marqueeClass} hover:[animation-play-state:paused]`} style={{ animationDuration: "34s" }}>
+            {trackA.map((set, copy) => (
+              <div key={`a-copy-${copy}`} className="flex shrink-0 gap-7" aria-hidden={copy > 0}>
+                {set.map((src, idx) => (
+                  <Card key={`a-${copy}-${idx}`} src={src} i={idx} originalIndex={SNAPSHOTS.indexOf(src)} />
+                ))}
+              </div>
             ))}
           </div>
         </div>
         <div className="overflow-hidden">
-          <div className={`flex gap-7 w-max ${marqueeSlowClass} hover:[animation-play-state:paused]`}>
-            {trackB.map((src, idx) => (
-              <Card key={`b-${idx}`} src={src} i={idx} originalIndex={SNAPSHOTS.indexOf(src)} />
+          <div className={`flex gap-7 w-max ${marqueeSlowClass} hover:[animation-play-state:paused]`} style={{ animationDuration: "44s" }}>
+            {trackB.map((set, copy) => (
+              <div key={`b-copy-${copy}`} className="flex shrink-0 gap-7" aria-hidden={copy > 0}>
+                {set.map((src, idx) => (
+                  <Card key={`b-${copy}-${idx}`} src={src} i={idx} originalIndex={SNAPSHOTS.indexOf(src)} />
+                ))}
+              </div>
             ))}
           </div>
         </div>
