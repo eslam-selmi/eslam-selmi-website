@@ -198,7 +198,7 @@ function PortalPage() {
         <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <StatCard icon={GraduationCap} label="كورسات نشطة" value={stats.active} accent="emerald" />
           <StatCard icon={Hourglass} label="طلبات معلّقة" value={stats.pending} accent="amber" />
-          <StatCard icon={Clock} label="إجمالي الساعات" value={stats.hours} accent="sky" />
+          <StatCard icon={Clock} label="ساعات تدريبية مكتملة" value={`${stats.hoursEarned} / ${stats.hoursTotal}`} suffix="ساعة" accent="sky" />
           <StatCard icon={Award} label="شهادات صادرة" value={stats.certs} accent="gold" />
         </section>
 
