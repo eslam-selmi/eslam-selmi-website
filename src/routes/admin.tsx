@@ -924,8 +924,28 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
                 💡 يفضّل اكتمال الدفع قبل إصدار الشهادة. المتبقي: {(coursePrice - totalPaid).toLocaleString()} {courseCur}
               </div>
             )}
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
-              <label className="block">
+            <div className="rounded-2xl border border-[var(--gold)]/30 bg-[var(--gold)]/5 p-4 space-y-3 mb-3">
+              {enrollment.certificate_requested_at && !issued && (
+                <p className="text-xs text-amber-300 flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5" /> المتدرب طلب الشهادة في {new Date(enrollment.certificate_requested_at).toLocaleString("ar-EG")}
+                </p>
+              )}
+              <div className="text-xs space-y-1 text-white/80">
+                <div className="flex justify-between"><span className="text-white/50">الاسم (عربي):</span><span className="font-semibold">{enrollment.name_ar || "— لم يُدخل بعد"}</span></div>
+                <div className="flex justify-between"><span className="text-white/50">الاسم (إنجليزي):</span><span className="font-semibold" dir="ltr">{enrollment.name_en || "— not set"}</span></div>
+              </div>
+              <button onClick={autoIssueCertificate} disabled={autoIssuing || !enrollment.name_ar || !enrollment.name_en}
+                className="w-full h-12 rounded-xl text-sm font-bold flex items-center justify-center gap-2 disabled:opacity-40"
+                style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
+                {autoIssuing ? <><Loader2 className="w-4 h-4 animate-spin" /> جاري التوليد...</> : <><Sparkles className="w-4 h-4" /> إصدار الشهادة تلقائياً (عربي + إنجليزي)</>}
+              </button>
+              {(enrollment.certificate_url_ar || enrollment.certificate_url_en) && (
+                <p className="text-xs text-emerald-300 text-center">✓ تم إصدار الشهادة بنجاح</p>
+              )}
+            </div>
+            <details className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+              <summary className="text-xs text-white/50 cursor-pointer">رفع ملف يدوي (اختياري)</summary>
+              <label className="block mt-3">
                 <span className="text-xs text-white/60 mb-2 block">رفع ملف الشهادة (PDF / صورة)</span>
                 <input type="file" accept=".pdf,image/*"
                   onChange={(e) => e.target.files?.[0] && uploadCert(e.target.files[0])}
@@ -938,7 +958,7 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
                 } disabled:opacity-50`}>
                 {issued ? "✓ الشهادة مُصدرة للمتدرب" : "تفعيل إصدار الشهادة"}
               </button>
-            </div>
+            </details>
           </section>
 
           <section>
