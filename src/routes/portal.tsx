@@ -50,6 +50,7 @@ function PortalPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [courses, setCourses] = useState<Course[]>([]);
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
+  const [modules, setModules] = useState<ModuleRow[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [showUpload, setShowUpload] = useState(false);
   const [viewing, setViewing] = useState<Enrollment | null>(null);
@@ -64,13 +65,32 @@ function PortalPage() {
     if (!user) return;
     setLoadingData(true);
     const [p, c, e] = await Promise.all([
-      supabase.from("profiles").select("full_name,email,phone").eq("id", user.id).maybeSingle(),
+      supabase.from("profiles").select("full_name,email,phone,account_blocked").eq("id", user.id).maybeSingle(),
       supabase.from("courses").select("*").eq("active", true).order("created_at", { ascending: false }),
       supabase.from("enrollments").select("*, courses(*)").eq("user_id", user.id).order("created_at", { ascending: false }),
     ]);
+    // Hard block: account disabled → force sign-out
+    if ((p.data as any)?.account_blocked) {
+      toast.error("تم إيقاف حسابك من قِبل الإدارة. للتواصل، يرجى مراسلة الإدارة.");
+      await supabase.auth.signOut();
+      nav({ to: "/auth" });
+      return;
+    }
     setProfile(p.data);
     setCourses((c.data as Course[]) ?? []);
     setEnrollments((e.data as any) ?? []);
+    // Modules for approved enrollments → used to compute hours-as-progress
+    const approvedCourseIds = ((e.data as any[]) ?? [])
+      .filter((x) => x.status === "approved")
+      .map((x) => x.course_id);
+    if (approvedCourseIds.length > 0) {
+      const m = await supabase.from("course_modules")
+        .select("id,course_id,completed_by_admin")
+        .in("course_id", approvedCourseIds);
+      setModules((m.data as ModuleRow[]) ?? []);
+    } else {
+      setModules([]);
+    }
     setLoadingData(false);
   }
   useEffect(() => { if (user) refresh(); }, [user]);
