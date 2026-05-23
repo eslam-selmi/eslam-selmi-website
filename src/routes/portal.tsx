@@ -217,10 +217,6 @@ function PortalPage() {
                 : "Track your courses, sessions, certificates and payments in one place. You'll get live notifications for every update."}</p>
             </div>
             <div className="flex items-center gap-2">
-              <button onClick={() => setLang(lang === "ar" ? "en" : "ar")}
-                className="flex items-center gap-1.5 px-3 h-10 rounded-lg bg-white/5 border border-white/15 hover:bg-white/10 text-xs text-white/80">
-                <Languages className="w-4 h-4" /> {lang === "ar" ? "English" : "العربية"}
-              </button>
               <button onClick={() => setShowUpload(true)}
                 className="flex items-center gap-2 px-5 h-12 rounded-xl font-semibold transition-all hover:scale-[1.02]"
                 style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
@@ -228,6 +224,7 @@ function PortalPage() {
               </button>
             </div>
           </div>
+
 
         </section>
 
