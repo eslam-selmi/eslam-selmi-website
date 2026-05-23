@@ -38,7 +38,8 @@ type Enrollment = {
   certificate_requested_at: string | null;
   courses: Course | null;
 };
-type Profile = { full_name: string | null; email: string | null; phone: string | null };
+type Profile = { full_name: string | null; email: string | null; phone: string | null; account_blocked?: boolean };
+type ModuleRow = { id: string; course_id: string; completed_by_admin: boolean };
 
 const DRIVE_URL = "https://drive.google.com/drive/folders/1_GB18CPhfYZQt06orG1pIgbGffUk8dXA?usp=sharing";
 
@@ -49,6 +50,7 @@ function PortalPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [courses, setCourses] = useState<Course[]>([]);
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
+  const [modules, setModules] = useState<ModuleRow[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [showUpload, setShowUpload] = useState(false);
   const [viewing, setViewing] = useState<Enrollment | null>(null);
@@ -63,13 +65,32 @@ function PortalPage() {
     if (!user) return;
     setLoadingData(true);
     const [p, c, e] = await Promise.all([
-      supabase.from("profiles").select("full_name,email,phone").eq("id", user.id).maybeSingle(),
+      supabase.from("profiles").select("full_name,email,phone,account_blocked").eq("id", user.id).maybeSingle(),
       supabase.from("courses").select("*").eq("active", true).order("created_at", { ascending: false }),
       supabase.from("enrollments").select("*, courses(*)").eq("user_id", user.id).order("created_at", { ascending: false }),
     ]);
+    // Hard block: account disabled → force sign-out
+    if ((p.data as any)?.account_blocked) {
+      toast.error("تم إيقاف حسابك من قِبل الإدارة. للتواصل، يرجى مراسلة الإدارة.");
+      await supabase.auth.signOut();
+      nav({ to: "/auth" });
+      return;
+    }
     setProfile(p.data);
     setCourses((c.data as Course[]) ?? []);
     setEnrollments((e.data as any) ?? []);
+    // Modules for approved enrollments → used to compute hours-as-progress
+    const approvedCourseIds = ((e.data as any[]) ?? [])
+      .filter((x) => x.status === "approved")
+      .map((x) => x.course_id);
+    if (approvedCourseIds.length > 0) {
+      const m = await supabase.from("course_modules")
+        .select("id,course_id,completed_by_admin")
+        .in("course_id", approvedCourseIds);
+      setModules((m.data as ModuleRow[]) ?? []);
+    } else {
+      setModules([]);
+    }
     setLoadingData(false);
   }
   useEffect(() => { if (user) refresh(); }, [user]);
@@ -90,9 +111,26 @@ function PortalPage() {
   const stats = useMemo(() => {
     const approved = enrollments.filter((e) => e.status === "approved");
     const certs = enrollments.filter((e) => e.certificate_issued).length;
-    const hours = approved.reduce((s, e) => s + Number(e.courses?.total_hours ?? 0), 0);
-    return { active: approved.length, pending: enrollments.filter((e) => e.status === "pending").length, certs, hours };
-  }, [enrollments]);
+    // Hours-as-progress: earned hours per course = total_hours * (completed_modules / total_modules)
+    // Until all lessons are completed by admin, the trainee sees a fraction; once everything is
+    // ticked off, they see the full course hours (e.g. 50/50).
+    let earned = 0, total = 0;
+    for (const e of approved) {
+      const courseTotal = Number(e.courses?.total_hours ?? 0);
+      total += courseTotal;
+      const ms = modules.filter((m) => m.course_id === e.course_id);
+      if (ms.length === 0) continue;
+      const done = ms.filter((m) => m.completed_by_admin).length;
+      earned += courseTotal * (done / ms.length);
+    }
+    return {
+      active: approved.length,
+      pending: enrollments.filter((e) => e.status === "pending").length,
+      certs,
+      hoursEarned: Math.round(earned),
+      hoursTotal: Math.round(total),
+    };
+  }, [enrollments, modules]);
 
   async function enroll(courseId: string) {
     if (!user) return;
@@ -160,7 +198,7 @@ function PortalPage() {
         <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <StatCard icon={GraduationCap} label="كورسات نشطة" value={stats.active} accent="emerald" />
           <StatCard icon={Hourglass} label="طلبات معلّقة" value={stats.pending} accent="amber" />
-          <StatCard icon={Clock} label="إجمالي الساعات" value={stats.hours} accent="sky" />
+          <StatCard icon={Clock} label="ساعات تدريبية مكتملة" value={`${stats.hoursEarned} / ${stats.hoursTotal}`} suffix="ساعة" accent="sky" />
           <StatCard icon={Award} label="شهادات صادرة" value={stats.certs} accent="gold" />
         </section>
 
@@ -337,7 +375,7 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
             {c.online_url && (
               <a href={c.online_url} target="_blank" rel="noopener"
                 className="mt-4 inline-flex items-center gap-2 text-sm px-4 h-10 rounded-xl bg-[var(--gold)]/15 border border-[var(--gold)]/40 text-[var(--gold)] hover:bg-[var(--gold)]/25 transition">
-                <PlayCircle className="w-4 h-4" /> منصة الكورس <ExternalLink className="w-3 h-3" />
+                <PlayCircle className="w-4 h-4" /> رابط المحاضرة <ExternalLink className="w-3 h-3" />
               </a>
             )}
           </div>
@@ -494,7 +532,7 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
   );
 }
 
-function StatCard({ icon: Icon, label, value, accent }: { icon: any; label: string; value: number; accent: "emerald" | "amber" | "sky" | "gold" }) {
+function StatCard({ icon: Icon, label, value, accent, suffix }: { icon: any; label: string; value: number | string; accent: "emerald" | "amber" | "sky" | "gold"; suffix?: string }) {
   const tone = {
     emerald: "from-emerald-400/15 to-emerald-400/5 border-emerald-400/25 text-emerald-300",
     amber: "from-amber-400/15 to-amber-400/5 border-amber-400/25 text-amber-300",
@@ -507,7 +545,7 @@ function StatCard({ icon: Icon, label, value, accent }: { icon: any; label: stri
         <Icon className="w-5 h-5" />
       </div>
       <div className="min-w-0">
-        <p className="text-2xl font-bold leading-none">{value}</p>
+        <p className="text-2xl font-bold leading-none">{value}{suffix && <span className="text-sm font-medium opacity-70 ms-1">{suffix}</span>}</p>
         <p className="text-[11px] text-white/60 mt-1">{label}</p>
       </div>
     </div>
@@ -727,7 +765,7 @@ function AssignmentsSection({ courseId }: { courseId: string }) {
 
   return (
     <section>
-      <h2 className="text-lg font-bold mb-3 flex items-center gap-2"><FileText className="w-5 h-5 text-[var(--gold)]" /> الواجبات</h2>
+      <h2 className="text-lg font-bold mb-3 flex items-center gap-2"><FileText className="w-5 h-5 text-[var(--gold)]" /> التكليفات</h2>
       <div className="space-y-3">
         {assignments.map((a) => (
           <AssignmentCard key={a.id} a={a} sub={subs[a.id]} userId={user!.id} onChange={load} />
