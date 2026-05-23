@@ -727,7 +727,7 @@ function AssignmentsSection({ courseId }: { courseId: string }) {
 
   return (
     <section>
-      <h2 className="text-lg font-bold mb-3 flex items-center gap-2"><FileText className="w-5 h-5 text-[var(--gold)]" /> الواجبات</h2>
+      <h2 className="text-lg font-bold mb-3 flex items-center gap-2"><FileText className="w-5 h-5 text-[var(--gold)]" /> التكليفات</h2>
       <div className="space-y-3">
         {assignments.map((a) => (
           <AssignmentCard key={a.id} a={a} sub={subs[a.id]} userId={user!.id} onChange={load} />
