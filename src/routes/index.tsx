@@ -120,11 +120,11 @@ const COUNTRIES = [
 ];
 
 const JOURNEY = [
-  { year: "2017", role: { en: "Senior L&D / L&D Specialist", ar: "أخصائي أول / أخصائي تعلم وتطوير" }, company: "G4S", country: "EG", logo: "https://logo.clearbit.com/g4s.com" },
-  { year: "2022", role: { en: "L&D Specialist", ar: "أخصائي تعلم وتطوير" }, company: "Aramex", country: "EG", logo: "https://logo.clearbit.com/aramex.com" },
-  { year: "2023", role: { en: "Department Supervisor & Learning Liaison", ar: "مشرف إدارة ومنسّق التعلم والتطوير" }, company: "Badreldin Developments", country: "EG", logo: "https://logo.clearbit.com/badreldin.com" },
-  { year: "2025", role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: "Imtenan", country: "EG", logo: "https://logo.clearbit.com/imtenan.com" },
-  { year: "NOW", role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: "KnowledgeCity", country: "SA", logo: "https://logo.clearbit.com/knowledgecity.com" },
+  { year: { en: "2017", ar: "2017" }, role: { en: "Senior L&D / L&D Specialist", ar: "أخصائي أول / أخصائي تعلم وتطوير" }, company: { en: "G4S", ar: "جي فور إس" }, country: "EG", logo: "https://logo.clearbit.com/g4s.com" },
+  { year: { en: "2022", ar: "2022" }, role: { en: "L&D Specialist", ar: "أخصائي تعلم وتطوير" }, company: { en: "Aramex", ar: "أرامكس" }, country: "EG", logo: "https://logo.clearbit.com/aramex.com" },
+  { year: { en: "2023", ar: "2023" }, role: { en: "Department Supervisor & Learning Liaison", ar: "مشرف إدارة ومنسّق التعلم والتطوير" }, company: { en: "Badreldin Developments", ar: "بدر الدين للتطوير" }, country: "EG", logo: "https://logo.clearbit.com/badreldin.com" },
+  { year: { en: "2025", ar: "2025" }, role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: { en: "Imtenan", ar: "إمتنان" }, country: "EG", logo: "https://logo.clearbit.com/imtenan.com" },
+  { year: { en: "NOW", ar: "حاليًا" }, role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: { en: "KnowledgeCity", ar: "مدينة المعرفة" }, country: "SA", logo: "https://logo.clearbit.com/knowledgecity.com" },
 ];
 
 const CREDENTIALS = [
