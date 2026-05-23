@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-import html2canvas from "html2canvas";
+import { toJpeg } from "html-to-image";
 import jsPDF from "jspdf";
 import brandLogo from "@/assets/brand-logo.png";
 
@@ -500,15 +500,19 @@ export async function generateCertificatePdf(p: CertificatePayload): Promise<Blo
 
   try {
     const target = host.firstElementChild as HTMLElement;
-    const canvas = await html2canvas(target, {
-      scale: 1, // node is already at hi-res (2245×1587)
+    // html-to-image renders via SVG foreignObject and does NOT parse the page's
+    // stylesheets, so it works fine even when the site uses oklch() tokens.
+    const dataUrl = await toJpeg(target, {
+      quality: 0.96,
       backgroundColor: "#fbf6e8",
-      useCORS: true,
-      logging: false,
-      windowWidth: 2245,
-      windowHeight: 1587,
+      width: 2245,
+      height: 1587,
+      pixelRatio: 1,
+      cacheBust: true,
+      // Skip walking external stylesheets — we only need inline styles from our
+      // own component tree, which uses plain hex colors.
+      skipFonts: false,
     });
-    const dataUrl = canvas.toDataURL("image/jpeg", 0.96);
 
     // A4 landscape (297 × 210 mm)
     const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
