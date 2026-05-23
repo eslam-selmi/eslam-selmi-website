@@ -312,6 +312,7 @@ function CourseDetail({ enrollment, onBack, onDownloadCert }: { enrollment: Enro
               )}
               <span className="text-[var(--gold)] font-semibold">{coursePrice > 0 ? `${coursePrice.toLocaleString()} ${c.currency}` : "مجاني"}</span>
               <span>{c.installments_count === 1 ? "دفعة كاملة" : `${c.installments_count} أقساط`}</span>
+              {Number(c.total_hours) > 0 && <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5 text-[var(--gold)]" /> {c.total_hours} ساعة تدريبية</span>}
             </div>
             {c.online_url && (
               <a href={c.online_url} target="_blank" rel="noopener"
