@@ -34,6 +34,7 @@ import logoAlmajarah from "@/assets/clients/almajarah.jpg";
 import logoImtenan from "@/assets/clients/imtenan.jpg";
 import logoDaralnokba from "@/assets/clients/daralnokba.jpg";
 import logoMallOfEgypt from "@/assets/clients/mall-of-egypt.jpg";
+import logoNewBrand from "@/assets/clients/new-brand.jpg";
 
 const BRANDS = [
   { src: logoAramex, name: "Aramex" },
@@ -46,6 +47,7 @@ const BRANDS = [
   { src: logoEvno, name: "Evno" },
   { src: logoAlmajarah, name: "Al Majarah" },
   { src: logoDaralnokba, name: "Daralnokba Recruitment" },
+  { src: logoNewBrand, name: "Partner" },
 ];
 import snap9 from "@/assets/snapshots/snap-9.jpg";
 
@@ -185,11 +187,11 @@ const fadeUp = {
 };
 
 function Portfolio() {
-  const [theme, setTheme] = useState<ThemeMode>("light");
+  const [theme, setTheme] = useState<ThemeMode>("dark");
 
   useEffect(() => {
     const saved = typeof window !== "undefined" ? window.localStorage.getItem("theme-mode") : null;
-    const next: ThemeMode = saved === "dark" ? "dark" : "light";
+    const next: ThemeMode = saved === "light" ? "light" : "dark";
     setTheme(next);
     document.documentElement.classList.toggle("dark", next === "dark");
   }, []);
@@ -298,13 +300,13 @@ export function Nav({ theme, onThemeToggle }: { theme?: ThemeMode; onThemeToggle
   const { t, lang, setLang } = useI18n();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [internalTheme, setInternalTheme] = useState<ThemeMode>("light");
+  const [internalTheme, setInternalTheme] = useState<ThemeMode>("dark");
   const activeTheme = theme ?? internalTheme;
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll);
     if (theme === undefined && typeof window !== "undefined") {
-      setInternalTheme(window.localStorage.getItem("theme-mode") === "dark" ? "dark" : "light");
+      setInternalTheme(window.localStorage.getItem("theme-mode") === "light" ? "light" : "dark");
     }
     return () => window.removeEventListener("scroll", onScroll);
   }, [theme]);
