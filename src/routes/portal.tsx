@@ -337,7 +337,7 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
             {c.online_url && (
               <a href={c.online_url} target="_blank" rel="noopener"
                 className="mt-4 inline-flex items-center gap-2 text-sm px-4 h-10 rounded-xl bg-[var(--gold)]/15 border border-[var(--gold)]/40 text-[var(--gold)] hover:bg-[var(--gold)]/25 transition">
-                <PlayCircle className="w-4 h-4" /> منصة الكورس <ExternalLink className="w-3 h-3" />
+                <PlayCircle className="w-4 h-4" /> رابط المحاضرة <ExternalLink className="w-3 h-3" />
               </a>
             )}
           </div>
