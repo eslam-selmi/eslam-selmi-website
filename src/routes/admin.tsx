@@ -118,10 +118,11 @@ function AdminPage() {
           <StatCard icon={BookOpen} label="إجمالي الكورسات" value={courses.length} color="lavender" />
         </div>
 
-        <div className="flex gap-2 border-b border-white/10">
+        <div className="flex gap-2 border-b border-white/10 flex-wrap">
           {[
             { id: "enrollments", label: `طلبات وانضمامات (${enrollments.length})` },
             { id: "courses", label: `الكورسات (${courses.length})` },
+            { id: "coupons", label: "كوبونات الخصم" },
           ].map((t) => (
             <button
               key={t.id}
@@ -135,8 +136,10 @@ function AdminPage() {
 
         {tab === "enrollments" ? (
           <EnrollmentsTable enrollments={enrollments} onOpen={setDrawer} refresh={refresh} />
-        ) : (
+        ) : tab === "courses" ? (
           <CoursesPanel courses={courses} refresh={refresh} onEdit={setEditingCourse} />
+        ) : (
+          <CouponsPanel courses={courses} />
         )}
       </div>
 
