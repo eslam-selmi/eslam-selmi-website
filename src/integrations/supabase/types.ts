@@ -131,6 +131,7 @@ export type Database = {
           price: number | null
           starts_at: string | null
           title: string
+          total_hours: number
         }
         Insert: {
           active?: boolean
@@ -145,6 +146,7 @@ export type Database = {
           price?: number | null
           starts_at?: string | null
           title: string
+          total_hours?: number
         }
         Update: {
           active?: boolean
@@ -159,11 +161,13 @@ export type Database = {
           price?: number | null
           starts_at?: string | null
           title?: string
+          total_hours?: number
         }
         Relationships: []
       }
       enrollments: {
         Row: {
+          blocked: boolean
           certificate_issued: boolean
           certificate_url: string | null
           course_id: string
@@ -175,6 +179,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          blocked?: boolean
           certificate_issued?: boolean
           certificate_url?: string | null
           course_id: string
@@ -186,6 +191,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          blocked?: boolean
           certificate_issued?: boolean
           certificate_url?: string | null
           course_id?: string
@@ -202,6 +208,13 @@ export type Database = {
             columns: ["course_id"]
             isOneToOne: false
             referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "enrollments_user_id_profiles_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
