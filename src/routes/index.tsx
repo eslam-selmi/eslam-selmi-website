@@ -854,13 +854,25 @@ function Services() {
               <a
                 href={waServiceLink(s.title.en, lang)}
                 target="_blank" rel="noopener noreferrer"
-                className="group/btn relative inline-flex w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-extrabold overflow-hidden transition shadow-[0_12px_28px_-12px_rgba(212,170,80,0.55)] hover:translate-y-[-1px]"
-                style={{ background: "linear-gradient(120deg, var(--gold) 0%, #f4d98a 100%)", color: "#0a0f2c" }}
+                className="group/btn relative inline-flex w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold overflow-hidden transition-all duration-300 hover:translate-y-[-1px]"
+                style={{
+                  background: "linear-gradient(135deg, rgba(11,23,54,0.95) 0%, rgba(20,35,80,0.95) 100%)",
+                  color: "var(--gold)",
+                  border: "1px solid color-mix(in oklab, var(--gold) 45%, transparent)",
+                  boxShadow: "0 10px 30px -14px color-mix(in oklab, var(--gold) 60%, transparent), inset 0 1px 0 color-mix(in oklab, var(--gold) 20%, transparent)",
+                }}
                 aria-label={`${t("svc_request_btn")} — ${s.title[lang]}`}
               >
-                <span className="absolute inset-0 bg-white/0 group-hover/btn:bg-black/5 transition" />
+                <span
+                  className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"
+                  style={{ background: "linear-gradient(135deg, color-mix(in oklab, var(--gold) 18%, transparent), transparent 60%)" }}
+                />
+                <span
+                  className="absolute -inset-px rounded-full opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500 pointer-events-none"
+                  style={{ background: "radial-gradient(120px 40px at 50% 0%, color-mix(in oklab, var(--gold) 35%, transparent), transparent 70%)" }}
+                />
                 <Rocket className="relative size-4" />
-                <span className="relative">{t("svc_request_btn")}</span>
+                <span className="relative tracking-wide">{t("svc_request_btn")}</span>
                 <ArrowRight className="relative size-4 group-hover/btn:translate-x-1 rtl-flip transition" />
               </a>
             </div>
