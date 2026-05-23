@@ -36,18 +36,18 @@ import logoDaralnokba from "@/assets/clients/daralnokba.jpg";
 import logoMallOfEgypt from "@/assets/clients/mall-of-egypt.jpg";
 import logoNewBrand from "@/assets/clients/new-brand.jpg";
 
-const BRANDS = [
-  { src: logoAramex, name: "Aramex" },
-  { src: logoG4s, name: "G4S" },
-  { src: logoAmazonEg, name: "Amazon.eg" },
-  { src: logoImtenan, name: "Imtenan" },
-  { src: logoMallOfEgypt, name: "Mall of Egypt" },
-  { src: logoBadreldin, name: "Badreldin Developments" },
-  { src: logoAllerAqua, name: "Aller Aqua Egypt" },
-  { src: logoEvno, name: "Evno" },
-  { src: logoAlmajarah, name: "Al Majarah" },
-  { src: logoDaralnokba, name: "Daralnokba Recruitment" },
-  { src: logoNewBrand, name: "Partner" },
+const BRANDS: { src: string; name: string; nameAr: string; specEn: string; specAr: string }[] = [
+  { src: logoAramex, name: "Aramex", nameAr: "أرامكس", specEn: "Logistics", specAr: "خدمات لوجستية" },
+  { src: logoG4s, name: "G4S", nameAr: "جي فور إس", specEn: "Advanced Security Solutions", specAr: "حلول أمنية متطورة" },
+  { src: logoAmazonEg, name: "Amazon.eg", nameAr: "أمازون مصر", specEn: "E-commerce", specAr: "تجارة إلكترونية" },
+  { src: logoImtenan, name: "Imtenan", nameAr: "إمتنان", specEn: "FMCG", specAr: "سلع استهلاكية (FMCG)" },
+  { src: logoMallOfEgypt, name: "Mall of Egypt", nameAr: "مول مصر", specEn: "Retail & Malls", specAr: "تجزئة ومراكز تسوق" },
+  { src: logoBadreldin, name: "Badreldin Developments", nameAr: "بدر الدين للتطوير", specEn: "Real Estate Development", specAr: "تطوير عقاري" },
+  { src: logoAllerAqua, name: "Aller Aqua Egypt", nameAr: "ألر أكوا مصر", specEn: "Aquaculture Feed", specAr: "أعلاف الاستزراع السمكي" },
+  { src: logoEvno, name: "Evno", nameAr: "إيفنو", specEn: "Tech & Innovation", specAr: "تكنولوجيا وابتكار" },
+  { src: logoAlmajarah, name: "Al Majarah", nameAr: "المجرة", specEn: "Training & Consulting", specAr: "تدريب واستشارات" },
+  { src: logoDaralnokba, name: "Daralnokba Recruitment", nameAr: "دار النخبة للتوظيف", specEn: "Recruitment", specAr: "استقطاب وتوظيف" },
+  { src: logoNewBrand, name: "Partner", nameAr: "شريك", specEn: "Strategic Partner", specAr: "شريك استراتيجي" },
 ];
 import snap10 from "@/assets/snapshots/snap-10.jpg";
 import snap11 from "@/assets/snapshots/snap-11.jpg";
@@ -120,11 +120,11 @@ const COUNTRIES = [
 ];
 
 const JOURNEY = [
-  { year: "2017", role: { en: "Senior L&D / L&D Specialist", ar: "أخصائي أول / أخصائي تعلم وتطوير" }, company: "G4S", country: "EG", logo: "https://logo.clearbit.com/g4s.com" },
-  { year: "2022", role: { en: "L&D Specialist", ar: "أخصائي تعلم وتطوير" }, company: "Aramex", country: "EG", logo: "https://logo.clearbit.com/aramex.com" },
-  { year: "2023", role: { en: "Department Supervisor & Learning Liaison", ar: "مشرف إدارة ومنسّق التعلم والتطوير" }, company: "Badreldin Developments", country: "EG", logo: "https://logo.clearbit.com/badreldin.com" },
-  { year: "2025", role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: "Imtenan", country: "EG", logo: "https://logo.clearbit.com/imtenan.com" },
-  { year: "NOW", role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: "KnowledgeCity", country: "SA", logo: "https://logo.clearbit.com/knowledgecity.com" },
+  { year: { en: "2017", ar: "2017" }, role: { en: "Senior L&D / L&D Specialist", ar: "أخصائي أول / أخصائي تعلم وتطوير" }, company: { en: "G4S", ar: "جي فور إس" }, country: "EG", logo: "https://logo.clearbit.com/g4s.com" },
+  { year: { en: "2022", ar: "2022" }, role: { en: "L&D Specialist", ar: "أخصائي تعلم وتطوير" }, company: { en: "Aramex", ar: "أرامكس" }, country: "EG", logo: "https://logo.clearbit.com/aramex.com" },
+  { year: { en: "2023", ar: "2023" }, role: { en: "Department Supervisor & Learning Liaison", ar: "مشرف إدارة ومنسّق التعلم والتطوير" }, company: { en: "Badreldin Developments", ar: "بدر الدين للتطوير" }, country: "EG", logo: "https://logo.clearbit.com/badreldin.com" },
+  { year: { en: "2025", ar: "2025" }, role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: { en: "Imtenan", ar: "إمتنان" }, country: "EG", logo: "https://logo.clearbit.com/imtenan.com" },
+  { year: { en: "NOW", ar: "حاليًا" }, role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" }, company: { en: "KnowledgeCity", ar: "مدينة المعرفة" }, country: "SA", logo: "https://logo.clearbit.com/knowledgecity.com" },
 ];
 
 const CREDENTIALS = [
@@ -286,18 +286,20 @@ export function CalendlyDialog() {
 
 /* ---------- BRAND MARK ---------- */
 function BrandMark({ size = 62 }: { size?: number }) {
+  const { lang } = useI18n();
+  const displayName = lang === "ar" ? "إسلام سلمي" : "Eslam Selmi";
   return (
     <div className="flex items-center gap-2">
       <img
         src={brandLogo}
-        alt="Eslam Selmi"
+        alt={displayName}
         width={size}
         height={size}
-        className="shrink-0 object-contain drop-shadow-[0_2px_8px_rgba(80,120,255,0.35)] dark:drop-shadow-[0_0_14px_rgba(180,210,255,0.85)] dark:[filter:drop-shadow(0_0_6px_rgba(255,255,255,0.55))_drop-shadow(0_0_18px_rgba(140,180,255,0.6))_brightness(1.15)]"
+        className="shrink-0 object-contain drop-shadow-[0_1px_3px_rgba(80,120,255,0.2)] dark:[filter:drop-shadow(0_0_3px_rgba(255,255,255,0.25))_drop-shadow(0_0_8px_rgba(160,190,255,0.28))_brightness(1.08)]"
         style={{ width: size, height: size }}
       />
-      <span className="hidden sm:flex items-center leading-none">
-        <span className="font-sans text-[15px] font-semibold tracking-tight text-foreground">Eslam Selmi</span>
+      <span className="flex items-center leading-none">
+        <span className="font-sans text-[14px] sm:text-[15px] font-semibold tracking-tight text-foreground whitespace-nowrap">{displayName}</span>
       </span>
     </div>
   );
@@ -800,7 +802,7 @@ function Journey() {
           
           return (
             <motion.div
-              key={j.year + j.company + i}
+              key={j.year.en + j.company.en + i}
               {...fadeUp}
               transition={{ delay: i * 0.07, duration: 0.55 }}
               className="group relative rounded-3xl bg-card border border-foreground/10 p-6 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px_oklch(0.22_0.06_252/0.35)] transition-all overflow-hidden"
@@ -810,7 +812,7 @@ function Journey() {
               {/* Top row: year + country flag */}
               <div className="flex items-center justify-between mb-5">
                 <span className="font-display text-3xl font-extrabold tracking-tight" style={{ color: "var(--accent)" }}>
-                  {j.year}
+                  {j.year[lang]}
                 </span>
                 <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground bg-foreground/[0.04] rounded-full px-2.5 py-1">
                   <img src={`https://flagcdn.com/${country.flag}.svg`} alt="" className="w-4 h-3 rounded-[2px] object-cover" />
@@ -820,7 +822,7 @@ function Journey() {
 
               {/* Company */}
               <div className="min-w-0">
-                <div className="font-display font-bold text-xl leading-tight">{j.company}</div>
+                <div className="font-display font-bold text-xl leading-tight">{j.company[lang]}</div>
                 <div className="text-sm text-muted-foreground mt-1.5 leading-snug">{j.role[lang]}</div>
               </div>
             </motion.div>
@@ -852,11 +854,11 @@ function Services() {
               <a
                 href={waServiceLink(s.title.en, lang)}
                 target="_blank" rel="noopener noreferrer"
-                className="group/btn relative inline-flex w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-bold text-white overflow-hidden transition shadow-[0_12px_28px_-12px_oklch(0.55_0.2_290/0.55)] hover:translate-y-[-1px]"
-                style={{ background: "linear-gradient(120deg, var(--navy) 0%, var(--lavender-deep) 60%, var(--accent) 100%)" }}
+                className="group/btn relative inline-flex w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-extrabold overflow-hidden transition shadow-[0_12px_28px_-12px_rgba(212,170,80,0.55)] hover:translate-y-[-1px]"
+                style={{ background: "linear-gradient(120deg, var(--gold) 0%, #f4d98a 100%)", color: "#0a0f2c" }}
                 aria-label={`${t("svc_request_btn")} — ${s.title[lang]}`}
               >
-                <span className="absolute inset-0 bg-white/0 group-hover/btn:bg-white/10 transition" />
+                <span className="absolute inset-0 bg-white/0 group-hover/btn:bg-black/5 transition" />
                 <Rocket className="relative size-4" />
                 <span className="relative">{t("svc_request_btn")}</span>
                 <ArrowRight className="relative size-4 group-hover/btn:translate-x-1 rtl-flip transition" />
@@ -943,11 +945,11 @@ function Clients() {
 
 /* ---------- BRANDS / LOGO MARQUEE ---------- */
 function Brands() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const row1 = BRANDS;
   const row2 = [...BRANDS].reverse();
 
-  const Chip = ({ b }: { b: { src: string; name: string } }) => (
+  const Chip = ({ b }: { b: { src: string; name: string; nameAr: string; specEn: string; specAr: string } }) => (
     <div className="shrink-0 group">
       <div
         className="relative h-24 w-44 md:h-28 md:w-52 rounded-2xl bg-white border border-border/30 overflow-hidden flex items-center justify-center px-5 py-3 transition-all duration-500 group-hover:-translate-y-1.5"
@@ -958,14 +960,17 @@ function Brands() {
       >
         <img
           src={b.src}
-          alt={b.name}
+          alt={lang === "ar" ? b.nameAr : b.name}
           loading="eager"
           decoding="async"
           className="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105"
         />
       </div>
-      <p className="mt-3 text-center text-[11px] tracking-widest uppercase text-muted-foreground/70 opacity-0 group-hover:opacity-100 transition-opacity">
-        {b.name}
+      <p className="mt-3 text-center text-[12px] font-semibold tracking-wide text-foreground/85">
+        {lang === "ar" ? b.nameAr : b.name}
+      </p>
+      <p className="text-center text-[10px] tracking-widest uppercase text-muted-foreground/70 mt-0.5">
+        {lang === "ar" ? b.specAr : b.specEn}
       </p>
     </div>
   );
