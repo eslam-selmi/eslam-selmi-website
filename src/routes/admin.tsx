@@ -529,7 +529,15 @@ function ModuleCard({ m, index, items, onToggle, onDelete, onChangeOnlineUrl, on
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-sm">{it.title}</p>
                     {it.content && <p className="text-xs text-white/55 whitespace-pre-wrap mt-0.5">{it.content}</p>}
-                    {it.url && <a href={it.url} target="_blank" rel="noopener" className="text-xs text-[var(--gold)] truncate block mt-0.5" dir="ltr">{it.url}</a>}
+                    {it.url && (it.kind === "file" ? (
+                      <button onClick={async () => {
+                        const { data, error } = await supabase.storage.from("course-files").createSignedUrl(it.url, 120);
+                        if (error) return toast.error(error.message);
+                        window.open(data.signedUrl, "_blank", "noopener");
+                      }} className="text-xs text-[var(--gold)] truncate block mt-0.5 hover:underline" dir="ltr">{it.url}</button>
+                    ) : (
+                      <a href={it.url} target="_blank" rel="noopener" className="text-xs text-[var(--gold)] truncate block mt-0.5" dir="ltr">{it.url}</a>
+                    ))}
                   </div>
                   <button onClick={() => delItem(it.id)} className="text-rose-300/60 hover:text-rose-300"><Trash2 className="w-3.5 h-3.5" /></button>
                 </li>
