@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/portal-auth";
-import { useNotifications } from "@/lib/notifications";
+// notifications surfaced via PortalShell
 import { PortalShell } from "@/components/PortalShell";
 import { toast } from "sonner";
 import {
