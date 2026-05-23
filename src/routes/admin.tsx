@@ -808,6 +808,24 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
   async function delInst(id: string) { await supabase.from("installments").delete().eq("id", id); refreshLists(); }
   async function delPay(id: string) { await supabase.from("payments").delete().eq("id", id); refreshLists(); }
 
+  const [blocked, setBlocked] = useState(enrollment.blocked);
+  async function toggleBlocked() {
+    const next = !blocked;
+    const { error } = await supabase.from("enrollments").update({ blocked: next }).eq("id", enrollment.id);
+    if (error) return toast.error(error.message);
+    setBlocked(next);
+    toast.success(next ? "تم قفل وصول المتدرب" : "تم استعادة وصول المتدرب");
+    refresh();
+  }
+  async function removeEnrollment() {
+    if (!confirm("حذف هذا المتدرب من الكورس نهائياً؟ سيتم حذف كل بيانات الالتحاق والمدفوعات.")) return;
+    const { error } = await supabase.from("enrollments").delete().eq("id", enrollment.id);
+    if (error) return toast.error(error.message);
+    toast.success("تم حذف المتدرب من الكورس");
+    refresh();
+    onClose();
+  }
+
   return (
     <div className="fixed inset-0 z-50 flex" dir="rtl">
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
@@ -825,6 +843,7 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
             <div className="flex justify-between"><span className="text-white/50">البريد</span><span dir="ltr">{enrollment.profiles?.email}</span></div>
             <div className="flex justify-between"><span className="text-white/50">الهاتف</span><span dir="ltr">{enrollment.profiles?.phone || "—"}</span></div>
             <div className="flex justify-between items-center"><span className="text-white/50">الحالة</span><StatusPill status={enrollment.status} /></div>
+            {blocked && <div className="flex justify-between items-center"><span className="text-white/50">الوصول</span><span className="text-xs px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">محظور مؤقتاً</span></div>}
             <div className="flex justify-between"><span className="text-white/50">سعر الكورس</span><span className="text-[var(--gold)] font-semibold">{coursePrice.toLocaleString()} {courseCur}</span></div>
             <div className="flex justify-between"><span className="text-white/50">المدفوع</span>
               <span className={fullyPaid ? "text-emerald-300 font-semibold" : "text-amber-300"}>
@@ -834,6 +853,15 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
             <div className="flex justify-between"><span className="text-white/50">نظام الدفع</span>
               <span>{enrollment.courses?.installments_count === 1 ? "دفعة كاملة" : `${enrollment.courses?.installments_count} أقساط`}</span>
             </div>
+          </section>
+
+          <section className="rounded-2xl border border-rose-300/20 bg-rose-300/5 p-4 flex flex-wrap gap-2">
+            <button onClick={toggleBlocked} className={`flex-1 min-w-[180px] h-10 rounded-lg text-xs font-semibold ${blocked ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" : "bg-amber-500/20 text-amber-300 border border-amber-500/30"}`}>
+              {blocked ? "↩ إلغاء الحظر — استعادة الوصول" : "⏸ قفل/حظر الوصول مؤقتاً"}
+            </button>
+            <button onClick={removeEnrollment} className="flex-1 min-w-[180px] h-10 rounded-lg text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30">
+              🗑 حذف المتدرب نهائياً
+            </button>
           </section>
 
           <section>
