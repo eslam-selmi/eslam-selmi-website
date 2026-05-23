@@ -278,7 +278,7 @@ function EnrollmentCard({ en, onOpen, onWithdraw }: { en: Enrollment; onOpen: ()
 }
 
 // ============= COURSE DETAIL (trainee) =============
-function CourseDetail({ enrollment, onBack, onDownloadCert }: { enrollment: Enrollment; onBack: () => void; onDownloadCert: (url: string) => void }) {
+function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrollment: Enrollment; onBack: () => void; onDownloadCert: (url: string) => void; onRefresh: () => void }) {
   const c = enrollment.courses!;
   const [modules, setModules] = useState<any[]>([]);
   const [items, setItems] = useState<Record<string, any[]>>({});
