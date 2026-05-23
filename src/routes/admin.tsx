@@ -25,10 +25,12 @@ type Course = {
   id: string; title: string; description: string | null; price: number | null;
   currency: string; active: boolean; starts_at: string | null; ends_at: string | null;
   installments_count: number; online_url: string | null; cover_emoji: string | null;
+  total_hours: number | null;
 };
 type EnrollmentRow = {
   id: string; user_id: string; course_id: string; status: "pending" | "approved" | "rejected";
   certificate_url: string | null; certificate_issued: boolean; notes: string | null; created_at: string;
+  blocked: boolean;
   courses: Course | null;
   profiles: { full_name: string | null; email: string | null; phone: string | null } | null;
 };
