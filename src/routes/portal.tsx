@@ -436,7 +436,7 @@ function CourseDetail({ enrollment, onBack, onDownloadCert }: { enrollment: Enro
         )}
       </section>
 
-      <AssignmentsSection courseId={c.id} userId={enrollment.user_id ?? ""} />
+      <AssignmentsSection courseId={c.id} />
 
 
 
