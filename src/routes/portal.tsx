@@ -78,6 +78,13 @@ function PortalPage() {
   const enrolledIds = useMemo(() => new Set(enrollments.map((e) => e.course_id)), [enrollments]);
   const availableCourses = courses.filter((c) => !enrolledIds.has(c.id));
 
+  const stats = useMemo(() => {
+    const approved = enrollments.filter((e) => e.status === "approved");
+    const certs = enrollments.filter((e) => e.certificate_issued).length;
+    const hours = approved.reduce((s, e) => s + Number(e.courses?.total_hours ?? 0), 0);
+    return { active: approved.length, pending: enrollments.filter((e) => e.status === "pending").length, certs, hours };
+  }, [enrollments]);
+
   async function enroll(courseId: string) {
     if (!user) return;
     const { error } = await supabase.from("enrollments").insert({ user_id: user.id, course_id: courseId });
