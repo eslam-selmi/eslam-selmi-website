@@ -810,7 +810,7 @@ function Journey() {
               {/* Top row: year + country flag */}
               <div className="flex items-center justify-between mb-5">
                 <span className="font-display text-3xl font-extrabold tracking-tight" style={{ color: "var(--accent)" }}>
-                  {j.year}
+                  {j.year[lang]}
                 </span>
                 <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground bg-foreground/[0.04] rounded-full px-2.5 py-1">
                   <img src={`https://flagcdn.com/${country.flag}.svg`} alt="" className="w-4 h-3 rounded-[2px] object-cover" />
