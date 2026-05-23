@@ -536,6 +536,34 @@ export function Nav({ theme, onThemeToggle }: { theme?: ThemeMode; onThemeToggle
               className="mt-1 inline-flex items-center justify-center gap-2 rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-bold cursor-pointer">
               <Calendar className="size-4" /> {t("book_cta")}
             </button>
+            <div className="mt-2 pt-2 border-t border-foreground/10 grid grid-cols-2 gap-2">
+              <Link
+                to="/auth"
+                onClick={() => setOpen(false)}
+                className="inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition"
+                style={{
+                  background: "linear-gradient(135deg, oklch(0.75 0.13 85 / 0.18), oklch(0.75 0.13 85 / 0.05))",
+                  border: "1px solid oklch(0.75 0.13 85 / 0.45)",
+                  color: "var(--accent)",
+                }}
+              >
+                <ShieldCheck className="size-4" />
+                {lang === "ar" ? "دخول الإدارة" : "Admin"}
+              </Link>
+              <Link
+                to="/auth"
+                onClick={() => setOpen(false)}
+                className="inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition"
+                style={{
+                  background: "linear-gradient(135deg, oklch(0.75 0.13 85 / 0.18), oklch(0.75 0.13 85 / 0.05))",
+                  border: "1px solid oklch(0.75 0.13 85 / 0.45)",
+                  color: "var(--accent)",
+                }}
+              >
+                <GraduationCap className="size-4" />
+                {lang === "ar" ? "المتدربين" : "Trainees"}
+              </Link>
+            </div>
           </div>
         )}
       </div>
