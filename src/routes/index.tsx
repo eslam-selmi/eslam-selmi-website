@@ -53,7 +53,7 @@ import snap10 from "@/assets/snapshots/snap-10.jpg";
 import snap11 from "@/assets/snapshots/snap-11.jpg";
 import snap12 from "@/assets/snapshots/snap-12.jpg";
 import snap13 from "@/assets/snapshots/snap-13.jpg";
-import snap14 from "@/assets/snapshots/snap-14.jpg";
+
 import snap15 from "@/assets/snapshots/snap-15.jpg";
 import snap16 from "@/assets/snapshots/snap-16.jpg";
 
