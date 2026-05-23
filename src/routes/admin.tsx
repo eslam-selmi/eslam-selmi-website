@@ -50,10 +50,21 @@ function AdminPage() {
   async function refresh() {
     const [c, e] = await Promise.all([
       supabase.from("courses").select("*").order("created_at", { ascending: false }),
-      supabase.from("enrollments").select("*, courses(*), profiles(full_name,email,phone)").order("created_at", { ascending: false }),
+      supabase.from("enrollments").select("*, courses(*)").order("created_at", { ascending: false }),
     ]);
+    const enrollList = (e.data as any[]) ?? [];
+    // Fetch profiles separately to avoid PostgREST embed issues (no direct FK previously)
+    const userIds = Array.from(new Set(enrollList.map((x) => x.user_id)));
+    let profileMap: Record<string, any> = {};
+    if (userIds.length) {
+      const { data: profs } = await supabase
+        .from("profiles")
+        .select("id, full_name, email, phone")
+        .in("id", userIds);
+      profileMap = Object.fromEntries((profs ?? []).map((p: any) => [p.id, p]));
+    }
     setCourses((c.data as Course[]) ?? []);
-    setEnrollments((e.data as any) ?? []);
+    setEnrollments(enrollList.map((r) => ({ ...r, profiles: profileMap[r.user_id] ?? null })));
   }
   useEffect(() => { if (role === "admin") refresh(); }, [role]);
 
