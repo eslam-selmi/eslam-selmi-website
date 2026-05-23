@@ -5,10 +5,11 @@ import { useAuth } from "@/lib/portal-auth";
 // notifications surfaced via PortalShell
 import { PortalShell } from "@/components/PortalShell";
 import { toast } from "sonner";
+import { generateCertificatePdf } from "@/lib/certificate";
 import {
   Plus, Trash2, CheckCircle2, Upload, Wallet, Loader2, Users, BookOpen, Award,
   FileText, X, ToggleLeft, ToggleRight, Calendar, Layers, Link as LinkIcon,
-  StickyNote, Paperclip, Pencil, Check, Clock, Settings2,
+  StickyNote, Paperclip, Pencil, Check, Clock, Settings2, Sparkles,
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
@@ -31,6 +32,9 @@ type EnrollmentRow = {
   id: string; user_id: string; course_id: string; status: "pending" | "approved" | "rejected";
   certificate_url: string | null; certificate_issued: boolean; notes: string | null; created_at: string;
   blocked: boolean;
+  name_ar: string | null; name_en: string | null;
+  certificate_url_ar: string | null; certificate_url_en: string | null;
+  certificate_requested_at: string | null;
   courses: Course | null;
   profiles: { full_name: string | null; email: string | null; phone: string | null } | null;
 };
@@ -772,6 +776,52 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
     refresh();
   }
 
+  const [autoIssuing, setAutoIssuing] = useState(false);
+  async function autoIssueCertificate() {
+    const nameAr = enrollment.name_ar;
+    const nameEn = enrollment.name_en;
+    if (!nameAr || !nameEn) return toast.error("المتدرب لم يدخل اسمه بالعربي والإنجليزي بعد");
+    const course = enrollment.courses;
+    if (!course) return toast.error("بيانات الكورس غير متاحة");
+    setAutoIssuing(true);
+    try {
+      const issueDate = new Date();
+      const common = {
+        courseTitle: course.title,
+        courseDescription: course.description,
+        totalHours: Number(course.total_hours ?? 0),
+        issueDate,
+        certificateId: enrollment.id,
+      };
+      const [pdfAr, pdfEn] = await Promise.all([
+        generateCertificatePdf({ ...common, lang: "ar", studentName: nameAr }),
+        generateCertificatePdf({ ...common, lang: "en", studentName: nameEn }),
+      ]);
+      const ts = Date.now();
+      const pathAr = `${enrollment.user_id}/${enrollment.id}-${ts}-ar.pdf`;
+      const pathEn = `${enrollment.user_id}/${enrollment.id}-${ts}-en.pdf`;
+      const [up1, up2] = await Promise.all([
+        supabase.storage.from("certificates").upload(pathAr, pdfAr, { contentType: "application/pdf", upsert: true }),
+        supabase.storage.from("certificates").upload(pathEn, pdfEn, { contentType: "application/pdf", upsert: true }),
+      ]);
+      if (up1.error) throw up1.error;
+      if (up2.error) throw up2.error;
+      const { error } = await supabase.from("enrollments").update({
+        certificate_url_ar: pathAr, certificate_url_en: pathEn,
+        certificate_url: pathAr, certificate_issued: true,
+      }).eq("id", enrollment.id);
+      if (error) throw error;
+      setIssued(true);
+      toast.success("تم إصدار الشهادة (عربي + إنجليزي) وإشعار المتدرب 🎉");
+      refresh();
+    } catch (e: any) {
+      toast.error(e?.message ?? "تعذّر توليد الشهادة");
+    } finally {
+      setAutoIssuing(false);
+    }
+  }
+
+
   async function addPayment(e: React.FormEvent) {
     e.preventDefault();
     if (!payAmount) return;
@@ -874,8 +924,28 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
                 💡 يفضّل اكتمال الدفع قبل إصدار الشهادة. المتبقي: {(coursePrice - totalPaid).toLocaleString()} {courseCur}
               </div>
             )}
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
-              <label className="block">
+            <div className="rounded-2xl border border-[var(--gold)]/30 bg-[var(--gold)]/5 p-4 space-y-3 mb-3">
+              {enrollment.certificate_requested_at && !issued && (
+                <p className="text-xs text-amber-300 flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5" /> المتدرب طلب الشهادة في {new Date(enrollment.certificate_requested_at).toLocaleString("ar-EG")}
+                </p>
+              )}
+              <div className="text-xs space-y-1 text-white/80">
+                <div className="flex justify-between"><span className="text-white/50">الاسم (عربي):</span><span className="font-semibold">{enrollment.name_ar || "— لم يُدخل بعد"}</span></div>
+                <div className="flex justify-between"><span className="text-white/50">الاسم (إنجليزي):</span><span className="font-semibold" dir="ltr">{enrollment.name_en || "— not set"}</span></div>
+              </div>
+              <button onClick={autoIssueCertificate} disabled={autoIssuing || !enrollment.name_ar || !enrollment.name_en}
+                className="w-full h-12 rounded-xl text-sm font-bold flex items-center justify-center gap-2 disabled:opacity-40"
+                style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
+                {autoIssuing ? <><Loader2 className="w-4 h-4 animate-spin" /> جاري التوليد...</> : <><Sparkles className="w-4 h-4" /> إصدار الشهادة تلقائياً (عربي + إنجليزي)</>}
+              </button>
+              {(enrollment.certificate_url_ar || enrollment.certificate_url_en) && (
+                <p className="text-xs text-emerald-300 text-center">✓ تم إصدار الشهادة بنجاح</p>
+              )}
+            </div>
+            <details className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+              <summary className="text-xs text-white/50 cursor-pointer">رفع ملف يدوي (اختياري)</summary>
+              <label className="block mt-3">
                 <span className="text-xs text-white/60 mb-2 block">رفع ملف الشهادة (PDF / صورة)</span>
                 <input type="file" accept=".pdf,image/*"
                   onChange={(e) => e.target.files?.[0] && uploadCert(e.target.files[0])}
@@ -888,7 +958,7 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
                 } disabled:opacity-50`}>
                 {issued ? "✓ الشهادة مُصدرة للمتدرب" : "تفعيل إصدار الشهادة"}
               </button>
-            </div>
+            </details>
           </section>
 
           <section>

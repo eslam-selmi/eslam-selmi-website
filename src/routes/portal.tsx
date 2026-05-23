@@ -10,7 +10,7 @@ import {
   Clock, CheckCircle2, XCircle, Download, Upload, BookOpen, Wallet, Loader2,
   ExternalLink, Sparkles, ArrowRight, Calendar, Layers, StickyNote, Link as LinkIcon,
   Paperclip, Check, ChevronLeft, PlayCircle, Award, Linkedin, GraduationCap, Hourglass,
-  Languages, FileText, Send,
+  Languages, FileText, Send, AlertCircle,
 } from "lucide-react";
 
 
@@ -33,6 +33,9 @@ type Course = {
 type Enrollment = {
   id: string; course_id: string; status: "pending" | "approved" | "rejected";
   certificate_url: string | null; certificate_issued: boolean; notes: string | null;
+  name_ar: string | null; name_en: string | null;
+  certificate_url_ar: string | null; certificate_url_en: string | null;
+  certificate_requested_at: string | null;
   courses: Course | null;
 };
 type Profile = { full_name: string | null; email: string | null; phone: string | null };
@@ -118,9 +121,11 @@ function PortalPage() {
   }
 
   if (viewing) {
+    // always read the freshest enrollment so name/cert updates flow into the detail view
+    const fresh = enrollments.find((e) => e.id === viewing.id) ?? viewing;
     return (
       <PortalShell userId={user.id} role="trainee" userLabel={profile?.full_name || profile?.email}>
-        <CourseDetail enrollment={viewing} onBack={() => { setViewing(null); refresh(); }} onDownloadCert={downloadCert} />
+        <CourseDetail enrollment={fresh} onBack={() => { setViewing(null); refresh(); }} onDownloadCert={downloadCert} onRefresh={refresh} />
       </PortalShell>
     );
   }
@@ -273,7 +278,7 @@ function EnrollmentCard({ en, onOpen, onWithdraw }: { en: Enrollment; onOpen: ()
 }
 
 // ============= COURSE DETAIL (trainee) =============
-function CourseDetail({ enrollment, onBack, onDownloadCert }: { enrollment: Enrollment; onBack: () => void; onDownloadCert: (url: string) => void }) {
+function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrollment: Enrollment; onBack: () => void; onDownloadCert: (url: string) => void; onRefresh: () => void }) {
   const c = enrollment.courses!;
   const [modules, setModules] = useState<any[]>([]);
   const [items, setItems] = useState<Record<string, any[]>>({});
@@ -475,28 +480,15 @@ function CourseDetail({ enrollment, onBack, onDownloadCert }: { enrollment: Enro
           )}
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-          <h3 className="font-bold mb-3 flex items-center gap-2"><Award className="w-4 h-4 text-[var(--gold)]" /> الشهادة</h3>
-          {enrollment.certificate_issued && enrollment.certificate_url ? (
-            <div className="space-y-2.5">
-              <button onClick={() => onDownloadCert(enrollment.certificate_url!)}
-                className="w-full h-12 rounded-xl font-semibold flex items-center justify-center gap-2"
-                style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
-                <Download className="w-4 h-4" /> تحميل الشهادة
-              </button>
-              <a
-                href={buildLinkedInShareUrl(c.title, Number(c.total_hours ?? 0))}
-                target="_blank" rel="noopener"
-                className="w-full h-11 rounded-xl font-semibold flex items-center justify-center gap-2 bg-[#0a66c2] hover:bg-[#0958a8] text-white transition">
-                <Linkedin className="w-4 h-4" /> شارك إنجازك على LinkedIn
-              </a>
-            </div>
-          ) : (
-            <p className="text-sm text-white/50 bg-white/5 border border-white/10 rounded-lg p-4 text-center">
-              الشهادة ستُصدَر بعد إكمال متطلبات الكورس. سيصلك إشعار بمجرد إصدارها.
-            </p>
-          )}
-        </div>
+        <CertificatePanel
+          enrollment={enrollment}
+          course={c}
+          allModulesDone={modules.length > 0 && modules.every((m: any) => m.completed_by_admin)}
+          totalModules={modules.length}
+          completedModules={completedCount}
+          onDownloadCert={onDownloadCert}
+          onRefresh={onRefresh}
+        />
       </section>
     </div>
   );
@@ -518,6 +510,133 @@ function StatCard({ icon: Icon, label, value, accent }: { icon: any; label: stri
         <p className="text-2xl font-bold leading-none">{value}</p>
         <p className="text-[11px] text-white/60 mt-1">{label}</p>
       </div>
+    </div>
+  );
+}
+
+function CertificatePanel({
+  enrollment, course, allModulesDone, totalModules, completedModules, onDownloadCert, onRefresh,
+}: {
+  enrollment: Enrollment; course: Course;
+  allModulesDone: boolean; totalModules: number; completedModules: number;
+  onDownloadCert: (url: string) => void; onRefresh: () => void;
+}) {
+  const [nameAr, setNameAr] = useState(enrollment.name_ar ?? "");
+  const [nameEn, setNameEn] = useState(enrollment.name_en ?? "");
+  const [saving, setSaving] = useState(false);
+  const [requesting, setRequesting] = useState(false);
+  const namesSaved = !!(enrollment.name_ar && enrollment.name_en);
+  const issued = enrollment.certificate_issued && (enrollment.certificate_url_ar || enrollment.certificate_url_en || enrollment.certificate_url);
+  const requested = !!enrollment.certificate_requested_at && !issued;
+
+  async function saveNames() {
+    if (!nameAr.trim() || !nameEn.trim()) return toast.error("اكتب الاسم بالعربي والإنجليزي");
+    setSaving(true);
+    const { error } = await supabase.from("enrollments")
+      .update({ name_ar: nameAr.trim(), name_en: nameEn.trim() })
+      .eq("id", enrollment.id);
+    setSaving(false);
+    if (error) return toast.error(error.message);
+    toast.success("تم حفظ الاسم");
+    onRefresh();
+  }
+
+  async function requestCertificate() {
+    if (!allModulesDone) return toast.error("لازم تكمل كل الدروس الأول");
+    if (!namesSaved) return toast.error("اكتب اسمك بالعربي والإنجليزي الأول");
+    setRequesting(true);
+    const { error } = await supabase.from("enrollments")
+      .update({ certificate_requested_at: new Date().toISOString() })
+      .eq("id", enrollment.id);
+    setRequesting(false);
+    if (error) return toast.error(error.message);
+    toast.success("تم إرسال طلب الشهادة للأدمن ✅");
+    onRefresh();
+  }
+
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+      <h3 className="font-bold mb-3 flex items-center gap-2"><Award className="w-4 h-4 text-[var(--gold)]" /> الشهادة</h3>
+
+      {issued ? (
+        <div className="space-y-2.5">
+          <p className="text-xs text-emerald-300 flex items-center gap-1.5 mb-2">
+            <CheckCircle2 className="w-3.5 h-3.5" /> شهادتك جاهزة — اختر اللغة للتحميل
+          </p>
+          {enrollment.certificate_url_ar && (
+            <button onClick={() => onDownloadCert(enrollment.certificate_url_ar!)}
+              className="w-full h-11 rounded-xl font-semibold flex items-center justify-center gap-2"
+              style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
+              <Download className="w-4 h-4" /> تحميل النسخة العربية
+            </button>
+          )}
+          {enrollment.certificate_url_en && (
+            <button onClick={() => onDownloadCert(enrollment.certificate_url_en!)}
+              className="w-full h-11 rounded-xl font-semibold flex items-center justify-center gap-2 bg-white/10 border border-[var(--gold)]/40 text-[var(--gold)] hover:bg-white/15">
+              <Download className="w-4 h-4" /> Download English version
+            </button>
+          )}
+          {!enrollment.certificate_url_ar && !enrollment.certificate_url_en && enrollment.certificate_url && (
+            <button onClick={() => onDownloadCert(enrollment.certificate_url!)}
+              className="w-full h-11 rounded-xl font-semibold flex items-center justify-center gap-2"
+              style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
+              <Download className="w-4 h-4" /> تحميل الشهادة
+            </button>
+          )}
+          <a href={buildLinkedInShareUrl(course.title, Number(course.total_hours ?? 0))}
+            target="_blank" rel="noopener"
+            className="w-full h-11 rounded-xl font-semibold flex items-center justify-center gap-2 bg-[#0a66c2] hover:bg-[#0958a8] text-white transition">
+            <Linkedin className="w-4 h-4" /> شارك إنجازك على LinkedIn
+          </a>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {!namesSaved && (
+            <div className="rounded-xl border border-[var(--gold)]/30 bg-[var(--gold)]/5 p-3 space-y-2">
+              <p className="text-xs text-[var(--gold)] flex items-center gap-1.5">
+                <AlertCircle className="w-3.5 h-3.5" /> اكتب اسمك بالضبط زي ما تحبه يظهر على الشهادة
+              </p>
+              <input value={nameAr} onChange={(e) => setNameAr(e.target.value)}
+                placeholder="الاسم بالعربي" dir="rtl"
+                className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/15 text-sm focus:outline-none focus:border-[var(--gold)]/60" />
+              <input value={nameEn} onChange={(e) => setNameEn(e.target.value)}
+                placeholder="Full name in English" dir="ltr"
+                className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/15 text-sm focus:outline-none focus:border-[var(--gold)]/60" />
+              <button onClick={saveNames} disabled={saving}
+                className="w-full h-10 rounded-lg text-xs font-semibold bg-[var(--gold)] text-[#0b1736] disabled:opacity-50">
+                {saving ? "..." : "حفظ الاسم"}
+              </button>
+            </div>
+          )}
+
+          {namesSaved && (
+            <div className="rounded-xl bg-white/5 border border-white/10 p-3 text-xs text-white/70 space-y-1">
+              <p>الاسم على الشهادة:</p>
+              <p className="text-white font-semibold">{enrollment.name_ar}</p>
+              <p className="text-white font-semibold" dir="ltr">{enrollment.name_en}</p>
+            </div>
+          )}
+
+          {requested ? (
+            <div className="rounded-xl bg-amber-300/10 border border-amber-300/30 p-3 text-xs text-amber-200 flex items-center gap-2">
+              <Hourglass className="w-3.5 h-3.5" /> طلبك مُرسل للأدمن، هتوصلك الشهادة قريب
+            </div>
+          ) : (
+            <>
+              {!allModulesDone && totalModules > 0 && (
+                <p className="text-[11px] text-white/55 text-center">
+                  متبقى {totalModules - completedModules} درس قبل ما تقدر تطلب الشهادة
+                </p>
+              )}
+              <button onClick={requestCertificate} disabled={!allModulesDone || !namesSaved || requesting}
+                className="w-full h-12 rounded-xl font-semibold flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
+                style={{ background: allModulesDone && namesSaved ? "linear-gradient(135deg, var(--gold), #b8923f)" : "rgba(255,255,255,0.05)", color: allModulesDone && namesSaved ? "#0b1736" : "rgba(255,255,255,0.5)" }}>
+                <Send className="w-4 h-4" /> {requesting ? "جاري الإرسال..." : "طلب إصدار الشهادة"}
+              </button>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }
