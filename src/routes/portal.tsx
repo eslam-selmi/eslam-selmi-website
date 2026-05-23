@@ -532,7 +532,7 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
   );
 }
 
-function StatCard({ icon: Icon, label, value, accent }: { icon: any; label: string; value: number; accent: "emerald" | "amber" | "sky" | "gold" }) {
+function StatCard({ icon: Icon, label, value, accent, suffix }: { icon: any; label: string; value: number | string; accent: "emerald" | "amber" | "sky" | "gold"; suffix?: string }) {
   const tone = {
     emerald: "from-emerald-400/15 to-emerald-400/5 border-emerald-400/25 text-emerald-300",
     amber: "from-amber-400/15 to-amber-400/5 border-amber-400/25 text-amber-300",
@@ -545,7 +545,7 @@ function StatCard({ icon: Icon, label, value, accent }: { icon: any; label: stri
         <Icon className="w-5 h-5" />
       </div>
       <div className="min-w-0">
-        <p className="text-2xl font-bold leading-none">{value}</p>
+        <p className="text-2xl font-bold leading-none">{value}{suffix && <span className="text-sm font-medium opacity-70 ms-1">{suffix}</span>}</p>
         <p className="text-[11px] text-white/60 mt-1">{label}</p>
       </div>
     </div>
