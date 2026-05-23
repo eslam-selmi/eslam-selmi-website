@@ -308,7 +308,16 @@ function BrandMark({ size = 62 }: { size?: number }) {
 export function Nav({ theme, onThemeToggle }: { theme?: ThemeMode; onThemeToggle?: () => void } = {}) {
   const { t, lang, setLang } = useI18n();
   const [open, setOpen] = useState(false);
+  const [portalOpen, setPortalOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const portalRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (portalRef.current && !portalRef.current.contains(e.target as Node)) setPortalOpen(false);
+    };
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, []);
   const [internalTheme, setInternalTheme] = useState<ThemeMode>("dark");
   const activeTheme = theme ?? internalTheme;
   useEffect(() => {
