@@ -364,12 +364,15 @@ function EnrollmentCard({ en, onOpen, onWithdraw }: { en: Enrollment; onOpen: ()
 
 // ============= COURSE DETAIL (trainee) =============
 function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrollment: Enrollment; onBack: () => void; onDownloadCert: (url: string) => void; onRefresh: () => void }) {
+  const { lang } = useI18n();
+  const isAr = lang === "ar";
   const c = enrollment.courses!;
   const [modules, setModules] = useState<any[]>([]);
   const [items, setItems] = useState<Record<string, any[]>>({});
   const [sessions, setSessions] = useState<any[]>([]);
   const [payments, setPayments] = useState<any[]>([]);
   const [installments, setInstallments] = useState<any[]>([]);
+
 
   async function load() {
     const [mRes, sRes, pRes, iRes] = await Promise.all([
