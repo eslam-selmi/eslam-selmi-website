@@ -394,6 +394,12 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
   const completedCount = modules.filter((m) => m.completed_by_admin).length;
   const progressPct = modules.length ? Math.round((completedCount / modules.length) * 100) : 0;
 
+  // Translate module titles + session titles
+  const moduleTitles = useMemo(() => modules.map((m: any) => m.title || ""), [modules]);
+  const trModuleTitles = useTranslatedTexts(moduleTitles);
+  const sessionTitles = useMemo(() => sessions.map((s: any) => s.title || ""), [sessions]);
+  const trSessionTitles = useTranslatedTexts(sessionTitles);
+
   return (
     <div className="space-y-7">
       <button onClick={onBack} className="flex items-center gap-1.5 text-sm text-white/60 hover:text-white">
