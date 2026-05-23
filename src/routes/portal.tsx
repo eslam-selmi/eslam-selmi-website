@@ -10,7 +10,7 @@ import {
   Clock, CheckCircle2, XCircle, Download, Upload, BookOpen, Wallet, Loader2,
   ExternalLink, Sparkles, ArrowRight, Calendar, Layers, StickyNote, Link as LinkIcon,
   Paperclip, Check, ChevronLeft, PlayCircle, Award, Linkedin, GraduationCap, Hourglass,
-  Languages, FileText, Send, AlertCircle, X,
+  FileText, Send, AlertCircle, X,
 } from "lucide-react";
 
 
