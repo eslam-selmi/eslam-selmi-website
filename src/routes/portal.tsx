@@ -111,9 +111,26 @@ function PortalPage() {
   const stats = useMemo(() => {
     const approved = enrollments.filter((e) => e.status === "approved");
     const certs = enrollments.filter((e) => e.certificate_issued).length;
-    const hours = approved.reduce((s, e) => s + Number(e.courses?.total_hours ?? 0), 0);
-    return { active: approved.length, pending: enrollments.filter((e) => e.status === "pending").length, certs, hours };
-  }, [enrollments]);
+    // Hours-as-progress: earned hours per course = total_hours * (completed_modules / total_modules)
+    // Until all lessons are completed by admin, the trainee sees a fraction; once everything is
+    // ticked off, they see the full course hours (e.g. 50/50).
+    let earned = 0, total = 0;
+    for (const e of approved) {
+      const courseTotal = Number(e.courses?.total_hours ?? 0);
+      total += courseTotal;
+      const ms = modules.filter((m) => m.course_id === e.course_id);
+      if (ms.length === 0) continue;
+      const done = ms.filter((m) => m.completed_by_admin).length;
+      earned += courseTotal * (done / ms.length);
+    }
+    return {
+      active: approved.length,
+      pending: enrollments.filter((e) => e.status === "pending").length,
+      certs,
+      hoursEarned: Math.round(earned),
+      hoursTotal: Math.round(total),
+    };
+  }, [enrollments, modules]);
 
   async function enroll(courseId: string) {
     if (!user) return;
