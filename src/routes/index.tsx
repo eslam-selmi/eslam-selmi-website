@@ -941,7 +941,7 @@ function Brands() {
   const row2 = [...BRANDS].reverse();
 
   const Chip = ({ b }: { b: { src: string; name: string } }) => (
-    <div className="shrink-0 mx-4 group">
+    <div className="shrink-0 group">
       <div
         className="relative h-24 w-44 md:h-28 md:w-52 rounded-2xl bg-white border border-border/30 overflow-hidden flex items-center justify-center px-5 py-3 transition-all duration-500 group-hover:-translate-y-1.5"
         style={{
@@ -981,15 +981,23 @@ function Brands() {
 
         {/* row 1 */}
         <div className="overflow-hidden">
-          <div className="flex w-max animate-marquee-x py-2" style={{ animationDuration: "45s" }}>
-            {[...row1, ...row1].map((b, i) => <Chip key={`r1-${i}`} b={b} />)}
+          <div className="flex w-max gap-8 marquee-track py-2" style={{ animationDuration: "45s" }}>
+            {[0, 1, 2].map((copy) => (
+              <div key={`r1-copy-${copy}`} className="flex shrink-0 gap-8" aria-hidden={copy > 0}>
+                {row1.map((b) => <Chip key={`r1-${copy}-${b.name}`} b={b} />)}
+              </div>
+            ))}
           </div>
         </div>
 
         {/* row 2 — opposite direction */}
         <div className="overflow-hidden mt-4">
-          <div className="flex w-max animate-marquee-x-reverse py-2" style={{ animationDuration: "55s" }}>
-            {[...row2, ...row2].map((b, i) => <Chip key={`r2-${i}`} b={b} />)}
+          <div className="flex w-max gap-8 marquee-track-reverse py-2" style={{ animationDuration: "55s" }}>
+            {[0, 1, 2].map((copy) => (
+              <div key={`r2-copy-${copy}`} className="flex shrink-0 gap-8" aria-hidden={copy > 0}>
+                {row2.map((b) => <Chip key={`r2-${copy}-${b.name}`} b={b} />)}
+              </div>
+            ))}
           </div>
         </div>
       </div>
