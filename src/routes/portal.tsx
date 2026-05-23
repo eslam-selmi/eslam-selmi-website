@@ -247,7 +247,7 @@ function PortalPage() {
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 gap-4">
-              {enrollments.map((en) => <EnrollmentCard key={en.id} en={en} onOpen={() => setViewing(en)} onWithdraw={withdraw} />)}
+              {trEnrollments.map((en) => <EnrollmentCard key={en.id} en={en} onOpen={() => setViewing(en)} onWithdraw={withdraw} />)}
             </div>
           )}
         </section>
