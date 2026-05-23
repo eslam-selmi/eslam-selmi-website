@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-import html2canvas from "html2canvas";
+import { toJpeg } from "html-to-image";
 import jsPDF from "jspdf";
 import brandLogo from "@/assets/brand-logo.png";
 
