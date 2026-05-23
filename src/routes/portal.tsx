@@ -85,6 +85,14 @@ function PortalPage() {
     refresh();
   }
 
+  async function withdraw(enrollmentId: string) {
+    const { error } = await supabase.from("enrollments").delete().eq("id", enrollmentId);
+    if (error) return toast.error(error.message);
+    toast.success("تم سحب الطلب");
+    refresh();
+  }
+
+
   async function downloadCert(url: string) {
     const { data, error } = await supabase.storage.from("certificates").createSignedUrl(url, 60);
     if (error || !data) return toast.error("تعذّر تحميل الشهادة");
