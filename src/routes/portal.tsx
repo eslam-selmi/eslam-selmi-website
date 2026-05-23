@@ -18,7 +18,7 @@ export const Route = createFileRoute("/portal")({
   component: PortalPage,
 });
 
-type Course = { id: string; title: string; description: string | null; price: number; currency: string };
+type Course = { id: string; title: string; description: string | null; price: number | null; currency: string };
 type Enrollment = {
   id: string; course_id: string; status: "pending" | "approved" | "rejected";
   certificate_url: string | null; certificate_issued: boolean; notes: string | null;
