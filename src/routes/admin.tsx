@@ -671,6 +671,7 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
     starts_at: course.starts_at ?? "", ends_at: course.ends_at ?? "",
     installments_count: String(course.installments_count), online_url: course.online_url ?? "",
     cover_emoji: course.cover_emoji ?? "🎓",
+    total_hours: String(course.total_hours ?? 0),
   });
 
   async function save() {
@@ -680,6 +681,7 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
       starts_at: f.starts_at || null, ends_at: f.ends_at || null,
       installments_count: Number(f.installments_count) || 1,
       online_url: f.online_url || null, cover_emoji: f.cover_emoji || "🎓",
+      total_hours: Number(f.total_hours) || 0,
     }).eq("id", course.id);
     if (error) return toast.error(error.message);
     toast.success("تم الحفظ");
@@ -704,7 +706,10 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
         <Input label="تاريخ البدء" type="date" value={f.starts_at} onChange={(v) => setF({ ...f, starts_at: v })} />
         <Input label="تاريخ الانتهاء" type="date" value={f.ends_at} onChange={(v) => setF({ ...f, ends_at: v })} />
       </div>
-      <Input label="رابط المنصة العام" value={f.online_url} onChange={(v) => setF({ ...f, online_url: v })} />
+      <div className="grid grid-cols-2 gap-3">
+        <Input label="رابط الكورس" value={f.online_url} onChange={(v) => setF({ ...f, online_url: v })} />
+        <Input label="عدد ساعات الكورس" type="number" value={f.total_hours} onChange={(v) => setF({ ...f, total_hours: v })} />
+      </div>
       <button onClick={save} className="w-full h-11 rounded-xl font-semibold" style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
         حفظ التعديلات
       </button>
