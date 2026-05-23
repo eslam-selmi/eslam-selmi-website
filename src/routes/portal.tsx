@@ -307,11 +307,14 @@ function PortalPage() {
 }
 
 function EnrollmentCard({ en, onOpen, onWithdraw }: { en: Enrollment; onOpen: () => void; onWithdraw: (id: string) => void }) {
+  const { lang } = useI18n();
+  const isAr = lang === "ar";
   const statusBadge = {
-    pending: { label: "قيد المراجعة", icon: Clock, color: "text-amber-300 bg-amber-300/10 border-amber-300/30" },
-    approved: { label: "مقبول", icon: CheckCircle2, color: "text-emerald-300 bg-emerald-300/10 border-emerald-300/30" },
-    rejected: { label: "مرفوض", icon: XCircle, color: "text-rose-300 bg-rose-300/10 border-rose-300/30" },
+    pending: { label: isAr ? "قيد المراجعة" : "Under review", icon: Clock, color: "text-amber-300 bg-amber-300/10 border-amber-300/30" },
+    approved: { label: isAr ? "مقبول" : "Approved", icon: CheckCircle2, color: "text-emerald-300 bg-emerald-300/10 border-emerald-300/30" },
+    rejected: { label: isAr ? "مرفوض" : "Rejected", icon: XCircle, color: "text-rose-300 bg-rose-300/10 border-rose-300/30" },
   }[en.status];
+
   const SIcon = statusBadge.icon;
   const c = en.courses;
 
