@@ -37,8 +37,8 @@ import logoMallOfEgypt from "@/assets/clients/mall-of-egypt.jpg";
 import logoNewBrand from "@/assets/clients/new-brand.jpg";
 
 const BRANDS: { src: string; name: string; nameAr: string; specEn: string; specAr: string }[] = [
-  { src: logoAramex, name: "Aramex", nameAr: "أرامكس", specEn: "Transport & Logistics", specAr: "نقل ولوجيستيات" },
-  { src: logoG4s, name: "G4S", nameAr: "جي فور إس", specEn: "Advanced Security Solutions", specAr: "حلول أمنية متطورة" },
+  { src: logoAramex, name: "Aramex", nameAr: "أرامكس", specEn: "Transport & Logistics", specAr: "حلول النقل والخدمات اللوجستية" },
+  { src: logoG4s, name: "G4S", nameAr: "جي فور إس", specEn: "Advanced Security Solutions", specAr: "الحلول الأمنية المتكاملة" },
   { src: logoAmazonEg, name: "Amazon.eg", nameAr: "أمازون مصر", specEn: "E-commerce", specAr: "تجارة إلكترونية" },
   { src: logoImtenan, name: "Imtenan", nameAr: "إمتنان", specEn: "FMCG", specAr: "FMCG" },
   { src: logoMallOfEgypt, name: "Mall of Egypt", nameAr: "مول مصر", specEn: "Retail & Malls", specAr: "تجزئة ومراكز تسوق" },
