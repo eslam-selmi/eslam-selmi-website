@@ -776,6 +776,52 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
     refresh();
   }
 
+  const [autoIssuing, setAutoIssuing] = useState(false);
+  async function autoIssueCertificate() {
+    const nameAr = enrollment.name_ar;
+    const nameEn = enrollment.name_en;
+    if (!nameAr || !nameEn) return toast.error("المتدرب لم يدخل اسمه بالعربي والإنجليزي بعد");
+    const course = enrollment.courses;
+    if (!course) return toast.error("بيانات الكورس غير متاحة");
+    setAutoIssuing(true);
+    try {
+      const issueDate = new Date();
+      const common = {
+        courseTitle: course.title,
+        courseDescription: course.description,
+        totalHours: Number(course.total_hours ?? 0),
+        issueDate,
+        certificateId: enrollment.id,
+      };
+      const [pdfAr, pdfEn] = await Promise.all([
+        generateCertificatePdf({ ...common, lang: "ar", studentName: nameAr }),
+        generateCertificatePdf({ ...common, lang: "en", studentName: nameEn }),
+      ]);
+      const ts = Date.now();
+      const pathAr = `${enrollment.user_id}/${enrollment.id}-${ts}-ar.pdf`;
+      const pathEn = `${enrollment.user_id}/${enrollment.id}-${ts}-en.pdf`;
+      const [up1, up2] = await Promise.all([
+        supabase.storage.from("certificates").upload(pathAr, pdfAr, { contentType: "application/pdf", upsert: true }),
+        supabase.storage.from("certificates").upload(pathEn, pdfEn, { contentType: "application/pdf", upsert: true }),
+      ]);
+      if (up1.error) throw up1.error;
+      if (up2.error) throw up2.error;
+      const { error } = await supabase.from("enrollments").update({
+        certificate_url_ar: pathAr, certificate_url_en: pathEn,
+        certificate_url: pathAr, certificate_issued: true,
+      }).eq("id", enrollment.id);
+      if (error) throw error;
+      setIssued(true);
+      toast.success("تم إصدار الشهادة (عربي + إنجليزي) وإشعار المتدرب 🎉");
+      refresh();
+    } catch (e: any) {
+      toast.error(e?.message ?? "تعذّر توليد الشهادة");
+    } finally {
+      setAutoIssuing(false);
+    }
+  }
+
+
   async function addPayment(e: React.FormEvent) {
     e.preventDefault();
     if (!payAmount) return;
