@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { LogOut, Home, ShieldCheck, GraduationCap } from "lucide-react";
+import { LogOut, Home, ShieldCheck, GraduationCap, Languages } from "lucide-react";
 import { signOut } from "@/lib/portal-auth";
 import { NotificationsBell } from "@/lib/notifications";
+import { useI18n } from "@/lib/i18n";
 import brandLogo from "@/assets/brand-logo.png";
 
 type Props = {
@@ -13,8 +14,21 @@ type Props = {
 
 export function PortalShell({ userId, role, userLabel, children }: Props) {
   const nav = useNavigate();
+  const { lang, setLang, dir } = useI18n();
+  const isAr = lang === "ar";
+
+  const L = {
+    panelAdmin: isAr ? "لوحة الإدارة" : "Admin Panel",
+    panelTrainee: isAr ? "بوابة المتدرب" : "Trainee Portal",
+    site: isAr ? "الموقع" : "Website",
+    admin: isAr ? "الإدارة" : "Admin",
+    courses: isAr ? "كورساتي" : "My Courses",
+    logout: isAr ? "خروج" : "Logout",
+    switchLang: isAr ? "English" : "العربية",
+  };
+
   return (
-    <div dir="rtl" className="min-h-screen bg-[#0b1736] text-white">
+    <div dir={dir} className="min-h-screen bg-[#0b1736] text-white">
       <div className="absolute inset-x-0 top-0 h-[420px] bg-aurora opacity-50 pointer-events-none" />
 
       <header className="relative border-b border-white/10 backdrop-blur-xl bg-[rgba(11,23,54,0.7)] sticky top-0 z-40">
@@ -25,32 +39,40 @@ export function PortalShell({ userId, role, userLabel, children }: Props) {
               <div className="hidden sm:block leading-tight">
                 <p className="text-[11px] text-white/50 tracking-wider">ESLAM SELMI</p>
                 <p className="text-xs font-bold text-[var(--gold)]">
-                  {role === "admin" ? "لوحة الإدارة" : "بوابة المتدرب"}
+                  {role === "admin" ? L.panelAdmin : L.panelTrainee}
                 </p>
               </div>
             </Link>
 
             <nav className="hidden md:flex items-center gap-1 mx-3 ps-3 border-s border-white/10">
               <Link to="/" className="flex items-center gap-1.5 text-xs text-white/70 hover:text-white px-3 h-9 rounded-lg hover:bg-white/5 transition">
-                <Home className="w-3.5 h-3.5" /> الموقع
+                <Home className="w-3.5 h-3.5" /> {L.site}
               </Link>
               {role === "admin" ? (
                 <Link to="/admin" className="flex items-center gap-1.5 text-xs text-white/70 hover:text-white px-3 h-9 rounded-lg hover:bg-white/5 transition">
-                  <ShieldCheck className="w-3.5 h-3.5" /> الإدارة
+                  <ShieldCheck className="w-3.5 h-3.5" /> {L.admin}
                 </Link>
               ) : (
                 <Link to="/portal" className="flex items-center gap-1.5 text-xs text-white/70 hover:text-white px-3 h-9 rounded-lg hover:bg-white/5 transition">
-                  <GraduationCap className="w-3.5 h-3.5" /> كورساتي
+                  <GraduationCap className="w-3.5 h-3.5" /> {L.courses}
                 </Link>
               )}
             </nav>
           </div>
 
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => setLang(isAr ? "en" : "ar")}
+              title={L.switchLang}
+              className="flex items-center gap-1.5 text-xs px-3 h-10 rounded-xl border border-white/15 hover:bg-white/5 transition"
+            >
+              <Languages className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline font-semibold tracking-wide">{L.switchLang}</span>
+            </button>
             <NotificationsBell userId={userId} />
             {userLabel && <span className="hidden lg:inline text-xs text-white/60 max-w-[160px] truncate">{userLabel}</span>}
             <button onClick={() => { signOut(); nav({ to: "/auth" }); }} className="flex items-center gap-1.5 text-xs px-3 h-10 rounded-xl border border-white/15 hover:bg-white/5 transition">
-              <LogOut className="w-3.5 h-3.5" /> <span className="hidden sm:inline">خروج</span>
+              <LogOut className="w-3.5 h-3.5" /> <span className="hidden sm:inline">{L.logout}</span>
             </button>
           </div>
         </div>
