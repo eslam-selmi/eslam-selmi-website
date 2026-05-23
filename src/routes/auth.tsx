@@ -133,6 +133,33 @@ function AuthPage() {
           الحسابات تخضع للموافقة اليدوية من قِبل الإدارة قبل تفعيل الكورس.
         </p>
       </div>
+
+      {confirmEmail && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4" onClick={() => setConfirmEmail(null)}>
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+          <div onClick={(e) => e.stopPropagation()} dir="rtl"
+            className="relative w-full max-w-md rounded-3xl border border-[var(--gold)]/30 bg-[rgba(11,23,54,0.98)] p-8 text-white shadow-2xl">
+            <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-[var(--gold)] to-transparent" />
+            <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5 border border-[var(--gold)]/40 mx-auto"
+              style={{ background: "linear-gradient(135deg, rgba(212,178,89,0.25), transparent)" }}>
+              <span className="text-3xl">📧</span>
+            </div>
+            <h3 className="text-2xl font-bold text-center">تفقّد بريدك الإلكتروني</h3>
+            <p className="text-white/75 text-center mt-4 leading-relaxed">
+              تم إرسال رابط التفعيل إلى:
+              <br/>
+              <span className="font-semibold text-[var(--gold)]" dir="ltr">{confirmEmail}</span>
+              <br/><br/>
+              يرجى تفقد البريد الوارد (وربما مجلد الـ Spam) والضغط على الرابط لتفعيل حسابك ثم العودة لتسجيل الدخول.
+            </p>
+            <button onClick={() => { setConfirmEmail(null); setMode("login"); }}
+              className="mt-6 w-full h-12 rounded-xl font-semibold"
+              style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
+              فهمت — الانتقال لتسجيل الدخول
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
