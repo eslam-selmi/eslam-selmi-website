@@ -264,10 +264,15 @@ export type Database = {
         Row: {
           blocked: boolean
           certificate_issued: boolean
+          certificate_requested_at: string | null
           certificate_url: string | null
+          certificate_url_ar: string | null
+          certificate_url_en: string | null
           course_id: string
           created_at: string
           id: string
+          name_ar: string | null
+          name_en: string | null
           notes: string | null
           status: Database["public"]["Enums"]["enrollment_status"]
           updated_at: string
@@ -276,10 +281,15 @@ export type Database = {
         Insert: {
           blocked?: boolean
           certificate_issued?: boolean
+          certificate_requested_at?: string | null
           certificate_url?: string | null
+          certificate_url_ar?: string | null
+          certificate_url_en?: string | null
           course_id: string
           created_at?: string
           id?: string
+          name_ar?: string | null
+          name_en?: string | null
           notes?: string | null
           status?: Database["public"]["Enums"]["enrollment_status"]
           updated_at?: string
@@ -288,10 +298,15 @@ export type Database = {
         Update: {
           blocked?: boolean
           certificate_issued?: boolean
+          certificate_requested_at?: string | null
           certificate_url?: string | null
+          certificate_url_ar?: string | null
+          certificate_url_en?: string | null
           course_id?: string
           created_at?: string
           id?: string
+          name_ar?: string | null
+          name_en?: string | null
           notes?: string | null
           status?: Database["public"]["Enums"]["enrollment_status"]
           updated_at?: string
