@@ -107,7 +107,30 @@ function PortalPage() {
   }, [user?.id]);
 
   const enrolledIds = useMemo(() => new Set(enrollments.map((e) => e.course_id)), [enrollments]);
-  const availableCourses = courses.filter((c) => !enrolledIds.has(c.id));
+  const availableCourses = useMemo(() => courses.filter((c) => !enrolledIds.has(c.id)), [courses, enrolledIds]);
+
+  // Batched translation of available + enrolled course titles & descriptions
+  const courseTextsFlat = useMemo(() => {
+    const arr: string[] = [];
+    availableCourses.forEach((c) => { arr.push(c.title || ""); arr.push(c.description || ""); });
+    enrollments.forEach((e) => { arr.push(e.courses?.title || ""); arr.push(e.courses?.description || ""); });
+    return arr;
+  }, [availableCourses, enrollments]);
+  const courseTextsTr = useTranslatedTexts(courseTextsFlat);
+  const trAvailable = useMemo(() => availableCourses.map((c, i) => ({
+    ...c,
+    title: courseTextsTr[i * 2] || c.title,
+    description: courseTextsTr[i * 2 + 1] || c.description,
+  })), [availableCourses, courseTextsTr]);
+  const enrollmentOffset = availableCourses.length * 2;
+  const trEnrollments = useMemo(() => enrollments.map((e, i) => ({
+    ...e,
+    courses: e.courses ? {
+      ...e.courses,
+      title: courseTextsTr[enrollmentOffset + i * 2] || e.courses.title,
+      description: courseTextsTr[enrollmentOffset + i * 2 + 1] || e.courses.description,
+    } : e.courses,
+  })), [enrollments, courseTextsTr, enrollmentOffset]);
 
   const stats = useMemo(() => {
     const approved = enrollments.filter((e) => e.status === "approved");
@@ -173,7 +196,7 @@ function PortalPage() {
 
   if (viewing) {
     // always read the freshest enrollment so name/cert updates flow into the detail view
-    const fresh = enrollments.find((e) => e.id === viewing.id) ?? viewing;
+    const fresh = trEnrollments.find((e) => e.id === viewing.id) ?? enrollments.find((e) => e.id === viewing.id) ?? viewing;
     return (
       <PortalShell userId={user.id} role="trainee" userLabel={profile?.full_name || profile?.email}>
         <CourseDetail enrollment={fresh} onBack={() => { setViewing(null); refresh(); }} onDownloadCert={downloadCert} onRefresh={refresh} />
@@ -224,7 +247,7 @@ function PortalPage() {
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 gap-4">
-              {enrollments.map((en) => <EnrollmentCard key={en.id} en={en} onOpen={() => setViewing(en)} onWithdraw={withdraw} />)}
+              {trEnrollments.map((en) => <EnrollmentCard key={en.id} en={en} onOpen={() => setViewing(en)} onWithdraw={withdraw} />)}
             </div>
           )}
         </section>
@@ -235,7 +258,7 @@ function PortalPage() {
             <div className="rounded-2xl border border-dashed border-white/15 p-8 text-center text-white/50">لا توجد كورسات جديدة حالياً.</div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {availableCourses.map((c) => (
+              {trAvailable.map((c) => (
                 <div key={c.id} className="group rounded-2xl border border-white/10 bg-white/5 p-5 hover:border-[var(--gold)]/40 transition flex flex-col">
                   <div className="flex items-start gap-3 mb-3">
                     <div className="w-12 h-12 rounded-xl bg-[var(--gold)]/10 border border-[var(--gold)]/30 flex items-center justify-center text-2xl shrink-0">
@@ -371,6 +394,12 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
   const completedCount = modules.filter((m) => m.completed_by_admin).length;
   const progressPct = modules.length ? Math.round((completedCount / modules.length) * 100) : 0;
 
+  // Translate module titles + session titles
+  const moduleTitles = useMemo(() => modules.map((m: any) => m.title || ""), [modules]);
+  const trModuleTitles = useTranslatedTexts(moduleTitles);
+  const sessionTitles = useMemo(() => sessions.map((s: any) => s.title || ""), [sessions]);
+  const trSessionTitles = useTranslatedTexts(sessionTitles);
+
   return (
     <div className="space-y-7">
       <button onClick={onBack} className="flex items-center gap-1.5 text-sm text-white/60 hover:text-white">
@@ -429,7 +458,7 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
                   <div className="flex items-start gap-3">
                     <Clock className="w-5 h-5 text-[var(--gold)] mt-0.5 shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold">{s.title}</h4>
+                      <h4 className="font-semibold">{trSessionTitles[sessions.indexOf(s)] || s.title}</h4>
                       <p className="text-xs text-white/60 mt-1">{dt.toLocaleString("ar-EG")} · {s.duration_minutes}د</p>
                       {s.online_url && !past && (
                         <a href={s.online_url} target="_blank" rel="noopener"
@@ -460,7 +489,7 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
                     {m.completed_by_admin ? <Check className="w-4 h-4" /> : i + 1}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-bold">{m.title}</h4>
+                    <h4 className="font-bold">{trModuleTitles[i] || m.title}</h4>
                     {m.completed_by_admin && <p className="text-[11px] text-emerald-300/80 mt-0.5">✓ تم إكمال هذا الجزء</p>}
                   </div>
                   {m.online_url && (
