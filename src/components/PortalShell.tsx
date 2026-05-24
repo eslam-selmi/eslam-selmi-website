@@ -78,7 +78,7 @@ export function PortalShell({ userId, role, userLabel, children }: Props) {
         </div>
       </header>
 
-      <main className="relative max-w-7xl mx-auto px-4 sm:px-5 py-6 sm:py-8">{children}</main>
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-5 py-6 sm:py-8">{children}</div>
     </div>
   );
 }
