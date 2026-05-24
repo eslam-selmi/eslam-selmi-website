@@ -34,9 +34,9 @@ function LibraryPage() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-accent/25" dir={dir}>
       <Nav />
-      <main className="pt-24">
+      <div className="pt-24">
         <Library />
-      </main>
+      </div>
       <Footer />
       <WhatsAppFloat />
       <CalendlyDialog />
