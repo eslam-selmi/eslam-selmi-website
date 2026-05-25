@@ -27,6 +27,24 @@ export const Route = createFileRoute("/graduates")({
       { property: "og:url", content: "https://eslam-selmi.lovable.app/graduates" },
     ],
     links: [{ rel: "canonical", href: "https://eslam-selmi.lovable.app/graduates" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Course",
+          name: "Empowerment Tools for New Graduates",
+          description:
+            "Hands-on program preparing fresh graduates to master workplace tools: AI, Outlook, Canva, Trello, and Google Sheets & Forms.",
+          inLanguage: ["ar", "en"],
+          provider: {
+            "@type": "Person",
+            name: "Eslam Selmi",
+            url: "https://eslam-selmi.lovable.app/",
+          },
+        }),
+      },
+    ],
   }),
   component: GraduatesPage,
 });

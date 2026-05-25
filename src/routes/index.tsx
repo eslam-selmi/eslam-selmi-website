@@ -67,9 +67,55 @@ export const Route = createFileRoute("/")({
       { property: "og:url", content: "https://eslam-selmi.lovable.app/" },
     ],
     links: [{ rel: "canonical", href: "https://eslam-selmi.lovable.app/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Person",
+              "@id": "https://eslam-selmi.lovable.app/#person",
+              name: "Eslam Selmi",
+              jobTitle: "Head of Learning & Development",
+              url: "https://eslam-selmi.lovable.app/",
+              image: "https://eslam-selmi.lovable.app/favicon.png",
+              sameAs: [
+                "https://www.linkedin.com/in/eslam-selmi/",
+              ],
+              knowsAbout: [
+                "Learning & Development",
+                "Talent Management",
+                "Performance Management",
+                "KPIs",
+                "Corporate Training",
+              ],
+            },
+            {
+              "@type": "WebSite",
+              "@id": "https://eslam-selmi.lovable.app/#website",
+              url: "https://eslam-selmi.lovable.app/",
+              name: "Eslam Selmi — Head of L&D",
+              inLanguage: ["en", "ar"],
+              publisher: { "@id": "https://eslam-selmi.lovable.app/#person" },
+            },
+            {
+              "@type": "Service",
+              name: "Strategy Consulting & Corporate Training",
+              serviceType: "Learning & Development consulting",
+              provider: { "@id": "https://eslam-selmi.lovable.app/#person" },
+              areaServed: ["Egypt", "Saudi Arabia", "MENA"],
+              description:
+                "L&D strategy, talent management, performance & KPIs design, and corporate training programs for enterprises across 12 countries.",
+            },
+          ],
+        }),
+      },
+    ],
   }),
   component: Portfolio,
 });
+
 
 const WHATSAPP_BASE = "https://wa.me/966555376228";
 const WHATSAPP = `${WHATSAPP_BASE}?text=${encodeURIComponent("Hi Eslam, I'd like to book a free 1:1 session.")}`;
