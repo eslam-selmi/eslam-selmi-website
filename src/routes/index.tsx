@@ -59,7 +59,17 @@ import snap15 from "@/assets/snapshots/snap-15.jpg";
 import snap16 from "@/assets/snapshots/snap-16.jpg";
 
 
-export const Route = createFileRoute("/")({ component: Portfolio });
+export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Eslam Selmi — Head of L&D & Talent" },
+      { name: "description", content: "Portfolio of Eslam Selmi: Learning & Development, Talent Management, and Performance expertise across 12 countries. Book a free 1:1." },
+      { property: "og:url", content: "https://eslam-selmi.lovable.app/" },
+    ],
+    links: [{ rel: "canonical", href: "https://eslam-selmi.lovable.app/" }],
+  }),
+  component: Portfolio,
+});
 
 const WHATSAPP_BASE = "https://wa.me/966555376228";
 const WHATSAPP = `${WHATSAPP_BASE}?text=${encodeURIComponent("Hi Eslam, I'd like to book a free 1:1 session.")}`;
