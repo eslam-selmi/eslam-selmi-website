@@ -746,6 +746,10 @@ function Hero() {
                 <img
                   src={headshot}
                   alt="Eslam Selmi"
+                  width={800}
+                  height={1000}
+                  fetchPriority="high"
+                  decoding="async"
                   className="absolute inset-x-0 bottom-0 h-[120%] w-full object-contain object-bottom"
                 />
                 {/* Thin inner stroke */}
