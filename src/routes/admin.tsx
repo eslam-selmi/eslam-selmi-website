@@ -156,6 +156,8 @@ function AdminPage() {
             { id: "trainers", label: t("المدرّبون", "Trainers") },
             { id: "coupons", label: t("كوبونات الخصم", "Discount coupons") },
             { id: "additions", label: t("أحدث الإضافات", "Latest additions") },
+            { id: "finance", label: t("المعاملات المالية", "Financial logs") },
+            { id: "methods", label: t("طرق الدفع", "Payment methods") },
 
             { id: "banned", label: `${t("الموقوفون", "Banned")} (${enrollments.filter(e => e.profiles?.account_blocked).length})` },
           ].map((tb) => (
@@ -181,6 +183,10 @@ function AdminPage() {
           <CouponsPanel courses={courses} />
         ) : tab === "additions" ? (
           <LatestAdditionsPanel />
+        ) : tab === "finance" ? (
+          <FinancePanel courses={courses} enrollments={enrollments} />
+        ) : tab === "methods" ? (
+          <PaymentMethodsPanel />
         ) : (
           <BannedPanel enrollments={enrollments} refresh={refresh} />
         )}
