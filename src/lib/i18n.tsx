@@ -360,18 +360,32 @@ interface I18nCtx {
 const Ctx = createContext<I18nCtx | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>("ar");
-
-  useEffect(() => {
-    const saved = (typeof window !== "undefined" && window.localStorage.getItem("lang")) as Lang | null;
-    if (saved === "ar" || saved === "en") setLangState(saved);
-  }, []);
+  // SYNC initial read so client + SSR render the same dir/lang and we avoid a flash.
+  const [lang, setLangState] = useState<Lang>(() => {
+    if (typeof window === "undefined") return "ar";
+    const saved = window.localStorage.getItem("lang");
+    if (saved === "ar" || saved === "en") return saved;
+    // Fallback to whatever the inline head script already wrote to <html lang>.
+    const htmlLang = document.documentElement.getAttribute("lang");
+    return htmlLang === "en" ? "en" : "ar";
+  });
 
   useEffect(() => {
     if (typeof document === "undefined") return;
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
   }, [lang]);
+
+  // React to changes made in other tabs / windows so the preference truly persists.
+  useEffect(() => {
+    function onStorage(e: StorageEvent) {
+      if (e.key === "lang" && (e.newValue === "ar" || e.newValue === "en")) {
+        setLangState(e.newValue);
+      }
+    }
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
 
   const setLang = (l: Lang) => {
     setLangState(l);
