@@ -1116,11 +1116,14 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
   async function addPayment(e: React.FormEvent) {
     e.preventDefault();
     if (!payAmount) return;
+    const m = methods.find((x) => x.id === payMethodId);
     const { error } = await supabase.from("payments").insert({
       enrollment_id: enrollment.id, amount: Number(payAmount), currency: payCurr, note: payNote || null,
-    });
+      payment_method_id: payMethodId || null,
+      payment_method_name: m ? (m.name_ar || m.name_en) : null,
+    } as any);
     if (error) return toast.error(error.message);
-    setPayAmount(""); setPayNote("");
+    setPayAmount(""); setPayNote(""); setPayMethodId("");
     refreshLists();
   }
   async function autoSplitInstallments() {
