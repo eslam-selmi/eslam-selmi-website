@@ -1002,7 +1002,7 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
           <Select label={t("المسار", "Track")} value={f.track_key} onChange={(v) => setF({ ...f, track_key: v })}
             options={[
               { v: "", l: t("بدون", "None") },
-              { v: "corporate_training", l: t("الإتقان المؤسسي للتدريب والتصميم التعليمي", "Corporate Training & Instructional Mastery") },
+              { v: "educational_tracks", l: t("مسارات التعليم (التدريب المؤسسي + التصميم التعليمي + TOT)", "Educational Tracks (Corporate Training + ID + TOT)") },
               { v: "talent_management", l: t("إدارة المواهب", "Talent Management") },
               { v: "soft_skills", l: t("المهارات الناعمة", "Soft Skills") },
             ]} />
