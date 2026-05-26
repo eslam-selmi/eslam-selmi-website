@@ -1047,6 +1047,8 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
         totalHours: Number(course.total_hours ?? 0),
         issueDate,
         certificateId: enrollment.id,
+        courseLogoUrl: (course as any).logo_url ?? null,
+        courseBrandName: (course as any).brand_name ?? null,
       };
       const [pdfAr, pdfEn] = await Promise.all([
         generateCertificatePdf({ ...common, lang: "ar", studentName: nameAr }),
