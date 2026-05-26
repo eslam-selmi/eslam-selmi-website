@@ -1,9 +1,11 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { LogOut, Home, ShieldCheck, GraduationCap, Languages } from "lucide-react";
+import { LogOut, Home, ShieldCheck, GraduationCap, Languages, Sparkles } from "lucide-react";
 import { signOut } from "@/lib/portal-auth";
 import { NotificationsBell } from "@/lib/notifications";
 import { useI18n } from "@/lib/i18n";
+import { useLatestAdditionsBadge } from "@/components/LatestAdditions";
 import brandLogo from "@/assets/brand-logo.png";
+
 
 type Props = {
   userId: string | undefined;
