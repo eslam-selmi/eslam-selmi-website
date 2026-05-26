@@ -182,7 +182,7 @@ const en: Dict = {
   contact_linkedin_line: "Connect with me",
 
   // footer
-  footer_tag: "Head of L&D, Talent & Performance",
+  footer_tag: "",
   footer_rights: "All rights reserved.",
 };
 
