@@ -1165,7 +1165,23 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
     refresh();
   }
 
-  // Account-level block (locks the trainee out of the whole platform)
+  // Grace period / manual bypass — temporarily unlocks access regardless of payment status
+  const [graceUntil, setGraceUntil] = useState<string | null>((enrollment as any).grace_until ?? null);
+  const graceActive = !!graceUntil && new Date(graceUntil) > new Date();
+  async function toggleGrace() {
+    const next = graceActive ? null : new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toISOString();
+    const patch: any = { grace_until: next };
+    if (next) patch.blocked = false; // ensure access is open during grace
+    const { error } = await supabase.from("enrollments").update(patch).eq("id", enrollment.id);
+    if (error) return toast.error(error.message);
+    setGraceUntil(next);
+    if (next) setBlocked(false);
+    toast.success(next
+      ? t("تم تفعيل فترة سماح 30 يوم — يمكن للمتدرب الوصول للمحتوى", "Grace period enabled (30 days) — trainee can access content")
+      : t("تم إلغاء فترة السماح", "Grace period revoked"));
+    refresh();
+  }
+
   const [accountBlocked, setAccountBlocked] = useState(false);
   useEffect(() => {
     supabase.from("profiles").select("account_blocked").eq("id", enrollment.user_id).maybeSingle()
