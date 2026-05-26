@@ -1351,10 +1351,11 @@ function CourseAssignmentsAdmin({ courseId }: { courseId: string }) {
     const { error } = await supabase.from("assignments").insert({
       course_id: courseId, module_id: moduleId, title, instructions: instructions || null,
       due_date: due ? new Date(due).toISOString() : null, max_score: maxScore,
+      is_graduation_project: isGrad,
     });
     if (error) return toast.error(error.message);
     toast.success(t("تم إنشاء التكليف", "Assignment created"));
-    setTitle(""); setInstructions(""); setDue(""); setMaxScore(100);
+    setTitle(""); setInstructions(""); setDue(""); setMaxScore(100); setIsGrad(false);
     load();
   }
 
