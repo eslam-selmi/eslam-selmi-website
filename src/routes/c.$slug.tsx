@@ -162,7 +162,6 @@ function WhiteLabelCoursePage() {
             <>
               <Link
                 to="/auth"
-                search={{ mode: "signup" } as never}
                 className="px-8 py-3 rounded-lg font-semibold text-white transition hover:opacity-90"
                 style={{ background: accent }}
               >
