@@ -1332,6 +1332,10 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
               <Select label={t("العملة", "Currency")} value={payCurr} onChange={setPayCurr}
                 options={[{ v: "EGP", l: t("جنيه", "EGP") }, { v: "SAR", l: t("ريال", "SAR") }, { v: "USD", l: t("دولار", "USD") }, { v: "AED", l: t("درهم", "AED") }]} />
               <button type="submit" className="h-11 px-4 rounded-xl font-semibold" style={{ background: "var(--gold)", color: "#0b1736" }}>{t("إضافة", "Add")}</button>
+              <div className="col-span-3">
+                <Select label={t("طريقة الدفع", "Payment method")} value={payMethodId} onChange={setPayMethodId}
+                  options={[{ v: "", l: t("— اختر طريقة دفع —", "— Select method —") }, ...methods.map((m) => ({ v: m.id, l: lang === "ar" ? m.name_ar : m.name_en }))]} />
+              </div>
               <div className="col-span-3"><Input label={t("ملاحظة (اختياري)", "Note (optional)")} value={payNote} onChange={setPayNote} /></div>
             </form>
             <ul className="space-y-1.5">
@@ -1340,6 +1344,7 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
                   <li key={p.id} className={`text-sm rounded-lg px-3 py-2 border gap-3 ${p.status === "pending" ? "bg-amber-300/10 border-amber-300/30" : p.status === "rejected" ? "bg-rose-500/10 border-rose-500/30 opacity-70" : "bg-white/5 border-white/10"}`}>
                     <div className="flex items-center justify-between gap-3">
                       <span className="font-semibold">{Number(p.amount).toLocaleString()} {p.currency}</span>
+                      {p.payment_method_name && <span className="text-[10px] px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-200 border border-sky-500/30">{p.payment_method_name}</span>}
                       <span className="text-xs text-white/50 flex-1 truncate">{p.note}</span>
                       <span className="text-xs text-white/40">{new Date(p.paid_at).toLocaleDateString("ar-EG")}</span>
                       <button onClick={() => delPay(p.id)} className="text-rose-300/70 hover:text-rose-300"><Trash2 className="w-3.5 h-3.5" /></button>
