@@ -388,6 +388,7 @@ function BrandMark({ size = 62 }: { size?: number }) {
 
 export function Nav({ theme, onThemeToggle }: { theme?: ThemeMode; onThemeToggle?: () => void } = {}) {
   const { t, lang, setLang } = useI18n();
+  const { theme: ctxTheme, toggle: ctxToggle } = useTheme();
   const [open, setOpen] = useState(false);
   const [portalOpen, setPortalOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -399,21 +400,13 @@ export function Nav({ theme, onThemeToggle }: { theme?: ThemeMode; onThemeToggle
     document.addEventListener("mousedown", onClick);
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
-  const [internalTheme, setInternalTheme] = useState<ThemeMode>("dark");
-  const activeTheme = theme ?? internalTheme;
+  const activeTheme: ThemeMode = (theme ?? ctxTheme) as ThemeMode;
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll);
-    if (theme === undefined && typeof window !== "undefined") {
-      setInternalTheme(window.localStorage.getItem("theme-mode") === "light" ? "light" : "dark");
-    }
     return () => window.removeEventListener("scroll", onScroll);
-  }, [theme]);
-  const handleThemeToggle = onThemeToggle ?? (() => {
-    const isDark = document.documentElement.classList.toggle("dark");
-    if (typeof window !== "undefined") window.localStorage.setItem("theme-mode", isDark ? "dark" : "light");
-    setInternalTheme(isDark ? "dark" : "light");
-  });
+  }, []);
+  const handleThemeToggle = onThemeToggle ?? ctxToggle;
   const pathname = typeof window !== "undefined" ? window.location.pathname : "/";
   const isHome = pathname === "/";
   const hashHref = (id: string) => (isHome ? `#${id}` : `/#${id}`);
