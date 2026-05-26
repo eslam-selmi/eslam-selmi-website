@@ -295,7 +295,10 @@ function PortalPage() {
           )}
         </section>
 
+        <LatestAdditionsSection />
+
       </div>
+
 
       {enrollingCourse && (
         <EnrollModal
