@@ -1949,12 +1949,21 @@ function TrainersPanel({ courses }: { courses: Course[] }) {
   }
 
   async function handleResetPassword(trainerId: string) {
-    const newPwd = window.prompt(t("كلمة المرور المؤقتة الجديدة (8+ حروف). سيُطلب من المدرّب تغييرها فوراً.", "New temporary password (8+ chars). The trainer will be forced to change it."));
-    if (!newPwd || newPwd.length < 8) return;
+    const newPwd = window.prompt(t("كلمة مرور مؤقتة قوية (10+ حروف، حرف كبير/صغير/رقم/رمز).", "Strong temporary password (10+ chars, upper/lower/digit/symbol)."));
+    if (!newPwd) return;
+    if (!isStrongPwd(newPwd)) {
+      toast.error(t("كلمة المرور ضعيفة. اختر كلمة أقوى.", "Weak password. Choose a stronger one."));
+      return;
+    }
     try {
       await resetTrainerPassword({ data: { user_id: trainerId, password: newPwd } });
       toast.success(t("تم تحديث كلمة المرور", "Password updated"));
-    } catch (e: any) { toast.error(e?.message || "Failed"); }
+    } catch (e: any) {
+      const msg = String(e?.message || "");
+      toast.error(msg.toLowerCase().includes("weak")
+        ? t("كلمة المرور معروفة وضعيفة. اختر كلمة أقوى وغير شائعة.", "Password is known/weak. Choose a stronger one.")
+        : (msg || "Failed"));
+    }
   }
 
   async function handleSuspend(trainerId: string, suspended: boolean) {
