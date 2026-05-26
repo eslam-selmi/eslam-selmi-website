@@ -1727,3 +1727,180 @@ function ProofLink({ path, label }: { path: string; label: string }) {
     </a>
   );
 }
+
+// ============= Trainers Panel =============
+type TrainerRow = {
+  id: string;
+  full_name: string | null;
+  email: string | null;
+  courseIds: string[];
+};
+
+function TrainersPanel({ courses }: { courses: Course[] }) {
+  const { lang } = useI18n();
+  const t = (a: string, b: string) => (lang === "ar" ? a : b);
+
+  const [trainers, setTrainers] = useState<TrainerRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showCreate, setShowCreate] = useState(false);
+
+  // create form
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [pwd, setPwd] = useState("");
+  const [pickedCourses, setPickedCourses] = useState<string[]>([]);
+  const [busy, setBusy] = useState(false);
+
+  async function refresh() {
+    setLoading(true);
+    const { data: roles } = await supabase
+      .from("user_roles").select("user_id").eq("role", "trainer");
+    const ids = (roles ?? []).map((r: any) => r.user_id);
+    if (ids.length === 0) { setTrainers([]); setLoading(false); return; }
+    const [{ data: profs }, { data: cts }] = await Promise.all([
+      supabase.from("profiles").select("id, full_name, email").in("id", ids),
+      supabase.from("course_trainers").select("user_id, course_id").in("user_id", ids),
+    ]);
+    const map: Record<string, string[]> = {};
+    (cts ?? []).forEach((c: any) => {
+      (map[c.user_id] ||= []).push(c.course_id);
+    });
+    const list: TrainerRow[] = (profs ?? []).map((p: any) => ({
+      id: p.id, full_name: p.full_name, email: p.email, courseIds: map[p.id] ?? [],
+    }));
+    setTrainers(list);
+    setLoading(false);
+  }
+  useEffect(() => { refresh(); }, []);
+
+  async function handleCreate() {
+    if (!name.trim() || !email.trim() || pwd.length < 8) {
+      toast.error(t("الرجاء إكمال البيانات (كلمة مرور 8 أحرف على الأقل).", "Fill all fields (password ≥ 8 chars)."));
+      return;
+    }
+    setBusy(true);
+    try {
+      await createTrainerAccount({
+        data: {
+          email: email.trim(),
+          full_name: name.trim(),
+          password: pwd,
+          course_ids: pickedCourses,
+        },
+      });
+      toast.success(t("تم إنشاء حساب المدرّب بنجاح", "Trainer account created"));
+      setName(""); setEmail(""); setPwd(""); setPickedCourses([]); setShowCreate(false);
+      await refresh();
+    } catch (e: any) {
+      toast.error(e?.message || t("فشل الإنشاء", "Creation failed"));
+    } finally { setBusy(false); }
+  }
+
+  async function toggleCourse(trainerId: string, courseId: string, assigned: boolean) {
+    if (assigned) {
+      const { error } = await supabase
+        .from("course_trainers").delete()
+        .eq("user_id", trainerId).eq("course_id", courseId);
+      if (error) { toast.error(error.message); return; }
+    } else {
+      const { error } = await supabase
+        .from("course_trainers").insert({ user_id: trainerId, course_id: courseId });
+      if (error) { toast.error(error.message); return; }
+    }
+    await refresh();
+  }
+
+  async function handleResetPassword(trainerId: string) {
+    const newPwd = window.prompt(t("كلمة المرور الجديدة (8 أحرف على الأقل):", "New password (≥ 8 chars):"));
+    if (!newPwd || newPwd.length < 8) return;
+    try {
+      await resetTrainerPassword({ data: { user_id: trainerId, password: newPwd } });
+      toast.success(t("تم تحديث كلمة المرور", "Password updated"));
+    } catch (e: any) { toast.error(e?.message || "Failed"); }
+  }
+
+  return (
+    <div className="space-y-5">
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h2 className="text-lg font-bold flex items-center gap-2"><GraduationCap className="w-5 h-5 text-[var(--gold)]" /> {t("المدرّبون", "Trainers")}</h2>
+          <p className="text-xs text-white/60">{t("أنشئ حسابات للمدرّبين وعيّنهم على كورسات محدّدة.", "Create trainer accounts and assign them to specific courses.")}</p>
+        </div>
+        <button onClick={() => setShowCreate((v) => !v)}
+          className="inline-flex items-center gap-2 bg-[var(--gold)] text-[#0b1736] font-bold text-xs px-4 h-10 rounded-lg">
+          <UserPlus className="w-4 h-4" /> {t("إضافة مدرّب", "Add Trainer")}
+        </button>
+      </div>
+
+      {showCreate && (
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <input value={name} onChange={(e) => setName(e.target.value)} placeholder={t("الاسم الكامل", "Full name")}
+              className="bg-white/5 border border-white/10 rounded-lg px-3 h-10 text-sm" />
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t("البريد الإلكتروني", "Email")}
+              className="bg-white/5 border border-white/10 rounded-lg px-3 h-10 text-sm" />
+            <input value={pwd} onChange={(e) => setPwd(e.target.value)} placeholder={t("كلمة مرور مؤقتة (8+ حروف)", "Temp password (8+ chars)")}
+              className="bg-white/5 border border-white/10 rounded-lg px-3 h-10 text-sm" />
+          </div>
+          <div>
+            <p className="text-xs text-white/60 mb-2">{t("الكورسات المُسنَدة (اختياري)", "Assigned courses (optional)")}</p>
+            <div className="flex flex-wrap gap-2">
+              {courses.map((c) => {
+                const on = pickedCourses.includes(c.id);
+                return (
+                  <button key={c.id} type="button"
+                    onClick={() => setPickedCourses((arr) => on ? arr.filter((x) => x !== c.id) : [...arr, c.id])}
+                    className={`text-xs px-3 h-8 rounded-full border transition ${on ? "bg-[var(--gold)] text-[#0b1736] border-[var(--gold)]" : "border-white/15 text-white/70 hover:bg-white/5"}`}>
+                    {c.cover_emoji || "🎓"} {c.title}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <button onClick={handleCreate} disabled={busy}
+              className="inline-flex items-center gap-2 bg-emerald-500 text-emerald-950 font-bold text-xs px-4 h-9 rounded-lg disabled:opacity-50">
+              {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />} {t("إنشاء", "Create")}
+            </button>
+            <button onClick={() => setShowCreate(false)} className="text-xs px-4 h-9 rounded-lg border border-white/15 text-white/70">{t("إلغاء", "Cancel")}</button>
+          </div>
+        </div>
+      )}
+
+      {loading ? (
+        <div className="text-center py-8 text-white/60"><Loader2 className="w-5 h-5 animate-spin inline" /></div>
+      ) : trainers.length === 0 ? (
+        <p className="text-sm text-white/60">{t("لا يوجد مدرّبون بعد.", "No trainers yet.")}</p>
+      ) : (
+        <div className="space-y-3">
+          {trainers.map((tr) => (
+            <div key={tr.id} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <div className="flex items-center justify-between gap-3 flex-wrap mb-3">
+                <div>
+                  <p className="font-bold text-sm">{tr.full_name || "—"}</p>
+                  <p className="text-xs text-white/60">{tr.email}</p>
+                </div>
+                <button onClick={() => handleResetPassword(tr.id)}
+                  className="inline-flex items-center gap-1.5 text-xs px-3 h-8 rounded-lg border border-white/15 hover:bg-white/5">
+                  <KeyRound className="w-3.5 h-3.5" /> {t("إعادة تعيين كلمة المرور", "Reset password")}
+                </button>
+              </div>
+              <p className="text-[11px] text-white/50 mb-2">{t("الكورسات المُعيَّنة:", "Assigned courses:")}</p>
+              <div className="flex flex-wrap gap-2">
+                {courses.map((c) => {
+                  const on = tr.courseIds.includes(c.id);
+                  return (
+                    <button key={c.id} onClick={() => toggleCourse(tr.id, c.id, on)}
+                      className={`text-xs px-3 h-8 rounded-full border transition ${on ? "bg-[var(--gold)] text-[#0b1736] border-[var(--gold)]" : "border-white/15 text-white/70 hover:bg-white/5"}`}>
+                      {c.cover_emoji || "🎓"} {c.title}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
