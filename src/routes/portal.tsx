@@ -395,7 +395,7 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
   }
   useEffect(() => { load(); }, [c.id, enrollment.id]);
 
-  const totalPaid = payments.reduce((s, p) => s + Number(p.amount), 0);
+  const totalPaid = payments.filter((p) => p.status !== "rejected" && p.status !== "pending").reduce((s, p) => s + Number(p.amount), 0);
   const coursePrice = Number(c.price ?? 0);
   const completedCount = modules.filter((m) => m.completed_by_admin).length;
   const progressPct = modules.length ? Math.round((completedCount / modules.length) * 100) : 0;
