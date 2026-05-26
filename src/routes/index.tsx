@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n, type Lang } from "@/lib/i18n";
+import { useTheme } from "@/lib/theme";
 
 import headshot from "@/assets/portfolio/headshot.png";
 import brandLogo from "@/assets/brand-logo.png";
