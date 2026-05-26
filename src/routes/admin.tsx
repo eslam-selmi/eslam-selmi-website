@@ -1092,6 +1092,9 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
           <section className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm space-y-1.5">
             <div className="flex justify-between"><span className="text-white/50">{t("البريد", "Email")}</span><span dir="ltr">{enrollment.profiles?.email}</span></div>
             <div className="flex justify-between"><span className="text-white/50">{t("الهاتف", "Phone")}</span><span dir="ltr">{enrollment.profiles?.phone || "—"}</span></div>
+            <div className="flex justify-between"><span className="text-white/50">{t("الدولة", "Country")}</span>
+              <span>{(() => { const c = findCountry(enrollment.profiles?.country); return c ? `${c.flag} ${lang === "ar" ? c.name_ar : c.name_en}` : "—"; })()}</span>
+            </div>
             <div className="flex justify-between items-center"><span className="text-white/50">{t("الحالة", "Status")}</span><StatusPill status={enrollment.status} /></div>
             {blocked && <div className="flex justify-between items-center"><span className="text-white/50">{t("الوصول", "Access")}</span><span className="text-xs px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">{t("محظور مؤقتاً", "Temporarily blocked")}</span></div>}
             <div className="flex justify-between"><span className="text-white/50">{t("سعر الكورس", "Course price")}</span>
