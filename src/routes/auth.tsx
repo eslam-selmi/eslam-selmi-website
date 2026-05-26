@@ -21,6 +21,7 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [countryCode, setCountryCode] = useState("EG");
   const [phone, setPhone] = useState("");
   const [busy, setBusy] = useState(false);
   const [confirmEmail, setConfirmEmail] = useState<string | null>(null);
