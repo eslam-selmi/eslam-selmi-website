@@ -435,13 +435,17 @@ function CoursesPanel({ courses, refresh, onEdit }: { courses: Course[]; refresh
     if (error) return toast.error(error.message);
     refresh();
   }
-  async function del(id: string) {
-    if (!confirm(t("حذف الكورس؟ سيتم حذف جميع الطلبات والمحتوى المرتبط به.", "Delete course? All related enrollments and content will be deleted."))) return;
-    const { error } = await supabase.from("courses").delete().eq("id", id);
+  async function del(id: string, archived: boolean) {
+    const msg = archived
+      ? t("استعادة الكورس من الأرشيف؟", "Restore course from archive?")
+      : t("أرشفة الكورس؟ سيختفي من الكتالوج العام مع الاحتفاظ بكل البيانات (Soft Delete).", "Archive course? It will disappear from the public catalog while all data is preserved (Soft Delete).");
+    if (!confirm(msg)) return;
+    const { error } = await supabase.from("courses").update({ is_archived: !archived }).eq("id", id);
     if (error) return toast.error(error.message);
-    toast.success(t("تم الحذف", "Deleted"));
+    toast.success(archived ? t("تمت الاستعادة", "Restored") : t("تمت الأرشفة", "Archived"));
     refresh();
   }
+
 
   return (
     <div className="grid lg:grid-cols-[1fr_360px] gap-6">
