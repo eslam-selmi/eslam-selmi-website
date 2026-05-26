@@ -275,27 +275,11 @@ const fadeUp = {
 };
 
 function Portfolio() {
-  const [theme, setTheme] = useState<ThemeMode>("dark");
-
-  useEffect(() => {
-    const saved = typeof window !== "undefined" ? window.localStorage.getItem("theme-mode") : null;
-    const next: ThemeMode = saved === "light" ? "light" : "dark";
-    setTheme(next);
-    document.documentElement.classList.toggle("dark", next === "dark");
-  }, []);
-
-  const toggleTheme = () => {
-    setTheme((current) => {
-      const next: ThemeMode = current === "dark" ? "light" : "dark";
-      document.documentElement.classList.toggle("dark", next === "dark");
-      if (typeof window !== "undefined") window.localStorage.setItem("theme-mode", next);
-      return next;
-    });
-  };
+  const { theme, toggle } = useTheme();
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-accent/25">
-      <Nav theme={theme} onThemeToggle={toggleTheme} />
+      <Nav theme={theme as ThemeMode} onThemeToggle={toggle} />
       <Hero />
       <About />
       <Pillars />
