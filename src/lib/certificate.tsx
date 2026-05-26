@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 import { toJpeg } from "html-to-image";
 import jsPDF from "jspdf";
+import QRCode from "qrcode";
 import brandLogo from "@/assets/brand-logo.png";
 
 export type CertificatePayload = {
