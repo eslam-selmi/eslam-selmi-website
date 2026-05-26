@@ -86,6 +86,24 @@ function AdminPage() {
   }
   useEffect(() => { if (role === "admin") refresh(); }, [role]);
 
+  // Pending activations badge count
+  useEffect(() => {
+    if (role !== "admin") return;
+    async function load() {
+      const { count } = await supabase
+        .from("profiles")
+        .select("id", { count: "exact", head: true })
+        .eq("activation_status", "pending");
+      setPendingActivations(count ?? 0);
+    }
+    load();
+    const ch = supabase
+      .channel("admin-activations")
+      .on("postgres_changes", { event: "*", schema: "public", table: "profiles" }, load)
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [role]);
+
   // Realtime refresh on new enrollments / payments
   useEffect(() => {
     if (role !== "admin") return;
