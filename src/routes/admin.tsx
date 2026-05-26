@@ -3010,3 +3010,96 @@ function ExportDebtsModal({ courses, enrollments, payments, onClose }: { courses
     </div>
   );
 }
+
+function BulkReceiptsTool() {
+  const { lang } = useI18n();
+  const t = (a: string, b: string) => (lang === "ar" ? a : b);
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState<string>("");
+
+  async function listPayments() {
+    let q = supabase.from("payments").select("id,proof_url,paid_at").not("proof_url", "is", null);
+    if (from) q = q.gte("paid_at", new Date(from).toISOString());
+    if (to) q = q.lte("paid_at", new Date(to + "T23:59:59").toISOString());
+    const { data, error } = await q.order("paid_at", { ascending: false });
+    if (error) { toast.error(error.message); return []; }
+    return (data ?? []).filter((p: any) => p.proof_url) as any[];
+  }
+
+  async function bulkDownload() {
+    setBusy(true); setProgress(t("جاري التحميل...", "Preparing..."));
+    try {
+      const items = await listPayments();
+      if (items.length === 0) { toast.error(t("لا توجد إيصالات", "No receipts found")); return; }
+      const JSZip = (await import("jszip")).default;
+      const { saveAs } = await import("file-saver");
+      const zip = new JSZip();
+      const CHUNK = 45;
+      for (let i = 0; i < items.length; i += CHUNK) {
+        const chunk = items.slice(i, i + CHUNK);
+        setProgress(`${i + chunk.length} / ${items.length}`);
+        await Promise.all(chunk.map(async (p: any) => {
+          const { data } = await supabase.storage.from("payment-proofs").createSignedUrl(p.proof_url, 300);
+          if (!data?.signedUrl) return;
+          const res = await fetch(data.signedUrl);
+          if (!res.ok) return;
+          const blob = await res.blob();
+          const name = p.proof_url.split("/").pop() || `${p.id}`;
+          zip.file(`${p.paid_at?.slice(0, 10) ?? "unknown"}_${name}`, blob);
+        }));
+      }
+      setProgress(t("ضغط الملفات...", "Compressing..."));
+      const out = await zip.generateAsync({ type: "blob" });
+      saveAs(out, `receipts-${Date.now()}.zip`);
+      toast.success(t("تم التحميل", "Download ready"));
+    } catch (e: any) {
+      toast.error(e?.message ?? "Error");
+    } finally {
+      setBusy(false); setProgress("");
+    }
+  }
+
+  async function purge() {
+    if (!confirm(t("هل أنت متأكد من حذف الإيصالات في النطاق المحدد؟", "Are you sure you want to delete receipts in this range?"))) return;
+    if (!confirm(t("تأكيد نهائي: هذا الإجراء لا يمكن التراجع عنه.", "Final confirmation: this cannot be undone."))) return;
+    setBusy(true); setProgress(t("جاري الحذف...", "Deleting..."));
+    try {
+      const items = await listPayments();
+      if (items.length === 0) { toast.error(t("لا توجد إيصالات", "No receipts found")); return; }
+      const paths = items.map((p: any) => p.proof_url as string);
+      const CHUNK = 50;
+      for (let i = 0; i < paths.length; i += CHUNK) {
+        const slice = paths.slice(i, i + CHUNK);
+        await supabase.storage.from("payment-proofs").remove(slice);
+        setProgress(`${i + slice.length} / ${paths.length}`);
+      }
+      await supabase.from("payments").update({ proof_url: null } as any).in("id", items.map((p: any) => p.id));
+      toast.success(`${t("تم حذف", "Deleted")} ${paths.length}`);
+    } catch (e: any) {
+      toast.error(e?.message ?? "Error");
+    } finally {
+      setBusy(false); setProgress("");
+    }
+  }
+
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+      <p className="text-xs font-semibold text-[var(--gold)]">{t("🗂️ أداة الإيصالات (تحميل / حذف جماعي)", "🗂️ Receipts tool (bulk download / purge)")}</p>
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+        <Input label={t("من تاريخ", "From")} type="date" value={from} onChange={setFrom} />
+        <Input label={t("إلى تاريخ", "To")} type="date" value={to} onChange={setTo} />
+        <button onClick={bulkDownload} disabled={busy}
+          className="h-11 self-end px-4 rounded-xl bg-sky-500/20 border border-sky-500/40 text-sky-200 text-sm font-semibold disabled:opacity-50">
+          {busy ? progress || "..." : t("📦 تحميل مضغوط", "📦 Bulk download")}
+        </button>
+        <button onClick={purge} disabled={busy}
+          className="h-11 self-end px-4 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-200 text-sm font-semibold disabled:opacity-50">
+          {t("🗑️ حذف من السيرفر", "🗑️ Purge storage")}
+        </button>
+      </div>
+      <p className="text-[10px] text-white/40">{t("الحذف نهائي ولا يمكن التراجع عنه. يرجى التحميل أولاً.", "Purge is permanent. Download first if needed.")}</p>
+    </div>
+  );
+}
