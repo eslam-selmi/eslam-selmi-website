@@ -10,6 +10,7 @@ import {
 
 import appCss from "../styles.css?url";
 import { I18nProvider } from "@/lib/i18n";
+import { ThemeProvider } from "@/lib/theme";
 import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
@@ -102,7 +103,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 // Runs BEFORE React hydrates. Reads persisted lang from localStorage and
 // applies <html lang>/<html dir> + a synchronous background-color so the
 // page never flashes white during navigation or first paint.
-const NO_FLASH_SCRIPT = `(function(){try{var l=localStorage.getItem('lang');if(l!=='en'&&l!=='ar')l='ar';var e=document.documentElement;e.setAttribute('lang',l);e.setAttribute('dir',l==='ar'?'rtl':'ltr');e.style.backgroundColor='#0b1736';}catch(_){}}())`;
+const NO_FLASH_SCRIPT = `(function(){try{var l=localStorage.getItem('lang');if(l!=='en'&&l!=='ar')l='ar';var t=localStorage.getItem('theme');if(t!=='light')t='dark';var e=document.documentElement;e.setAttribute('lang',l);e.setAttribute('dir',l==='ar'?'rtl':'ltr');if(t==='dark')e.classList.add('dark');else e.classList.remove('dark');e.style.colorScheme=t;e.style.backgroundColor=t==='dark'?'#0b1736':'#f5f7fb';}catch(_){}}())`;
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
@@ -130,12 +131,14 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <I18nProvider>
-        <main>
-          <Outlet />
-        </main>
-        <Toaster position="top-center" richColors />
-      </I18nProvider>
+      <ThemeProvider>
+        <I18nProvider>
+          <main>
+            <Outlet />
+          </main>
+          <Toaster position="top-center" richColors />
+        </I18nProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

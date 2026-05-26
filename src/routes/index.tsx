@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n, type Lang } from "@/lib/i18n";
+import { useTheme } from "@/lib/theme";
 
 import headshot from "@/assets/portfolio/headshot.png";
 import brandLogo from "@/assets/brand-logo.png";
@@ -274,27 +275,11 @@ const fadeUp = {
 };
 
 function Portfolio() {
-  const [theme, setTheme] = useState<ThemeMode>("dark");
-
-  useEffect(() => {
-    const saved = typeof window !== "undefined" ? window.localStorage.getItem("theme-mode") : null;
-    const next: ThemeMode = saved === "light" ? "light" : "dark";
-    setTheme(next);
-    document.documentElement.classList.toggle("dark", next === "dark");
-  }, []);
-
-  const toggleTheme = () => {
-    setTheme((current) => {
-      const next: ThemeMode = current === "dark" ? "light" : "dark";
-      document.documentElement.classList.toggle("dark", next === "dark");
-      if (typeof window !== "undefined") window.localStorage.setItem("theme-mode", next);
-      return next;
-    });
-  };
+  const { theme, toggle } = useTheme();
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-accent/25">
-      <Nav theme={theme} onThemeToggle={toggleTheme} />
+      <Nav theme={theme as ThemeMode} onThemeToggle={toggle} />
       <Hero />
       <About />
       <Pillars />
@@ -388,6 +373,7 @@ function BrandMark({ size = 62 }: { size?: number }) {
 
 export function Nav({ theme, onThemeToggle }: { theme?: ThemeMode; onThemeToggle?: () => void } = {}) {
   const { t, lang, setLang } = useI18n();
+  const { theme: ctxTheme, toggle: ctxToggle } = useTheme();
   const [open, setOpen] = useState(false);
   const [portalOpen, setPortalOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -399,21 +385,13 @@ export function Nav({ theme, onThemeToggle }: { theme?: ThemeMode; onThemeToggle
     document.addEventListener("mousedown", onClick);
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
-  const [internalTheme, setInternalTheme] = useState<ThemeMode>("dark");
-  const activeTheme = theme ?? internalTheme;
+  const activeTheme: ThemeMode = (theme ?? ctxTheme) as ThemeMode;
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll);
-    if (theme === undefined && typeof window !== "undefined") {
-      setInternalTheme(window.localStorage.getItem("theme-mode") === "light" ? "light" : "dark");
-    }
     return () => window.removeEventListener("scroll", onScroll);
-  }, [theme]);
-  const handleThemeToggle = onThemeToggle ?? (() => {
-    const isDark = document.documentElement.classList.toggle("dark");
-    if (typeof window !== "undefined") window.localStorage.setItem("theme-mode", isDark ? "dark" : "light");
-    setInternalTheme(isDark ? "dark" : "light");
-  });
+  }, []);
+  const handleThemeToggle = onThemeToggle ?? ctxToggle;
   const pathname = typeof window !== "undefined" ? window.location.pathname : "/";
   const isHome = pathname === "/";
   const hashHref = (id: string) => (isHome ? `#${id}` : `/#${id}`);
