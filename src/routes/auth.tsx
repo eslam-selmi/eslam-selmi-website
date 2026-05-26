@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/portal-auth";
 import { toast } from "sonner";
 import { GraduationCap, ShieldCheck, Loader2, ArrowRight } from "lucide-react";
-import { COUNTRIES, findCountry } from "@/lib/countries";
+import { COUNTRIES, findCountry, sanitizeNationalNumber, validatePhoneForCountry } from "@/lib/countries";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
