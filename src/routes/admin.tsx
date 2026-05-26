@@ -1905,9 +1905,17 @@ function TrainersPanel({ courses }: { courses: Course[] }) {
   }
   useEffect(() => { refresh(); }, []);
 
+  function isStrongPwd(p: string) {
+    return p.length >= 10 && /[A-Z]/.test(p) && /[a-z]/.test(p) && /[0-9]/.test(p) && /[^A-Za-z0-9]/.test(p);
+  }
+
   async function handleCreate() {
-    if (!name.trim() || !email.trim() || pwd.length < 8) {
-      toast.error(t("الرجاء إكمال البيانات (كلمة مرور 8 أحرف على الأقل).", "Fill all fields (password ≥ 8 chars)."));
+    if (!name.trim() || !email.trim()) {
+      toast.error(t("الرجاء إكمال البيانات.", "Fill all fields."));
+      return;
+    }
+    if (!isStrongPwd(pwd)) {
+      toast.error(t("كلمة المرور ضعيفة: 10+ حروف وتشمل حرف كبير وصغير ورقم ورمز.", "Weak password: 10+ chars incl. upper, lower, digit, symbol."));
       return;
     }
     setBusy(true);
@@ -1919,7 +1927,12 @@ function TrainersPanel({ courses }: { courses: Course[] }) {
       setName(""); setEmail(""); setPwd(""); setPickedCourses([]); setShowCreate(false);
       await refresh();
     } catch (e: any) {
-      toast.error(e?.message || t("فشل الإنشاء", "Creation failed"));
+      const msg = String(e?.message || "");
+      if (msg.toLowerCase().includes("weak")) {
+        toast.error(t("كلمة المرور معروفة وضعيفة. اختر كلمة مرور أقوى وغير شائعة.", "Password is known/weak. Choose a stronger, uncommon password."));
+      } else {
+        toast.error(msg || t("فشل الإنشاء", "Creation failed"));
+      }
     } finally { setBusy(false); }
   }
 
