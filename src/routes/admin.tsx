@@ -219,6 +219,7 @@ function EnrollmentsTable({
   const { lang } = useI18n();
   const t = (a: string, b: string) => (lang === "ar" ? a : b);
   const [filter, setFilter] = useState<string>("all");
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
 
   async function setStatus(id: string, status: "approved" | "rejected") {
     const { error } = await supabase.from("enrollments").update({ status }).eq("id", id);
@@ -240,6 +241,13 @@ function EnrollmentsTable({
     groups.set(key, arr);
   }
   const courseMap = new Map(courses.map((c) => [c.id, c]));
+
+  // By default: open groups that have pending requests; collapsed otherwise.
+  function isOpen(courseId: string, hasPending: boolean) {
+    const override = openGroups[courseId];
+    if (override !== undefined) return override;
+    return hasPending;
+  }
 
   return (
     <div className="space-y-4">
@@ -269,14 +277,29 @@ function EnrollmentsTable({
       {Array.from(groups.entries()).map(([courseId, rows]) => {
         const course = courseMap.get(courseId);
         const approvedCount = rows.filter((r) => r.status === "approved").length;
+        const pendingCount = rows.filter((r) => r.status === "pending").length;
+        const open = isOpen(courseId, pendingCount > 0);
         return (
           <div key={courseId} className="rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden">
-            <div className="px-4 py-3 bg-white/5 border-b border-white/10 flex items-center justify-between flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => setOpenGroups((g) => ({ ...g, [courseId]: !open }))}
+              className="w-full px-4 py-3 bg-white/5 border-b border-white/10 flex items-center justify-between flex-wrap gap-2 hover:bg-white/[0.08] transition text-start"
+              aria-expanded={open}
+            >
               <div className="flex items-center gap-2">
+                <span className={`inline-flex items-center justify-center w-6 h-6 rounded-md bg-white/10 transition-transform ${open ? "rotate-90" : ""}`}>
+                  <span className="text-white/70 text-xs">▶</span>
+                </span>
                 <span className="text-xl">{course?.cover_emoji ?? "🎓"}</span>
                 <h4 className="font-bold">{course?.title}</h4>
               </div>
               <div className="flex gap-2 text-xs">
+                {pendingCount > 0 && (
+                  <span className="px-2 py-1 rounded-md bg-amber-300/15 text-amber-200 border border-amber-300/30 font-semibold">
+                    {t("بانتظار:", "Pending:")} {pendingCount}
+                  </span>
+                )}
                 <span className="px-2 py-1 rounded-md bg-emerald-500/15 text-emerald-300 border border-emerald-500/25">
                   {t("ملتحقون:", "Enrolled:")} {approvedCount}
                 </span>
@@ -284,60 +307,63 @@ function EnrollmentsTable({
                   {t("الإجمالي:", "Total:")} {rows.length}
                 </span>
               </div>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-white/[0.02] text-xs text-white/60 uppercase">
-                  <tr>
-                    <th className="px-4 py-3 text-right font-medium">{t("المتدرب", "Trainee")}</th>
-                    <th className="px-4 py-3 text-right font-medium">{t("الدولة", "Country")}</th>
-                    <th className="px-4 py-3 text-right font-medium">{t("الحالة", "Status")}</th>
-                    <th className="px-4 py-3 text-right font-medium">{t("الشهادة", "Certificate")}</th>
-                    <th className="px-4 py-3 text-right font-medium">{t("إجراء", "Action")}</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5">
-                  {rows.map((en) => {
-                    const country = findCountry(en.profiles?.country);
-                    return (
-                      <tr key={en.id} className={`hover:bg-white/[0.02] ${en.status === "pending" ? "bg-amber-300/[0.04]" : ""}`}>
-                        <td className="px-4 py-3">
-                          <div className="font-medium flex items-center gap-2">
-                            {en.profiles?.full_name || "—"}
-                            {en.profiles?.account_blocked && <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">{t("موقوف", "Banned")}</span>}
-                          </div>
-                          <div className="text-xs text-white/50">{en.profiles?.email}</div>
-                          <div className="text-xs text-white/40" dir="ltr">{en.profiles?.phone}</div>
-                        </td>
-                        <td className="px-4 py-3 text-xs">
-                          {country ? (
-                            <span className="inline-flex items-center gap-1.5">
-                              <span className="text-base">{country.flag}</span>
-                              <span className="text-white/80">{lang === "ar" ? country.name_ar : country.name_en}</span>
-                            </span>
-                          ) : <span className="text-white/40">—</span>}
-                        </td>
-                        <td className="px-4 py-3"><StatusPill status={en.status} /></td>
-                        <td className="px-4 py-3 text-xs text-white/60">
-                          {en.certificate_issued ? <span className="text-emerald-300">{t("✓ صادرة", "✓ Issued")}</span> : "—"}
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="flex gap-1.5 flex-wrap">
-                            {en.status === "pending" && (
-                              <>
-                                <button onClick={() => setStatus(en.id, "approved")} className="text-xs px-2.5 h-8 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30">{t("قبول", "Approve")}</button>
-                                <button onClick={() => setStatus(en.id, "rejected")} className="text-xs px-2.5 h-8 rounded-lg bg-rose-500/20 text-rose-300 border border-rose-500/30 hover:bg-rose-500/30">{t("رفض", "Reject")}</button>
-                              </>
-                            )}
-                            <button onClick={() => onOpen(en)} className="text-xs px-2.5 h-8 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold">{t("إدارة", "Manage")}</button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+            </button>
+            {open && (
+              <div className="overflow-x-auto animate-fade-in">
+                <table className="w-full text-sm">
+                  <thead className="bg-white/[0.02] text-xs text-white/60 uppercase">
+                    <tr>
+                      <th className="px-4 py-3 text-right font-medium">{t("المتدرب", "Trainee")}</th>
+                      <th className="px-4 py-3 text-right font-medium">{t("الدولة", "Country")}</th>
+                      <th className="px-4 py-3 text-right font-medium">{t("الحالة", "Status")}</th>
+                      <th className="px-4 py-3 text-right font-medium">{t("الشهادة", "Certificate")}</th>
+                      <th className="px-4 py-3 text-right font-medium">{t("إجراء", "Action")}</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5">
+                    {rows.map((en) => {
+                      const country = findCountry(en.profiles?.country);
+                      return (
+                        <tr key={en.id} className={`hover:bg-white/[0.02] ${en.status === "pending" ? "bg-amber-300/[0.04]" : ""}`}>
+                          <td className="px-4 py-3">
+                            <div className="font-medium flex items-center gap-2 flex-wrap">
+                              {country && <span className="text-base" title={lang === "ar" ? country.name_ar : country.name_en}>{country.flag}</span>}
+                              <span>{en.profiles?.full_name || "—"}</span>
+                              {en.profiles?.account_blocked && <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">{t("موقوف", "Banned")}</span>}
+                            </div>
+                            <div className="text-xs text-white/50">{en.profiles?.email}</div>
+                            <div className="text-xs text-white/40" dir="ltr">{en.profiles?.phone}</div>
+                          </td>
+                          <td className="px-4 py-3 text-xs">
+                            {country ? (
+                              <span className="inline-flex items-center gap-1.5">
+                                <span className="text-base">{country.flag}</span>
+                                <span className="text-white/80">{lang === "ar" ? country.name_ar : country.name_en}</span>
+                              </span>
+                            ) : <span className="text-white/40">—</span>}
+                          </td>
+                          <td className="px-4 py-3"><StatusPill status={en.status} /></td>
+                          <td className="px-4 py-3 text-xs text-white/60">
+                            {en.certificate_issued ? <span className="text-emerald-300">{t("✓ صادرة", "✓ Issued")}</span> : "—"}
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex gap-1.5 flex-wrap">
+                              {en.status === "pending" && (
+                                <>
+                                  <button onClick={() => setStatus(en.id, "approved")} className="text-xs px-2.5 h-8 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30">{t("قبول", "Approve")}</button>
+                                  <button onClick={() => setStatus(en.id, "rejected")} className="text-xs px-2.5 h-8 rounded-lg bg-rose-500/20 text-rose-300 border border-rose-500/30 hover:bg-rose-500/30">{t("رفض", "Reject")}</button>
+                                </>
+                              )}
+                              <button onClick={() => onOpen(en)} className="text-xs px-2.5 h-8 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold">{t("إدارة", "Manage")}</button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         );
       })}
