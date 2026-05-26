@@ -1522,22 +1522,32 @@ function CourseAssignmentsAdmin({ courseId }: { courseId: string }) {
   }
   useEffect(() => { load(); }, [courseId]);
 
+  const [refUrl, setRefUrl] = useState("");
+
   async function addAssignment() {
     if (!moduleId || !title.trim()) return toast.error(t("اختر باب وأدخل عنوان", "Select a module and enter a title"));
     const { error } = await supabase.from("assignments").insert({
       course_id: courseId, module_id: moduleId, title, instructions: instructions || null,
       due_date: due ? new Date(due).toISOString() : null, max_score: maxScore,
       is_graduation_project: isGrad,
-    });
+      reference_url: isGrad && refUrl.trim() ? refUrl.trim() : null,
+    } as any);
     if (error) return toast.error(error.message);
     toast.success(t("تم إنشاء التكليف", "Assignment created"));
-    setTitle(""); setInstructions(""); setDue(""); setMaxScore(100); setIsGrad(false);
+    setTitle(""); setInstructions(""); setDue(""); setMaxScore(100); setIsGrad(false); setRefUrl("");
     load();
   }
 
   async function delAssignment(id: string) {
     if (!confirm(t("حذف التكليف وكل تسليماته؟", "Delete assignment and all its submissions?"))) return;
     await supabase.from("assignments").delete().eq("id", id);
+    load();
+  }
+
+  async function toggleVisibility(id: string, next: boolean) {
+    const { error } = await supabase.from("assignments").update({ is_visible: next } as any).eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success(next ? t("ظاهر للمتدربين", "Visible to trainees") : t("مخفي عن المتدربين", "Hidden from trainees"));
     load();
   }
 
