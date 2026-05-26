@@ -135,14 +135,23 @@ function AuthPage() {
                     </span>
                     <input
                       type="tel"
+                      inputMode="numeric"
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="1xxxxxxxxx"
+                      onChange={(e) => {
+                        const c = findCountry(countryCode);
+                        const cleaned = c ? sanitizeNationalNumber(e.target.value, c) : e.target.value.replace(/\D/g, "");
+                        setPhone(cleaned);
+                        setPhoneError(null);
+                      }}
+                      placeholder={findCountry(countryCode)?.nsnLengths[0] ? "5".padEnd(findCountry(countryCode)!.nsnLengths[0], "x") : "1xxxxxxxxx"}
                       required
                       dir="ltr"
-                      className="flex-1 h-11 px-4 rounded-xl bg-white/5 border border-white/15 text-white placeholder:text-white/30 focus:outline-none focus:border-[var(--gold)]/60 focus:bg-white/10 transition"
+                      className={`flex-1 h-11 px-4 rounded-xl bg-white/5 border text-white placeholder:text-white/30 focus:outline-none focus:bg-white/10 transition ${phoneError ? "border-rose-400/60 focus:border-rose-400" : "border-white/15 focus:border-[var(--gold)]/60"}`}
                     />
                   </div>
+                  {phoneError && (
+                    <p className="text-[11px] text-rose-300 mt-1.5 leading-relaxed">{phoneError}</p>
+                  )}
                 </label>
               </>
             )}
