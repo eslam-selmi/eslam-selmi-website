@@ -7,7 +7,7 @@ import brandLogo from "@/assets/brand-logo.png";
 
 type Props = {
   userId: string | undefined;
-  role: "admin" | "trainee" | null;
+  role: "admin" | "trainee" | "trainer" | null;
   userLabel?: string | null;
   children: React.ReactNode;
 };
@@ -19,9 +19,11 @@ export function PortalShell({ userId, role, userLabel, children }: Props) {
 
   const L = {
     panelAdmin: isAr ? "لوحة الإدارة" : "Admin Panel",
+    panelTrainer: isAr ? "لوحة المدرّب" : "Trainer Panel",
     panelTrainee: isAr ? "بوابة المتدرب" : "Trainee Portal",
     site: isAr ? "الموقع" : "Website",
     admin: isAr ? "الإدارة" : "Admin",
+    trainer: isAr ? "كورساتي" : "My Courses",
     courses: isAr ? "كورساتي" : "My Courses",
     logout: isAr ? "خروج" : "Logout",
     switchLang: isAr ? "English" : "العربية",
