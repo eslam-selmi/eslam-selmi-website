@@ -1,9 +1,11 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { LogOut, Home, ShieldCheck, GraduationCap, Languages } from "lucide-react";
+import { LogOut, Home, ShieldCheck, GraduationCap, Languages, Sparkles } from "lucide-react";
 import { signOut } from "@/lib/portal-auth";
 import { NotificationsBell } from "@/lib/notifications";
 import { useI18n } from "@/lib/i18n";
+import { useLatestAdditionsBadge } from "@/components/LatestAdditions";
 import brandLogo from "@/assets/brand-logo.png";
+
 
 type Props = {
   userId: string | undefined;
@@ -15,7 +17,9 @@ type Props = {
 export function PortalShell({ userId, role, userLabel, children }: Props) {
   const nav = useNavigate();
   const { lang, setLang, dir } = useI18n();
+  const { hasNew, markSeen } = useLatestAdditionsBadge();
   const isAr = lang === "ar";
+
 
   const L = {
     panelAdmin: isAr ? "لوحة الإدارة" : "Admin Panel",
@@ -59,10 +63,26 @@ export function PortalShell({ userId, role, userLabel, children }: Props) {
                   <GraduationCap className="w-3.5 h-3.5" /> {L.trainer}
                 </Link>
               ) : (
-                <Link to="/portal" className="flex items-center gap-1.5 text-xs text-white/70 hover:text-white px-3 h-9 rounded-lg hover:bg-white/5 transition">
-                  <GraduationCap className="w-3.5 h-3.5" /> {L.courses}
-                </Link>
+                <>
+                  <Link to="/portal" className="flex items-center gap-1.5 text-xs text-white/70 hover:text-white px-3 h-9 rounded-lg hover:bg-white/5 transition">
+                    <GraduationCap className="w-3.5 h-3.5" /> {L.courses}
+                  </Link>
+                  <a
+                    href="/portal#latest-additions"
+                    onClick={() => markSeen()}
+                    className="relative flex items-center gap-1.5 text-xs text-white/70 hover:text-white px-3 h-9 rounded-lg hover:bg-white/5 transition"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" /> {isAr ? "أحدث الإضافات" : "Latest"}
+                    {hasNew && (
+                      <span className="absolute -top-0.5 -end-0.5 flex h-2.5 w-2.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-500 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500"></span>
+                      </span>
+                    )}
+                  </a>
+                </>
               )}
+
             </nav>
           </div>
 

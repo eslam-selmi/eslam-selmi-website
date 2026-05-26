@@ -49,7 +49,7 @@ function AdminPage() {
 
   const { user, role, loading } = useAuth();
   const nav = useNavigate();
-  const [tab, setTab] = useState<"enrollments" | "courses" | "coupons" | "banned" | "trainers">("enrollments");
+  const [tab, setTab] = useState<"enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions">("enrollments");
   const [courses, setCourses] = useState<Course[]>([]);
   const [enrollments, setEnrollments] = useState<EnrollmentRow[]>([]);
   const [drawer, setDrawer] = useState<EnrollmentRow | null>(null);
@@ -131,6 +131,8 @@ function AdminPage() {
             { id: "courses", label: `${t("الكورسات", "Courses")} (${courses.length})` },
             { id: "trainers", label: t("المدرّبون", "Trainers") },
             { id: "coupons", label: t("كوبونات الخصم", "Discount coupons") },
+            { id: "additions", label: t("أحدث الإضافات", "Latest additions") },
+
             { id: "banned", label: `${t("الموقوفون", "Banned")} (${enrollments.filter(e => e.profiles?.account_blocked).length})` },
           ].map((tb) => (
             <button
@@ -151,9 +153,12 @@ function AdminPage() {
           <TrainersPanel courses={courses} />
         ) : tab === "coupons" ? (
           <CouponsPanel courses={courses} />
+        ) : tab === "additions" ? (
+          <LatestAdditionsPanel />
         ) : (
           <BannedPanel enrollments={enrollments} refresh={refresh} />
         )}
+
       </div>
 
       {drawer && <EnrollmentDrawer enrollment={drawer} onClose={() => setDrawer(null)} refresh={refresh} />}
@@ -749,8 +754,9 @@ function ModuleCard({ m, index, items, onToggle, onDelete, onChangeOnlineUrl, on
                   </button>
                 ))}
               </div>
-              <input value={itemTitle} onChange={(e) => setItemTitle(e.target.value)} placeholder={t("العنوان", "Title")}
+              <input value={itemTitle} onChange={(e) => setItemTitle(e.target.value)} required placeholder={t("العنوان المخصص * (يظهر للمتدرب بدلاً من الرابط)", "Custom title * (shown to trainee instead of URL)")}
                 className="w-full h-9 px-2.5 rounded-lg bg-white/5 border border-white/15 text-xs" />
+
               {itemKind === "note" && (
                 <textarea value={itemContent} onChange={(e) => setItemContent(e.target.value)} placeholder={t("المحتوى", "Content")}
                   rows={3} className="w-full px-2.5 py-2 rounded-lg bg-white/5 border border-white/15 text-xs" />
@@ -1914,6 +1920,153 @@ function TrainersPanel({ courses }: { courses: Course[] }) {
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+function LatestAdditionsPanel() {
+  const { lang } = useI18n();
+  const t = (a: string, b: string) => (lang === "ar" ? a : b);
+
+  const [settings, setSettings] = useState<any>(null);
+  const [items, setItems] = useState<any[]>([]);
+  const [form, setForm] = useState({
+    title_ar: "", title_en: "", subtitle_ar: "", subtitle_en: "",
+    custom_label: "", kind: "link" as "link" | "file" | "video" | "pdf" | "embed",
+    url: "",
+  });
+  const [file, setFile] = useState<File | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function load() {
+    const [{ data: s }, { data: list }] = await Promise.all([
+      supabase.from("latest_additions_settings").select("*").limit(1).maybeSingle(),
+      supabase.from("latest_additions").select("*").order("created_at", { ascending: false }),
+    ]);
+    setSettings(s ?? null);
+    setItems(list ?? []);
+  }
+  useEffect(() => { load(); }, []);
+
+  async function saveSettings() {
+    if (!settings?.id) return;
+    const { error } = await supabase.from("latest_additions_settings").update({
+      title_ar: settings.title_ar, title_en: settings.title_en,
+      subtitle_ar: settings.subtitle_ar, subtitle_en: settings.subtitle_en,
+    }).eq("id", settings.id);
+    if (error) return toast.error(error.message);
+    toast.success(t("تم حفظ إعدادات القسم", "Section settings saved"));
+  }
+
+  async function addItem() {
+    if (!form.title_ar.trim() || !form.title_en.trim()) {
+      return toast.error(t("العنوان المخصص مطلوب (عربي وإنجليزي)", "Custom title is required (AR & EN)"));
+    }
+    setBusy(true);
+    try {
+      let url = form.url.trim();
+      if ((form.kind === "file" || form.kind === "pdf" || form.kind === "video") && file) {
+        const path = `additions/${Date.now()}-${file.name}`;
+        const { error: upErr } = await supabase.storage.from("course-files").upload(path, file);
+        if (upErr) throw upErr;
+        url = path;
+      }
+      if (!url) {
+        toast.error(t("ارفع ملفاً أو أدخل رابطاً", "Upload a file or provide a URL"));
+        return;
+      }
+      const { error } = await supabase.from("latest_additions").insert({
+        title_ar: form.title_ar.trim(), title_en: form.title_en.trim(),
+        subtitle_ar: form.subtitle_ar.trim() || null,
+        subtitle_en: form.subtitle_en.trim() || null,
+        custom_label: form.custom_label.trim() || null,
+        kind: form.kind, url,
+      });
+      if (error) throw error;
+      toast.success(t("تمت إضافة العنصر", "Item added"));
+      setForm({ title_ar: "", title_en: "", subtitle_ar: "", subtitle_en: "", custom_label: "", kind: "link", url: "" });
+      setFile(null);
+      load();
+    } catch (e: any) {
+      toast.error(e.message ?? "Error");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function del(id: string) {
+    if (!confirm(t("حذف هذا العنصر؟", "Delete this item?"))) return;
+    await supabase.from("latest_additions").delete().eq("id", id);
+    load();
+  }
+
+  return (
+    <div className="space-y-6">
+      {settings && (
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5 space-y-3">
+          <h3 className="font-bold flex items-center gap-2"><Sparkles className="w-4 h-4 text-[var(--gold)]" /> {t("إعدادات قسم \"أحدث الإضافات\"", "Section settings")}</h3>
+          <div className="grid sm:grid-cols-2 gap-3">
+            <Input label={t("العنوان (عربي)", "Title (AR)")} value={settings.title_ar ?? ""} onChange={(v) => setSettings({ ...settings, title_ar: v })} />
+            <Input label={t("العنوان (إنجليزي)", "Title (EN)")} value={settings.title_en ?? ""} onChange={(v) => setSettings({ ...settings, title_en: v })} />
+            <Input label={t("العنوان الفرعي (عربي)", "Subtitle (AR)")} value={settings.subtitle_ar ?? ""} onChange={(v) => setSettings({ ...settings, subtitle_ar: v })} />
+            <Input label={t("العنوان الفرعي (إنجليزي)", "Subtitle (EN)")} value={settings.subtitle_en ?? ""} onChange={(v) => setSettings({ ...settings, subtitle_en: v })} />
+          </div>
+          <button onClick={saveSettings} className="text-xs px-4 h-9 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold">{t("حفظ الإعدادات", "Save settings")}</button>
+        </div>
+      )}
+
+      <div className="rounded-2xl border border-[var(--gold)]/25 bg-white/[0.03] p-5 space-y-3">
+        <h3 className="font-bold flex items-center gap-2"><Plus className="w-4 h-4 text-[var(--gold)]" /> {t("إضافة عنصر جديد", "Add new item")}</h3>
+        <div className="grid sm:grid-cols-2 gap-3">
+          <Input label={t("العنوان المخصص (عربي) *", "Custom title (AR) *")} value={form.title_ar} onChange={(v) => setForm({ ...form, title_ar: v })} required />
+          <Input label={t("العنوان المخصص (إنجليزي) *", "Custom title (EN) *")} value={form.title_en} onChange={(v) => setForm({ ...form, title_en: v })} required />
+          <Input label={t("وصف فرعي (عربي)", "Subtitle (AR)")} value={form.subtitle_ar} onChange={(v) => setForm({ ...form, subtitle_ar: v })} />
+          <Input label={t("وصف فرعي (إنجليزي)", "Subtitle (EN)")} value={form.subtitle_en} onChange={(v) => setForm({ ...form, subtitle_en: v })} />
+          <Input label={t("شارة / تسمية مخصصة", "Custom badge label")} value={form.custom_label} onChange={(v) => setForm({ ...form, custom_label: v })} />
+          <div>
+            <label className="block text-[11px] text-white/55 mb-1">{t("النوع", "Kind")}</label>
+            <select value={form.kind} onChange={(e) => setForm({ ...form, kind: e.target.value as any })}
+              className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/15 text-sm">
+              <option value="link">{t("رابط", "Link")}</option>
+              <option value="embed">{t("فيديو يوتيوب / Vimeo", "YouTube / Vimeo")}</option>
+              <option value="pdf">PDF</option>
+              <option value="video">{t("فيديو (ملف)", "Video (file)")}</option>
+              <option value="file">{t("ملف", "File")}</option>
+            </select>
+          </div>
+        </div>
+        {(form.kind === "link" || form.kind === "embed") ? (
+          <Input label={t("الرابط", "URL")} value={form.url} onChange={(v) => setForm({ ...form, url: v })} required />
+        ) : (
+          <div>
+            <label className="block text-[11px] text-white/55 mb-1">{t("الملف", "File")}</label>
+            <input type="file" onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+              className="block w-full text-xs file:me-2 file:px-3 file:py-1.5 file:rounded-md file:border-0 file:bg-[var(--gold)] file:text-[#0b1736] file:font-semibold cursor-pointer" />
+          </div>
+        )}
+        <button disabled={busy} onClick={addItem} className="px-4 h-10 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold text-sm disabled:opacity-50">
+          {busy ? t("جارٍ الإضافة...", "Adding...") : t("إضافة", "Add")}
+        </button>
+      </div>
+
+      <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+        <h3 className="font-bold mb-3">{t("العناصر الحالية", "Current items")} ({items.length})</h3>
+        {items.length === 0 ? (
+          <p className="text-sm text-white/40">{t("لا توجد عناصر بعد.", "No items yet.")}</p>
+        ) : (
+          <ul className="space-y-2">
+            {items.map((it) => (
+              <li key={it.id} className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/5">
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-sm">{it.title_ar} <span className="text-white/40">·</span> <span className="text-white/60">{it.title_en}</span></p>
+                  <p className="text-[11px] text-white/45 mt-0.5">[{it.kind}] {it.custom_label ? `· ${it.custom_label}` : ""} · {new Date(it.created_at).toLocaleString("ar-EG")}</p>
+                </div>
+                <button onClick={() => del(it.id)} className="p-2 rounded-lg hover:bg-rose-500/10 text-rose-300"><Trash2 className="w-4 h-4" /></button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }

@@ -206,12 +206,18 @@ const SERVICES = [
 
 const PROGRAMS = [
   {
+    track: { en: "Educational Tracks", ar: "مسارات التعليم" },
+    intro: { en: "Train-the-trainer mastery, instructional design, and modern facilitation methods.", ar: "تدريب المدربين، التصميم التعليمي، وأساليب التيسير الحديثة." },
+    items: [
+      { name: { en: "TOT Mastery (Training of Trainers)", ar: "تدريب المدربين TOT" }, desc: { en: "Advanced facilitation and innovative teaching strategies.", ar: "تيسير متقدم واستراتيجيات تدريس مبتكرة." } },
+      { name: { en: "Instructional Design | ID", ar: "تصميم تعليمي" }, desc: { en: "Impactful training through expertly crafted, engaging learning experiences.", ar: "تدريب مؤثر بتجارب تعلم مصممة باحتراف." } },
+    ],
+  },
+  {
     track: { en: "Talent Management", ar: "إدارة المواهب" },
     intro: { en: "Real-world strategies for talent acquisition, employee development, and strategic planning.", ar: "استراتيجيات عملية لاستقطاب وتطوير المواهب والتخطيط الاستراتيجي." },
     items: [
-      { name: { en: "Instructional Design | ID", ar: "تصميم تعليمي" }, desc: { en: "Impactful training through expertly crafted, engaging learning experiences.", ar: "تدريب مؤثر بتجارب تعلم مصممة باحتراف." } },
       { name: { en: "Recruitment Excellence", ar: "تميز التوظيف" }, desc: { en: "Practical strategies to secure top talent.", ar: "استراتيجيات عملية لاستقطاب أفضل المواهب." } },
-      { name: { en: "TOT Mastery", ar: "تدريب المدربين" }, desc: { en: "Advanced facilitation and innovative teaching strategies.", ar: "تيسير متقدم واستراتيجيات تدريس مبتكرة." } },
     ],
   },
   {
@@ -221,6 +227,7 @@ const PROGRAMS = [
       { name: { en: "L&D From Scratch", ar: "L&D من الصفر" }, desc: { en: "TNA, annual plans, training kits, ROI analysis and budget management.", ar: "تحليل الاحتياج، خطط سنوية، أدوات تدريب، تحليل العائد وإدارة الميزانية." } },
     ],
   },
+
   {
     track: { en: "Soft Skills", ar: "المهارات الناعمة" },
     intro: { en: "Workshops that transform how you connect, lead, and grow.", ar: "ورش تحوّل طريقة التواصل والقيادة والنمو." },
