@@ -206,11 +206,36 @@ const SERVICES = [
 
 const PROGRAMS = [
   {
-    track: { en: "Educational Tracks", ar: "مسارات التعليم" },
-    intro: { en: "Train-the-trainer mastery, instructional design, and modern facilitation methods.", ar: "تدريب المدربين، التصميم التعليمي، وأساليب التيسير الحديثة." },
+    track: {
+      en: "Corporate Training & Instructional Mastery",
+      ar: "الإتقان المؤسسي للتدريب والتصميم التعليمي",
+    },
+    intro: {
+      en: "A unified two-phase journey: build foundational L&D and instructional design competencies, then graduate into advanced facilitation and TOT delivery mastery.",
+      ar: "مسار موحّد من مرحلتين: تبدأ بأسس التعلم والتطوير وتصميم التعليم، ثم تتدرّج لإتقان تيسير التدريب وتقديمه على مستوى المدربين المعتمدين.",
+    },
     items: [
-      { name: { en: "TOT Mastery (Training of Trainers)", ar: "تدريب المدربين TOT" }, desc: { en: "Advanced facilitation and innovative teaching strategies.", ar: "تيسير متقدم واستراتيجيات تدريس مبتكرة." } },
-      { name: { en: "Instructional Design | ID", ar: "تصميم تعليمي" }, desc: { en: "Impactful training through expertly crafted, engaging learning experiences.", ar: "تدريب مؤثر بتجارب تعلم مصممة باحتراف." } },
+      {
+        name: { en: "Phase 1 · L&D From Scratch", ar: "المرحلة 1 · L&D من الصفر" },
+        desc: {
+          en: "TNA, annual plans, training kits, ROI analysis and budget management — the operating foundation of any L&D function.",
+          ar: "تحليل الاحتياج، الخطط السنوية، أدوات التدريب، تحليل العائد وإدارة الميزانية — الأساس التشغيلي لأي إدارة تعلم وتطوير.",
+        },
+      },
+      {
+        name: { en: "Phase 1 · Instructional Design | ID", ar: "المرحلة 1 · التصميم التعليمي" },
+        desc: {
+          en: "Impactful training through expertly crafted, engaging learning experiences and modern ID frameworks (ADDIE, SAM).",
+          ar: "تدريب مؤثر بتجارب تعلم مصممة باحتراف وأطر تصميم تعليمي حديثة (ADDIE وSAM).",
+        },
+      },
+      {
+        name: { en: "Phase 2 · TOT Mastery (Training of Trainers)", ar: "المرحلة 2 · إتقان تدريب المدربين TOT" },
+        desc: {
+          en: "Advanced facilitation, presentation craft, classroom dynamics and innovative delivery strategies — the natural graduation from Phase 1.",
+          ar: "تيسير متقدم، حِرفية العرض، إدارة القاعة، واستراتيجيات تقديم مبتكرة — التخرّج الطبيعي بعد المرحلة الأولى.",
+        },
+      },
     ],
   },
   {
@@ -220,14 +245,6 @@ const PROGRAMS = [
       { name: { en: "Recruitment Excellence", ar: "تميز التوظيف" }, desc: { en: "Practical strategies to secure top talent.", ar: "استراتيجيات عملية لاستقطاب أفضل المواهب." } },
     ],
   },
-  {
-    track: { en: "Learning & Development", ar: "التعلم والتطوير" },
-    intro: { en: "Dynamic L&D program: nurture talent, foster improvement and build a culture of learning.", ar: "برنامج تعلم وتطوير ديناميكي يبني ثقافة التعلم." },
-    items: [
-      { name: { en: "L&D From Scratch", ar: "L&D من الصفر" }, desc: { en: "TNA, annual plans, training kits, ROI analysis and budget management.", ar: "تحليل الاحتياج، خطط سنوية، أدوات تدريب، تحليل العائد وإدارة الميزانية." } },
-    ],
-  },
-
   {
     track: { en: "Soft Skills", ar: "المهارات الناعمة" },
     intro: { en: "Workshops that transform how you connect, lead, and grow.", ar: "ورش تحوّل طريقة التواصل والقيادة والنمو." },
