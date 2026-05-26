@@ -1586,6 +1586,10 @@ function CourseAssignmentsAdmin({ courseId }: { courseId: string }) {
           <input type="checkbox" checked={isGrad} onChange={(e) => setIsGrad(e.target.checked)} className="accent-[var(--gold)]" />
           🎓 {t("مشروع التخرّج (يُشترط اعتماده قبل إصدار الشهادة)", "Graduation project (must be approved before issuing certificate)")}
         </label>
+        {isGrad && (
+          <input value={refUrl} onChange={(e) => setRefUrl(e.target.value)} placeholder={t("رابط مرجعي خارجي (اختياري)", "External reference link (optional)")}
+            className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/15 text-sm" dir="ltr" />
+        )}
       </div>
 
       {assignments.length === 0 ? (
@@ -1594,26 +1598,41 @@ function CourseAssignmentsAdmin({ courseId }: { courseId: string }) {
         <div className="space-y-3">
           {assignments.map((a) => {
             const aSubs = subs.filter((s) => s.assignment_id === a.id);
+            const visible = a.is_visible !== false;
             return (
-              <div key={a.id} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+              <div key={a.id} className={`rounded-2xl border p-4 ${visible ? "border-white/10 bg-white/[0.03]" : "border-amber-300/30 bg-amber-300/[0.04]"}`}>
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
-                    <h5 className="font-bold flex items-center gap-2">
+                    <h5 className="font-bold flex items-center gap-2 flex-wrap">
                       {a.title}
                       {a.is_graduation_project && (
                         <span className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--gold)]/20 text-[var(--gold)] border border-[var(--gold)]/40">
                           🎓 {t("مشروع التخرّج", "Graduation project")}
                         </span>
                       )}
+                      {!visible && (
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-300/20 text-amber-200 border border-amber-300/40">
+                          {t("مخفي", "Hidden")}
+                        </span>
+                      )}
                     </h5>
                     {a.instructions && <p className="text-xs text-white/55 mt-1 whitespace-pre-wrap">{a.instructions}</p>}
+                    {a.reference_url && (
+                      <a href={a.reference_url} target="_blank" rel="noopener" className="text-[11px] text-sky-300 hover:underline mt-1 inline-block" dir="ltr">{a.reference_url}</a>
+                    )}
                     <p className="text-[11px] text-white/45 mt-1">
                       {a.due_date ? `${t("تسليم", "Due")}: ${new Date(a.due_date).toLocaleString(lang === "ar" ? "ar-EG" : "en-GB")}` : t("بدون موعد", "No due date")} · {t("درجة قصوى", "Max score")} {a.max_score}
                     </p>
                   </div>
-                  <button onClick={() => delAssignment(a.id)} className="text-rose-300 hover:bg-rose-500/10 p-1.5 rounded-lg">
-                    <X className="w-4 h-4" />
-                  </button>
+                  <div className="flex items-center gap-1">
+                    <button onClick={() => toggleVisibility(a.id, !visible)}
+                      className={`text-[11px] px-2 h-7 rounded-lg border ${visible ? "bg-emerald-500/15 border-emerald-400/40 text-emerald-200" : "bg-amber-300/15 border-amber-300/40 text-amber-200"}`}>
+                      {visible ? t("ظاهر", "Visible") : t("مخفي", "Hidden")}
+                    </button>
+                    <button onClick={() => delAssignment(a.id)} className="text-rose-300 hover:bg-rose-500/10 p-1.5 rounded-lg">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
                 <div className="mt-3 border-t border-white/5 pt-3">
                   <p className="text-[11px] text-white/50 mb-2">{t("التسليمات", "Submissions")} ({aSubs.length})</p>
