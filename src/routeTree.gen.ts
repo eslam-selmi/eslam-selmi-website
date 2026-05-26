@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrainerRouteImport } from './routes/trainer'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PortalRouteImport } from './routes/portal'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as GraduatesRouteImport } from './routes/graduates'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -32,6 +33,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const PortalRoute = PortalRouteImport.update({
   id: '/portal',
   path: '/portal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LibraryRoute = LibraryRouteImport.update({
@@ -71,6 +77,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/graduates': typeof GraduatesRoute
   '/library': typeof LibraryRoute
+  '/onboarding': typeof OnboardingRoute
   '/portal': typeof PortalRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/trainer': typeof TrainerRoute
@@ -82,6 +89,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/graduates': typeof GraduatesRoute
   '/library': typeof LibraryRoute
+  '/onboarding': typeof OnboardingRoute
   '/portal': typeof PortalRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/trainer': typeof TrainerRoute
@@ -94,6 +102,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/graduates': typeof GraduatesRoute
   '/library': typeof LibraryRoute
+  '/onboarding': typeof OnboardingRoute
   '/portal': typeof PortalRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/trainer': typeof TrainerRoute
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/graduates'
     | '/library'
+    | '/onboarding'
     | '/portal'
     | '/sitemap.xml'
     | '/trainer'
@@ -118,6 +128,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/graduates'
     | '/library'
+    | '/onboarding'
     | '/portal'
     | '/sitemap.xml'
     | '/trainer'
@@ -129,6 +140,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/graduates'
     | '/library'
+    | '/onboarding'
     | '/portal'
     | '/sitemap.xml'
     | '/trainer'
@@ -141,6 +153,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   GraduatesRoute: typeof GraduatesRoute
   LibraryRoute: typeof LibraryRoute
+  OnboardingRoute: typeof OnboardingRoute
   PortalRoute: typeof PortalRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TrainerRoute: typeof TrainerRoute
@@ -168,6 +181,13 @@ declare module '@tanstack/react-router' {
       path: '/portal'
       fullPath: '/portal'
       preLoaderRoute: typeof PortalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/library': {
@@ -221,6 +241,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   GraduatesRoute: GraduatesRoute,
   LibraryRoute: LibraryRoute,
+  OnboardingRoute: OnboardingRoute,
   PortalRoute: PortalRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TrainerRoute: TrainerRoute,
