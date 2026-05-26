@@ -127,6 +127,7 @@ function AdminPage() {
           {[
             { id: "enrollments", label: `${t("طلبات وانضمامات", "Requests & enrollments")} (${enrollments.length})` },
             { id: "courses", label: `${t("الكورسات", "Courses")} (${courses.length})` },
+            { id: "trainers", label: t("المدرّبون", "Trainers") },
             { id: "coupons", label: t("كوبونات الخصم", "Discount coupons") },
             { id: "banned", label: `${t("الموقوفون", "Banned")} (${enrollments.filter(e => e.profiles?.account_blocked).length})` },
           ].map((tb) => (
@@ -144,6 +145,8 @@ function AdminPage() {
           <EnrollmentsTable enrollments={enrollments} courses={courses} onOpen={setDrawer} refresh={refresh} />
         ) : tab === "courses" ? (
           <CoursesPanel courses={courses} refresh={refresh} onEdit={setEditingCourse} />
+        ) : tab === "trainers" ? (
+          <TrainersPanel courses={courses} />
         ) : tab === "coupons" ? (
           <CouponsPanel courses={courses} />
         ) : (
