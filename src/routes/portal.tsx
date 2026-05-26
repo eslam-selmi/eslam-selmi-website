@@ -6,6 +6,7 @@ import { PortalShell } from "@/components/PortalShell";
 import { useI18n } from "@/lib/i18n";
 import { useTranslatedTexts } from "@/lib/useTranslatedTexts";
 import { toast } from "sonner";
+import { findCountry } from "@/lib/countries";
 import {
   Clock, CheckCircle2, XCircle, Download, Upload, BookOpen, Wallet, Loader2,
   ExternalLink, Sparkles, ArrowRight, Calendar, Layers, StickyNote, Link as LinkIcon,
