@@ -1107,30 +1107,86 @@ function Services() {
 /* ---------- PROGRAMS ---------- */
 function Programs() {
   const { t, lang } = useI18n();
+  const trackIcons = [GraduationCap, UserCheck, Sparkles];
   return (
     <Section id="programs" eyebrow={t("programs_eyebrow")} title={t("programs_title")}>
-      <div className="grid lg:grid-cols-3 gap-6">
-        {PROGRAMS.map((p, i) => (
-          <motion.div key={p.track.en} {...fadeUp} transition={{ delay: i * 0.08, duration: 0.6 }}
-            className="glass-panel rounded-[2rem] p-6 flex flex-col overflow-hidden relative group transition hover:-translate-y-1">
-            <div className="absolute inset-0 bg-gradient-to-br from-[var(--gold)]/0 via-transparent to-primary/10 opacity-0 group-hover:opacity-100 transition" />
-            <div className="relative">
-              <div className="inline-flex items-center gap-2 self-start glass rounded-full px-3 py-1 text-xs text-gold font-semibold">
-                <Sparkles className="size-3.5" /> {t("programs_track")} {i + 1}
-              </div>
-              <h3 className="mt-4 font-display text-2xl font-bold">{p.track[lang]}</h3>
-              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{p.intro[lang]}</p>
-              <div className="mt-5 space-y-3">
-                {p.items.map(it => (
-                  <div key={it.name.en} className="rounded-xl bg-foreground/[0.03] border border-foreground/10 p-3 hover:border-[var(--gold)]/30 transition">
-                    <div className="font-medium text-sm">{it.name[lang]}</div>
-                    <div className="text-xs text-muted-foreground mt-1">{it.desc[lang]}</div>
+      <div className="grid lg:grid-cols-3 gap-6 lg:gap-7">
+        {PROGRAMS.map((p, i) => {
+          const Icon = trackIcons[i] || Sparkles;
+          const isFeatured = i === 0;
+          return (
+            <motion.article
+              key={p.track.en}
+              {...fadeUp}
+              transition={{ delay: i * 0.1, duration: 0.6 }}
+              className={`group relative flex flex-col rounded-[2.25rem] overflow-hidden border transition-all duration-500 hover:-translate-y-2
+                ${isFeatured
+                  ? "lg:row-span-1 border-[var(--gold)]/40 bg-gradient-to-br from-[var(--gold)]/[0.08] via-background to-primary/[0.06] shadow-[0_20px_60px_-30px_rgba(212,175,55,0.45)]"
+                  : "border-foreground/10 bg-gradient-to-br from-background to-foreground/[0.025] hover:border-[var(--gold)]/30"}`}
+            >
+              {/* Top accent bar */}
+              <div className={`h-1.5 w-full ${isFeatured ? "bg-gradient-to-r from-[var(--gold)] via-primary to-[var(--gold)]" : "bg-gradient-to-r from-foreground/10 via-[var(--gold)]/40 to-foreground/10"}`} />
+
+              {/* Decorative glow */}
+              <div className="pointer-events-none absolute -top-24 -right-24 size-64 rounded-full bg-[var(--gold)]/10 blur-3xl opacity-0 group-hover:opacity-100 transition duration-700" />
+
+              <div className="relative p-7 lg:p-8 flex flex-col flex-1">
+                {/* Header: icon + track number */}
+                <div className="flex items-start justify-between gap-3">
+                  <div className={`size-14 grid place-items-center rounded-2xl border ${isFeatured ? "bg-gradient-to-br from-[var(--gold)]/30 to-primary/20 border-[var(--gold)]/40 text-[var(--gold)]" : "bg-foreground/[0.04] border-foreground/10 text-foreground/70"}`}>
+                    <Icon className="size-7" strokeWidth={1.6} />
                   </div>
-                ))}
+                  <div className="text-right rtl:text-left">
+                    <div className="text-[10px] font-bold uppercase tracking-[0.22em] text-muted-foreground">
+                      {t("programs_track")}
+                    </div>
+                    <div className="font-display text-3xl font-extrabold text-gradient-gold leading-none mt-1">
+                      0{i + 1}
+                    </div>
+                  </div>
+                </div>
+
+                <h3 className="mt-6 font-display text-[1.45rem] lg:text-2xl font-bold leading-tight">
+                  {p.track[lang]}
+                </h3>
+                <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+                  {p.intro[lang]}
+                </p>
+
+                {/* Items as a vertical journey */}
+                <ol className="relative mt-7 space-y-4 flex-1">
+                  {/* connector line */}
+                  {p.items.length > 1 && (
+                    <span className="absolute top-3 bottom-3 start-[14px] w-px bg-gradient-to-b from-[var(--gold)]/50 via-foreground/15 to-transparent" aria-hidden />
+                  )}
+                  {p.items.map((it, idx) => (
+                    <li key={it.name.en} className="relative ps-10">
+                      <span className={`absolute start-0 top-1 size-7 grid place-items-center rounded-full text-[11px] font-extrabold ring-4 ring-background
+                        ${isFeatured ? "bg-[var(--gold)] text-background" : "bg-foreground/10 text-foreground/80"}`}>
+                        {idx + 1}
+                      </span>
+                      <div className="font-semibold text-[0.95rem] leading-snug">{it.name[lang]}</div>
+                      <div className="text-xs text-muted-foreground mt-1.5 leading-relaxed">{it.desc[lang]}</div>
+                    </li>
+                  ))}
+                </ol>
+
+                {/* Footer meta */}
+                <div className="mt-7 pt-5 border-t border-foreground/10 flex items-center justify-between text-[11px] font-bold uppercase tracking-[0.18em]">
+                  <span className="text-muted-foreground">
+                    {p.items.length} {lang === "ar" ? "محاور" : "modules"}
+                  </span>
+                  {isFeatured && (
+                    <span className="inline-flex items-center gap-1.5 text-[var(--gold)]">
+                      <Sparkles className="size-3.5" />
+                      {lang === "ar" ? "المسار الرئيسي" : "Flagship"}
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
-          </motion.div>
-        ))}
+            </motion.article>
+          );
+        })}
       </div>
     </Section>
   );
