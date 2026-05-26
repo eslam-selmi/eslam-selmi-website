@@ -483,7 +483,7 @@ function CoursesPanel({ courses, refresh, onEdit }: { courses: Course[]; refresh
                     <button onClick={() => toggleActive(c)} className="p-2 rounded-lg hover:bg-white/5" title={c.active ? t("إيقاف", "Disable") : t("تفعيل", "Enable")}>
                       {c.active ? <ToggleRight className="w-5 h-5 text-emerald-300" /> : <ToggleLeft className="w-5 h-5 text-white/40" />}
                     </button>
-                    <button onClick={() => del(c.id)} className="p-2 rounded-lg hover:bg-rose-500/10 text-rose-300"><Trash2 className="w-4 h-4" /></button>
+                    <button onClick={() => del(c.id, Boolean((c as any).is_archived))} className="p-2 rounded-lg hover:bg-rose-500/10 text-rose-300" title={(c as any).is_archived ? t("استعادة", "Restore") : t("أرشفة", "Archive")}><Trash2 className="w-4 h-4" /></button>
                   </div>
                 </div>
               </div>
