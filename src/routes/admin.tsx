@@ -37,7 +37,7 @@ type EnrollmentRow = {
   certificate_url_ar: string | null; certificate_url_en: string | null;
   certificate_requested_at: string | null;
   courses: Course | null;
-  profiles: { full_name: string | null; email: string | null; phone: string | null } | null;
+  profiles: { full_name: string | null; email: string | null; phone: string | null; country: string | null; country_code: string | null; account_blocked: boolean | null } | null;
 };
 
 function AdminPage() {
