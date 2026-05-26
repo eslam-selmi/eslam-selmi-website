@@ -1228,7 +1228,10 @@ function EnrollModal({ course, onClose, onConfirm }: { course: Course; onClose: 
   );
 }
 
-function ProofUploader({ enrollmentId, userId, currency, onUploaded, isAr }: { enrollmentId: string; userId: string; currency: string; onUploaded: () => void; isAr: boolean }) {
+const PROOF_ALLOWED_EXT = ["jpg", "jpeg", "png", "pdf"];
+const PROOF_MAX_BYTES = 5 * 1024 * 1024;
+
+function ProofUploader({ enrollmentId, userId, currency, remaining, onUploaded, isAr }: { enrollmentId: string; userId: string; currency: string; remaining: number; onUploaded: () => void; isAr: boolean }) {
   const [amount, setAmount] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
@@ -1236,13 +1239,26 @@ function ProofUploader({ enrollmentId, userId, currency, onUploaded, isAr }: { e
   const [selected, setSelected] = useState<any | null>(null);
 
   useEffect(() => {
+    if (remaining <= 0) return;
     supabase.from("payment_methods" as any).select("*").eq("active", true).order("order_index")
       .then(({ data }) => setMethods((data as any[]) ?? []));
-  }, []);
+  }, [remaining]);
+
+  // Hide uploader entirely when nothing is owed
+  if (remaining <= 0) return null;
 
   async function submit() {
     if (!selected) { toast.error(isAr ? "اختر طريقة الدفع أولاً" : "Select a payment method first"); return; }
     if (!amount || !file) { toast.error(isAr ? "أدخل المبلغ وصورة الإيصال" : "Enter amount and proof image"); return; }
+    const ext = (file.name.split(".").pop() || "").toLowerCase();
+    if (!PROOF_ALLOWED_EXT.includes(ext)) {
+      toast.error(isAr ? "الامتدادات المسموح بها: jpg, jpeg, png, pdf" : "Allowed extensions: jpg, jpeg, png, pdf");
+      return;
+    }
+    if (file.size > PROOF_MAX_BYTES) {
+      toast.error(isAr ? "الحد الأقصى لحجم الملف 5 ميجابايت" : "Max file size is 5MB");
+      return;
+    }
     setBusy(true);
     try {
       const path = `${userId}/${enrollmentId}-${Date.now()}-${file.name}`;
