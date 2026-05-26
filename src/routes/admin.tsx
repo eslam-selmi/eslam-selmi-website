@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/portal-auth";
@@ -21,6 +21,14 @@ import {
 import { findCountry } from "@/lib/countries";
 
 export const Route = createFileRoute("/admin")({
+  loader: async () => {
+    const { data } = await supabase.auth.getSession();
+    if (!data.session?.user) {
+      // Redirect unauthenticated users to auth page
+      throw redirect({ to: "/auth" });
+    }
+    return {};
+  },
   head: () => ({
     meta: [
       { title: "لوحة الإدارة · أكاديمية إسلام سلمي" },

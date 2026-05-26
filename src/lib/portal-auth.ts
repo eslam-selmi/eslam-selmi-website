@@ -55,3 +55,17 @@ export function useAuth() {
 export async function signOut() {
   await supabase.auth.signOut();
 }
+
+// Fetch the current user's role without using React hooks.
+export async function fetchCurrentRole(): Promise<Role> {
+  // Get current session
+  const { data: sessionData } = await supabase.auth.getSession();
+  const userId = sessionData.session?.user?.id;
+  if (!userId) return null;
+  const { data: roleRes } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .maybeSingle();
+  return (roleRes?.role as Role) ?? "trainee";
+}

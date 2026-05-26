@@ -182,6 +182,13 @@ function TrainerPage() {
   );
 }
 
+function maskEmail(email: string | undefined) {
+  if (!email) return "";
+  const [local, domain] = email.split("@");
+  const masked = local.slice(0, 2) + "...";
+  return `${masked}@${domain}`;
+}
+
 function TraineesList({ items, t }: { items: Enrollment[]; t: (a: string, b: string) => string }) {
   if (items.length === 0) return <p className="text-white/60 text-sm">{t("لا يوجد متدرّبون مقبولون بعد.", "No approved trainees yet.")}</p>;
   return (
@@ -194,7 +201,7 @@ function TraineesList({ items, t }: { items: Enrollment[]; t: (a: string, b: str
           {items.map((e) => (
             <tr key={e.id} className="border-t border-white/5">
               <td className="p-3 font-medium">{e.profiles?.full_name || "—"}</td>
-              <td className="p-3 text-white/70">{e.profiles?.email || "—"}</td>
+              <td className="p-3 text-white/70">{maskEmail(e.profiles?.email) || "—"}</td>
               <td className="p-3">{e.blocked ? <span className="text-rose-300 text-xs">{t("معلَّق", "Blocked")}</span> : <span className="text-emerald-300 text-xs">{t("نشط", "Active")}</span>}</td>
             </tr>
           ))}

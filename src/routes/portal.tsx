@@ -10,7 +10,7 @@ import { findCountry } from "@/lib/countries";
 import {
   Clock, CheckCircle2, XCircle, Download, Upload, BookOpen, Wallet, Loader2,
   ExternalLink, Sparkles, ArrowRight, Calendar, Layers, StickyNote, Link as LinkIcon,
-  Paperclip, Check, ChevronLeft, PlayCircle, Award, Linkedin, GraduationCap, Hourglass,
+  Paperclip, Check, ChevronLeft, PlayCircle, PhoneOutgoing, Award, Linkedin, GraduationCap, Hourglass,
   FileText, Send, AlertCircle, X,
 } from "lucide-react";
 import { LatestAdditionsSection } from "@/components/LatestAdditions";
@@ -243,6 +243,15 @@ function PortalPage() {
                 className="flex items-center gap-2 px-5 h-12 rounded-xl font-semibold transition-all hover:scale-[1.02]"
                 style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
                 <Upload className="w-4 h-4" /> {lang === "ar" ? "رفع ملفات الاختبار" : "Upload test files"}
+              </button>
+              <button onClick={() => {
+                const message = encodeURIComponent(`Hello admin, I am ${profile?.full_name || ''} (${profile?.email || ''}) requesting assistance.`);
+                const waUrl = `https://wa.me/1234567890?text=${message}`;
+                window.open(waUrl, "_blank");
+              }}
+                className="flex items-center gap-2 px-5 h-12 rounded-xl font-semibold transition-all hover:scale-[1.02]"
+                style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
+                <PhoneOutgoing className="w-4 h-4" /> {lang === "ar" ? "تفعيل واتساب" : "Activate WhatsApp"}
               </button>
             </div>
           </div>

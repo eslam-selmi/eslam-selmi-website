@@ -199,7 +199,7 @@ const CREDENTIALS = [
 ];
 
 const SERVICES = [
-  { icon: Target, key: "svc_strategy", title: { en: "L&D Strategy Consulting", ar: "استشارات استراتيجية L&D" }, desc: { en: "Tailored strategies that align training initiatives with business goals.", ar: "استراتيجيات مخصصة تربط مبادرات التدريب بأهداف العمل." } },
+  { icon: Target, key: "svc_strategy", title: { en: "L&D Strategy Consulting", ar: "الاستشارات الاستراتيجية للتعلم والتطوير" }, desc: { en: "Tailored strategies that align training initiatives with business goals.", ar: "استراتيجيات مخصصة تربط مبادرات التدريب بأهداف العمل." } },
   { icon: Layers, key: "svc_hybrid", title: { en: "Hybrid Corporate Training", ar: "تدريب مؤسسي هجين" }, desc: { en: "Flexible sessions for companies, online and on-site.", ar: "جلسات مرنة للشركات، أونلاين وحضوريًا." } },
   { icon: Lightbulb, key: "svc_id", title: { en: "Instructional Design", ar: "تصميم تعليمي" }, desc: { en: "Engaging learning experiences crafted with innovative methods.", ar: "تجارب تعلم جذابة بأساليب مبتكرة." } },
   { icon: HeartHandshake, key: "svc_coach", title: { en: "One-on-One Coaching", ar: "تدريب فردي" }, desc: { en: "Personalized sessions to unlock individual potential and growth.", ar: "جلسات مخصصة لإطلاق الإمكانات والنمو." } },
@@ -1091,7 +1091,7 @@ function Programs() {
       <div className="grid lg:grid-cols-3 gap-6 lg:gap-7">
         {PROGRAMS.map((p, i) => {
           const Icon = trackIcons[i] || Sparkles;
-          const isFeatured = i === 0;
+          const isFeatured = true;
           return (
             <motion.article
               key={p.track.en}
@@ -1157,12 +1157,7 @@ function Programs() {
                   <span className="text-muted-foreground">
                     {p.items.length} {lang === "ar" ? "محاور" : "modules"}
                   </span>
-                  {isFeatured && (
-                    <span className="inline-flex items-center gap-1.5 text-[#CD853F]">
-                      <Sparkles className="size-3.5" />
-                      {lang === "ar" ? "مسارات التعليم — المسار الرئيسي" : "Educational Tracks · Flagship"}
-                    </span>
-                  )}
+
                 </div>
               </div>
             </motion.article>
