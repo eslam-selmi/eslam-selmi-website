@@ -153,9 +153,12 @@ function AdminPage() {
           <TrainersPanel courses={courses} />
         ) : tab === "coupons" ? (
           <CouponsPanel courses={courses} />
+        ) : tab === "additions" ? (
+          <LatestAdditionsPanel />
         ) : (
           <BannedPanel enrollments={enrollments} refresh={refresh} />
         )}
+
       </div>
 
       {drawer && <EnrollmentDrawer enrollment={drawer} onClose={() => setDrawer(null)} refresh={refresh} />}
