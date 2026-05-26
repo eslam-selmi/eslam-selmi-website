@@ -898,6 +898,8 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
     brand_primary_color: (course as any).brand_primary_color ?? "",
     brand_tagline_ar: (course as any).brand_tagline_ar ?? "",
     brand_tagline_en: (course as any).brand_tagline_en ?? "",
+    track_key: (course as any).track_key ?? "",
+    phase: String((course as any).phase ?? 1),
   });
 
   async function save() {
@@ -915,6 +917,8 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
       brand_primary_color: f.brand_primary_color.trim() || null,
       brand_tagline_ar: f.brand_tagline_ar.trim() || null,
       brand_tagline_en: f.brand_tagline_en.trim() || null,
+      track_key: f.track_key.trim() || null,
+      phase: Math.max(1, Math.min(3, Number(f.phase) || 1)),
     }).eq("id", course.id);
     if (error) return toast.error(error.message);
     toast.success(t("تم الحفظ", "Saved"));
