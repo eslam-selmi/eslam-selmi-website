@@ -728,7 +728,7 @@ function CertificatePanel({
             <>
               {!allModulesDone && totalModules > 0 && (
                 <p className="text-[11px] text-white/55 text-center">
-                  {isAr ? `متبقى ${totalModules - completedModules} درس قبل ما تقدر تطلب الشهادة` : `${totalModules - completedModules} module(s) remaining before you can request the certificate`}
+                  {isAr ? `متبقى ${totalModules - completedModules} محاضرة قبل ما تقدر تطلب الشهادة` : `${totalModules - completedModules} lecture(s) remaining before you can request the certificate`}
                 </p>
               )}
               <button onClick={requestCertificate} disabled={!allModulesDone || !namesSaved || requesting}
