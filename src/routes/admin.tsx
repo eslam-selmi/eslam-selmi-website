@@ -754,8 +754,9 @@ function ModuleCard({ m, index, items, onToggle, onDelete, onChangeOnlineUrl, on
                   </button>
                 ))}
               </div>
-              <input value={itemTitle} onChange={(e) => setItemTitle(e.target.value)} placeholder={t("العنوان", "Title")}
+              <input value={itemTitle} onChange={(e) => setItemTitle(e.target.value)} required placeholder={t("العنوان المخصص * (يظهر للمتدرب بدلاً من الرابط)", "Custom title * (shown to trainee instead of URL)")}
                 className="w-full h-9 px-2.5 rounded-lg bg-white/5 border border-white/15 text-xs" />
+
               {itemKind === "note" && (
                 <textarea value={itemContent} onChange={(e) => setItemContent(e.target.value)} placeholder={t("المحتوى", "Content")}
                   rows={3} className="w-full px-2.5 py-2 rounded-lg bg-white/5 border border-white/15 text-xs" />
