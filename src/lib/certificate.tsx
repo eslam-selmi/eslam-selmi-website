@@ -252,7 +252,7 @@ function CertificateCard({ p, qrDataUrl, verifyUrl }: { p: CertificatePayload; q
         {/* header: logo + brand */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
           <img
-            src={brandLogo}
+            src={p.courseLogoUrl || brandLogo}
             crossOrigin="anonymous"
             alt=""
             style={{ height: 110, width: "auto", objectFit: "contain" }}
@@ -267,7 +267,7 @@ function CertificateCard({ p, qrDataUrl, verifyUrl }: { p: CertificatePayload; q
               fontWeight: 600,
             }}
           >
-            Eslam Selmi Academy · أكاديمية إسلام سلمي
+            {p.courseBrandName || "Eslam Selmi Academy · أكاديمية إسلام سلمي"}
           </div>
           <div
             style={{
