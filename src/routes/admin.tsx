@@ -1200,14 +1200,41 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
             <ul className="space-y-1.5">
               {payments.length === 0 ? <li className="text-xs text-white/40">{t("لا توجد مدفوعات", "No payments")}</li> :
                 payments.map((p) => (
-                  <li key={p.id} className="flex items-center justify-between text-sm bg-white/5 rounded-lg px-3 py-2 border border-white/10 gap-3">
-                    <span className="font-semibold">{Number(p.amount).toLocaleString()} {p.currency}</span>
-                    <span className="text-xs text-white/50 flex-1 truncate">{p.note}</span>
-                    <span className="text-xs text-white/40">{new Date(p.paid_at).toLocaleDateString("ar-EG")}</span>
-                    <button onClick={() => delPay(p.id)} className="text-rose-300/70 hover:text-rose-300"><Trash2 className="w-3.5 h-3.5" /></button>
+                  <li key={p.id} className={`text-sm rounded-lg px-3 py-2 border gap-3 ${p.status === "pending" ? "bg-amber-300/10 border-amber-300/30" : p.status === "rejected" ? "bg-rose-500/10 border-rose-500/30 opacity-70" : "bg-white/5 border-white/10"}`}>
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="font-semibold">{Number(p.amount).toLocaleString()} {p.currency}</span>
+                      <span className="text-xs text-white/50 flex-1 truncate">{p.note}</span>
+                      <span className="text-xs text-white/40">{new Date(p.paid_at).toLocaleDateString("ar-EG")}</span>
+                      <button onClick={() => delPay(p.id)} className="text-rose-300/70 hover:text-rose-300"><Trash2 className="w-3.5 h-3.5" /></button>
+                    </div>
+                    {p.status === "pending" && (
+                      <div className="mt-2 flex items-center gap-2 flex-wrap">
+                        <span className="text-[11px] px-2 py-0.5 rounded bg-amber-300/20 text-amber-200 border border-amber-300/30">{t("بانتظار المراجعة", "Pending review")}</span>
+                        {p.proof_url && (
+                          <ProofLink path={p.proof_url} label={t("عرض الإيصال", "View proof")} />
+                        )}
+                        <button onClick={async () => { await supabase.from("payments").update({ status: "approved" } as any).eq("id", p.id); toast.success(t("تم اعتماد الدفعة", "Payment approved")); refreshLists(); }} className="text-[11px] px-2.5 h-7 rounded bg-emerald-500/25 text-emerald-200 border border-emerald-500/40 font-semibold">{t("اعتماد", "Approve")}</button>
+                        <button onClick={async () => { await supabase.from("payments").update({ status: "rejected" } as any).eq("id", p.id); toast.success(t("تم رفض الدفعة", "Payment rejected")); refreshLists(); }} className="text-[11px] px-2.5 h-7 rounded bg-rose-500/25 text-rose-200 border border-rose-500/40 font-semibold">{t("رفض", "Reject")}</button>
+                      </div>
+                    )}
+                    {p.status === "rejected" && (
+                      <div className="mt-1 text-[11px] text-rose-300">{t("مرفوضة — لا تُحتسب", "Rejected — not counted")}</div>
+                    )}
                   </li>
                 ))}
             </ul>
+            {!fullyPaid && coursePrice > 0 && (
+              <button
+                onClick={async () => {
+                  await supabase.from("enrollments").update({ payment_reminder_dismissed_at: new Date().toISOString() } as any).eq("id", enrollment.id);
+                  toast.success(t("تم إخفاء تذكير الدفع للمتدرب", "Trainee payment reminder cleared"));
+                  refresh();
+                }}
+                className="mt-3 w-full h-10 rounded-lg text-xs font-semibold bg-white/5 border border-white/15 text-white/70 hover:bg-white/10"
+              >
+                {t("✓ تأكيد استلام الدفعة وإيقاف تذكير المتدرب", "✓ Confirm receipt & dismiss trainee reminder")}
+              </button>
+            )}
           </section>
 
           <section>
