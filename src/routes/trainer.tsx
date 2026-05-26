@@ -51,7 +51,7 @@ function TrainerPage() {
   useEffect(() => {
     if (!loading && !user) nav({ to: "/auth" });
     if (!loading && user && role && role !== "trainer" && role !== "admin") {
-      nav({ to: role === "admin" ? "/admin" : "/portal" });
+      nav({ to: "/portal" });
     }
   }, [user, role, loading, nav]);
 
