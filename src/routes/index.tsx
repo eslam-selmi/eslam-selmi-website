@@ -1099,26 +1099,29 @@ function Programs() {
               transition={{ delay: i * 0.1, duration: 0.6 }}
               className={`group relative flex flex-col rounded-[2.25rem] overflow-hidden border transition-all duration-500 hover:-translate-y-2
                 ${isFeatured
-                  ? "lg:row-span-1 border-[var(--gold)]/40 bg-gradient-to-br from-[var(--gold)]/[0.08] via-background to-primary/[0.06] shadow-[0_20px_60px_-30px_rgba(212,175,55,0.45)]"
+                  ? "lg:row-span-1 border-[#CD853F]/55 bg-gradient-to-br from-[#CD853F]/[0.14] via-[#8B4513]/[0.05] to-background shadow-[0_24px_70px_-30px_rgba(205,133,63,0.55)]"
                   : "border-foreground/10 bg-gradient-to-br from-background to-foreground/[0.025] hover:border-[var(--gold)]/30"}`}
             >
-              {/* Top accent bar */}
-              <div className={`h-1.5 w-full ${isFeatured ? "bg-gradient-to-r from-[var(--gold)] via-primary to-[var(--gold)]" : "bg-gradient-to-r from-foreground/10 via-[var(--gold)]/40 to-foreground/10"}`} />
+              {/* Top accent bar — peru tones for the Educational Tracks flagship */}
+              <div className={`h-1.5 w-full ${isFeatured ? "bg-gradient-to-r from-[#CD853F] via-[#E8A87C] to-[#8B4513]" : "bg-gradient-to-r from-foreground/10 via-[var(--gold)]/40 to-foreground/10"}`} />
 
               {/* Decorative glow */}
-              <div className="pointer-events-none absolute -top-24 -right-24 size-64 rounded-full bg-[var(--gold)]/10 blur-3xl opacity-0 group-hover:opacity-100 transition duration-700" />
+              <div className={`pointer-events-none absolute -top-24 -right-24 size-64 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition duration-700 ${isFeatured ? "bg-[#CD853F]/20" : "bg-[var(--gold)]/10"}`} />
 
               <div className="relative p-7 lg:p-8 flex flex-col flex-1">
                 {/* Header: icon + track number */}
                 <div className="flex items-start justify-between gap-3">
-                  <div className={`size-14 grid place-items-center rounded-2xl border ${isFeatured ? "bg-gradient-to-br from-[var(--gold)]/30 to-primary/20 border-[var(--gold)]/40 text-[var(--gold)]" : "bg-foreground/[0.04] border-foreground/10 text-foreground/70"}`}>
+                  <div className={`size-14 grid place-items-center rounded-2xl border ${isFeatured ? "bg-gradient-to-br from-[#CD853F]/35 to-[#8B4513]/25 border-[#CD853F]/50 text-[#E8A87C]" : "bg-foreground/[0.04] border-foreground/10 text-foreground/70"}`}>
                     <Icon className="size-7" strokeWidth={1.6} />
                   </div>
                   <div className="text-right rtl:text-left">
-                    <div className="text-[10px] font-bold uppercase tracking-[0.22em] text-muted-foreground">
+                    <div className={`text-[10px] font-bold uppercase tracking-[0.22em] ${isFeatured ? "text-[#CD853F]" : "text-muted-foreground"}`}>
                       {t("programs_track")}
                     </div>
-                    <div className="font-display text-3xl font-extrabold text-gradient-gold leading-none mt-1">
+                    <div
+                      className={`font-display text-3xl font-extrabold leading-none mt-1 ${isFeatured ? "" : "text-gradient-gold"}`}
+                      style={isFeatured ? { background: "linear-gradient(110deg, #CD853F, #E8A87C, #8B4513)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" } : undefined}
+                    >
                       0{i + 1}
                     </div>
                   </div>
@@ -1135,12 +1138,12 @@ function Programs() {
                 <ol className="relative mt-7 space-y-4 flex-1">
                   {/* connector line */}
                   {p.items.length > 1 && (
-                    <span className="absolute top-3 bottom-3 start-[14px] w-px bg-gradient-to-b from-[var(--gold)]/50 via-foreground/15 to-transparent" aria-hidden />
+                    <span className={`absolute top-3 bottom-3 start-[14px] w-px bg-gradient-to-b ${isFeatured ? "from-[#CD853F]/65 via-[#8B4513]/25" : "from-[var(--gold)]/50 via-foreground/15"} to-transparent`} aria-hidden />
                   )}
                   {p.items.map((it, idx) => (
                     <li key={it.name.en} className="relative ps-10">
                       <span className={`absolute start-0 top-1 size-7 grid place-items-center rounded-full text-[11px] font-extrabold ring-4 ring-background
-                        ${isFeatured ? "bg-[var(--gold)] text-background" : "bg-foreground/10 text-foreground/80"}`}>
+                        ${isFeatured ? "bg-[#CD853F] text-background shadow-[0_6px_18px_-6px_rgba(205,133,63,0.85)]" : "bg-foreground/10 text-foreground/80"}`}>
                         {idx + 1}
                       </span>
                       <div className="font-semibold text-[0.95rem] leading-snug">{it.name[lang]}</div>
@@ -1155,9 +1158,9 @@ function Programs() {
                     {p.items.length} {lang === "ar" ? "محاور" : "modules"}
                   </span>
                   {isFeatured && (
-                    <span className="inline-flex items-center gap-1.5 text-[var(--gold)]">
+                    <span className="inline-flex items-center gap-1.5 text-[#CD853F]">
                       <Sparkles className="size-3.5" />
-                      {lang === "ar" ? "المسار الرئيسي" : "Flagship"}
+                      {lang === "ar" ? "مسارات التعليم — المسار الرئيسي" : "Educational Tracks · Flagship"}
                     </span>
                   )}
                 </div>
