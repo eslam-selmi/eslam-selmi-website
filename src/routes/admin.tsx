@@ -1268,10 +1268,15 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
             <button onClick={toggleBlocked} className={`h-10 rounded-lg text-xs font-semibold ${blocked ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" : "bg-amber-500/20 text-amber-300 border border-amber-500/30"}`}>
               {blocked ? t("↩ إلغاء قفل الكورس", "↩ Unlock course") : t("⏸ قفل الوصول لهذا الكورس", "⏸ Lock access to this course")}
             </button>
+            <button onClick={toggleGrace} className={`h-10 rounded-lg text-xs font-semibold ${graceActive ? "bg-emerald-500/25 text-emerald-200 border border-emerald-500/40" : "bg-sky-500/20 text-sky-300 border border-sky-500/30"}`}>
+              {graceActive
+                ? t(`✓ فترة سماح فعّالة حتى ${new Date(graceUntil!).toLocaleDateString("ar-EG")}`, `✓ Grace until ${new Date(graceUntil!).toLocaleDateString("en-GB")}`)
+                : t("🔓 تفعيل فترة سماح (تخطّي يدوي للقفل)", "🔓 Enable grace period (manual bypass)")}
+            </button>
             <button onClick={toggleAccountBlocked} className={`h-10 rounded-lg text-xs font-semibold ${accountBlocked ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" : "bg-rose-500/20 text-rose-300 border border-rose-500/30"}`}>
               {accountBlocked ? t("✓ إعادة تفعيل الحساب", "✓ Reactivate account") : t("⛔ إيقاف الحساب من المنصة", "⛔ Suspend account from platform")}
             </button>
-            <button onClick={removeEnrollment} className="sm:col-span-2 h-10 rounded-lg text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30">
+            <button onClick={removeEnrollment} className="h-10 rounded-lg text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30">
               {t("🗑 حذف المتدرب من هذا الكورس نهائياً", "🗑 Permanently remove trainee from this course")}
             </button>
           </section>
