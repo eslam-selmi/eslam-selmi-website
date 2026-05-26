@@ -519,26 +519,38 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
 
                 {(items[m.id]?.length ?? 0) > 0 && (
                   <ul className="mt-4 space-y-1.5 ms-12">
-                    {items[m.id].map((it: any) => (
-                      <li key={it.id} className="flex items-start gap-2 p-2.5 rounded-lg bg-white/[0.03] border border-white/5 text-sm">
-                        {it.kind === "note" ? <StickyNote className="w-4 h-4 mt-0.5 text-amber-300 shrink-0" /> :
-                         it.kind === "link" ? <LinkIcon className="w-4 h-4 mt-0.5 text-sky-300 shrink-0" /> :
-                         <Paperclip className="w-4 h-4 mt-0.5 text-emerald-300 shrink-0" />}
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium">{it.title}</p>
-                          {it.content && <p className="text-xs text-white/60 whitespace-pre-wrap mt-1">{it.content}</p>}
-                          {it.url && (it.kind === "file" ? (
-                            <button onClick={async () => {
-                              const { data, error } = await supabase.storage.from("course-files").createSignedUrl(it.url, 120);
-                              if (error) return toast.error(error.message);
-                              window.open(data.signedUrl, "_blank", "noopener");
-                            }} className="text-xs text-[var(--gold)] hover:underline mt-1 block truncate text-start" dir="ltr">{it.title}</button>
-                          ) : (
-                            <a href={it.url} target="_blank" rel="noopener" className="text-xs text-[var(--gold)] hover:underline mt-1 block truncate" dir="ltr">{it.url}</a>
-                          ))}
-                        </div>
-                      </li>
-                    ))}
+                    {items[m.id].map((it: any) => {
+                      const isStorage = it.kind === "file";
+                      const openable = it.kind !== "note" && !!it.url;
+                      return (
+                        <li key={it.id} className="flex items-start gap-2 p-2.5 rounded-lg bg-white/[0.03] border border-white/5 text-sm">
+                          {it.kind === "note" ? <StickyNote className="w-4 h-4 mt-0.5 text-amber-300 shrink-0" /> :
+                           it.kind === "link" ? <LinkIcon className="w-4 h-4 mt-0.5 text-sky-300 shrink-0" /> :
+                           <Paperclip className="w-4 h-4 mt-0.5 text-emerald-300 shrink-0" />}
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium">{it.title}</p>
+                            {it.content && <p className="text-xs text-white/60 whitespace-pre-wrap mt-1">{it.content}</p>}
+                            {openable && (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setViewItem({
+                                    title: it.title,
+                                    kind: it.kind === "file" ? "file" : "link",
+                                    url: it.url,
+                                    isStoragePath: isStorage,
+                                  })
+                                }
+                                className="text-xs text-[var(--gold)] hover:underline mt-1 inline-flex items-center gap-1"
+                              >
+                                <PlayCircle className="w-3.5 h-3.5" />
+                                {isAr ? "فتح المحتوى" : "Open content"}
+                              </button>
+                            )}
+                          </div>
+                        </li>
+                      );
+                    })}
                   </ul>
                 )}
               </div>
@@ -546,6 +558,9 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
           </div>
         )}
       </section>
+
+      <MediaViewerModal item={viewItem} onClose={() => setViewItem(null)} />
+
 
       <AssignmentsSection courseId={c.id} />
 
