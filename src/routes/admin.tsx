@@ -176,7 +176,7 @@ function AdminPage() {
         ) : tab === "enrollments" ? (
           <EnrollmentsTable enrollments={enrollments} courses={courses} onOpen={setDrawer} refresh={refresh} />
         ) : tab === "courses" ? (
-          <CoursesPanel courses={courses} refresh={refresh} onEdit={setEditingCourse} />
+          <CoursesPanel courses={courses} enrollments={enrollments} refresh={refresh} onEdit={setEditingCourse} />
         ) : tab === "trainers" ? (
           <TrainersPanel courses={courses} />
         ) : tab === "coupons" ? (
@@ -454,7 +454,7 @@ function StatusPill({ status }: { status: string }) {
 }
 
 // ============= COURSES PANEL =============
-function CoursesPanel({ courses, refresh, onEdit }: { courses: Course[]; refresh: () => void; onEdit: (c: Course) => void }) {
+function CoursesPanel({ courses, enrollments, refresh, onEdit }: { courses: Course[]; enrollments: EnrollmentRow[]; refresh: () => void; onEdit: (c: Course) => void }) {
   const { lang } = useI18n();
   const t = (a: string, b: string) => (lang === "ar" ? a : b);
 
@@ -509,7 +509,11 @@ function CoursesPanel({ courses, refresh, onEdit }: { courses: Course[]; refresh
     <div className="grid lg:grid-cols-[1fr_360px] gap-6">
       <div className="space-y-3">
         {courses.length === 0 ? <div className="rounded-2xl border border-dashed border-white/15 p-8 text-center text-white/50 text-sm">{t("لا توجد كورسات. أضف أول كورس →", "No courses yet. Add your first course →")}</div> :
-          courses.map((c) => (
+          courses.map((c) => {
+            const courseEnrollments = enrollments.filter((e) => e.course_id === c.id);
+            const activeCount = courseEnrollments.filter((e) => e.status === "approved" && !e.profiles?.account_blocked).length;
+            const pendingCount = courseEnrollments.filter((e) => e.status === "pending").length;
+            return (
             <div key={c.id} className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 hover:border-[var(--gold)]/30 transition">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-xl bg-[var(--gold)]/10 border border-[var(--gold)]/30 flex items-center justify-center text-2xl shrink-0">
@@ -522,6 +526,14 @@ function CoursesPanel({ courses, refresh, onEdit }: { courses: Course[]; refresh
                     <span className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--gold)]/15 text-[var(--gold)] border border-[var(--gold)]/30">
                       {c.installments_count === 1 ? t("دفعة كاملة", "Full payment") : `${c.installments_count} ${t(`أقساط`, `installments`)}`}
                     </span>
+                    <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-semibold">
+                      <Users className="w-3 h-3" /> {activeCount} {t("ملتحق", "enrolled")}
+                    </span>
+                    {pendingCount > 0 && (
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-300/15 text-amber-200 border border-amber-300/30 font-semibold">
+                        +{pendingCount} {t("بانتظار", "pending")}
+                      </span>
+                    )}
                   </div>
                   {c.description && <p className="text-xs text-white/55 mt-1.5 line-clamp-2">{c.description}</p>}
                   <div className="flex items-center gap-4 mt-3 text-xs text-white/60 flex-wrap">
@@ -546,7 +558,8 @@ function CoursesPanel({ courses, refresh, onEdit }: { courses: Course[]; refresh
                 </div>
               </div>
             </div>
-          ))
+            );
+          })
         }
       </div>
 
