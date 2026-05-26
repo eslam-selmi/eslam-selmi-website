@@ -5,8 +5,12 @@ import { useAuth } from "@/lib/portal-auth";
 import { toast } from "sonner";
 import { GraduationCap, ShieldCheck, Loader2, ArrowRight } from "lucide-react";
 import { COUNTRIES, findCountry, sanitizeNationalNumber, validatePhoneForCountry } from "@/lib/countries";
+import brandLogo from "@/assets/brand-logo.png";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    role: (search.role as string) || "trainee",
+  }),
   head: () => ({
     meta: [
       { title: "تسجيل الدخول · أكاديمية إسلام سلمي" },
@@ -17,6 +21,8 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthPage() {
+  const search = Route.useSearch();
+  const [authRole, setAuthRole] = useState<"admin" | "trainee">(search.role === "admin" ? "admin" : "trainee");
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,6 +34,15 @@ function AuthPage() {
   const [confirmEmail, setConfirmEmail] = useState<string | null>(null);
   const nav = useNavigate();
   const { user, role, loading, activationStatus } = useAuth();
+
+  useEffect(() => {
+    if (search.role === "admin") {
+      setAuthRole("admin");
+      setMode("login");
+    } else {
+      setAuthRole("trainee");
+    }
+  }, [search.role]);
 
   useEffect(() => {
     if (!loading && user) {
@@ -68,7 +83,13 @@ function AuthPage() {
         });
         if (error) throw error;
         if (!data.session) {
-          setConfirmEmail(email);
+          const message = encodeURIComponent(`مرحباً، أود تفعيل حسابي كمتدرب جديد.\nالاسم: ${fullName}\nالبريد: ${email}\nرقم الهاتف: ${v.e164}`);
+          const waUrl = `https://wa.me/201221448888?text=${message}`; // Use academy whatsapp
+          toast.success("تم تسجيل بياناتك بنجاح. سيتم تحويلك لطلب التفعيل عبر واتساب...");
+          setTimeout(() => {
+            window.open(waUrl, "_blank");
+            setMode("login");
+          }, 1500);
         } else {
           toast.success("تم إنشاء الحساب بنجاح. جاري التحويل...");
         }
@@ -84,36 +105,50 @@ function AuthPage() {
     }
   }
 
+  const isAdminView = authRole === "admin";
+
   return (
-    <div dir="rtl" className="min-h-screen relative overflow-hidden bg-[#0b1736] text-white flex items-center justify-center px-4 py-12 font-[var(--font-body-ar)]">
-      <div className="absolute inset-0 bg-aurora opacity-70" />
-      <div className="absolute -top-32 -right-32 w-[520px] h-[520px] rounded-full blur-3xl opacity-30" style={{ background: "radial-gradient(circle, var(--gold), transparent 65%)" }} />
-      <div className="absolute -bottom-40 -left-32 w-[600px] h-[600px] rounded-full blur-3xl opacity-25" style={{ background: "radial-gradient(circle, var(--lavender-deep), transparent 65%)" }} />
+    <div dir="rtl" className={`min-h-screen relative overflow-hidden flex items-center justify-center px-4 py-12 font-[var(--font-body-ar)] transition-colors duration-500 ${isAdminView ? "bg-[#0f0f12]" : "bg-[#0b1736]"}`}>
+      {isAdminView ? (
+        <>
+          <div className="absolute inset-0 bg-gradient-to-tr from-amber-950/20 via-zinc-900 to-[#121214] opacity-80" />
+          <div className="absolute -top-32 -right-32 w-[520px] h-[520px] rounded-full blur-3xl opacity-20" style={{ background: "radial-gradient(circle, #ffc107, transparent 65%)" }} />
+          <div className="absolute -bottom-40 -left-32 w-[600px] h-[600px] rounded-full blur-3xl opacity-15" style={{ background: "radial-gradient(circle, #e65100, transparent 65%)" }} />
+        </>
+      ) : (
+        <>
+          <div className="absolute inset-0 bg-gradient-to-tr from-[#0a0a1a] via-[#0b1736] to-[#001f3f] opacity-80" />
+          <div className="absolute -top-32 -right-32 w-[520px] h-[520px] rounded-full blur-3xl opacity-30" style={{ background: "radial-gradient(circle, var(--gold), transparent 65%)" }} />
+          <div className="absolute -bottom-40 -left-32 w-[600px] h-[600px] rounded-full blur-3xl opacity-25" style={{ background: "radial-gradient(circle, var(--lavender-deep), transparent 65%)" }} />
+        </>
+      )}
 
       <div className="relative w-full max-w-md">
         <Link to="/" className="block text-center mb-6 text-xs tracking-widest text-white/60 hover:text-white transition">
           ← العودة للموقع
         </Link>
 
-        <div className="relative rounded-3xl border border-white/10 bg-[rgba(11,23,54,0.7)] backdrop-blur-2xl p-8 shadow-2xl">
-          <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-[var(--gold)] to-transparent" />
+        <div className={`relative rounded-3xl border backdrop-blur-2xl p-8 shadow-2xl transition-all duration-500 ${isAdminView ? "border-amber-500/20 bg-zinc-950/85" : "border-[var(--gold)]/20 bg-[rgba(11,23,54,0.65)]/85"}`} style={{ boxShadow: "0 8px 24px rgba(0,0,0,0.6)" }}>
+          <div className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent to-transparent ${isAdminView ? "via-amber-500/50" : "via-[var(--gold)]"}`} />
 
           <div className="flex flex-col items-center text-center mb-7">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4 border border-[var(--gold)]/40" style={{ background: "linear-gradient(135deg, rgba(212,178,89,0.25), transparent)" }}>
-              {mode === "login" ? <ShieldCheck className="w-7 h-7 text-[var(--gold)]" /> : <GraduationCap className="w-7 h-7 text-[var(--gold)]" />}
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-4 border transition-colors ${isAdminView ? "border-amber-500/40" : "border-[var(--gold)]/40"} glass`} style={isAdminView ? { background: "linear-gradient(135deg, rgba(245,158,11,0.25), transparent)" } : { background: "linear-gradient(135deg, rgba(212,178,89,0.25), transparent)" }}>
+              <img src={brandLogo} alt="Logo" className="h-7 w-auto" />
             </div>
             <h1 className="text-2xl font-bold">
-              {mode === "login" ? "تسجيل الدخول" : "إنشاء حساب متدرب"}
+              {isAdminView ? "تسجيل دخول الإدارة" : (mode === "login" ? "تسجيل الدخول" : "إنشاء حساب متدرب")}
             </h1>
             <p className="text-sm text-white/60 mt-2">
-              {mode === "login"
-                ? "ادخل إلى لوحتك للوصول إلى الكورسات والشهادات"
-                : "سجّل بياناتك لتقديم طلب الالتحاق بأحد الكورسات"}
+              {isAdminView
+                ? "لوحة تحكم المسؤولين والمشرفين"
+                : (mode === "login"
+                  ? "ادخل إلى لوحتك للوصول إلى الكورسات والشهادات"
+                  : "سجّل بياناتك لتقديم طلب الالتحاق بأحد الكورسات")}
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-3">
-            {mode === "signup" && (
+            {!isAdminView && mode === "signup" && (
               <>
                 <Field label="الاسم الكامل" value={fullName} onChange={setFullName} placeholder="اكتب اسمك الثلاثي" required />
                 <label className="block">
@@ -166,60 +201,57 @@ function AuthPage() {
               type="submit"
               disabled={busy}
               className="w-full mt-2 h-12 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all disabled:opacity-60"
-              style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}
+              style={isAdminView ? { background: "linear-gradient(135deg, #f59e0b, #d97706)", color: "#000" } : { background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736", boxShadow: "0 4px 12px rgba(0,0,0,0.3)" }}
             >
               {busy ? <Loader2 className="w-5 h-5 animate-spin" /> : (
                 <>
-                  {mode === "login" ? "دخول" : "إنشاء الحساب"}
+                  {isAdminView || mode === "login" ? "دخول" : "إنشاء الحساب"}
                   <ArrowRight className="w-4 h-4 rtl-flip" />
                 </>
               )}
             </button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-white/70">
-            {mode === "login" ? "ليس لديك حساب؟ " : "لديك حساب بالفعل؟ "}
-            <button
-              type="button"
-              onClick={() => setMode(mode === "login" ? "signup" : "login")}
-              className="text-[var(--gold)] hover:underline font-semibold"
-            >
-              {mode === "login" ? "إنشاء حساب جديد" : "تسجيل الدخول"}
-            </button>
+          {!isAdminView && (
+            <div className="mt-6 text-center text-sm text-white/70">
+              {mode === "login" ? "ليس لديك حساب؟ " : "لديك حساب بالفعل؟ "}
+              <button
+                type="button"
+                onClick={() => setMode(mode === "login" ? "signup" : "login")}
+                className="text-[var(--gold)] hover:underline font-semibold"
+              >
+                {mode === "login" ? "إنشاء حساب جديد" : "تسجيل الدخول"}
+              </button>
+            </div>
+          )}
+
+          <div className="mt-6 text-center text-xs text-white/50 border-t border-white/10 pt-4 flex justify-center">
+            {isAdminView ? (
+              <button
+                type="button"
+                onClick={() => setAuthRole("trainee")}
+                className="hover:text-white underline transition"
+              >
+                التبديل إلى بوابة دخول المتدربين
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => { setAuthRole("admin"); setMode("login"); }}
+                className="hover:text-white underline transition"
+              >
+                بوابة دخول الإدارة والمدربين
+              </button>
+            )}
           </div>
         </div>
 
         <p className="text-center text-xs text-white/40 mt-6 leading-relaxed">
-          الحسابات تخضع للموافقة اليدوية من قِبل الإدارة قبل تفعيل الكورس.
+          {isAdminView ? "دخول المسؤولين محمي ومشفر بالكامل." : ""}
         </p>
       </div>
 
-      {confirmEmail && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-4" onClick={() => setConfirmEmail(null)}>
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
-          <div onClick={(e) => e.stopPropagation()} dir="rtl"
-            className="relative w-full max-w-md rounded-3xl border border-[var(--gold)]/30 bg-[rgba(11,23,54,0.98)] p-8 text-white shadow-2xl">
-            <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-[var(--gold)] to-transparent" />
-            <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5 border border-[var(--gold)]/40 mx-auto"
-              style={{ background: "linear-gradient(135deg, rgba(212,178,89,0.25), transparent)" }}>
-              <span className="text-3xl">📧</span>
-            </div>
-            <h3 className="text-2xl font-bold text-center">تفقّد بريدك الإلكتروني</h3>
-            <p className="text-white/75 text-center mt-4 leading-relaxed">
-              تم إرسال رابط التفعيل إلى:
-              <br/>
-              <span className="font-semibold text-[var(--gold)]" dir="ltr">{confirmEmail}</span>
-              <br/><br/>
-              يرجى تفقد البريد الوارد (وربما مجلد الـ Spam) والضغط على الرابط لتفعيل حسابك ثم العودة لتسجيل الدخول.
-            </p>
-            <button onClick={() => { setConfirmEmail(null); setMode("login"); }}
-              className="mt-6 w-full h-12 rounded-xl font-semibold"
-              style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
-              فهمت — الانتقال لتسجيل الدخول
-            </button>
-          </div>
-        </div>
-      )}
+
     </div>
   );
 }

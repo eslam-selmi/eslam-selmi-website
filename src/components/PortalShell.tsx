@@ -1,12 +1,14 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { ForcePasswordResetGate } from "@/components/ForcePasswordResetGate";
 import { useAuth, signOut } from "@/lib/portal-auth";
-import { LogOut, Home, ShieldCheck, GraduationCap, Languages, Sparkles } from "lucide-react";
+import { LogOut, Home, ShieldCheck, GraduationCap, Languages, Sparkles, KeyRound } from "lucide-react";
 import { NotificationsBell } from "@/lib/notifications";
 import { useI18n } from "@/lib/i18n";
 import { useLatestAdditionsBadge } from "@/components/LatestAdditions";
 import brandLogo from "@/assets/brand-logo.png";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 type Props = {
   userId: string | undefined;
@@ -20,7 +22,68 @@ export function PortalShell({ userId, role, userLabel, children }: Props) {
   const { lang, setLang, dir } = useI18n();
   const { hasNew, markSeen } = useLatestAdditionsBadge();
   const isAr = lang === "ar";
-  const { forcePasswordReset } = useAuth();
+  const { forcePasswordReset, session } = useAuth();
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [changingPassword, setChangingPassword] = useState(false);
+
+  async function handleChangePassword(e: React.FormEvent) {
+    e.preventDefault();
+    if (!currentPassword) {
+      toast.error(isAr ? "الرجاء إدخال كلمة المرور الحالية" : "Please enter current password");
+      return;
+    }
+    if (newPassword.length < 8) {
+      toast.error(isAr ? "كلمة المرور الجديدة يجب أن تكون 8 أحرف على الأقل" : "New password must be at least 8 characters");
+      return;
+    }
+    if (newPassword !== confirmNewPassword) {
+      toast.error(isAr ? "كلمتا المرور الجديدتان غير متطابقتين" : "New passwords do not match");
+      return;
+    }
+    
+    setChangingPassword(true);
+    try {
+      const email = session?.user?.email;
+      if (!email) {
+        toast.error(isAr ? "لم يتم العثور على البريد الإلكتروني للمستخدم" : "User email not found");
+        return;
+      }
+      
+      // 1. Verify current password
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password: currentPassword,
+      });
+      
+      if (signInError) {
+        toast.error(isAr ? "كلمة المرور الحالية غير صحيحة" : "Current password is incorrect");
+        return;
+      }
+      
+      // 2. Update to new password
+      const { error: updateError } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+      
+      if (updateError) {
+        toast.error(updateError.message);
+        return;
+      }
+      
+      toast.success(isAr ? "تم تغيير كلمة المرور بنجاح" : "Password changed successfully");
+      setShowChangePassword(false);
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmNewPassword("");
+    } catch (err: any) {
+      toast.error(err?.message || "An error occurred");
+    } finally {
+      setChangingPassword(false);
+    }
+  }
 
   // Anti-piracy client hooks
   useEffect(() => {
@@ -107,6 +170,10 @@ export function PortalShell({ userId, role, userLabel, children }: Props) {
               <Languages className="w-3.5 h-3.5" />
               <span className="hidden sm:inline font-semibold tracking-wide">{L.switchLang}</span>
             </button>
+            <button onClick={() => setShowChangePassword(true)} title={isAr ? "تغيير كلمة المرور" : "Change Password"} className="flex items-center gap-1.5 text-xs px-3 h-10 rounded-xl border border-white/15 hover:bg-white/5 transition">
+              <KeyRound className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">{isAr ? "تغيير كلمة المرور" : "Change Password"}</span>
+            </button>
             <NotificationsBell userId={userId} />
             {userLabel && (
               <span className="hidden lg:inline text-xs text-white/60 max-w-[160px] truncate">{userLabel}</span>
@@ -118,6 +185,84 @@ export function PortalShell({ userId, role, userLabel, children }: Props) {
         </div>
       </header>
       {forcePasswordReset && <ForcePasswordResetGate onDone={() => {}} />}
+      {showChangePassword && (
+        <div className="fixed inset-0 z-[80] bg-[#070b1c]/80 backdrop-blur flex items-center justify-center p-4">
+          <form onSubmit={handleChangePassword} className="w-full max-w-md rounded-2xl border border-[var(--gold)]/30 bg-[#0b1736] p-6 space-y-4 shadow-2xl relative">
+            <button
+              type="button"
+              onClick={() => setShowChangePassword(false)}
+              className="absolute top-4 end-4 text-white/50 hover:text-white text-lg font-bold"
+            >
+              ✕
+            </button>
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-xl bg-[var(--gold)]/15 border border-[var(--gold)]/30 flex items-center justify-center">
+                <KeyRound className="w-5 h-5 text-[var(--gold)]" />
+              </div>
+              <div>
+                <h2 className="font-bold text-base">{isAr ? "تغيير كلمة المرور" : "Change Password"}</h2>
+                <p className="text-xs text-white/60">{isAr ? "أدخل كلمة المرور الحالية والجديدة لتحديث حسابك." : "Enter current and new passwords to update account."}</p>
+              </div>
+            </div>
+            
+            <div className="space-y-3">
+              <div>
+                <label className="block text-xs text-white/60 mb-1">{isAr ? "كلمة المرور الحالية" : "Current Password"}</label>
+                <input
+                  type="password"
+                  required
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 h-11 text-sm text-white focus:outline-none focus:border-[var(--gold)]/50"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-xs text-white/60 mb-1">{isAr ? "كلمة المرور الجديدة" : "New Password"}</label>
+                <input
+                  type="password"
+                  required
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 h-11 text-sm text-white focus:outline-none focus:border-[var(--gold)]/50"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-xs text-white/60 mb-1">{isAr ? "تأكيد كلمة المرور الجديدة" : "Confirm New Password"}</label>
+                <input
+                  type="password"
+                  required
+                  value={confirmNewPassword}
+                  onChange={(e) => setConfirmNewPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 h-11 text-sm text-white focus:outline-none focus:border-[var(--gold)]/50"
+                />
+              </div>
+            </div>
+            
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowChangePassword(false)}
+                className="flex-1 bg-white/5 hover:bg-white/10 text-white font-semibold text-sm h-11 rounded-lg transition"
+              >
+                {isAr ? "إلغاء" : "Cancel"}
+              </button>
+              <button
+                type="submit"
+                disabled={changingPassword}
+                className="flex-1 bg-[var(--gold)] text-[#0b1736] font-bold text-sm h-11 rounded-lg disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-110 transition"
+              >
+                {changingPassword && <span className="animate-spin border-2 border-[#0b1736] border-t-transparent rounded-full w-4 h-4" />}
+                {isAr ? "تحديث" : "Update"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
       <div className="relative max-w-7xl mx-auto px-4 sm:px-5 py-6 sm:py-8">{children}</div>
     </div>
   );

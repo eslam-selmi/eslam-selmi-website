@@ -7,18 +7,22 @@ import { useI18n } from "@/lib/i18n";
 import { useTranslatedTexts } from "@/lib/useTranslatedTexts";
 import { toast } from "sonner";
 import { findCountry } from "@/lib/countries";
-import {
-  Clock, CheckCircle2, XCircle, Download, Upload, BookOpen, Wallet, Loader2,
+import { Clock, CheckCircle2, XCircle, Download, Upload, BookOpen, Wallet, Loader2,
   ExternalLink, Sparkles, ArrowRight, Calendar, Layers, StickyNote, Link as LinkIcon,
   Paperclip, Check, ChevronLeft, PlayCircle, PhoneOutgoing, Award, Linkedin, GraduationCap, Hourglass,
-  FileText, Send, AlertCircle, X,
-} from "lucide-react";
-import { LatestAdditionsSection } from "@/components/LatestAdditions";
+  FileText, Send, AlertCircle, X, Star } from "lucide-react";
 import { MediaViewerModal, type MediaItem } from "@/components/MediaViewerModal";
 
 
 
+type PortalSearch = {
+  view?: string;
+};
+
 export const Route = createFileRoute("/portal")({
+  validateSearch: (search: Record<string, unknown>): PortalSearch => ({
+    view: search.view as string | undefined,
+  }),
   head: () => ({
     meta: [
       { title: "بوابة المتدرب · أكاديمية إسلام سلمي" },
@@ -32,7 +36,7 @@ type Course = {
   id: string; title: string; description: string | null; price: number | null;
   currency: string; starts_at: string | null; ends_at: string | null;
   installments_count: number; online_url: string | null; cover_emoji: string | null;
-  total_hours: number | null;
+  total_hours: number | null; active: boolean; is_archived?: boolean;
 };
 type Enrollment = {
   id: string; user_id: string; course_id: string; status: "pending" | "approved" | "rejected";
@@ -58,7 +62,15 @@ function PortalPage() {
   const [modules, setModules] = useState<ModuleRow[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [showUpload, setShowUpload] = useState(false);
-  const [viewing, setViewing] = useState<Enrollment | null>(null);
+  const search = Route.useSearch();
+  const [viewingId, setViewingId] = useState<string | null>(search.view || null);
+  const viewing = useMemo(() => enrollments.find(e => e.id === viewingId) || null, [viewingId, enrollments]);
+  const setViewing = (v: Enrollment | null) => setViewingId(v ? v.id : null);
+
+  useEffect(() => {
+    nav({ to: "/portal", search: { view: viewingId || undefined }, replace: true });
+  }, [viewingId, nav]);
+
   const [enrollingCourse, setEnrollingCourse] = useState<Course | null>(null);
 
 
@@ -115,7 +127,7 @@ function PortalPage() {
   }, [user?.id]);
 
   const enrolledIds = useMemo(() => new Set(enrollments.map((e) => e.course_id)), [enrollments]);
-  const availableCourses = useMemo(() => courses.filter((c) => !enrolledIds.has(c.id)), [courses, enrolledIds]);
+  const availableCourses = useMemo(() => courses.filter((c) => !(c.is_archived && !enrolledIds.has(c.id))), [courses, enrolledIds]);
 
   // Batched translation of available + enrolled course titles & descriptions
   const courseTextsFlat = useMemo(() => {
@@ -307,6 +319,9 @@ function PortalPage() {
                     {Number(c.total_hours) > 0 && (
                       <span className="flex items-center gap-1 text-[var(--gold)]/90"><Clock className="w-3 h-3" /> {c.total_hours} {lang === "ar" ? "ساعة" : "hrs"}</span>
                     )}
+                    <button onClick={() => openRatingModal(c)} className="flex items-center gap-1 hover:text-white transition" title={lang === "ar" ? "تقييم" : "Rate"}>
+                      <Star className="w-3 h-3" /> {lang === "ar" ? "قيّم" : "Rate"}
+                    </button>
                   </div>
                   <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
                     <span className="text-[var(--gold)] font-semibold text-sm">
@@ -321,8 +336,6 @@ function PortalPage() {
             </div>
           )}
         </section>
-
-        <LatestAdditionsSection />
 
       </div>
 
@@ -775,11 +788,6 @@ function CertificatePanel({
               <Download className="w-4 h-4" /> {isAr ? "تحميل الشهادة" : "Download certificate"}
             </button>
           )}
-          <a href={buildLinkedInShareUrl(course.title, Number(course.total_hours ?? 0))}
-            target="_blank" rel="noopener"
-            className="w-full h-11 rounded-xl font-semibold flex items-center justify-center gap-2 bg-[#0a66c2] hover:bg-[#0958a8] text-white transition">
-            <Linkedin className="w-4 h-4" /> {isAr ? "شارك إنجازك على LinkedIn" : "Share on LinkedIn"}
-          </a>
         </div>
       ) : (
         <div className="space-y-3">

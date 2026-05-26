@@ -54,8 +54,8 @@ const COPY = {
     defaultRole: "Founder & Lead Instructor",
     seal: "Academy Seal",
     dir: "ltr" as const,
-    fontBody: "'Manrope','IBM Plex Sans Arabic','Tajawal',ui-sans-serif,system-ui,sans-serif",
-    fontDisplay: "'Sora','IBM Plex Sans Arabic','Tajawal',ui-sans-serif,system-ui,sans-serif",
+    fontBody: "'Outfit','Helvetica Neue',Helvetica,Arial,sans-serif",
+    fontDisplay: "'Outfit','Helvetica Neue',Helvetica,Arial,sans-serif",
   },
 };
 
@@ -327,7 +327,7 @@ function CertificateCard({ p, qrDataUrl, verifyUrl }: { p: CertificatePayload; q
                 lineHeight: 1.1,
               }}
             >
-              {p.studentName}
+              {p.studentName.replace(/"/g, "")}
             </h2>
             <div
               style={{
@@ -358,7 +358,7 @@ function CertificateCard({ p, qrDataUrl, verifyUrl }: { p: CertificatePayload; q
             «{p.courseTitle}»
           </h3>
 
-          {p.courseDescription && (
+          {p.courseDescription && !p.courseDescription.includes("مركز تدريب") && (
             <p
               style={{
                 fontSize: 22,

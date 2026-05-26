@@ -13,6 +13,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n, type Lang } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
+import { LatestAdditionsSection } from "@/components/LatestAdditions";
 
 import headshot from "@/assets/portfolio/headshot.png";
 import brandLogo from "@/assets/brand-logo.png";
@@ -208,33 +209,33 @@ const SERVICES = [
 const PROGRAMS = [
   {
     track: {
-      en: "Educational Tracks · Corporate Training, ID & TOT",
-      ar: "مسارات التعليم · التدريب المؤسسي والتصميم التعليمي وTOT",
+      en: "Training & Development Management",
+      ar: "إدارة التدريب و التطوير",
     },
     intro: {
-      en: "A unified two-phase journey under the Educational Tracks taxonomy: build foundational L&D and instructional design competencies, then graduate into advanced facilitation and TOT delivery mastery.",
-      ar: "مسار موحّد من مرحلتين ضمن تصنيف \"مسارات التعليم\": تبدأ بأسس التعلم والتطوير وتصميم التعليم، ثم تتدرّج لإتقان تيسير التدريب وتقديمه (TOT) على مستوى المدربين المعتمدين.",
+      en: "A unified journey under the Training & Development Management taxonomy: build foundational L&D and instructional design competencies, then graduate into advanced facilitation and TOT delivery mastery.",
+      ar: "مسار موحّد ضمن تصنيف \"إدارة التدريب و التطوير\": تبدأ بأسس التعلم والتطوير وتصميم التعليم، ثم تتدرّج لإتقان تيسير التدريب وتقديمه (TOT) على مستوى المدربين المعتمدين.",
     },
     items: [
       {
-        name: { en: "Phase 1 · L&D From Scratch", ar: "المرحلة 1 · L&D من الصفر" },
+        name: { en: "L&D From Scratch", ar: "L&D من الصفر" },
         desc: {
           en: "TNA, annual plans, training kits, ROI analysis and budget management — the operating foundation of any L&D function.",
           ar: "تحليل الاحتياج، الخطط السنوية، أدوات التدريب، تحليل العائد وإدارة الميزانية — الأساس التشغيلي لأي إدارة تعلم وتطوير.",
         },
       },
       {
-        name: { en: "Phase 1 · Instructional Design | ID", ar: "المرحلة 1 · التصميم التعليمي" },
+        name: { en: "Instructional Design | ID", ar: "التصميم التعليمي" },
         desc: {
           en: "Impactful training through expertly crafted, engaging learning experiences and modern ID frameworks (ADDIE, SAM).",
           ar: "تدريب مؤثر بتجارب تعلم مصممة باحتراف وأطر تصميم تعليمي حديثة (ADDIE وSAM).",
         },
       },
       {
-        name: { en: "Phase 2 · TOT Mastery (Training of Trainers)", ar: "المرحلة 2 · إتقان تدريب المدربين TOT" },
+        name: { en: "TOT Mastery (Training of Trainers)", ar: "إتقان تدريب المدربين TOT" },
         desc: {
-          en: "Advanced facilitation, presentation craft, classroom dynamics and innovative delivery strategies — the natural graduation from Phase 1.",
-          ar: "تيسير متقدم، حِرفية العرض، إدارة القاعة، واستراتيجيات تقديم مبتكرة — التخرّج الطبيعي بعد المرحلة الأولى.",
+          en: "Advanced facilitation, presentation craft, classroom dynamics and innovative delivery strategies — the natural graduation.",
+          ar: "تيسير متقدم، حِرفية العرض، إدارة القاعة، واستراتيجيات تقديم مبتكرة.",
         },
       },
     ],
@@ -288,6 +289,10 @@ function Portfolio() {
       <Services />
       <Programs />
       
+      <div className="max-w-7xl mx-auto px-4 sm:px-5 py-12">
+        <LatestAdditionsSection />
+      </div>
+
       <CurrentCourses />
       
       
@@ -439,13 +444,27 @@ export function Nav({ theme, onThemeToggle }: { theme?: ThemeMode; onThemeToggle
                 {lang === "en" ? "ع" : "En"}
               </span>
             </button>
-            <button
-              onClick={handleThemeToggle}
-              aria-label="Toggle theme"
-              className="inline-flex size-9 items-center justify-center rounded-full border border-foreground/10 hover:bg-foreground/5 transition"
+          <button
+            onClick={handleThemeToggle}
+            aria-label="Toggle theme"
+            className="relative inline-flex size-9 items-center justify-center rounded-full border border-foreground/10 bg-white/5 backdrop-blur-md hover:bg-white/10 hover:border-foreground/20 hover:shadow-lg hover:shadow-primary/5 transition-all overflow-hidden group glass"
+          >
+            <div className="absolute inset-0 bg-gradient-to-tr from-gold/10 to-lavender/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <motion.div
+              key={activeTheme}
+              initial={{ y: 12, rotate: 45, opacity: 0 }}
+              animate={{ y: 0, rotate: 0, opacity: 1, scale: 1 }}
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="relative z-10 flex items-center justify-center"
             >
-              {activeTheme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
-            </button>
+              {activeTheme === "dark" ? (
+                <Sun className="size-4 text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
+              ) : (
+                <Moon className="size-4 text-indigo-400 drop-shadow-[0_0_8px_rgba(129,140,248,0.6)]" />
+              )}
+            </motion.div>
+          </button>
             <a
               href={LINKEDIN} target="_blank" rel="noopener noreferrer"
               aria-label="LinkedIn"
@@ -502,6 +521,7 @@ export function Nav({ theme, onThemeToggle }: { theme?: ThemeMode; onThemeToggle
                     </div>
                     <Link
                       to="/auth"
+                      search={{ role: "admin" }}
                       onClick={() => setPortalOpen(false)}
                       className="flex items-center gap-3 px-4 py-3 transition-colors group"
                       style={{ color: "white" }}
@@ -525,6 +545,7 @@ export function Nav({ theme, onThemeToggle }: { theme?: ThemeMode; onThemeToggle
                     </Link>
                     <Link
                       to="/auth"
+                      search={{ role: "trainee" }}
                       onClick={() => setPortalOpen(false)}
                       className="flex items-center gap-3 px-4 py-3 transition-colors group border-t"
                       style={{ color: "white", borderColor: "oklch(0.75 0.13 85 / 0.12)" }}
@@ -598,6 +619,7 @@ export function Nav({ theme, onThemeToggle }: { theme?: ThemeMode; onThemeToggle
             <div className="mt-2 pt-2 border-t border-foreground/10 grid grid-cols-2 gap-2">
               <Link
                 to="/auth"
+                search={{ role: "admin" }}
                 onClick={() => setOpen(false)}
                 className="inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition"
                 style={{
@@ -611,6 +633,7 @@ export function Nav({ theme, onThemeToggle }: { theme?: ThemeMode; onThemeToggle
               </Link>
               <Link
                 to="/auth"
+                search={{ role: "trainee" }}
                 onClick={() => setOpen(false)}
                 className="inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition"
                 style={{

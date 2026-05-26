@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/portal-auth";
 // notifications surfaced via PortalShell
@@ -20,11 +20,21 @@ import {
 
 import { findCountry } from "@/lib/countries";
 
+type AdminSearch = {
+  tab?: "enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods";
+  drawer?: string;
+  editCourse?: string;
+};
+
 export const Route = createFileRoute("/admin")({
+  validateSearch: (search: Record<string, unknown>): AdminSearch => ({
+    tab: search.tab as AdminSearch["tab"],
+    drawer: search.drawer as string | undefined,
+    editCourse: search.editCourse as string | undefined,
+  }),
   loader: async () => {
     const { data } = await supabase.auth.getSession();
     if (!data.session?.user) {
-      // Redirect unauthenticated users to auth page
       throw redirect({ to: "/auth" });
     }
     return {};
@@ -61,12 +71,26 @@ function AdminPage() {
 
   const { user, role, loading } = useAuth();
   const nav = useNavigate();
-  const [tab, setTab] = useState<"enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods">("enrollments");
+  const search = Route.useSearch();
+  const [tabState, setTabState] = useState<"enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods">(search.tab || "enrollments");
+  const tab = tabState;
+  const setTab = setTabState;
+
   const [pendingActivations, setPendingActivations] = useState<number>(0);
   const [courses, setCourses] = useState<Course[]>([]);
   const [enrollments, setEnrollments] = useState<EnrollmentRow[]>([]);
-  const [drawer, setDrawer] = useState<EnrollmentRow | null>(null);
-  const [editingCourse, setEditingCourse] = useState<Course | null>(null);
+
+  const [drawerId, setDrawerId] = useState<string | null>(search.drawer || null);
+  const drawer = useMemo(() => enrollments.find(e => e.id === drawerId) || null, [drawerId, enrollments]);
+  const setDrawer = (v: EnrollmentRow | null) => setDrawerId(v ? v.id : null);
+
+  const [editingCourseId, setEditingCourseId] = useState<string | null>(search.editCourse || null);
+  const editingCourse = useMemo(() => courses.find(c => c.id === editingCourseId) || null, [editingCourseId, courses]);
+  const setEditingCourse = (v: Course | null) => setEditingCourseId(v ? v.id : null);
+
+  useEffect(() => {
+    nav({ to: "/admin", search: { tab: tabState, drawer: drawerId || undefined, editCourse: editingCourseId || undefined }, replace: true });
+  }, [tabState, drawerId, editingCourseId, nav]);
 
   useEffect(() => {
     if (!loading && !user) nav({ to: "/auth" });
@@ -1023,25 +1047,7 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
         </div>
       </div>
 
-      {/* White-Label branding section */}
-      <div className="pt-4 mt-4 border-t border-border space-y-3">
-        <div className="text-sm font-bold text-foreground">{t("علامة مخصصة (White-Label)", "Custom Branding (White-Label)")}</div>
-        <div className="grid grid-cols-2 gap-3">
-          <Input label={t("المعرّف في الرابط (slug)", "URL slug")} value={f.slug} onChange={(v) => setF({ ...f, slug: v })} />
-          <Input label={t("لون العلامة (مثال: #0b1736)", "Brand color (e.g. #0b1736)")} value={f.brand_primary_color} onChange={(v) => setF({ ...f, brand_primary_color: v })} />
-        </div>
-        <Input label={t("اسم العلامة (يظهر بدل اسم الأكاديمية)", "Brand name (replaces academy name)")} value={f.brand_name} onChange={(v) => setF({ ...f, brand_name: v })} />
-        <Input label={t("رابط شعار الكورس (URL)", "Course logo URL")} value={f.logo_url} onChange={(v) => setF({ ...f, logo_url: v })} />
-        <div className="grid grid-cols-2 gap-3">
-          <Input label={t("شعار قصير (عربي)", "Tagline (AR)")} value={f.brand_tagline_ar} onChange={(v) => setF({ ...f, brand_tagline_ar: v })} />
-          <Input label={t("شعار قصير (إنجليزي)", "Tagline (EN)")} value={f.brand_tagline_en} onChange={(v) => setF({ ...f, brand_tagline_en: v })} />
-        </div>
-        {whiteLabelUrl && (
-          <a href={whiteLabelUrl} target="_blank" rel="noreferrer" className="block text-xs text-primary underline break-all">
-            {whiteLabelUrl}
-          </a>
-        )}
-      </div>
+
 
       <button onClick={save} className="w-full h-11 rounded-xl font-semibold" style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
         {t("حفظ التعديلات", "Save changes")}
