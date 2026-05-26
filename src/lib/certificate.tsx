@@ -50,8 +50,8 @@ const COPY = {
     defaultRole: "Founder & Lead Instructor",
     seal: "Academy Seal",
     dir: "ltr" as const,
-    fontBody: "'Manrope',ui-sans-serif,system-ui,sans-serif",
-    fontDisplay: "'Sora',ui-sans-serif,system-ui,sans-serif",
+    fontBody: "'Manrope','IBM Plex Sans Arabic','Tajawal',ui-sans-serif,system-ui,sans-serif",
+    fontDisplay: "'Sora','IBM Plex Sans Arabic','Tajawal',ui-sans-serif,system-ui,sans-serif",
   },
 };
 
