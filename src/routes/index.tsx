@@ -1837,7 +1837,7 @@ export function Footer() {
             <MessageCircle className="size-4" />
           </a>
         </div>
-        <div className="text-xs text-muted-foreground">Eslam Selmi. {t("footer_rights")}</div>
+        <div className="text-xs text-muted-foreground">© {new Date().getFullYear()} · {t("footer_rights")}</div>
       </div>
     </footer>
   );

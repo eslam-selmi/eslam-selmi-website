@@ -6,6 +6,7 @@ import { PortalShell } from "@/components/PortalShell";
 import { useI18n } from "@/lib/i18n";
 import { useTranslatedTexts } from "@/lib/useTranslatedTexts";
 import { toast } from "sonner";
+import { findCountry } from "@/lib/countries";
 import {
   Clock, CheckCircle2, XCircle, Download, Upload, BookOpen, Wallet, Loader2,
   ExternalLink, Sparkles, ArrowRight, Calendar, Layers, StickyNote, Link as LinkIcon,
@@ -42,7 +43,7 @@ type Enrollment = {
   payment_reminder_dismissed_at: string | null;
   courses: Course | null;
 };
-type Profile = { full_name: string | null; email: string | null; phone: string | null; account_blocked?: boolean };
+type Profile = { full_name: string | null; email: string | null; phone: string | null; country: string | null; country_code: string | null; account_blocked?: boolean };
 type ModuleRow = { id: string; course_id: string; completed_by_admin: boolean };
 
 const DRIVE_URL = "https://drive.google.com/drive/folders/1_GB18CPhfYZQt06orG1pIgbGffUk8dXA?usp=sharing";
@@ -73,7 +74,7 @@ function PortalPage() {
     if (!user) return;
     setLoadingData(true);
     const [p, c, e] = await Promise.all([
-      supabase.from("profiles").select("full_name,email,phone,account_blocked").eq("id", user.id).maybeSingle(),
+      supabase.from("profiles").select("full_name,email,phone,country,country_code,account_blocked").eq("id", user.id).maybeSingle(),
       supabase.from("courses").select("*").eq("active", true).order("created_at", { ascending: false }),
       supabase.from("enrollments").select("*, courses(*)").eq("user_id", user.id).order("created_at", { ascending: false }),
     ]);
@@ -218,7 +219,21 @@ function PortalPage() {
           <div className="flex items-start justify-between gap-6 flex-wrap">
             <div>
               <p className="text-xs tracking-widest text-[var(--gold)] mb-2">{lang === "ar" ? "مرحباً بك" : "Welcome"}</p>
-              <h1 className="text-3xl sm:text-4xl font-bold">{profile?.full_name || (lang === "ar" ? "متدرب جديد" : "New trainee")}</h1>
+              <h1 className="text-3xl sm:text-4xl font-bold flex items-center gap-3 flex-wrap">
+                {(() => {
+                  const country = findCountry(profile?.country);
+                  return country ? (
+                    <span
+                      className="inline-flex items-center gap-2 text-sm font-normal px-2.5 py-1 rounded-full bg-white/10 border border-white/15"
+                      title={lang === "ar" ? country.name_ar : country.name_en}
+                    >
+                      <span className="text-xl leading-none">{country.flag}</span>
+                      <span className="text-white/85">{lang === "ar" ? country.name_ar : country.name_en}</span>
+                    </span>
+                  ) : null;
+                })()}
+                <span>{profile?.full_name || (lang === "ar" ? "متدرب جديد" : "New trainee")}</span>
+              </h1>
               <p className="text-white/60 mt-2 max-w-xl">{lang === "ar"
                 ? "تابع كورساتك ومحاضراتك وشهاداتك ومدفوعاتك من مكان واحد. ستصلك إشعارات لحظية بأي تحديث."
                 : "Track your courses, sessions, certificates and payments in one place. You'll get live notifications for every update."}</p>
