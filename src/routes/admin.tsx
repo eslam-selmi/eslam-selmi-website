@@ -53,7 +53,7 @@ function AdminPage() {
 
   const { user, role, loading } = useAuth();
   const nav = useNavigate();
-  const [tab, setTab] = useState<"enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations">("enrollments");
+  const [tab, setTab] = useState<"enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods">("enrollments");
   const [pendingActivations, setPendingActivations] = useState<number>(0);
   const [courses, setCourses] = useState<Course[]>([]);
   const [enrollments, setEnrollments] = useState<EnrollmentRow[]>([]);
