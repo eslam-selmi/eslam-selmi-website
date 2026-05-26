@@ -403,6 +403,7 @@ export type Database = {
           course_id: string
           created_at: string
           discount_amount: number
+          grace_until: string | null
           id: string
           name_ar: string | null
           name_en: string | null
@@ -423,6 +424,7 @@ export type Database = {
           course_id: string
           created_at?: string
           discount_amount?: number
+          grace_until?: string | null
           id?: string
           name_ar?: string | null
           name_en?: string | null
@@ -443,6 +445,7 @@ export type Database = {
           course_id?: string
           created_at?: string
           discount_amount?: number
+          grace_until?: string | null
           id?: string
           name_ar?: string | null
           name_en?: string | null
@@ -647,6 +650,42 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_methods: {
+        Row: {
+          active: boolean
+          created_at: string
+          details_ar: string | null
+          details_en: string | null
+          id: string
+          name_ar: string
+          name_en: string
+          order_index: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          details_ar?: string | null
+          details_en?: string | null
+          id?: string
+          name_ar: string
+          name_en: string
+          order_index?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          details_ar?: string | null
+          details_en?: string | null
+          id?: string
+          name_ar?: string
+          name_en?: string
+          order_index?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       payments: {
         Row: {
           amount: number
@@ -656,6 +695,8 @@ export type Database = {
           id: string
           note: string | null
           paid_at: string
+          payment_method_id: string | null
+          payment_method_name: string | null
           proof_url: string | null
           status: Database["public"]["Enums"]["payment_status"]
           submitted_by: string | null
@@ -668,6 +709,8 @@ export type Database = {
           id?: string
           note?: string | null
           paid_at?: string
+          payment_method_id?: string | null
+          payment_method_name?: string | null
           proof_url?: string | null
           status?: Database["public"]["Enums"]["payment_status"]
           submitted_by?: string | null
@@ -680,6 +723,8 @@ export type Database = {
           id?: string
           note?: string | null
           paid_at?: string
+          payment_method_id?: string | null
+          payment_method_name?: string | null
           proof_url?: string | null
           status?: Database["public"]["Enums"]["payment_status"]
           submitted_by?: string | null
@@ -690,6 +735,13 @@ export type Database = {
             columns: ["enrollment_id"]
             isOneToOne: false
             referencedRelation: "enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_payment_method_id_fkey"
+            columns: ["payment_method_id"]
+            isOneToOne: false
+            referencedRelation: "payment_methods"
             referencedColumns: ["id"]
           },
         ]

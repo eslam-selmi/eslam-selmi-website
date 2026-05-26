@@ -53,7 +53,7 @@ function AdminPage() {
 
   const { user, role, loading } = useAuth();
   const nav = useNavigate();
-  const [tab, setTab] = useState<"enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations">("enrollments");
+  const [tab, setTab] = useState<"enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods">("enrollments");
   const [pendingActivations, setPendingActivations] = useState<number>(0);
   const [courses, setCourses] = useState<Course[]>([]);
   const [enrollments, setEnrollments] = useState<EnrollmentRow[]>([]);
@@ -156,6 +156,8 @@ function AdminPage() {
             { id: "trainers", label: t("المدرّبون", "Trainers") },
             { id: "coupons", label: t("كوبونات الخصم", "Discount coupons") },
             { id: "additions", label: t("أحدث الإضافات", "Latest additions") },
+            { id: "finance", label: t("المعاملات المالية", "Financial logs") },
+            { id: "methods", label: t("طرق الدفع", "Payment methods") },
 
             { id: "banned", label: `${t("الموقوفون", "Banned")} (${enrollments.filter(e => e.profiles?.account_blocked).length})` },
           ].map((tb) => (
@@ -181,6 +183,10 @@ function AdminPage() {
           <CouponsPanel courses={courses} />
         ) : tab === "additions" ? (
           <LatestAdditionsPanel />
+        ) : tab === "finance" ? (
+          <FinancePanel courses={courses} enrollments={enrollments} />
+        ) : tab === "methods" ? (
+          <PaymentMethodsPanel />
         ) : (
           <BannedPanel enrollments={enrollments} refresh={refresh} />
         )}
@@ -1004,6 +1010,7 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
 
   const [payments, setPayments] = useState<any[]>([]);
   const [installments, setInstallments] = useState<any[]>([]);
+  const [methods, setMethods] = useState<any[]>([]);
   const [uploading, setUploading] = useState(false);
   const [issued, setIssued] = useState(enrollment.certificate_issued);
 
@@ -1011,18 +1018,21 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
   const [payAmount, setPayAmount] = useState("");
   const [payCurr, setPayCurr] = useState(courseCur);
   const [payNote, setPayNote] = useState("");
+  const [payMethodId, setPayMethodId] = useState("");
 
   const [insAmount, setInsAmount] = useState("");
   const [insCurr, setInsCurr] = useState(courseCur);
   const [insDate, setInsDate] = useState("");
 
   async function refreshLists() {
-    const [p, i] = await Promise.all([
+    const [p, i, m] = await Promise.all([
       supabase.from("payments").select("*").eq("enrollment_id", enrollment.id).order("paid_at", { ascending: false }),
       supabase.from("installments").select("*").eq("enrollment_id", enrollment.id).order("due_date"),
+      supabase.from("payment_methods" as any).select("*").eq("active", true).order("order_index"),
     ]);
     setPayments(p.data ?? []);
     setInstallments(i.data ?? []);
+    setMethods((m.data as any[]) ?? []);
   }
   useEffect(() => { refreshLists(); }, [enrollment.id]);
 
@@ -1106,11 +1116,14 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
   async function addPayment(e: React.FormEvent) {
     e.preventDefault();
     if (!payAmount) return;
+    const m = methods.find((x) => x.id === payMethodId);
     const { error } = await supabase.from("payments").insert({
       enrollment_id: enrollment.id, amount: Number(payAmount), currency: payCurr, note: payNote || null,
-    });
+      payment_method_id: payMethodId || null,
+      payment_method_name: m ? (m.name_ar || m.name_en) : null,
+    } as any);
     if (error) return toast.error(error.message);
-    setPayAmount(""); setPayNote("");
+    setPayAmount(""); setPayNote(""); setPayMethodId("");
     refreshLists();
   }
   async function autoSplitInstallments() {
@@ -1152,7 +1165,23 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
     refresh();
   }
 
-  // Account-level block (locks the trainee out of the whole platform)
+  // Grace period / manual bypass — temporarily unlocks access regardless of payment status
+  const [graceUntil, setGraceUntil] = useState<string | null>((enrollment as any).grace_until ?? null);
+  const graceActive = !!graceUntil && new Date(graceUntil) > new Date();
+  async function toggleGrace() {
+    const next = graceActive ? null : new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toISOString();
+    const patch: any = { grace_until: next };
+    if (next) patch.blocked = false; // ensure access is open during grace
+    const { error } = await supabase.from("enrollments").update(patch).eq("id", enrollment.id);
+    if (error) return toast.error(error.message);
+    setGraceUntil(next);
+    if (next) setBlocked(false);
+    toast.success(next
+      ? t("تم تفعيل فترة سماح 30 يوم — يمكن للمتدرب الوصول للمحتوى", "Grace period enabled (30 days) — trainee can access content")
+      : t("تم إلغاء فترة السماح", "Grace period revoked"));
+    refresh();
+  }
+
   const [accountBlocked, setAccountBlocked] = useState(false);
   useEffect(() => {
     supabase.from("profiles").select("account_blocked").eq("id", enrollment.user_id).maybeSingle()
@@ -1239,10 +1268,15 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
             <button onClick={toggleBlocked} className={`h-10 rounded-lg text-xs font-semibold ${blocked ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" : "bg-amber-500/20 text-amber-300 border border-amber-500/30"}`}>
               {blocked ? t("↩ إلغاء قفل الكورس", "↩ Unlock course") : t("⏸ قفل الوصول لهذا الكورس", "⏸ Lock access to this course")}
             </button>
+            <button onClick={toggleGrace} className={`h-10 rounded-lg text-xs font-semibold ${graceActive ? "bg-emerald-500/25 text-emerald-200 border border-emerald-500/40" : "bg-sky-500/20 text-sky-300 border border-sky-500/30"}`}>
+              {graceActive
+                ? t(`✓ فترة سماح فعّالة حتى ${new Date(graceUntil!).toLocaleDateString("ar-EG")}`, `✓ Grace until ${new Date(graceUntil!).toLocaleDateString("en-GB")}`)
+                : t("🔓 تفعيل فترة سماح (تخطّي يدوي للقفل)", "🔓 Enable grace period (manual bypass)")}
+            </button>
             <button onClick={toggleAccountBlocked} className={`h-10 rounded-lg text-xs font-semibold ${accountBlocked ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" : "bg-rose-500/20 text-rose-300 border border-rose-500/30"}`}>
               {accountBlocked ? t("✓ إعادة تفعيل الحساب", "✓ Reactivate account") : t("⛔ إيقاف الحساب من المنصة", "⛔ Suspend account from platform")}
             </button>
-            <button onClick={removeEnrollment} className="sm:col-span-2 h-10 rounded-lg text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30">
+            <button onClick={removeEnrollment} className="h-10 rounded-lg text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30">
               {t("🗑 حذف المتدرب من هذا الكورس نهائياً", "🗑 Permanently remove trainee from this course")}
             </button>
           </section>
@@ -1298,6 +1332,10 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
               <Select label={t("العملة", "Currency")} value={payCurr} onChange={setPayCurr}
                 options={[{ v: "EGP", l: t("جنيه", "EGP") }, { v: "SAR", l: t("ريال", "SAR") }, { v: "USD", l: t("دولار", "USD") }, { v: "AED", l: t("درهم", "AED") }]} />
               <button type="submit" className="h-11 px-4 rounded-xl font-semibold" style={{ background: "var(--gold)", color: "#0b1736" }}>{t("إضافة", "Add")}</button>
+              <div className="col-span-3">
+                <Select label={t("طريقة الدفع", "Payment method")} value={payMethodId} onChange={setPayMethodId}
+                  options={[{ v: "", l: t("— اختر طريقة دفع —", "— Select method —") }, ...methods.map((m) => ({ v: m.id, l: lang === "ar" ? m.name_ar : m.name_en }))]} />
+              </div>
               <div className="col-span-3"><Input label={t("ملاحظة (اختياري)", "Note (optional)")} value={payNote} onChange={setPayNote} /></div>
             </form>
             <ul className="space-y-1.5">
@@ -1306,6 +1344,7 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
                   <li key={p.id} className={`text-sm rounded-lg px-3 py-2 border gap-3 ${p.status === "pending" ? "bg-amber-300/10 border-amber-300/30" : p.status === "rejected" ? "bg-rose-500/10 border-rose-500/30 opacity-70" : "bg-white/5 border-white/10"}`}>
                     <div className="flex items-center justify-between gap-3">
                       <span className="font-semibold">{Number(p.amount).toLocaleString()} {p.currency}</span>
+                      {p.payment_method_name && <span className="text-[10px] px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-200 border border-sky-500/30">{p.payment_method_name}</span>}
                       <span className="text-xs text-white/50 flex-1 truncate">{p.note}</span>
                       <span className="text-xs text-white/40">{new Date(p.paid_at).toLocaleDateString("ar-EG")}</span>
                       <button onClick={() => delPay(p.id)} className="text-rose-300/70 hover:text-rose-300"><Trash2 className="w-3.5 h-3.5" /></button>
@@ -2638,6 +2677,264 @@ function ActivationsPanel() {
             })}
           </ul>
         )}
+      </div>
+    </div>
+  );
+}
+
+// ============= PAYMENT METHODS PANEL =============
+function PaymentMethodsPanel() {
+  const { lang } = useI18n();
+  const t = (a: string, b: string) => (lang === "ar" ? a : b);
+  const [rows, setRows] = useState<any[]>([]);
+  const [f, setF] = useState({ name_ar: "", name_en: "", details_ar: "", details_en: "", order_index: "0" });
+
+  async function load() {
+    const { data } = await supabase.from("payment_methods" as any).select("*").order("order_index");
+    setRows((data as any[]) ?? []);
+  }
+  useEffect(() => { load(); }, []);
+
+  async function add() {
+    if (!f.name_ar.trim() || !f.name_en.trim()) return toast.error(t("أدخل الاسم بالعربي والإنجليزي", "Enter Arabic and English name"));
+    const { error } = await supabase.from("payment_methods" as any).insert({
+      name_ar: f.name_ar, name_en: f.name_en,
+      details_ar: f.details_ar || null, details_en: f.details_en || null,
+      order_index: Number(f.order_index) || 0,
+    } as any);
+    if (error) return toast.error(error.message);
+    setF({ name_ar: "", name_en: "", details_ar: "", details_en: "", order_index: "0" });
+    toast.success(t("تمت الإضافة", "Added"));
+    load();
+  }
+  async function patch(id: string, p: any) {
+    const { error } = await supabase.from("payment_methods" as any).update(p).eq("id", id);
+    if (error) return toast.error(error.message);
+    load();
+  }
+  async function del(id: string) {
+    if (!confirm(t("حذف طريقة الدفع؟", "Delete payment method?"))) return;
+    await supabase.from("payment_methods" as any).delete().eq("id", id);
+    load();
+  }
+
+  return (
+    <div className="space-y-5">
+      <div className="rounded-2xl border border-white/10 bg-white/5 p-5 space-y-3">
+        <h3 className="font-bold flex items-center gap-2"><Wallet className="w-4 h-4 text-[var(--gold)]" /> {t("إضافة طريقة دفع جديدة", "Add new payment method")}</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <Input label={t("الاسم (عربي)", "Name (Arabic)")} value={f.name_ar} onChange={(v) => setF({ ...f, name_ar: v })} />
+          <Input label={t("الاسم (إنجليزي)", "Name (English)")} value={f.name_en} onChange={(v) => setF({ ...f, name_en: v })} />
+          <TextArea label={t("تفاصيل / تعليمات (عربي)", "Details / instructions (Arabic)")} value={f.details_ar} onChange={(v) => setF({ ...f, details_ar: v })} />
+          <TextArea label={t("تفاصيل / تعليمات (إنجليزي)", "Details / instructions (English)")} value={f.details_en} onChange={(v) => setF({ ...f, details_en: v })} />
+          <Input label={t("ترتيب العرض", "Display order")} type="number" value={f.order_index} onChange={(v) => setF({ ...f, order_index: v })} />
+        </div>
+        <button onClick={add} className="px-5 h-10 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold text-sm"><Plus className="w-4 h-4 inline" /> {t("إضافة", "Add")}</button>
+      </div>
+
+      <div className="space-y-3">
+        {rows.length === 0 && <p className="text-sm text-white/40">{t("لا توجد طرق دفع بعد", "No payment methods yet")}</p>}
+        {rows.map((r) => (
+          <div key={r.id} className={`rounded-2xl border p-4 ${r.active ? "border-white/10 bg-white/5" : "border-rose-500/30 bg-rose-500/5 opacity-70"}`}>
+            <div className="flex items-start justify-between gap-3 mb-3">
+              <div>
+                <p className="font-bold">{r.name_ar} <span className="text-white/40 font-normal text-xs" dir="ltr">— {r.name_en}</span></p>
+                <p className="text-[11px] text-white/40">#{r.order_index}</p>
+              </div>
+              <div className="flex gap-1.5">
+                <button onClick={() => patch(r.id, { active: !r.active })} className="text-xs px-2.5 h-8 rounded bg-white/10 border border-white/15">
+                  {r.active ? t("تعطيل", "Disable") : t("تفعيل", "Enable")}
+                </button>
+                <button onClick={() => del(r.id)} className="text-xs px-2.5 h-8 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30"><Trash2 className="w-3.5 h-3.5" /></button>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <p className="text-[10px] text-white/40 mb-1">{t("التفاصيل (عربي)", "Details (Arabic)")}</p>
+                <textarea defaultValue={r.details_ar || ""} onBlur={(e) => e.target.value !== (r.details_ar || "") && patch(r.id, { details_ar: e.target.value })}
+                  rows={4} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/15 text-xs" />
+              </div>
+              <div>
+                <p className="text-[10px] text-white/40 mb-1">{t("التفاصيل (إنجليزي)", "Details (English)")}</p>
+                <textarea defaultValue={r.details_en || ""} onBlur={(e) => e.target.value !== (r.details_en || "") && patch(r.id, { details_en: e.target.value })}
+                  rows={4} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/15 text-xs" dir="ltr" />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ============= FINANCE / TRANSACTION LOGS PANEL =============
+function FinancePanel({ courses, enrollments }: { courses: Course[]; enrollments: EnrollmentRow[] }) {
+  const { lang } = useI18n();
+  const t = (a: string, b: string) => (lang === "ar" ? a : b);
+  const [payments, setPayments] = useState<any[]>([]);
+  const [methods, setMethods] = useState<any[]>([]);
+  const [methodFilter, setMethodFilter] = useState("");
+  const [courseFilter, setCourseFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [showExport, setShowExport] = useState(false);
+
+  async function load() {
+    const [p, m] = await Promise.all([
+      supabase.from("payments").select("*").order("paid_at", { ascending: false }).limit(1000),
+      supabase.from("payment_methods" as any).select("*").order("order_index"),
+    ]);
+    setPayments((p.data as any[]) ?? []);
+    setMethods((m.data as any[]) ?? []);
+  }
+  useEffect(() => { load(); }, []);
+
+  const enrMap = Object.fromEntries(enrollments.map((e) => [e.id, e]));
+  const courseMap = Object.fromEntries(courses.map((c) => [c.id, c]));
+
+  const filtered = payments.filter((p) => {
+    if (methodFilter && p.payment_method_id !== methodFilter && p.payment_method_name !== methodFilter) return false;
+    if (statusFilter && p.status !== statusFilter) return false;
+    if (courseFilter) {
+      const en = enrMap[p.enrollment_id];
+      if (!en || en.course_id !== courseFilter) return false;
+    }
+    return true;
+  });
+
+  const totalApproved = filtered.filter((p) => p.status === "approved").reduce((s, p) => s + Number(p.amount || 0), 0);
+
+  return (
+    <div className="space-y-5">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <StatCard icon={Wallet} label={t("إجمالي المعتمد", "Approved total")} value={Math.round(totalApproved)} color="emerald" />
+        <StatCard icon={FileText} label={t("عدد المعاملات", "Transactions")} value={filtered.length} color="gold" />
+        <StatCard icon={Clock} label={t("بانتظار المراجعة", "Pending review")} value={filtered.filter((p) => p.status === "pending").length} color="amber" />
+      </div>
+
+      <div className="rounded-2xl border border-white/10 bg-white/5 p-4 grid grid-cols-1 sm:grid-cols-4 gap-3">
+        <Select label={t("طريقة الدفع", "Payment method")} value={methodFilter} onChange={setMethodFilter}
+          options={[{ v: "", l: t("كل الطرق", "All methods") }, ...methods.map((m) => ({ v: m.id, l: lang === "ar" ? m.name_ar : m.name_en }))]} />
+        <Select label={t("الكورس", "Course")} value={courseFilter} onChange={setCourseFilter}
+          options={[{ v: "", l: t("كل الكورسات", "All courses") }, ...courses.map((c) => ({ v: c.id, l: c.title }))]} />
+        <Select label={t("الحالة", "Status")} value={statusFilter} onChange={setStatusFilter}
+          options={[{ v: "", l: t("كل الحالات", "All") }, { v: "approved", l: t("معتمد", "Approved") }, { v: "pending", l: t("قيد المراجعة", "Pending") }, { v: "rejected", l: t("مرفوض", "Rejected") }]} />
+        <button onClick={() => setShowExport(true)} className="h-11 self-end px-4 rounded-xl bg-[var(--gold)] text-[#0b1736] font-semibold text-sm">
+          {t("📤 تصدير وتحليل", "📤 Export & analyze")}
+        </button>
+      </div>
+
+      <div className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
+        <table className="w-full text-sm">
+          <thead className="bg-white/5 text-xs text-white/60">
+            <tr><th className="text-start p-3">{t("التاريخ", "Date")}</th><th className="text-start p-3">{t("المتدرب", "Trainee")}</th><th className="text-start p-3">{t("الكورس", "Course")}</th><th className="text-start p-3">{t("المبلغ", "Amount")}</th><th className="text-start p-3">{t("الطريقة", "Method")}</th><th className="text-start p-3">{t("الحالة", "Status")}</th></tr>
+          </thead>
+          <tbody>
+            {filtered.slice(0, 200).map((p) => {
+              const en = enrMap[p.enrollment_id];
+              const co = en ? courseMap[en.course_id] : null;
+              return (
+                <tr key={p.id} className="border-t border-white/5">
+                  <td className="p-3 text-xs text-white/60">{new Date(p.paid_at).toLocaleDateString("ar-EG")}</td>
+                  <td className="p-3 text-xs">{en?.profiles?.full_name || en?.profiles?.email || "—"}</td>
+                  <td className="p-3 text-xs text-white/70">{co?.title || "—"}</td>
+                  <td className="p-3 font-semibold">{Number(p.amount).toLocaleString()} {p.currency}</td>
+                  <td className="p-3 text-xs">{p.payment_method_name || "—"}</td>
+                  <td className="p-3"><span className={`text-[10px] px-2 py-0.5 rounded ${p.status === "approved" ? "bg-emerald-500/20 text-emerald-300" : p.status === "pending" ? "bg-amber-300/20 text-amber-200" : "bg-rose-500/20 text-rose-300"}`}>{p.status}</span></td>
+                </tr>
+              );
+            })}
+            {filtered.length === 0 && <tr><td colSpan={6} className="p-6 text-center text-white/40 text-sm">{t("لا توجد معاملات", "No transactions")}</td></tr>}
+          </tbody>
+        </table>
+      </div>
+
+      {showExport && <ExportDebtsModal courses={courses} enrollments={enrollments} payments={payments} onClose={() => setShowExport(false)} />}
+    </div>
+  );
+}
+
+function ExportDebtsModal({ courses, enrollments, payments, onClose }: { courses: Course[]; enrollments: EnrollmentRow[]; payments: any[]; onClose: () => void }) {
+  const { lang } = useI18n();
+  const t = (a: string, b: string) => (lang === "ar" ? a : b);
+  const [courseFilter, setCourseFilter] = useState("");
+  const [onlyDebts, setOnlyDebts] = useState(true);
+  const [minRemaining, setMinRemaining] = useState("0");
+
+  const courseMap = Object.fromEntries(courses.map((c) => [c.id, c]));
+  const paidByEnr: Record<string, number> = {};
+  payments.forEach((p) => {
+    if (p.status === "approved") paidByEnr[p.enrollment_id] = (paidByEnr[p.enrollment_id] || 0) + Number(p.amount || 0);
+  });
+
+  const rows = enrollments
+    .filter((e) => e.status === "approved")
+    .filter((e) => !courseFilter || e.course_id === courseFilter)
+    .map((e) => {
+      const co = courseMap[e.course_id];
+      const price = Math.max(0, Number(co?.price || 0) - Number((e as any).discount_amount || 0));
+      const paid = paidByEnr[e.id] || 0;
+      const remaining = Math.max(0, price - paid);
+      return { e, co, price, paid, remaining };
+    })
+    .filter((r) => (!onlyDebts || r.remaining > Number(minRemaining || 0)));
+
+  function download() {
+    const headers = ["Name", "Email", "Phone", "Country", "Course", "Price", "Paid", "Remaining", "Currency"];
+    const csv = [headers.join(",")].concat(
+      rows.map((r) => [
+        r.e.profiles?.full_name || "",
+        r.e.profiles?.email || "",
+        r.e.profiles?.phone || "",
+        r.e.profiles?.country || "",
+        r.co?.title || "",
+        r.price, r.paid, r.remaining,
+        r.co?.currency || "",
+      ].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(","))
+    ).join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `trainees-debts-${Date.now()}.csv`; a.click();
+    URL.revokeObjectURL(url);
+    toast.success(t("تم تصدير الملف", "File exported"));
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-[#0b1736] border border-white/15 rounded-2xl w-full max-w-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()} dir={lang === "ar" ? "rtl" : "ltr"}>
+        <div className="flex items-start justify-between">
+          <h3 className="font-bold">{t("تصدير تقارير المتدربين", "Export trainee reports")}</h3>
+          <button onClick={onClose} className="p-1 hover:bg-white/10 rounded"><X className="w-4 h-4" /></button>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <Select label={t("الكورس", "Course")} value={courseFilter} onChange={setCourseFilter}
+            options={[{ v: "", l: t("كل الكورسات", "All courses") }, ...courses.map((c) => ({ v: c.id, l: c.title }))]} />
+          <Input label={t("الحد الأدنى للمتأخرات", "Minimum remaining debt")} type="number" value={minRemaining} onChange={setMinRemaining} />
+        </div>
+        <label className="flex items-center gap-2 text-sm cursor-pointer">
+          <input type="checkbox" checked={onlyDebts} onChange={(e) => setOnlyDebts(e.target.checked)} className="accent-[var(--gold)]" />
+          {t("عرض المتدربين المتأخرين عن السداد فقط", "Only show trainees with outstanding debts")}
+        </label>
+
+        <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-xs">
+          <p className="text-white/60 mb-2">{t("معاينة", "Preview")}: <span className="text-[var(--gold)] font-bold">{rows.length}</span> {t("سجل", "rows")}</p>
+          <div className="max-h-48 overflow-y-auto space-y-1">
+            {rows.slice(0, 20).map((r) => (
+              <div key={r.e.id} className="flex justify-between gap-2 py-1 border-b border-white/5">
+                <span className="truncate">{r.e.profiles?.full_name || r.e.profiles?.email}</span>
+                <span className="text-rose-300 font-semibold whitespace-nowrap">{r.remaining.toLocaleString()} {r.co?.currency}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex gap-2">
+          <button onClick={onClose} className="flex-1 h-11 rounded-lg bg-white/5 border border-white/15 text-sm">{t("إلغاء", "Cancel")}</button>
+          <button onClick={download} disabled={rows.length === 0} className="flex-1 h-11 rounded-lg bg-[var(--gold)] text-[#0b1736] text-sm font-semibold disabled:opacity-50">
+            {t("📥 تنزيل CSV", "📥 Download CSV")}
+          </button>
+        </div>
       </div>
     </div>
   );
