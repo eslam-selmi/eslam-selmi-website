@@ -1025,12 +1025,14 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
   const [insDate, setInsDate] = useState("");
 
   async function refreshLists() {
-    const [p, i] = await Promise.all([
+    const [p, i, m] = await Promise.all([
       supabase.from("payments").select("*").eq("enrollment_id", enrollment.id).order("paid_at", { ascending: false }),
       supabase.from("installments").select("*").eq("enrollment_id", enrollment.id).order("due_date"),
+      supabase.from("payment_methods" as any).select("*").eq("active", true).order("order_index"),
     ]);
     setPayments(p.data ?? []);
     setInstallments(i.data ?? []);
+    setMethods((m.data as any[]) ?? []);
   }
   useEffect(() => { refreshLists(); }, [enrollment.id]);
 
