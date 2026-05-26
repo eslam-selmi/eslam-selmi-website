@@ -41,11 +41,14 @@ function AuthPage() {
     try {
       if (mode === "signup") {
         const country = findCountry(countryCode);
-        const dial = country?.dial ?? "";
-        // Auto-prefix dial code unless user already typed one
-        const normalizedPhone = phone.trim().startsWith("+")
-          ? phone.trim()
-          : `${dial}${phone.trim().replace(/^0+/, "")}`;
+        if (!country) throw new Error("اختر الدولة");
+        const v = validatePhoneForCountry(phone, country);
+        if (!v.ok) {
+          const msg = `رقم الهاتف لدولة ${country.name_ar} يجب أن يتكون من ${country.nsnLengths.join(" أو ")} أرقام بدون الصفر. مثال: ${v.example}`;
+          setPhoneError(msg);
+          throw new Error(msg);
+        }
+        setPhoneError(null);
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -53,14 +56,13 @@ function AuthPage() {
             emailRedirectTo: `${window.location.origin}/portal`,
             data: {
               full_name: fullName,
-              phone: normalizedPhone,
-              country: country?.code ?? null,
-              country_code: dial,
+              phone: v.e164,
+              country: country.code,
+              country_code: country.dial,
             },
           },
         });
         if (error) throw error;
-        // If session is null, email confirmation is required
         if (!data.session) {
           setConfirmEmail(email);
         } else {
