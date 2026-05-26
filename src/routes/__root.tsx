@@ -99,10 +99,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
+// Runs BEFORE React hydrates. Reads persisted lang from localStorage and
+// applies <html lang>/<html dir> + a synchronous background-color so the
+// page never flashes white during navigation or first paint.
+const NO_FLASH_SCRIPT = `(function(){try{var l=localStorage.getItem('lang');if(l!=='en'&&l!=='ar')l='ar';var e=document.documentElement;e.setAttribute('lang',l);e.setAttribute('dir',l==='ar'?'rtl':'ltr');e.style.backgroundColor='#0b1736';e.style.colorScheme='dark';}catch(_){}}())`;
+
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" dir="ltr">
+    <html lang="ar" dir="rtl" style={{ backgroundColor: "#0b1736" }}>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: NO_FLASH_SCRIPT }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
@@ -111,7 +117,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
         />
         <HeadContent />
       </head>
-      <body>
+      <body style={{ backgroundColor: "#0b1736" }}>
         {children}
         <Scripts />
       </body>
