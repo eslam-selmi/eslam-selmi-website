@@ -3,12 +3,14 @@ import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
 export type Role = "admin" | "trainee" | "trainer" | null;
+export type ActivationStatus = "pending" | "active" | "rejected" | null;
 
 export function useAuth() {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<Role>(null);
   const [forcePasswordReset, setForcePasswordReset] = useState(false);
+  const [activationStatus, setActivationStatus] = useState<ActivationStatus>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -20,6 +22,7 @@ export function useAuth() {
       } else {
         setRole(null);
         setForcePasswordReset(false);
+        setActivationStatus(null);
         setLoading(false);
       }
     });
@@ -38,14 +41,15 @@ export function useAuth() {
   async function fetchRoleAndFlags(uid: string) {
     const [roleRes, profRes] = await Promise.all([
       supabase.from("user_roles").select("role").eq("user_id", uid).maybeSingle(),
-      supabase.from("profiles").select("force_password_reset").eq("id", uid).maybeSingle(),
+      supabase.from("profiles").select("force_password_reset,activation_status").eq("id", uid).maybeSingle(),
     ]);
     setRole((roleRes.data?.role as Role) ?? "trainee");
-    setForcePasswordReset(Boolean(profRes.data?.force_password_reset));
+    setForcePasswordReset(Boolean((profRes.data as any)?.force_password_reset));
+    setActivationStatus(((profRes.data as any)?.activation_status as ActivationStatus) ?? "active");
     setLoading(false);
   }
 
-  return { session, user, role, loading, forcePasswordReset };
+  return { session, user, role, loading, forcePasswordReset, activationStatus };
 }
 
 export async function signOut() {
