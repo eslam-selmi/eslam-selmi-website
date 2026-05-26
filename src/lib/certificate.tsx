@@ -16,6 +16,10 @@ export type CertificatePayload = {
   /** Signer name shown under the signature */
   signerName?: string;
   signerTitle?: string;
+  /** Optional course-branded logo URL — overrides academy logo when present */
+  courseLogoUrl?: string | null;
+  /** Optional course-branded name shown under the logo */
+  courseBrandName?: string | null;
 };
 
 const COPY = {
