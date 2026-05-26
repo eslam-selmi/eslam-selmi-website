@@ -7,7 +7,7 @@ import brandLogo from "@/assets/brand-logo.png";
 
 type Props = {
   userId: string | undefined;
-  role: "admin" | "trainee" | null;
+  role: "admin" | "trainee" | "trainer" | null;
   userLabel?: string | null;
   children: React.ReactNode;
 };
@@ -19,9 +19,11 @@ export function PortalShell({ userId, role, userLabel, children }: Props) {
 
   const L = {
     panelAdmin: isAr ? "لوحة الإدارة" : "Admin Panel",
+    panelTrainer: isAr ? "لوحة المدرّب" : "Trainer Panel",
     panelTrainee: isAr ? "بوابة المتدرب" : "Trainee Portal",
     site: isAr ? "الموقع" : "Website",
     admin: isAr ? "الإدارة" : "Admin",
+    trainer: isAr ? "كورساتي" : "My Courses",
     courses: isAr ? "كورساتي" : "My Courses",
     logout: isAr ? "خروج" : "Logout",
     switchLang: isAr ? "English" : "العربية",
@@ -39,7 +41,7 @@ export function PortalShell({ userId, role, userLabel, children }: Props) {
               <div className="hidden sm:block leading-tight">
                 <p className="text-[11px] text-white/50 tracking-wider">ESLAM SELMI</p>
                 <p className="text-xs font-bold text-[var(--gold)]">
-                  {role === "admin" ? L.panelAdmin : L.panelTrainee}
+                  {role === "admin" ? L.panelAdmin : role === "trainer" ? L.panelTrainer : L.panelTrainee}
                 </p>
               </div>
             </Link>
@@ -51,6 +53,10 @@ export function PortalShell({ userId, role, userLabel, children }: Props) {
               {role === "admin" ? (
                 <Link to="/admin" className="flex items-center gap-1.5 text-xs text-white/70 hover:text-white px-3 h-9 rounded-lg hover:bg-white/5 transition">
                   <ShieldCheck className="w-3.5 h-3.5" /> {L.admin}
+                </Link>
+              ) : role === "trainer" ? (
+                <Link to="/trainer" className="flex items-center gap-1.5 text-xs text-white/70 hover:text-white px-3 h-9 rounded-lg hover:bg-white/5 transition">
+                  <GraduationCap className="w-3.5 h-3.5" /> {L.trainer}
                 </Link>
               ) : (
                 <Link to="/portal" className="flex items-center gap-1.5 text-xs text-white/70 hover:text-white px-3 h-9 rounded-lg hover:bg-white/5 transition">
