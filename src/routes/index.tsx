@@ -208,12 +208,12 @@ const SERVICES = [
 const PROGRAMS = [
   {
     track: {
-      en: "Corporate Training & Instructional Mastery",
-      ar: "الإتقان المؤسسي للتدريب والتصميم التعليمي",
+      en: "Educational Tracks · Corporate Training, ID & TOT",
+      ar: "مسارات التعليم · التدريب المؤسسي والتصميم التعليمي وTOT",
     },
     intro: {
-      en: "A unified two-phase journey: build foundational L&D and instructional design competencies, then graduate into advanced facilitation and TOT delivery mastery.",
-      ar: "مسار موحّد من مرحلتين: تبدأ بأسس التعلم والتطوير وتصميم التعليم، ثم تتدرّج لإتقان تيسير التدريب وتقديمه على مستوى المدربين المعتمدين.",
+      en: "A unified two-phase journey under the Educational Tracks taxonomy: build foundational L&D and instructional design competencies, then graduate into advanced facilitation and TOT delivery mastery.",
+      ar: "مسار موحّد من مرحلتين ضمن تصنيف \"مسارات التعليم\": تبدأ بأسس التعلم والتطوير وتصميم التعليم، ثم تتدرّج لإتقان تيسير التدريب وتقديمه (TOT) على مستوى المدربين المعتمدين.",
     },
     items: [
       {
