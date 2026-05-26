@@ -19,6 +19,7 @@ export type Database = {
           assignment_id: string
           content: string | null
           feedback: string | null
+          file_path: string | null
           graded_at: string | null
           id: string
           link: string | null
@@ -30,6 +31,7 @@ export type Database = {
           assignment_id: string
           content?: string | null
           feedback?: string | null
+          file_path?: string | null
           graded_at?: string | null
           id?: string
           link?: string | null
@@ -41,6 +43,7 @@ export type Database = {
           assignment_id?: string
           content?: string | null
           feedback?: string | null
+          file_path?: string | null
           graded_at?: string | null
           id?: string
           link?: string | null
@@ -66,8 +69,10 @@ export type Database = {
           id: string
           instructions: string | null
           is_graduation_project: boolean
+          is_visible: boolean
           max_score: number
           module_id: string
+          reference_url: string | null
           title: string
           updated_at: string
         }
@@ -78,8 +83,10 @@ export type Database = {
           id?: string
           instructions?: string | null
           is_graduation_project?: boolean
+          is_visible?: boolean
           max_score?: number
           module_id: string
+          reference_url?: string | null
           title: string
           updated_at?: string
         }
@@ -90,8 +97,10 @@ export type Database = {
           id?: string
           instructions?: string | null
           is_graduation_project?: boolean
+          is_visible?: boolean
           max_score?: number
           module_id?: string
+          reference_url?: string | null
           title?: string
           updated_at?: string
         }
