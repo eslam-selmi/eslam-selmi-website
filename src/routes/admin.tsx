@@ -1321,6 +1321,7 @@ function CourseAssignmentsAdmin({ courseId }: { courseId: string }) {
   const [instructions, setInstructions] = useState("");
   const [due, setDue] = useState("");
   const [maxScore, setMaxScore] = useState(100);
+  const [isGrad, setIsGrad] = useState(false);
 
   async function load() {
     const [mRes, aRes] = await Promise.all([
