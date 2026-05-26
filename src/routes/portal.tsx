@@ -553,13 +553,16 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
           {payments.length === 0 ? <p className="text-xs text-white/40">{isAr ? "لا توجد مدفوعات مسجلة بعد." : "No payments recorded yet."}</p> :
             <ul className="space-y-1.5">
               {payments.map((p) => (
-                <li key={p.id} className="flex justify-between text-xs bg-white/5 rounded px-2.5 py-2">
+                <li key={p.id} className={`flex justify-between items-center text-xs rounded px-2.5 py-2 ${p.status === "pending" ? "bg-amber-300/10 border border-amber-300/30" : p.status === "rejected" ? "bg-rose-500/10 border border-rose-500/30 opacity-70" : "bg-white/5"}`}>
                   <span className="font-semibold">{Number(p.amount).toLocaleString()} {p.currency}</span>
+                  {p.status === "pending" && <span className="text-amber-300">{isAr ? "بانتظار التأكيد" : "Awaiting confirmation"}</span>}
+                  {p.status === "rejected" && <span className="text-rose-300">{isAr ? "مرفوضة" : "Rejected"}</span>}
                   <span className="text-white/40">{new Date(p.paid_at).toLocaleDateString(isAr ? "ar-EG" : "en-GB")}</span>
                 </li>
               ))}
             </ul>
           }
+          <ProofUploader enrollmentId={enrollment.id} userId={enrollment.user_id ?? ""} currency={c.currency} onUploaded={load} isAr={isAr} />
           {installments.length > 0 && (
             <>
               <p className="text-xs text-white/50 mt-4 mb-2">{isAr ? "الأقساط" : "Installments"}</p>
