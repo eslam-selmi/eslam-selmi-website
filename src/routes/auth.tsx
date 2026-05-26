@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/portal-auth";
 import { toast } from "sonner";
 import { GraduationCap, ShieldCheck, Loader2, ArrowRight } from "lucide-react";
-import { COUNTRIES, findCountry } from "@/lib/countries";
+import { COUNTRIES, findCountry, sanitizeNationalNumber, validatePhoneForCountry } from "@/lib/countries";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -23,6 +23,7 @@ function AuthPage() {
   const [fullName, setFullName] = useState("");
   const [countryCode, setCountryCode] = useState("EG");
   const [phone, setPhone] = useState("");
+  const [phoneError, setPhoneError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [confirmEmail, setConfirmEmail] = useState<string | null>(null);
   const nav = useNavigate();
@@ -40,11 +41,14 @@ function AuthPage() {
     try {
       if (mode === "signup") {
         const country = findCountry(countryCode);
-        const dial = country?.dial ?? "";
-        // Auto-prefix dial code unless user already typed one
-        const normalizedPhone = phone.trim().startsWith("+")
-          ? phone.trim()
-          : `${dial}${phone.trim().replace(/^0+/, "")}`;
+        if (!country) throw new Error("اختر الدولة");
+        const v = validatePhoneForCountry(phone, country);
+        if (!v.ok) {
+          const msg = `رقم الهاتف لدولة ${country.name_ar} يجب أن يتكون من ${country.nsnLengths.join(" أو ")} أرقام بدون الصفر. مثال: ${v.example}`;
+          setPhoneError(msg);
+          throw new Error(msg);
+        }
+        setPhoneError(null);
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -52,14 +56,13 @@ function AuthPage() {
             emailRedirectTo: `${window.location.origin}/portal`,
             data: {
               full_name: fullName,
-              phone: normalizedPhone,
-              country: country?.code ?? null,
-              country_code: dial,
+              phone: v.e164,
+              country: country.code,
+              country_code: country.dial,
             },
           },
         });
         if (error) throw error;
-        // If session is null, email confirmation is required
         if (!data.session) {
           setConfirmEmail(email);
         } else {
@@ -132,14 +135,23 @@ function AuthPage() {
                     </span>
                     <input
                       type="tel"
+                      inputMode="numeric"
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="1xxxxxxxxx"
+                      onChange={(e) => {
+                        const c = findCountry(countryCode);
+                        const cleaned = c ? sanitizeNationalNumber(e.target.value, c) : e.target.value.replace(/\D/g, "");
+                        setPhone(cleaned);
+                        setPhoneError(null);
+                      }}
+                      placeholder={findCountry(countryCode)?.nsnLengths[0] ? "5".padEnd(findCountry(countryCode)!.nsnLengths[0], "x") : "1xxxxxxxxx"}
                       required
                       dir="ltr"
-                      className="flex-1 h-11 px-4 rounded-xl bg-white/5 border border-white/15 text-white placeholder:text-white/30 focus:outline-none focus:border-[var(--gold)]/60 focus:bg-white/10 transition"
+                      className={`flex-1 h-11 px-4 rounded-xl bg-white/5 border text-white placeholder:text-white/30 focus:outline-none focus:bg-white/10 transition ${phoneError ? "border-rose-400/60 focus:border-rose-400" : "border-white/15 focus:border-[var(--gold)]/60"}`}
                     />
                   </div>
+                  {phoneError && (
+                    <p className="text-[11px] text-rose-300 mt-1.5 leading-relaxed">{phoneError}</p>
+                  )}
                 </label>
               </>
             )}

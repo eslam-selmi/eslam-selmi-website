@@ -496,7 +496,7 @@ function CoursesPanel({ courses, refresh, onEdit }: { courses: Course[]; refresh
           <Input label={t("تاريخ البدء", "Start date")} type="date" value={form.starts_at} onChange={(v) => setForm({ ...form, starts_at: v })} />
           <Input label={t("تاريخ الانتهاء", "End date")} type="date" value={form.ends_at} onChange={(v) => setForm({ ...form, ends_at: v })} />
         </div>
-        <Input label={t("رابط الكورس (المنصة)", "Course link (platform)")} value={form.online_url} onChange={(v) => setForm({ ...form, online_url: v })} />
+        <Input label={t("رابط الكورس", "Course link")} value={form.online_url} onChange={(v) => setForm({ ...form, online_url: v })} />
         <Input label={t("عدد ساعات الكورس", "Total hours")} type="number" value={form.total_hours} onChange={(v) => setForm({ ...form, total_hours: v })} />
         <button disabled={busy} type="submit" className="w-full h-11 rounded-xl font-semibold disabled:opacity-60"
           style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>

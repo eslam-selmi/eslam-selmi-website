@@ -129,15 +129,15 @@ const en: Dict = {
 
   // library
   library_eyebrow: "Resources",
-  library_title: "Knowledge Library",
+  library_title: "Knowledge Vault",
   library_desc: "A curated vault of e-books, frameworks, templates and resources I share with the community. Always growing, so bookmark it.",
-  library_btn: "Open the library",
+  library_btn: "Open the vault",
   library_meta: "E-books · Templates · Frameworks",
-  library_modal_title: "Knowledge Library",
+  library_modal_title: "Knowledge Vault",
   library_modal_desc: "Browse and download the latest resources.",
   library_open_drive: "Open in Google Drive",
   nav_courses: "Courses",
-  nav_library: "Library",
+  nav_library: "Vault",
   nav_empowerment: "New Grad?",
 
   // empowerment tools
@@ -182,7 +182,7 @@ const en: Dict = {
   contact_linkedin_line: "Connect with me",
 
   // footer
-  footer_tag: "Head of L&D, Talent & Performance",
+  footer_tag: "",
   footer_rights: "All rights reserved.",
 };
 
@@ -297,15 +297,15 @@ const ar: Dict = {
   current_modal_desc: "حدّد البرنامج الأنسب لك وأرسل طلب الاشتراك.",
 
   library_eyebrow: "مصادر",
-  library_title: "مكتبة المعرفة",
+  library_title: "كنوز المعرفة",
   library_desc: "مكتبة مختارة من الكتب الإلكترونية والقوالب والأطر العملية والمصادر التي أشاركها مع المجتمع. تتجدّد باستمرار، فاحفظها للرجوع إليها.",
-  library_btn: "ادخل المكتبة",
+  library_btn: "ادخل الكنوز",
   library_meta: "كتب إلكترونية · قوالب · أطر عملية",
-  library_modal_title: "مكتبة المعرفة",
+  library_modal_title: "كنوز المعرفة",
   library_modal_desc: "تصفّح وحمّل أحدث المصادر.",
   library_open_drive: "افتح في Google Drive",
   nav_courses: "الدورات",
-  nav_library: "المكتبة",
+  nav_library: "كنوز المعرفة",
   nav_empowerment: "خريج جديد؟",
 
   emp_eyebrow: "للخريجين الجدد",
@@ -344,7 +344,7 @@ const ar: Dict = {
   contact_linkedin: "لينكدإن",
   contact_linkedin_line: "تواصل معي",
 
-  footer_tag: "رئيس قطاع التعلم والتطوير والمواهب والأداء",
+  footer_tag: "",
   footer_rights: "جميع الحقوق محفوظة.",
 };
 
@@ -360,18 +360,32 @@ interface I18nCtx {
 const Ctx = createContext<I18nCtx | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>("ar");
-
-  useEffect(() => {
-    const saved = (typeof window !== "undefined" && window.localStorage.getItem("lang")) as Lang | null;
-    if (saved === "ar" || saved === "en") setLangState(saved);
-  }, []);
+  // SYNC initial read so client + SSR render the same dir/lang and we avoid a flash.
+  const [lang, setLangState] = useState<Lang>(() => {
+    if (typeof window === "undefined") return "ar";
+    const saved = window.localStorage.getItem("lang");
+    if (saved === "ar" || saved === "en") return saved;
+    // Fallback to whatever the inline head script already wrote to <html lang>.
+    const htmlLang = document.documentElement.getAttribute("lang");
+    return htmlLang === "en" ? "en" : "ar";
+  });
 
   useEffect(() => {
     if (typeof document === "undefined") return;
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
   }, [lang]);
+
+  // React to changes made in other tabs / windows so the preference truly persists.
+  useEffect(() => {
+    function onStorage(e: StorageEvent) {
+      if (e.key === "lang" && (e.newValue === "ar" || e.newValue === "en")) {
+        setLangState(e.newValue);
+      }
+    }
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
 
   const setLang = (l: Lang) => {
     setLangState(l);
