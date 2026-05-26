@@ -1045,3 +1045,57 @@ function EnrollModal({ course, onClose, onConfirm }: { course: Course; onClose: 
     </div>
   );
 }
+
+function ProofUploader({ enrollmentId, userId, currency, onUploaded, isAr }: { enrollmentId: string; userId: string; currency: string; onUploaded: () => void; isAr: boolean }) {
+  const [amount, setAmount] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function submit() {
+    if (!amount || !file) {
+      toast.error(isAr ? "أدخل المبلغ وصورة الإيصال" : "Enter amount and proof image");
+      return;
+    }
+    setBusy(true);
+    try {
+      const path = `${userId}/${enrollmentId}-${Date.now()}-${file.name}`;
+      const { error: upErr } = await supabase.storage.from("payment-proofs").upload(path, file);
+      if (upErr) throw upErr;
+      const { error: insErr } = await supabase.from("payments").insert({
+        enrollment_id: enrollmentId,
+        amount: Number(amount),
+        currency,
+        proof_url: path,
+        status: "pending",
+        submitted_by: userId,
+        note: isAr ? "إيصال من المتدرب" : "Trainee proof",
+      } as any);
+      if (insErr) throw insErr;
+      toast.success(isAr ? "تم إرسال إيصال الدفع، بانتظار اعتماد الإدارة" : "Proof submitted, awaiting admin approval");
+      setAmount(""); setFile(null);
+      onUploaded();
+    } catch (e: any) {
+      toast.error(e?.message ?? (isAr ? "حدث خطأ" : "Error"));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="mt-4 rounded-xl border border-[var(--gold)]/25 bg-[var(--gold)]/5 p-3 space-y-2">
+      <p className="text-xs font-semibold text-[var(--gold)]">{isAr ? "📤 إرسال إيصال دفع" : "📤 Submit payment proof"}</p>
+      <div className="flex gap-2">
+        <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder={isAr ? "المبلغ" : "Amount"}
+          className="flex-1 h-9 px-3 rounded-lg bg-white/5 border border-white/15 text-sm" />
+        <span className="h-9 px-3 inline-flex items-center text-xs text-white/60 bg-white/5 rounded-lg border border-white/10">{currency}</span>
+      </div>
+      <input type="file" accept="image/*,.pdf" onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+        className="block w-full text-xs file:me-2 file:px-3 file:py-1.5 file:rounded file:border-0 file:bg-white/10 file:text-white" />
+      <button onClick={submit} disabled={busy}
+        className="w-full h-9 rounded-lg text-xs font-semibold disabled:opacity-50"
+        style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
+        {busy ? (isAr ? "جاري الإرسال..." : "Submitting...") : (isAr ? "إرسال الإيصال للمراجعة" : "Send proof for review")}
+      </button>
+    </div>
+  );
+}
