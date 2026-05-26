@@ -486,6 +486,13 @@ export async function generateCertificatePdf(p: CertificatePayload): Promise<Blo
     } catch {}
   }
 
+  const origin = typeof window !== "undefined" ? window.location.origin : "https://eslam-selmi.lovable.app";
+  const verifyUrl = `${origin}/verify/${p.certificateId}`;
+  let qrDataUrl: string | undefined;
+  try {
+    qrDataUrl = await QRCode.toDataURL(verifyUrl, { errorCorrectionLevel: "M", margin: 0, width: 240, color: { dark: "#0b1736", light: "#ffffff" } });
+  } catch {}
+
   const host = document.createElement("div");
   host.style.position = "fixed";
   host.style.left = "-100000px";
@@ -496,7 +503,7 @@ export async function generateCertificatePdf(p: CertificatePayload): Promise<Blo
 
   const root = createRoot(host);
   await new Promise<void>((resolve) => {
-    root.render(<CertificateCard p={p} />);
+    root.render(<CertificateCard p={p} qrDataUrl={qrDataUrl} verifyUrl={verifyUrl} />);
     // give react & images a tick
     setTimeout(resolve, 80);
   });
