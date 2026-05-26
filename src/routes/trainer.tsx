@@ -115,6 +115,8 @@ function TrainerPage() {
 
   return (
     <PortalShell userId={user.id} role="trainer" userLabel={user.email}>
+      {mustReset && <ForcePasswordResetGate onDone={() => setResetDone(true)} />}
+
       <div className="space-y-6">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-2xl bg-[var(--gold)]/15 flex items-center justify-center">
