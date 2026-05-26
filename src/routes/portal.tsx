@@ -1324,8 +1324,9 @@ function ProofUploader({ enrollmentId, userId, currency, remaining, onUploaded, 
                   className="flex-1 h-9 px-3 rounded-lg bg-white/5 border border-white/15 text-sm" />
                 <span className="h-9 px-3 inline-flex items-center text-xs text-white/60 bg-white/5 rounded-lg border border-white/10">{currency}</span>
               </div>
-              <input type="file" accept="image/*,.pdf" onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+              <input type="file" accept=".jpg,.jpeg,.png,.pdf" onChange={(e) => setFile(e.target.files?.[0] ?? null)}
                 className="block w-full text-xs file:me-2 file:px-3 file:py-1.5 file:rounded file:border-0 file:bg-white/10 file:text-white" />
+              <p className="text-[10px] text-white/50">{isAr ? "الامتدادات المسموح بها: jpg, jpeg, png, pdf — حد أقصى 5MB" : "Allowed: jpg, jpeg, png, pdf — max 5MB"}</p>
               <button onClick={submit} disabled={busy}
                 className="w-full h-9 rounded-lg text-xs font-semibold disabled:opacity-50"
                 style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
