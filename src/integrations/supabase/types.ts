@@ -486,6 +486,69 @@ export type Database = {
           },
         ]
       }
+      latest_additions: {
+        Row: {
+          created_at: string
+          custom_label: string | null
+          id: string
+          kind: string
+          subtitle_ar: string | null
+          subtitle_en: string | null
+          title_ar: string
+          title_en: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          custom_label?: string | null
+          id?: string
+          kind: string
+          subtitle_ar?: string | null
+          subtitle_en?: string | null
+          title_ar: string
+          title_en: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          custom_label?: string | null
+          id?: string
+          kind?: string
+          subtitle_ar?: string | null
+          subtitle_en?: string | null
+          title_ar?: string
+          title_en?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      latest_additions_settings: {
+        Row: {
+          id: string
+          subtitle_ar: string | null
+          subtitle_en: string | null
+          title_ar: string
+          title_en: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          subtitle_ar?: string | null
+          subtitle_en?: string | null
+          title_ar?: string
+          title_en?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          subtitle_ar?: string | null
+          subtitle_en?: string | null
+          title_ar?: string
+          title_en?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       module_items: {
         Row: {
           content: string | null
