@@ -39,12 +39,23 @@ function AuthPage() {
     setBusy(true);
     try {
       if (mode === "signup") {
+        const country = findCountry(countryCode);
+        const dial = country?.dial ?? "";
+        // Auto-prefix dial code unless user already typed one
+        const normalizedPhone = phone.trim().startsWith("+")
+          ? phone.trim()
+          : `${dial}${phone.trim().replace(/^0+/, "")}`;
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
             emailRedirectTo: `${window.location.origin}/portal`,
-            data: { full_name: fullName, phone },
+            data: {
+              full_name: fullName,
+              phone: normalizedPhone,
+              country: country?.code ?? null,
+              country_code: dial,
+            },
           },
         });
         if (error) throw error;
