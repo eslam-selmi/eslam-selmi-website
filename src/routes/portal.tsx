@@ -379,6 +379,9 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
   const [sessions, setSessions] = useState<any[]>([]);
   const [payments, setPayments] = useState<any[]>([]);
   const [installments, setInstallments] = useState<any[]>([]);
+  const [viewItem, setViewItem] = useState<MediaItem | null>(null);
+
+
 
 
   async function load() {
