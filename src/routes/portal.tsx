@@ -48,7 +48,7 @@ type ModuleRow = { id: string; course_id: string; completed_by_admin: boolean };
 const DRIVE_URL = "https://drive.google.com/drive/folders/1_GB18CPhfYZQt06orG1pIgbGffUk8dXA?usp=sharing";
 
 function PortalPage() {
-  const { user, role, loading } = useAuth();
+  const { user, role, loading, activationStatus } = useAuth();
   const { lang, setLang } = useI18n();
   const nav = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -64,7 +64,10 @@ function PortalPage() {
   useEffect(() => {
     if (!loading && !user) nav({ to: "/auth" });
     if (!loading && role === "admin") nav({ to: "/admin" });
-  }, [user, role, loading, nav]);
+    if (!loading && user && role !== "admin" && (activationStatus === "pending" || activationStatus === "rejected")) {
+      nav({ to: "/onboarding" });
+    }
+  }, [user, role, loading, activationStatus, nav]);
 
   async function refresh() {
     if (!user) return;

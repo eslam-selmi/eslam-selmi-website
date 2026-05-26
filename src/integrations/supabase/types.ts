@@ -670,9 +670,44 @@ export type Database = {
           },
         ]
       }
+      platform_settings: {
+        Row: {
+          activation_request_template_ar: string
+          activation_request_template_en: string
+          admin_whatsapp_e164: string | null
+          id: string
+          singleton: boolean
+          updated_at: string
+          welcome_message_template_ar: string
+          welcome_message_template_en: string
+        }
+        Insert: {
+          activation_request_template_ar?: string
+          activation_request_template_en?: string
+          admin_whatsapp_e164?: string | null
+          id?: string
+          singleton?: boolean
+          updated_at?: string
+          welcome_message_template_ar?: string
+          welcome_message_template_en?: string
+        }
+        Update: {
+          activation_request_template_ar?: string
+          activation_request_template_en?: string
+          admin_whatsapp_e164?: string | null
+          id?: string
+          singleton?: boolean
+          updated_at?: string
+          welcome_message_template_ar?: string
+          welcome_message_template_en?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           account_blocked: boolean
+          activated_at: string | null
+          activation_status: string
           country: string | null
           country_code: string | null
           created_at: string
@@ -685,6 +720,8 @@ export type Database = {
         }
         Insert: {
           account_blocked?: boolean
+          activated_at?: string | null
+          activation_status?: string
           country?: string | null
           country_code?: string | null
           created_at?: string
@@ -697,6 +734,8 @@ export type Database = {
         }
         Update: {
           account_blocked?: boolean
+          activated_at?: string | null
+          activation_status?: string
           country?: string | null
           country_code?: string | null
           created_at?: string

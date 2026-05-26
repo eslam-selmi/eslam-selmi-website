@@ -27,13 +27,17 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
   const [confirmEmail, setConfirmEmail] = useState<string | null>(null);
   const nav = useNavigate();
-  const { user, role, loading } = useAuth();
+  const { user, role, loading, activationStatus } = useAuth();
 
   useEffect(() => {
     if (!loading && user) {
+      if (role !== "admin" && (activationStatus === "pending" || activationStatus === "rejected")) {
+        nav({ to: "/onboarding" });
+        return;
+      }
       nav({ to: role === "admin" ? "/admin" : role === "trainer" ? "/trainer" : "/portal" });
     }
-  }, [user, role, loading, nav]);
+  }, [user, role, loading, activationStatus, nav]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
