@@ -150,6 +150,7 @@ function AdminPage() {
 
         <div className="flex gap-2 border-b border-white/10 flex-wrap">
           {[
+            { id: "activations", label: `${t("تفعيل الحسابات", "Activations")}${pendingActivations > 0 ? ` (${pendingActivations})` : ""}` },
             { id: "enrollments", label: `${t("طلبات وانضمامات", "Requests & enrollments")} (${enrollments.length})` },
             { id: "courses", label: `${t("الكورسات", "Courses")} (${courses.length})` },
             { id: "trainers", label: t("المدرّبون", "Trainers") },
@@ -168,7 +169,9 @@ function AdminPage() {
           ))}
         </div>
 
-        {tab === "enrollments" ? (
+        {tab === "activations" ? (
+          <ActivationsPanel />
+        ) : tab === "enrollments" ? (
           <EnrollmentsTable enrollments={enrollments} courses={courses} onOpen={setDrawer} refresh={refresh} />
         ) : tab === "courses" ? (
           <CoursesPanel courses={courses} refresh={refresh} onEdit={setEditingCourse} />
