@@ -925,7 +925,7 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
   }
   useEffect(() => { refreshLists(); }, [enrollment.id]);
 
-  const totalPaid = payments.reduce((s, p) => s + Number(p.amount || 0), 0);
+  const totalPaid = payments.filter((p) => p.status !== "rejected" && p.status !== "pending").reduce((s, p) => s + Number(p.amount || 0), 0);
   const rawPrice = Number(enrollment.courses?.price ?? 0);
   const discount = Number((enrollment as any).discount_amount ?? 0);
   const coursePrice = Math.max(0, rawPrice - discount);
