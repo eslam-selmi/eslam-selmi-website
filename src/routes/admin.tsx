@@ -127,23 +127,26 @@ function AdminPage() {
             { id: "enrollments", label: `${t("طلبات وانضمامات", "Requests & enrollments")} (${enrollments.length})` },
             { id: "courses", label: `${t("الكورسات", "Courses")} (${courses.length})` },
             { id: "coupons", label: t("كوبونات الخصم", "Discount coupons") },
-          ].map((t) => (
+            { id: "banned", label: `${t("الموقوفون", "Banned")} (${enrollments.filter(e => e.profiles?.account_blocked).length})` },
+          ].map((tb) => (
             <button
-              key={t.id}
-              onClick={() => setTab(t.id as any)}
+              key={tb.id}
+              onClick={() => setTab(tb.id as any)}
               className={`px-4 py-3 text-sm font-semibold transition ${
-                tab === t.id ? "text-[var(--gold)] border-b-2 border-[var(--gold)] -mb-px" : "text-white/60 hover:text-white"
+                tab === tb.id ? "text-[var(--gold)] border-b-2 border-[var(--gold)] -mb-px" : "text-white/60 hover:text-white"
               }`}
-            >{t.label}</button>
+            >{tb.label}</button>
           ))}
         </div>
 
         {tab === "enrollments" ? (
-          <EnrollmentsTable enrollments={enrollments} onOpen={setDrawer} refresh={refresh} />
+          <EnrollmentsTable enrollments={enrollments} courses={courses} onOpen={setDrawer} refresh={refresh} />
         ) : tab === "courses" ? (
           <CoursesPanel courses={courses} refresh={refresh} onEdit={setEditingCourse} />
-        ) : (
+        ) : tab === "coupons" ? (
           <CouponsPanel courses={courses} />
+        ) : (
+          <BannedPanel enrollments={enrollments} refresh={refresh} />
         )}
       </div>
 
