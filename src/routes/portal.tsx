@@ -605,7 +605,14 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
               ))}
             </ul>
           }
-          <ProofUploader enrollmentId={enrollment.id} userId={enrollment.user_id ?? ""} currency={c.currency} onUploaded={load} isAr={isAr} />
+          <ProofUploader
+            enrollmentId={enrollment.id}
+            userId={enrollment.user_id ?? ""}
+            currency={c.currency}
+            remaining={Math.max(0, coursePrice - Number((enrollment as any).discount_amount || 0) - totalPaid)}
+            onUploaded={load}
+            isAr={isAr}
+          />
           {installments.length > 0 && (
             <>
               <p className="text-xs text-white/50 mt-4 mb-2">{isAr ? "الأقساط" : "Installments"}</p>
