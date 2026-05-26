@@ -1121,12 +1121,17 @@ function ProofUploader({ enrollmentId, userId, currency, onUploaded, isAr }: { e
   const [amount, setAmount] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
+  const [methods, setMethods] = useState<any[]>([]);
+  const [selected, setSelected] = useState<any | null>(null);
+
+  useEffect(() => {
+    supabase.from("payment_methods" as any).select("*").eq("active", true).order("order_index")
+      .then(({ data }) => setMethods((data as any[]) ?? []));
+  }, []);
 
   async function submit() {
-    if (!amount || !file) {
-      toast.error(isAr ? "أدخل المبلغ وصورة الإيصال" : "Enter amount and proof image");
-      return;
-    }
+    if (!selected) { toast.error(isAr ? "اختر طريقة الدفع أولاً" : "Select a payment method first"); return; }
+    if (!amount || !file) { toast.error(isAr ? "أدخل المبلغ وصورة الإيصال" : "Enter amount and proof image"); return; }
     setBusy(true);
     try {
       const path = `${userId}/${enrollmentId}-${Date.now()}-${file.name}`;
@@ -1139,11 +1144,13 @@ function ProofUploader({ enrollmentId, userId, currency, onUploaded, isAr }: { e
         proof_url: path,
         status: "pending",
         submitted_by: userId,
+        payment_method_id: selected.id,
+        payment_method_name: isAr ? selected.name_ar : selected.name_en,
         note: isAr ? "إيصال من المتدرب" : "Trainee proof",
       } as any);
       if (insErr) throw insErr;
       toast.success(isAr ? "تم إرسال إيصال الدفع، بانتظار اعتماد الإدارة" : "Proof submitted, awaiting admin approval");
-      setAmount(""); setFile(null);
+      setAmount(""); setFile(null); setSelected(null);
       onUploaded();
     } catch (e: any) {
       toast.error(e?.message ?? (isAr ? "حدث خطأ" : "Error"));
@@ -1153,20 +1160,54 @@ function ProofUploader({ enrollmentId, userId, currency, onUploaded, isAr }: { e
   }
 
   return (
-    <div className="mt-4 rounded-xl border border-[var(--gold)]/25 bg-[var(--gold)]/5 p-3 space-y-2">
+    <div className="mt-4 rounded-xl border border-[var(--gold)]/25 bg-[var(--gold)]/5 p-4 space-y-3">
       <p className="text-xs font-semibold text-[var(--gold)]">{isAr ? "📤 إرسال إيصال دفع" : "📤 Submit payment proof"}</p>
-      <div className="flex gap-2">
-        <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder={isAr ? "المبلغ" : "Amount"}
-          className="flex-1 h-9 px-3 rounded-lg bg-white/5 border border-white/15 text-sm" />
-        <span className="h-9 px-3 inline-flex items-center text-xs text-white/60 bg-white/5 rounded-lg border border-white/10">{currency}</span>
-      </div>
-      <input type="file" accept="image/*,.pdf" onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-        className="block w-full text-xs file:me-2 file:px-3 file:py-1.5 file:rounded file:border-0 file:bg-white/10 file:text-white" />
-      <button onClick={submit} disabled={busy}
-        className="w-full h-9 rounded-lg text-xs font-semibold disabled:opacity-50"
-        style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
-        {busy ? (isAr ? "جاري الإرسال..." : "Submitting...") : (isAr ? "إرسال الإيصال للمراجعة" : "Send proof for review")}
-      </button>
+
+      {methods.length === 0 ? (
+        <p className="text-xs text-white/50">{isAr ? "لا توجد طرق دفع متاحة حالياً. تواصل مع الإدارة." : "No payment methods available. Please contact admin."}</p>
+      ) : (
+        <>
+          <div>
+            <p className="text-[11px] text-white/60 mb-2">{isAr ? "1. اختر طريقة الدفع" : "1. Choose a payment method"}</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {methods.map((m) => {
+                const active = selected?.id === m.id;
+                return (
+                  <button key={m.id} type="button" onClick={() => setSelected(m)}
+                    className={`text-xs px-3 py-2 rounded-lg border text-start transition ${active ? "bg-[var(--gold)]/25 border-[var(--gold)] text-white" : "bg-white/5 border-white/15 text-white/80 hover:bg-white/10"}`}>
+                    <span className="font-semibold block">{isAr ? m.name_ar : m.name_en}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {selected && (selected.details_ar || selected.details_en) && (
+            <div className="rounded-lg bg-white/5 border border-white/10 p-3">
+              <p className="text-[10px] text-[var(--gold)] mb-1.5 font-semibold">{isAr ? "تفاصيل الحساب — استخدم البيانات التالية للتحويل" : "Account details — use the info below to transfer"}</p>
+              <pre dir={isAr ? "rtl" : "ltr"} className="text-xs whitespace-pre-wrap font-sans text-white/85">{isAr ? (selected.details_ar || selected.details_en) : (selected.details_en || selected.details_ar)}</pre>
+            </div>
+          )}
+
+          {selected && (
+            <>
+              <p className="text-[11px] text-white/60">{isAr ? "2. أدخل المبلغ وارفع صورة الإيصال" : "2. Enter amount and upload proof"}</p>
+              <div className="flex gap-2">
+                <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder={isAr ? "المبلغ" : "Amount"}
+                  className="flex-1 h-9 px-3 rounded-lg bg-white/5 border border-white/15 text-sm" />
+                <span className="h-9 px-3 inline-flex items-center text-xs text-white/60 bg-white/5 rounded-lg border border-white/10">{currency}</span>
+              </div>
+              <input type="file" accept="image/*,.pdf" onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                className="block w-full text-xs file:me-2 file:px-3 file:py-1.5 file:rounded file:border-0 file:bg-white/10 file:text-white" />
+              <button onClick={submit} disabled={busy}
+                className="w-full h-9 rounded-lg text-xs font-semibold disabled:opacity-50"
+                style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
+                {busy ? (isAr ? "جاري الإرسال..." : "Submitting...") : (isAr ? "إرسال الإيصال للمراجعة" : "Send proof for review")}
+              </button>
+            </>
+          )}
+        </>
+      )}
     </div>
   );
 }
