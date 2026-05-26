@@ -428,6 +428,19 @@ function CertificateCard({ p, qrDataUrl, verifyUrl }: { p: CertificatePayload; q
             >
               {p.certificateId.slice(0, 8).toUpperCase()}-{p.certificateId.slice(-4).toUpperCase()}
             </div>
+            {qrDataUrl && (
+              <div style={{ marginTop: 18, display: "flex", flexDirection: "column", alignItems: p.lang === "ar" ? "flex-end" : "flex-start", gap: 4 }}>
+                <img src={qrDataUrl} alt="" style={{ width: 120, height: 120, background: "#fff", padding: 6, borderRadius: 8, border: "1px solid #d4af37" }} />
+                <div style={{ fontSize: 10, color: "#8b6914", letterSpacing: 1 }}>
+                  {p.lang === "ar" ? "امسح للتحقّق" : "Scan to verify"}
+                </div>
+                {verifyUrl && (
+                  <div style={{ fontSize: 9, color: "#6b5418", fontFamily: "monospace", maxWidth: 220, wordBreak: "break-all" }} dir="ltr">
+                    {verifyUrl}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* seal */}
