@@ -11,9 +11,13 @@ import {
   Plus, Trash2, CheckCircle2, Upload, Wallet, Loader2, Users, BookOpen, Award,
   FileText, X, ToggleLeft, ToggleRight, Calendar, Layers, Link as LinkIcon,
   StickyNote, Paperclip, Pencil, Check, Clock, Settings2, Sparkles, Ticket, Percent,
-  UserPlus, KeyRound, GraduationCap,
+  UserPlus, KeyRound, GraduationCap, ShieldOff, ShieldCheck, UserX, Archive,
 } from "lucide-react";
-import { createTrainerAccount, resetTrainerPassword } from "@/lib/admin-trainers.functions";
+import {
+  createTrainerAccount, resetTrainerPassword,
+  setTrainerSuspended, terminateTrainerAccount, updateTrainerPermissions,
+} from "@/lib/admin-trainers.functions";
+
 import { findCountry } from "@/lib/countries";
 
 export const Route = createFileRoute("/admin")({
@@ -435,13 +439,17 @@ function CoursesPanel({ courses, refresh, onEdit }: { courses: Course[]; refresh
     if (error) return toast.error(error.message);
     refresh();
   }
-  async function del(id: string) {
-    if (!confirm(t("حذف الكورس؟ سيتم حذف جميع الطلبات والمحتوى المرتبط به.", "Delete course? All related enrollments and content will be deleted."))) return;
-    const { error } = await supabase.from("courses").delete().eq("id", id);
+  async function del(id: string, archived: boolean) {
+    const msg = archived
+      ? t("استعادة الكورس من الأرشيف؟", "Restore course from archive?")
+      : t("أرشفة الكورس؟ سيختفي من الكتالوج العام مع الاحتفاظ بكل البيانات (Soft Delete).", "Archive course? It will disappear from the public catalog while all data is preserved (Soft Delete).");
+    if (!confirm(msg)) return;
+    const { error } = await supabase.from("courses").update({ is_archived: !archived }).eq("id", id);
     if (error) return toast.error(error.message);
-    toast.success(t("تم الحذف", "Deleted"));
+    toast.success(archived ? t("تمت الاستعادة", "Restored") : t("تمت الأرشفة", "Archived"));
     refresh();
   }
+
 
   return (
     <div className="grid lg:grid-cols-[1fr_360px] gap-6">
@@ -479,7 +487,7 @@ function CoursesPanel({ courses, refresh, onEdit }: { courses: Course[]; refresh
                     <button onClick={() => toggleActive(c)} className="p-2 rounded-lg hover:bg-white/5" title={c.active ? t("إيقاف", "Disable") : t("تفعيل", "Enable")}>
                       {c.active ? <ToggleRight className="w-5 h-5 text-emerald-300" /> : <ToggleLeft className="w-5 h-5 text-white/40" />}
                     </button>
-                    <button onClick={() => del(c.id)} className="p-2 rounded-lg hover:bg-rose-500/10 text-rose-300"><Trash2 className="w-4 h-4" /></button>
+                    <button onClick={() => del(c.id, Boolean((c as any).is_archived))} className="p-2 rounded-lg hover:bg-rose-500/10 text-rose-300" title={(c as any).is_archived ? t("استعادة", "Restore") : t("أرشفة", "Archive")}><Trash2 className="w-4 h-4" /></button>
                   </div>
                 </div>
               </div>
@@ -1748,12 +1756,37 @@ function ProofLink({ path, label }: { path: string; label: string }) {
 }
 
 // ============= Trainers Panel =============
+type TrainerCourseLink = {
+  course_trainer_id: string;
+  course_id: string;
+  perms: {
+    can_edit_content: boolean;
+    can_view_trainees: boolean;
+    can_grade_assignments: boolean;
+    can_grade_graduation: boolean;
+    can_approve_enrollments: boolean;
+    can_archive_course: boolean;
+  };
+};
 type TrainerRow = {
   id: string;
   full_name: string | null;
   email: string | null;
-  courseIds: string[];
+  is_suspended: boolean;
+  links: TrainerCourseLink[];
+  // monitoring
+  enrolledCount: number;
+  pendingGrading: number;
 };
+
+const PERM_KEYS = [
+  "can_edit_content",
+  "can_view_trainees",
+  "can_grade_assignments",
+  "can_grade_graduation",
+  "can_approve_enrollments",
+  "can_archive_course",
+] as const;
 
 function TrainersPanel({ courses }: { courses: Course[] }) {
   const { lang } = useI18n();
@@ -1762,30 +1795,88 @@ function TrainersPanel({ courses }: { courses: Course[] }) {
   const [trainers, setTrainers] = useState<TrainerRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
-
-  // create form
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [pwd, setPwd] = useState("");
   const [pickedCourses, setPickedCourses] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
+  const [expandedTrainer, setExpandedTrainer] = useState<string | null>(null);
 
   async function refresh() {
     setLoading(true);
     const { data: roles } = await supabase
-      .from("user_roles").select("user_id").eq("role", "trainer");
+      .from("user_roles").select("user_id, is_suspended").eq("role", "trainer");
     const ids = (roles ?? []).map((r: any) => r.user_id);
     if (ids.length === 0) { setTrainers([]); setLoading(false); return; }
+
     const [{ data: profs }, { data: cts }] = await Promise.all([
       supabase.from("profiles").select("id, full_name, email").in("id", ids),
-      supabase.from("course_trainers").select("user_id, course_id").in("user_id", ids),
+      supabase.from("course_trainers").select("id, user_id, course_id").in("user_id", ids),
     ]);
-    const map: Record<string, string[]> = {};
+    const ctIds = (cts ?? []).map((c: any) => c.id);
+    const { data: perms } = ctIds.length
+      ? await supabase.from("trainer_permissions").select("*").in("course_trainer_id", ctIds)
+      : { data: [] as any[] };
+    const permMap = Object.fromEntries((perms ?? []).map((p: any) => [p.course_trainer_id, p]));
+
+    const linksByUser: Record<string, TrainerCourseLink[]> = {};
     (cts ?? []).forEach((c: any) => {
-      (map[c.user_id] ||= []).push(c.course_id);
+      const p = permMap[c.id] ?? {};
+      (linksByUser[c.user_id] ||= []).push({
+        course_trainer_id: c.id,
+        course_id: c.course_id,
+        perms: {
+          can_edit_content: p.can_edit_content ?? true,
+          can_view_trainees: p.can_view_trainees ?? true,
+          can_grade_assignments: p.can_grade_assignments ?? true,
+          can_grade_graduation: p.can_grade_graduation ?? true,
+          can_approve_enrollments: p.can_approve_enrollments ?? false,
+          can_archive_course: p.can_archive_course ?? false,
+        },
+      });
     });
+
+    // Monitoring: per-trainer enrollment count and pending-grading backlog
+    const userCourseIds: Record<string, string[]> = {};
+    Object.entries(linksByUser).forEach(([uid, ls]) => { userCourseIds[uid] = ls.map(l => l.course_id); });
+    const allCourseIds = Array.from(new Set(Object.values(userCourseIds).flat()));
+    let enrollMap: Record<string, number> = {};
+    let pendingMap: Record<string, number> = {};
+    if (allCourseIds.length) {
+      const { data: enr } = await supabase.from("enrollments")
+        .select("course_id").in("course_id", allCourseIds).eq("status", "approved");
+      const enrCount: Record<string, number> = {};
+      (enr ?? []).forEach((e: any) => { enrCount[e.course_id] = (enrCount[e.course_id] ?? 0) + 1; });
+      Object.entries(userCourseIds).forEach(([uid, cids]) => {
+        enrollMap[uid] = cids.reduce((s, c) => s + (enrCount[c] ?? 0), 0);
+      });
+      const { data: asgs } = await supabase.from("assignments")
+        .select("id, course_id").in("course_id", allCourseIds);
+      const asgIds = (asgs ?? []).map((a: any) => a.id);
+      const asgCourse = Object.fromEntries((asgs ?? []).map((a: any) => [a.id, a.course_id]));
+      if (asgIds.length) {
+        const { data: ungraded } = await supabase.from("assignment_submissions")
+          .select("assignment_id").in("assignment_id", asgIds).is("graded_at", null);
+        const pendCourseCount: Record<string, number> = {};
+        (ungraded ?? []).forEach((s: any) => {
+          const cid = asgCourse[s.assignment_id];
+          if (cid) pendCourseCount[cid] = (pendCourseCount[cid] ?? 0) + 1;
+        });
+        Object.entries(userCourseIds).forEach(([uid, cids]) => {
+          pendingMap[uid] = cids.reduce((s, c) => s + (pendCourseCount[c] ?? 0), 0);
+        });
+      }
+    }
+
+    const suspendedMap = Object.fromEntries((roles ?? []).map((r: any) => [r.user_id, Boolean(r.is_suspended)]));
     const list: TrainerRow[] = (profs ?? []).map((p: any) => ({
-      id: p.id, full_name: p.full_name, email: p.email, courseIds: map[p.id] ?? [],
+      id: p.id,
+      full_name: p.full_name,
+      email: p.email,
+      is_suspended: suspendedMap[p.id] ?? false,
+      links: linksByUser[p.id] ?? [],
+      enrolledCount: enrollMap[p.id] ?? 0,
+      pendingGrading: pendingMap[p.id] ?? 0,
     }));
     setTrainers(list);
     setLoading(false);
@@ -1800,14 +1891,9 @@ function TrainersPanel({ courses }: { courses: Course[] }) {
     setBusy(true);
     try {
       await createTrainerAccount({
-        data: {
-          email: email.trim(),
-          full_name: name.trim(),
-          password: pwd,
-          course_ids: pickedCourses,
-        },
+        data: { email: email.trim(), full_name: name.trim(), password: pwd, course_ids: pickedCourses },
       });
-      toast.success(t("تم إنشاء حساب المدرّب بنجاح", "Trainer account created"));
+      toast.success(t("تم إنشاء حساب المدرّب. سيُطلب منه تغيير كلمة المرور عند أول دخول.", "Trainer created. They will be forced to set a new password at first login."));
       setName(""); setEmail(""); setPwd(""); setPickedCourses([]); setShowCreate(false);
       await refresh();
     } catch (e: any) {
@@ -1817,20 +1903,18 @@ function TrainersPanel({ courses }: { courses: Course[] }) {
 
   async function toggleCourse(trainerId: string, courseId: string, assigned: boolean) {
     if (assigned) {
-      const { error } = await supabase
-        .from("course_trainers").delete()
+      const { error } = await supabase.from("course_trainers").delete()
         .eq("user_id", trainerId).eq("course_id", courseId);
       if (error) { toast.error(error.message); return; }
     } else {
-      const { error } = await supabase
-        .from("course_trainers").insert({ user_id: trainerId, course_id: courseId });
+      const { error } = await supabase.from("course_trainers").insert({ user_id: trainerId, course_id: courseId });
       if (error) { toast.error(error.message); return; }
     }
     await refresh();
   }
 
   async function handleResetPassword(trainerId: string) {
-    const newPwd = window.prompt(t("كلمة المرور الجديدة (8 أحرف على الأقل):", "New password (≥ 8 chars):"));
+    const newPwd = window.prompt(t("كلمة المرور المؤقتة الجديدة (8+ حروف). سيُطلب من المدرّب تغييرها فوراً.", "New temporary password (8+ chars). The trainer will be forced to change it."));
     if (!newPwd || newPwd.length < 8) return;
     try {
       await resetTrainerPassword({ data: { user_id: trainerId, password: newPwd } });
@@ -1838,12 +1922,45 @@ function TrainersPanel({ courses }: { courses: Course[] }) {
     } catch (e: any) { toast.error(e?.message || "Failed"); }
   }
 
+  async function handleSuspend(trainerId: string, suspended: boolean) {
+    if (!confirm(suspended
+      ? t("تعليق هذا المدرّب؟ سيتم تسجيل خروجه فوراً.", "Suspend this trainer? They will be signed out immediately.")
+      : t("استعادة وصول المدرّب؟", "Restore trainer access?"))) return;
+    try {
+      await setTrainerSuspended({ data: { user_id: trainerId, suspended } });
+      toast.success(suspended ? t("تم التعليق", "Suspended") : t("تمت الاستعادة", "Restored"));
+      await refresh();
+    } catch (e: any) { toast.error(e?.message || "Failed"); }
+  }
+
+  async function handleTerminate(trainerId: string) {
+    if (!confirm(t("إنهاء حساب المدرّب نهائياً؟ لا يمكن التراجع.", "Permanently terminate this trainer account? This cannot be undone."))) return;
+    try {
+      await terminateTrainerAccount({ data: { user_id: trainerId } });
+      toast.success(t("تم الإنهاء", "Terminated"));
+      await refresh();
+    } catch (e: any) { toast.error(e?.message || "Failed"); }
+  }
+
+  async function togglePerm(link: TrainerCourseLink, key: typeof PERM_KEYS[number]) {
+    const nextVal = !link.perms[key];
+    try {
+      await updateTrainerPermissions({
+        data: { course_trainer_id: link.course_trainer_id, perms: { [key]: nextVal } as any },
+      });
+      await refresh();
+    } catch (e: any) { toast.error(e?.message || "Failed"); }
+  }
+
+  const active = trainers.filter(t => !t.is_suspended);
+  const suspended = trainers.filter(t => t.is_suspended);
+
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h2 className="text-lg font-bold flex items-center gap-2"><GraduationCap className="w-5 h-5 text-[var(--gold)]" /> {t("المدرّبون", "Trainers")}</h2>
-          <p className="text-xs text-white/60">{t("أنشئ حسابات للمدرّبين وعيّنهم على كورسات محدّدة.", "Create trainer accounts and assign them to specific courses.")}</p>
+          <p className="text-xs text-white/60">{t("أنشئ حسابات، عيِّن صلاحيات دقيقة، وراقب أداء كل مدرّب.", "Create accounts, assign granular permissions, and monitor trainer activity.")}</p>
         </div>
         <button onClick={() => setShowCreate((v) => !v)}
           className="inline-flex items-center gap-2 bg-[var(--gold)] text-[#0b1736] font-bold text-xs px-4 h-10 rounded-lg">
@@ -1891,23 +2008,96 @@ function TrainersPanel({ courses }: { courses: Course[] }) {
       ) : trainers.length === 0 ? (
         <p className="text-sm text-white/60">{t("لا يوجد مدرّبون بعد.", "No trainers yet.")}</p>
       ) : (
-        <div className="space-y-3">
-          {trainers.map((tr) => (
-            <div key={tr.id} className="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <div className="flex items-center justify-between gap-3 flex-wrap mb-3">
-                <div>
-                  <p className="font-bold text-sm">{tr.full_name || "—"}</p>
-                  <p className="text-xs text-white/60">{tr.email}</p>
+        <>
+          <TrainerList label={t("المدرّبون النشطون", "Active trainers")} rows={active} courses={courses} t={t}
+            expanded={expandedTrainer} setExpanded={setExpandedTrainer}
+            toggleCourse={toggleCourse} handleResetPassword={handleResetPassword}
+            handleSuspend={handleSuspend} handleTerminate={handleTerminate} togglePerm={togglePerm} />
+
+          {suspended.length > 0 && (
+            <TrainerList label={t("المدرّبون المُعلَّقون / المقيَّدون", "Restricted / Suspended trainers")} rows={suspended} courses={courses} t={t}
+              expanded={expandedTrainer} setExpanded={setExpandedTrainer}
+              toggleCourse={toggleCourse} handleResetPassword={handleResetPassword}
+              handleSuspend={handleSuspend} handleTerminate={handleTerminate} togglePerm={togglePerm} />
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+function TrainerList(props: {
+  label: string;
+  rows: TrainerRow[];
+  courses: Course[];
+  t: (a: string, b: string) => string;
+  expanded: string | null;
+  setExpanded: (v: string | null) => void;
+  toggleCourse: (trainerId: string, courseId: string, assigned: boolean) => Promise<void>;
+  handleResetPassword: (id: string) => Promise<void>;
+  handleSuspend: (id: string, s: boolean) => Promise<void>;
+  handleTerminate: (id: string) => Promise<void>;
+  togglePerm: (l: TrainerCourseLink, k: typeof PERM_KEYS[number]) => Promise<void>;
+}) {
+  const { label, rows, courses, t, expanded, setExpanded, toggleCourse, handleResetPassword, handleSuspend, handleTerminate, togglePerm } = props;
+  const permLabel = (k: typeof PERM_KEYS[number]) => ({
+    can_edit_content: t("تعديل المحتوى", "Edit content"),
+    can_view_trainees: t("عرض المتدرّبين", "View trainees"),
+    can_grade_assignments: t("تقييم التكاليف", "Grade assignments"),
+    can_grade_graduation: t("تقييم مشروع التخرج", "Grade graduation"),
+    can_approve_enrollments: t("اعتماد الالتحاق", "Approve enrollments"),
+    can_archive_course: t("أرشفة الكورس", "Archive course"),
+  }[k]);
+  const courseById = Object.fromEntries(courses.map(c => [c.id, c]));
+  return (
+    <div className="space-y-3">
+      <h3 className="text-xs uppercase tracking-wider text-white/50">{label} ({rows.length})</h3>
+      {rows.map((tr) => {
+        const isOpen = expanded === tr.id;
+        return (
+          <div key={tr.id} className={`rounded-2xl border ${tr.is_suspended ? "border-rose-500/30 bg-rose-500/5" : "border-white/10 bg-white/5"} p-4`}>
+            <div className="flex items-start justify-between gap-3 flex-wrap">
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${tr.is_suspended ? "bg-rose-500/15 text-rose-300" : "bg-[var(--gold)]/15 text-[var(--gold)]"}`}>
+                  <GraduationCap className="w-5 h-5" />
                 </div>
+                <div className="min-w-0">
+                  <p className="font-bold text-sm truncate">{tr.full_name || "—"}</p>
+                  <p className="text-xs text-white/60 truncate">{tr.email}</p>
+                  <div className="flex items-center gap-3 mt-1 text-[11px] text-white/50">
+                    <span className="inline-flex items-center gap-1"><Users className="w-3 h-3" /> {tr.enrolledCount} {t("متدرّب", "trainees")}</span>
+                    <span className="inline-flex items-center gap-1"><Clock className="w-3 h-3" /> {tr.pendingGrading} {t("بانتظار التقييم", "pending grading")}</span>
+                    <span className="inline-flex items-center gap-1"><BookOpen className="w-3 h-3" /> {tr.links.length} {t("كورس", "courses")}</span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-1 flex-wrap">
+                <button onClick={() => setExpanded(isOpen ? null : tr.id)}
+                  className="inline-flex items-center gap-1.5 text-xs px-3 h-8 rounded-lg border border-white/15 hover:bg-white/5">
+                  <Settings2 className="w-3.5 h-3.5" /> {isOpen ? t("إغلاق", "Close") : t("الصلاحيات", "Permissions")}
+                </button>
                 <button onClick={() => handleResetPassword(tr.id)}
                   className="inline-flex items-center gap-1.5 text-xs px-3 h-8 rounded-lg border border-white/15 hover:bg-white/5">
-                  <KeyRound className="w-3.5 h-3.5" /> {t("إعادة تعيين كلمة المرور", "Reset password")}
+                  <KeyRound className="w-3.5 h-3.5" /> {t("كلمة المرور", "Password")}
+                </button>
+                <button onClick={() => handleSuspend(tr.id, !tr.is_suspended)}
+                  className={`inline-flex items-center gap-1.5 text-xs px-3 h-8 rounded-lg border ${tr.is_suspended ? "border-emerald-400/40 text-emerald-300 hover:bg-emerald-500/10" : "border-amber-400/40 text-amber-300 hover:bg-amber-500/10"}`}>
+                  {tr.is_suspended ? <ShieldCheck className="w-3.5 h-3.5" /> : <ShieldOff className="w-3.5 h-3.5" />}
+                  {tr.is_suspended ? t("استعادة", "Restore") : t("تعليق", "Suspend")}
+                </button>
+                <button onClick={() => handleTerminate(tr.id)}
+                  className="inline-flex items-center gap-1.5 text-xs px-3 h-8 rounded-lg border border-rose-500/40 text-rose-300 hover:bg-rose-500/10">
+                  <UserX className="w-3.5 h-3.5" /> {t("إنهاء", "Terminate")}
                 </button>
               </div>
+            </div>
+
+            {/* Course assignment chips */}
+            <div className="mt-4">
               <p className="text-[11px] text-white/50 mb-2">{t("الكورسات المُعيَّنة:", "Assigned courses:")}</p>
               <div className="flex flex-wrap gap-2">
                 {courses.map((c) => {
-                  const on = tr.courseIds.includes(c.id);
+                  const on = tr.links.some(l => l.course_id === c.id);
                   return (
                     <button key={c.id} onClick={() => toggleCourse(tr.id, c.id, on)}
                       className={`text-xs px-3 h-8 rounded-full border transition ${on ? "bg-[var(--gold)] text-[#0b1736] border-[var(--gold)]" : "border-white/15 text-white/70 hover:bg-white/5"}`}>
@@ -1917,12 +2107,34 @@ function TrainersPanel({ courses }: { courses: Course[] }) {
                 })}
               </div>
             </div>
-          ))}
-        </div>
-      )}
+
+            {/* Granular permissions per course */}
+            {isOpen && tr.links.length > 0 && (
+              <div className="mt-4 space-y-3">
+                <p className="text-[11px] uppercase tracking-wider text-white/50">{t("مصفوفة الصلاحيات", "Permissions Matrix")}</p>
+                {tr.links.map((l) => (
+                  <div key={l.course_trainer_id} className="rounded-xl border border-white/10 bg-black/20 p-3">
+                    <p className="text-xs font-semibold mb-2">{courseById[l.course_id]?.cover_emoji || "🎓"} {courseById[l.course_id]?.title}</p>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                      {PERM_KEYS.map((k) => (
+                        <label key={k} className="inline-flex items-center gap-2 text-xs cursor-pointer">
+                          <input type="checkbox" checked={l.perms[k]} onChange={() => togglePerm(l, k)}
+                            className="accent-[var(--gold)] w-4 h-4" />
+                          <span className="text-white/80">{permLabel(k)}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
+
 
 function LatestAdditionsPanel() {
   const { lang } = useI18n();

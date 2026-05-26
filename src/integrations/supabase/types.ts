@@ -326,6 +326,7 @@ export type Database = {
           ends_at: string | null
           id: string
           installments_count: number
+          is_archived: boolean
           online_url: string | null
           price: number | null
           starts_at: string | null
@@ -341,6 +342,7 @@ export type Database = {
           ends_at?: string | null
           id?: string
           installments_count?: number
+          is_archived?: boolean
           online_url?: string | null
           price?: number | null
           starts_at?: string | null
@@ -356,6 +358,7 @@ export type Database = {
           ends_at?: string | null
           id?: string
           installments_count?: number
+          is_archived?: boolean
           online_url?: string | null
           price?: number | null
           starts_at?: string | null
@@ -674,6 +677,7 @@ export type Database = {
           country_code: string | null
           created_at: string
           email: string | null
+          force_password_reset: boolean
           full_name: string | null
           id: string
           phone: string | null
@@ -685,6 +689,7 @@ export type Database = {
           country_code?: string | null
           created_at?: string
           email?: string | null
+          force_password_reset?: boolean
           full_name?: string | null
           id: string
           phone?: string | null
@@ -696,9 +701,49 @@ export type Database = {
           country_code?: string | null
           created_at?: string
           email?: string | null
+          force_password_reset?: boolean
           full_name?: string | null
           id?: string
           phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      trainer_permissions: {
+        Row: {
+          can_approve_enrollments: boolean
+          can_archive_course: boolean
+          can_edit_content: boolean
+          can_grade_assignments: boolean
+          can_grade_graduation: boolean
+          can_view_trainees: boolean
+          course_trainer_id: string
+          created_at: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          can_approve_enrollments?: boolean
+          can_archive_course?: boolean
+          can_edit_content?: boolean
+          can_grade_assignments?: boolean
+          can_grade_graduation?: boolean
+          can_view_trainees?: boolean
+          course_trainer_id: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          can_approve_enrollments?: boolean
+          can_archive_course?: boolean
+          can_edit_content?: boolean
+          can_grade_assignments?: boolean
+          can_grade_graduation?: boolean
+          can_view_trainees?: boolean
+          course_trainer_id?: string
+          created_at?: string
+          id?: string
           updated_at?: string
         }
         Relationships: []
@@ -707,18 +752,21 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          is_suspended: boolean
           role: Database["public"]["Enums"]["app_role"]
           user_id: string
         }
         Insert: {
           created_at?: string
           id?: string
+          is_suspended?: boolean
           role: Database["public"]["Enums"]["app_role"]
           user_id: string
         }
         Update: {
           created_at?: string
           id?: string
+          is_suspended?: boolean
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
         }
@@ -753,6 +801,10 @@ export type Database = {
           _title: string
         }
         Returns: undefined
+      }
+      trainer_has_perm: {
+        Args: { _course_id: string; _perm: string }
+        Returns: boolean
       }
       validate_coupon: {
         Args: { _code: string; _course_id: string }

@@ -6,6 +6,8 @@ import { PortalShell } from "@/components/PortalShell";
 import { useI18n } from "@/lib/i18n";
 import { toast } from "sonner";
 import { Loader2, BookOpen, Users, FileText, Check, Calendar, GraduationCap } from "lucide-react";
+import { ForcePasswordResetGate } from "@/components/ForcePasswordResetGate";
+
 
 export const Route = createFileRoute("/trainer")({
   head: () => ({
@@ -35,10 +37,13 @@ type Submission = {
 };
 
 function TrainerPage() {
-  const { user, role, loading } = useAuth();
+  const { user, role, loading, forcePasswordReset } = useAuth();
   const nav = useNavigate();
   const { lang } = useI18n();
   const t = (a: string, b: string) => (lang === "ar" ? a : b);
+  const [resetDone, setResetDone] = useState(false);
+  const mustReset = forcePasswordReset && !resetDone;
+
 
   const [courses, setCourses] = useState<Course[]>([]);
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
@@ -110,6 +115,8 @@ function TrainerPage() {
 
   return (
     <PortalShell userId={user.id} role="trainer" userLabel={user.email}>
+      {mustReset && <ForcePasswordResetGate onDone={() => setResetDone(true)} />}
+
       <div className="space-y-6">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-2xl bg-[var(--gold)]/15 flex items-center justify-center">
