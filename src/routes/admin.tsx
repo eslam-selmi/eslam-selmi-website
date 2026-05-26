@@ -69,7 +69,7 @@ function AdminPage() {
     if (userIds.length) {
       const { data: profs } = await supabase
         .from("profiles")
-        .select("id, full_name, email, phone")
+        .select("id, full_name, email, phone, country, country_code, account_blocked")
         .in("id", userIds);
       profileMap = Object.fromEntries((profs ?? []).map((p: any) => [p.id, p]));
     }
