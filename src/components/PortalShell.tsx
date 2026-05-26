@@ -17,7 +17,9 @@ type Props = {
 export function PortalShell({ userId, role, userLabel, children }: Props) {
   const nav = useNavigate();
   const { lang, setLang, dir } = useI18n();
+  const { hasNew, markSeen } = useLatestAdditionsBadge();
   const isAr = lang === "ar";
+
 
   const L = {
     panelAdmin: isAr ? "لوحة الإدارة" : "Admin Panel",
