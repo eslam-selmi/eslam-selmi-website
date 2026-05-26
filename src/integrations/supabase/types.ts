@@ -348,6 +348,7 @@ export type Database = {
           name_ar: string | null
           name_en: string | null
           notes: string | null
+          payment_reminder_dismissed_at: string | null
           status: Database["public"]["Enums"]["enrollment_status"]
           updated_at: string
           user_id: string
@@ -367,6 +368,7 @@ export type Database = {
           name_ar?: string | null
           name_en?: string | null
           notes?: string | null
+          payment_reminder_dismissed_at?: string | null
           status?: Database["public"]["Enums"]["enrollment_status"]
           updated_at?: string
           user_id: string
@@ -386,6 +388,7 @@ export type Database = {
           name_ar?: string | null
           name_en?: string | null
           notes?: string | null
+          payment_reminder_dismissed_at?: string | null
           status?: Database["public"]["Enums"]["enrollment_status"]
           updated_at?: string
           user_id?: string
@@ -531,6 +534,9 @@ export type Database = {
           id: string
           note: string | null
           paid_at: string
+          proof_url: string | null
+          status: Database["public"]["Enums"]["payment_status"]
+          submitted_by: string | null
         }
         Insert: {
           amount: number
@@ -540,6 +546,9 @@ export type Database = {
           id?: string
           note?: string | null
           paid_at?: string
+          proof_url?: string | null
+          status?: Database["public"]["Enums"]["payment_status"]
+          submitted_by?: string | null
         }
         Update: {
           amount?: number
@@ -549,6 +558,9 @@ export type Database = {
           id?: string
           note?: string | null
           paid_at?: string
+          proof_url?: string | null
+          status?: Database["public"]["Enums"]["payment_status"]
+          submitted_by?: string | null
         }
         Relationships: [
           {
@@ -563,6 +575,8 @@ export type Database = {
       profiles: {
         Row: {
           account_blocked: boolean
+          country: string | null
+          country_code: string | null
           created_at: string
           email: string | null
           full_name: string | null
@@ -572,6 +586,8 @@ export type Database = {
         }
         Insert: {
           account_blocked?: boolean
+          country?: string | null
+          country_code?: string | null
           created_at?: string
           email?: string | null
           full_name?: string | null
@@ -581,6 +597,8 @@ export type Database = {
         }
         Update: {
           account_blocked?: boolean
+          country?: string | null
+          country_code?: string | null
           created_at?: string
           email?: string | null
           full_name?: string | null
@@ -649,6 +667,7 @@ export type Database = {
       app_role: "admin" | "trainee"
       coupon_discount_type: "percent" | "fixed"
       enrollment_status: "pending" | "approved" | "rejected"
+      payment_status: "pending" | "approved" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -779,6 +798,7 @@ export const Constants = {
       app_role: ["admin", "trainee"],
       coupon_discount_type: ["percent", "fixed"],
       enrollment_status: ["pending", "approved", "rejected"],
+      payment_status: ["pending", "approved", "rejected"],
     },
   },
 } as const
