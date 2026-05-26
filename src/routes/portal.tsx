@@ -12,6 +12,9 @@ import {
   Paperclip, Check, ChevronLeft, PlayCircle, Award, Linkedin, GraduationCap, Hourglass,
   FileText, Send, AlertCircle, X,
 } from "lucide-react";
+import { LatestAdditionsSection } from "@/components/LatestAdditions";
+import { MediaViewerModal, type MediaItem } from "@/components/MediaViewerModal";
+
 
 
 export const Route = createFileRoute("/portal")({
