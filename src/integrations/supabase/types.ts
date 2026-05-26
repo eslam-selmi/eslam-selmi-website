@@ -65,6 +65,7 @@ export type Database = {
           due_date: string | null
           id: string
           instructions: string | null
+          is_graduation_project: boolean
           max_score: number
           module_id: string
           title: string
@@ -76,6 +77,7 @@ export type Database = {
           due_date?: string | null
           id?: string
           instructions?: string | null
+          is_graduation_project?: boolean
           max_score?: number
           module_id: string
           title: string
@@ -87,6 +89,7 @@ export type Database = {
           due_date?: string | null
           id?: string
           instructions?: string | null
+          is_graduation_project?: boolean
           max_score?: number
           module_id?: string
           title?: string
@@ -692,6 +695,7 @@ export type Database = {
         Args: { _code: string; _course_id: string }
         Returns: Json
       }
+      verify_certificate: { Args: { _enrollment_id: string }; Returns: Json }
     }
     Enums: {
       app_role: "admin" | "trainee" | "trainer"

@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 import { toJpeg } from "html-to-image";
 import jsPDF from "jspdf";
+import QRCode from "qrcode";
 import brandLogo from "@/assets/brand-logo.png";
 
 export type CertificatePayload = {
@@ -49,8 +50,8 @@ const COPY = {
     defaultRole: "Founder & Lead Instructor",
     seal: "Academy Seal",
     dir: "ltr" as const,
-    fontBody: "'Manrope',ui-sans-serif,system-ui,sans-serif",
-    fontDisplay: "'Sora',ui-sans-serif,system-ui,sans-serif",
+    fontBody: "'Manrope','IBM Plex Sans Arabic','Tajawal',ui-sans-serif,system-ui,sans-serif",
+    fontDisplay: "'Sora','IBM Plex Sans Arabic','Tajawal',ui-sans-serif,system-ui,sans-serif",
   },
 };
 
@@ -164,7 +165,7 @@ function Seal({ lang }: { lang: "ar" | "en" }) {
   );
 }
 
-function CertificateCard({ p }: { p: CertificatePayload }) {
+function CertificateCard({ p, qrDataUrl, verifyUrl }: { p: CertificatePayload; qrDataUrl?: string; verifyUrl?: string }) {
   const t = COPY[p.lang];
   const dateStr =
     p.lang === "ar"
@@ -427,6 +428,19 @@ function CertificateCard({ p }: { p: CertificatePayload }) {
             >
               {p.certificateId.slice(0, 8).toUpperCase()}-{p.certificateId.slice(-4).toUpperCase()}
             </div>
+            {qrDataUrl && (
+              <div style={{ marginTop: 18, display: "flex", flexDirection: "column", alignItems: p.lang === "ar" ? "flex-end" : "flex-start", gap: 4 }}>
+                <img src={qrDataUrl} alt="" style={{ width: 120, height: 120, background: "#fff", padding: 6, borderRadius: 8, border: "1px solid #d4af37" }} />
+                <div style={{ fontSize: 10, color: "#8b6914", letterSpacing: 1 }}>
+                  {p.lang === "ar" ? "امسح للتحقّق" : "Scan to verify"}
+                </div>
+                {verifyUrl && (
+                  <div style={{ fontSize: 9, color: "#6b5418", fontFamily: "monospace", maxWidth: 220, wordBreak: "break-all" }} dir="ltr">
+                    {verifyUrl}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* seal */}
@@ -472,6 +486,13 @@ export async function generateCertificatePdf(p: CertificatePayload): Promise<Blo
     } catch {}
   }
 
+  const origin = typeof window !== "undefined" ? window.location.origin : "https://eslam-selmi.lovable.app";
+  const verifyUrl = `${origin}/verify/${p.certificateId}`;
+  let qrDataUrl: string | undefined;
+  try {
+    qrDataUrl = await QRCode.toDataURL(verifyUrl, { errorCorrectionLevel: "M", margin: 0, width: 240, color: { dark: "#0b1736", light: "#ffffff" } });
+  } catch {}
+
   const host = document.createElement("div");
   host.style.position = "fixed";
   host.style.left = "-100000px";
@@ -482,7 +503,7 @@ export async function generateCertificatePdf(p: CertificatePayload): Promise<Blo
 
   const root = createRoot(host);
   await new Promise<void>((resolve) => {
-    root.render(<CertificateCard p={p} />);
+    root.render(<CertificateCard p={p} qrDataUrl={qrDataUrl} verifyUrl={verifyUrl} />);
     // give react & images a tick
     setTimeout(resolve, 80);
   });

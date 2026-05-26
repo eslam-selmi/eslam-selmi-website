@@ -1321,6 +1321,7 @@ function CourseAssignmentsAdmin({ courseId }: { courseId: string }) {
   const [instructions, setInstructions] = useState("");
   const [due, setDue] = useState("");
   const [maxScore, setMaxScore] = useState(100);
+  const [isGrad, setIsGrad] = useState(false);
 
   async function load() {
     const [mRes, aRes] = await Promise.all([
@@ -1350,10 +1351,11 @@ function CourseAssignmentsAdmin({ courseId }: { courseId: string }) {
     const { error } = await supabase.from("assignments").insert({
       course_id: courseId, module_id: moduleId, title, instructions: instructions || null,
       due_date: due ? new Date(due).toISOString() : null, max_score: maxScore,
+      is_graduation_project: isGrad,
     });
     if (error) return toast.error(error.message);
     toast.success(t("تم إنشاء التكليف", "Assignment created"));
-    setTitle(""); setInstructions(""); setDue(""); setMaxScore(100);
+    setTitle(""); setInstructions(""); setDue(""); setMaxScore(100); setIsGrad(false);
     load();
   }
 
@@ -1394,6 +1396,10 @@ function CourseAssignmentsAdmin({ courseId }: { courseId: string }) {
             <Plus className="w-4 h-4 inline" /> {t("إضافة", "Add")}
           </button>
         </div>
+        <label className="flex items-center gap-2 text-xs text-white/70 cursor-pointer select-none">
+          <input type="checkbox" checked={isGrad} onChange={(e) => setIsGrad(e.target.checked)} className="accent-[var(--gold)]" />
+          🎓 {t("مشروع التخرّج (يُشترط اعتماده قبل إصدار الشهادة)", "Graduation project (must be approved before issuing certificate)")}
+        </label>
       </div>
 
       {assignments.length === 0 ? (
@@ -1406,7 +1412,14 @@ function CourseAssignmentsAdmin({ courseId }: { courseId: string }) {
               <div key={a.id} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
-                    <h5 className="font-bold">{a.title}</h5>
+                    <h5 className="font-bold flex items-center gap-2">
+                      {a.title}
+                      {a.is_graduation_project && (
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--gold)]/20 text-[var(--gold)] border border-[var(--gold)]/40">
+                          🎓 {t("مشروع التخرّج", "Graduation project")}
+                        </span>
+                      )}
+                    </h5>
                     {a.instructions && <p className="text-xs text-white/55 mt-1 whitespace-pre-wrap">{a.instructions}</p>}
                     <p className="text-[11px] text-white/45 mt-1">
                       {a.due_date ? `${t("تسليم", "Due")}: ${new Date(a.due_date).toLocaleString(lang === "ar" ? "ar-EG" : "en-GB")}` : t("بدون موعد", "No due date")} · {t("درجة قصوى", "Max score")} {a.max_score}

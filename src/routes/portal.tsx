@@ -628,9 +628,37 @@ function CertificatePanel({
   const [nameEn, setNameEn] = useState(enrollment.name_en ?? "");
   const [saving, setSaving] = useState(false);
   const [requesting, setRequesting] = useState(false);
+  const [gradState, setGradState] = useState<{ required: boolean; submitted: boolean; approved: boolean; loading: boolean }>({ required: false, submitted: false, approved: false, loading: true });
   const namesSaved = !!(enrollment.name_ar && enrollment.name_en);
   const issued = enrollment.certificate_issued && (enrollment.certificate_url_ar || enrollment.certificate_url_en || enrollment.certificate_url);
   const requested = !!enrollment.certificate_requested_at && !issued;
+
+  useEffect(() => {
+    (async () => {
+      const { data: assignments } = await supabase.from("assignments")
+        .select("id,max_score,is_graduation_project")
+        .eq("course_id", course.id)
+        .eq("is_graduation_project", true);
+      const gradAssignments = assignments ?? [];
+      if (gradAssignments.length === 0) {
+        setGradState({ required: false, submitted: false, approved: false, loading: false });
+        return;
+      }
+      const ids = gradAssignments.map((a: any) => a.id);
+      const { data: subs } = await supabase.from("assignment_submissions")
+        .select("assignment_id,score,graded_at")
+        .eq("user_id", enrollment.user_id!)
+        .in("assignment_id", ids);
+      const submitted = (subs ?? []).length > 0;
+      const approved = gradAssignments.some((a: any) => {
+        const s = (subs ?? []).find((x: any) => x.assignment_id === a.id);
+        if (!s || s.score == null || !s.graded_at) return false;
+        const pass = Number(a.max_score) * 0.6;
+        return Number(s.score) >= pass;
+      });
+      setGradState({ required: true, submitted, approved, loading: false });
+    })();
+  }, [course.id, enrollment.user_id]);
 
   async function saveNames() {
     if (!nameAr.trim() || !nameEn.trim()) return toast.error(isAr ? "اكتب الاسم بالعربي والإنجليزي" : "Enter your name in both Arabic and English");
@@ -646,6 +674,7 @@ function CertificatePanel({
 
   async function requestCertificate() {
     if (!allModulesDone) return toast.error(isAr ? "لازم تكمل كل الدروس الأول" : "Finish all modules first");
+    if (gradState.required && !gradState.approved) return toast.error(isAr ? "لازم يتم اعتماد مشروع التخرّج الأول" : "Your graduation project must be approved first");
     if (!namesSaved) return toast.error(isAr ? "اكتب اسمك بالعربي والإنجليزي الأول" : "Save your name in Arabic and English first");
     setRequesting(true);
     const { error } = await supabase.from("enrollments")
@@ -656,6 +685,8 @@ function CertificatePanel({
     toast.success(isAr ? "تم إرسال طلب الشهادة للأدمن ✅" : "Certificate request sent to admin ✅");
     onRefresh();
   }
+
+  const canRequest = allModulesDone && namesSaved && (!gradState.required || gradState.approved);
 
   return (
     <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
@@ -731,9 +762,22 @@ function CertificatePanel({
                   {isAr ? `متبقى ${totalModules - completedModules} محاضرة قبل ما تقدر تطلب الشهادة` : `${totalModules - completedModules} lecture(s) remaining before you can request the certificate`}
                 </p>
               )}
-              <button onClick={requestCertificate} disabled={!allModulesDone || !namesSaved || requesting}
+              {gradState.required && (
+                <div className={`rounded-xl border p-3 text-xs flex items-start gap-2 ${gradState.approved ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-200" : gradState.submitted ? "bg-amber-300/10 border-amber-300/30 text-amber-200" : "bg-rose-500/10 border-rose-500/30 text-rose-200"}`}>
+                  {gradState.approved ? <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0" /> : <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />}
+                  <p>
+                    🎓 {isAr ? "مشروع التخرّج: " : "Graduation project: "}
+                    {gradState.approved
+                      ? (isAr ? "تم الاعتماد ✅" : "Approved ✅")
+                      : gradState.submitted
+                      ? (isAr ? "بانتظار تقييم الأدمن" : "Awaiting admin review")
+                      : (isAr ? "لازم تسلّم مشروع التخرّج وتاخد درجة نجاح قبل ما تطلب الشهادة" : "Submit your graduation project and earn a passing grade before requesting the certificate")}
+                  </p>
+                </div>
+              )}
+              <button onClick={requestCertificate} disabled={!canRequest || requesting}
                 className="w-full h-12 rounded-xl font-semibold flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
-                style={{ background: allModulesDone && namesSaved ? "linear-gradient(135deg, var(--gold), #b8923f)" : "rgba(255,255,255,0.05)", color: allModulesDone && namesSaved ? "#0b1736" : "rgba(255,255,255,0.5)" }}>
+                style={{ background: canRequest ? "linear-gradient(135deg, var(--gold), #b8923f)" : "rgba(255,255,255,0.05)", color: canRequest ? "#0b1736" : "rgba(255,255,255,0.5)" }}>
                 <Send className="w-4 h-4" /> {requesting ? (isAr ? "جاري الإرسال..." : "Sending...") : (isAr ? "طلب إصدار الشهادة" : "Request certificate")}
               </button>
             </>
