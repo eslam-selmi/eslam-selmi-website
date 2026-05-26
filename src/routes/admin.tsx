@@ -171,10 +171,11 @@ function StatCard({ icon: Icon, label, value, color }: { icon: any; label: strin
 }
 
 function EnrollmentsTable({
-  enrollments, onOpen, refresh,
-}: { enrollments: EnrollmentRow[]; onOpen: (e: EnrollmentRow) => void; refresh: () => void }) {
+  enrollments, courses, onOpen, refresh,
+}: { enrollments: EnrollmentRow[]; courses: Course[]; onOpen: (e: EnrollmentRow) => void; refresh: () => void }) {
   const { lang } = useI18n();
   const t = (a: string, b: string) => (lang === "ar" ? a : b);
+  const [filter, setFilter] = useState<string>("all");
 
   async function setStatus(id: string, status: "approved" | "rejected") {
     const { error } = await supabase.from("enrollments").update({ status }).eq("id", id);
@@ -186,47 +187,183 @@ function EnrollmentsTable({
   if (enrollments.length === 0)
     return <div className="rounded-2xl border border-dashed border-white/15 p-10 text-center text-white/50">{t("لا توجد طلبات بعد.", "No requests yet.")}</div>;
 
+  // Group enrollments by course id
+  const filtered = filter === "all" ? enrollments : enrollments.filter((e) => e.course_id === filter);
+  const groups = new Map<string, EnrollmentRow[]>();
+  for (const en of filtered) {
+    const key = en.course_id;
+    const arr = groups.get(key) ?? [];
+    arr.push(en);
+    groups.set(key, arr);
+  }
+  const courseMap = new Map(courses.map((c) => [c.id, c]));
+
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden">
+    <div className="space-y-4">
+      {/* Course filter */}
+      <div className="flex flex-wrap gap-2">
+        <button
+          onClick={() => setFilter("all")}
+          className={`text-xs px-3 h-9 rounded-lg border ${filter === "all" ? "bg-[var(--gold)] text-[#0b1736] border-[var(--gold)] font-semibold" : "bg-white/5 border-white/15 text-white/70 hover:bg-white/10"}`}
+        >
+          {t("كل الكورسات", "All courses")} ({enrollments.length})
+        </button>
+        {courses.map((c) => {
+          const count = enrollments.filter((e) => e.course_id === c.id).length;
+          if (count === 0) return null;
+          return (
+            <button
+              key={c.id}
+              onClick={() => setFilter(c.id)}
+              className={`text-xs px-3 h-9 rounded-lg border ${filter === c.id ? "bg-[var(--gold)] text-[#0b1736] border-[var(--gold)] font-semibold" : "bg-white/5 border-white/15 text-white/70 hover:bg-white/10"}`}
+            >
+              {c.cover_emoji} {c.title} ({count})
+            </button>
+          );
+        })}
+      </div>
+
+      {Array.from(groups.entries()).map(([courseId, rows]) => {
+        const course = courseMap.get(courseId);
+        const approvedCount = rows.filter((r) => r.status === "approved").length;
+        return (
+          <div key={courseId} className="rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden">
+            <div className="px-4 py-3 bg-white/5 border-b border-white/10 flex items-center justify-between flex-wrap gap-2">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">{course?.cover_emoji ?? "🎓"}</span>
+                <h4 className="font-bold">{course?.title}</h4>
+              </div>
+              <div className="flex gap-2 text-xs">
+                <span className="px-2 py-1 rounded-md bg-emerald-500/15 text-emerald-300 border border-emerald-500/25">
+                  {t("ملتحقون:", "Enrolled:")} {approvedCount}
+                </span>
+                <span className="px-2 py-1 rounded-md bg-white/5 text-white/60 border border-white/15">
+                  {t("الإجمالي:", "Total:")} {rows.length}
+                </span>
+              </div>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-white/[0.02] text-xs text-white/60 uppercase">
+                  <tr>
+                    <th className="px-4 py-3 text-right font-medium">{t("المتدرب", "Trainee")}</th>
+                    <th className="px-4 py-3 text-right font-medium">{t("الدولة", "Country")}</th>
+                    <th className="px-4 py-3 text-right font-medium">{t("الحالة", "Status")}</th>
+                    <th className="px-4 py-3 text-right font-medium">{t("الشهادة", "Certificate")}</th>
+                    <th className="px-4 py-3 text-right font-medium">{t("إجراء", "Action")}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {rows.map((en) => {
+                    const country = findCountry(en.profiles?.country);
+                    return (
+                      <tr key={en.id} className={`hover:bg-white/[0.02] ${en.status === "pending" ? "bg-amber-300/[0.04]" : ""}`}>
+                        <td className="px-4 py-3">
+                          <div className="font-medium flex items-center gap-2">
+                            {en.profiles?.full_name || "—"}
+                            {en.profiles?.account_blocked && <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">{t("موقوف", "Banned")}</span>}
+                          </div>
+                          <div className="text-xs text-white/50">{en.profiles?.email}</div>
+                          <div className="text-xs text-white/40" dir="ltr">{en.profiles?.phone}</div>
+                        </td>
+                        <td className="px-4 py-3 text-xs">
+                          {country ? (
+                            <span className="inline-flex items-center gap-1.5">
+                              <span className="text-base">{country.flag}</span>
+                              <span className="text-white/80">{lang === "ar" ? country.name_ar : country.name_en}</span>
+                            </span>
+                          ) : <span className="text-white/40">—</span>}
+                        </td>
+                        <td className="px-4 py-3"><StatusPill status={en.status} /></td>
+                        <td className="px-4 py-3 text-xs text-white/60">
+                          {en.certificate_issued ? <span className="text-emerald-300">{t("✓ صادرة", "✓ Issued")}</span> : "—"}
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex gap-1.5 flex-wrap">
+                            {en.status === "pending" && (
+                              <>
+                                <button onClick={() => setStatus(en.id, "approved")} className="text-xs px-2.5 h-8 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30">{t("قبول", "Approve")}</button>
+                                <button onClick={() => setStatus(en.id, "rejected")} className="text-xs px-2.5 h-8 rounded-lg bg-rose-500/20 text-rose-300 border border-rose-500/30 hover:bg-rose-500/30">{t("رفض", "Reject")}</button>
+                              </>
+                            )}
+                            <button onClick={() => onOpen(en)} className="text-xs px-2.5 h-8 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold">{t("إدارة", "Manage")}</button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function BannedPanel({ enrollments, refresh }: { enrollments: EnrollmentRow[]; refresh: () => void }) {
+  const { lang } = useI18n();
+  const t = (a: string, b: string) => (lang === "ar" ? a : b);
+  // Unique users that are account_blocked
+  const seen = new Set<string>();
+  const banned: EnrollmentRow[] = [];
+  for (const e of enrollments) {
+    if (e.profiles?.account_blocked && !seen.has(e.user_id)) {
+      seen.add(e.user_id);
+      banned.push(e);
+    }
+  }
+
+  async function unban(userId: string) {
+    if (!confirm(t("إعادة تفعيل حساب هذا المتدرب؟", "Reactivate this trainee's account?"))) return;
+    const { error } = await supabase.from("profiles").update({ account_blocked: false } as any).eq("id", userId);
+    if (error) return toast.error(error.message);
+    toast.success(t("تم إلغاء الحظر", "Account unbanned"));
+    refresh();
+  }
+
+  if (banned.length === 0) {
+    return <div className="rounded-2xl border border-dashed border-white/15 p-10 text-center text-white/50">{t("لا يوجد متدربون موقوفون.", "No banned trainees.")}</div>;
+  }
+
+  return (
+    <div className="rounded-2xl border border-rose-300/20 bg-rose-300/5 overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="bg-white/5 text-xs text-white/60 uppercase">
+          <thead className="bg-rose-300/10 text-xs text-rose-200/80 uppercase">
             <tr>
               <th className="px-4 py-3 text-right font-medium">{t("المتدرب", "Trainee")}</th>
-              <th className="px-4 py-3 text-right font-medium">{t("الكورس", "Course")}</th>
-              <th className="px-4 py-3 text-right font-medium">{t("الحالة", "Status")}</th>
-              <th className="px-4 py-3 text-right font-medium">{t("الشهادة", "Certificate")}</th>
+              <th className="px-4 py-3 text-right font-medium">{t("الدولة", "Country")}</th>
               <th className="px-4 py-3 text-right font-medium">{t("إجراء", "Action")}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
-            {enrollments.map((en) => (
-              <tr key={en.id} className={`hover:bg-white/[0.02] ${en.status === "pending" ? "bg-amber-300/[0.04]" : ""}`}>
-                <td className="px-4 py-3">
-                  <div className="font-medium">{en.profiles?.full_name || "—"}</div>
-                  <div className="text-xs text-white/50">{en.profiles?.email}</div>
-                  <div className="text-xs text-white/40">{en.profiles?.phone}</div>
-                </td>
-                <td className="px-4 py-3">{en.courses?.title}</td>
-                <td className="px-4 py-3">
-                  <StatusPill status={en.status} />
-                </td>
-                <td className="px-4 py-3 text-xs text-white/60">
-                  {en.certificate_issued ? <span className="text-emerald-300">{t("✓ صادرة", "✓ Issued")}</span> : "—"}
-                </td>
-                <td className="px-4 py-3">
-                  <div className="flex gap-1.5 flex-wrap">
-                    {en.status === "pending" && (
-                      <>
-                        <button onClick={() => setStatus(en.id, "approved")} className="text-xs px-2.5 h-8 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30">{t("قبول", "Approve")}</button>
-                        <button onClick={() => setStatus(en.id, "rejected")} className="text-xs px-2.5 h-8 rounded-lg bg-rose-500/20 text-rose-300 border border-rose-500/30 hover:bg-rose-500/30">{t("رفض", "Reject")}</button>
-                      </>
-                    )}
-                    <button onClick={() => onOpen(en)} className="text-xs px-2.5 h-8 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold">{t("إدارة", "Manage")}</button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {banned.map((en) => {
+              const country = findCountry(en.profiles?.country);
+              return (
+                <tr key={en.user_id} className="hover:bg-white/[0.02]">
+                  <td className="px-4 py-3">
+                    <div className="font-medium">{en.profiles?.full_name || "—"}</div>
+                    <div className="text-xs text-white/50">{en.profiles?.email}</div>
+                    <div className="text-xs text-white/40" dir="ltr">{en.profiles?.phone}</div>
+                  </td>
+                  <td className="px-4 py-3 text-xs">
+                    {country ? (
+                      <span className="inline-flex items-center gap-1.5">
+                        <span className="text-base">{country.flag}</span>
+                        <span className="text-white/80">{lang === "ar" ? country.name_ar : country.name_en}</span>
+                      </span>
+                    ) : <span className="text-white/40">—</span>}
+                  </td>
+                  <td className="px-4 py-3">
+                    <button onClick={() => unban(en.user_id)} className="text-xs px-3 h-8 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold">
+                      {t("✓ إلغاء الحظر", "✓ Unban")}
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
