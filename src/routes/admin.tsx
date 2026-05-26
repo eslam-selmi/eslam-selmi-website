@@ -11,7 +11,9 @@ import {
   Plus, Trash2, CheckCircle2, Upload, Wallet, Loader2, Users, BookOpen, Award,
   FileText, X, ToggleLeft, ToggleRight, Calendar, Layers, Link as LinkIcon,
   StickyNote, Paperclip, Pencil, Check, Clock, Settings2, Sparkles, Ticket, Percent,
+  UserPlus, KeyRound, GraduationCap,
 } from "lucide-react";
+import { createTrainerAccount, resetTrainerPassword } from "@/lib/admin-trainers.functions";
 import { findCountry } from "@/lib/countries";
 
 export const Route = createFileRoute("/admin")({
