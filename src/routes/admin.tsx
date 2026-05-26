@@ -898,6 +898,8 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
     brand_primary_color: (course as any).brand_primary_color ?? "",
     brand_tagline_ar: (course as any).brand_tagline_ar ?? "",
     brand_tagline_en: (course as any).brand_tagline_en ?? "",
+    track_key: (course as any).track_key ?? "",
+    phase: String((course as any).phase ?? 1),
   });
 
   async function save() {
@@ -915,6 +917,8 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
       brand_primary_color: f.brand_primary_color.trim() || null,
       brand_tagline_ar: f.brand_tagline_ar.trim() || null,
       brand_tagline_en: f.brand_tagline_en.trim() || null,
+      track_key: f.track_key.trim() || null,
+      phase: Math.max(1, Math.min(3, Number(f.phase) || 1)),
     }).eq("id", course.id);
     if (error) return toast.error(error.message);
     toast.success(t("تم الحفظ", "Saved"));
@@ -944,6 +948,26 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
       <div className="grid grid-cols-2 gap-3">
         <Input label={t("رابط الكورس", "Course link")} value={f.online_url} onChange={(v) => setF({ ...f, online_url: v })} />
         <Input label={t("عدد ساعات الكورس", "Total hours")} type="number" value={f.total_hours} onChange={(v) => setF({ ...f, total_hours: v })} />
+      </div>
+
+      {/* Unified track + phase */}
+      <div className="pt-4 mt-4 border-t border-border space-y-3">
+        <div className="text-sm font-bold text-foreground">{t("المسار الموحّد والمرحلة", "Unified Track & Phase")}</div>
+        <div className="grid grid-cols-2 gap-3">
+          <Select label={t("المسار", "Track")} value={f.track_key} onChange={(v) => setF({ ...f, track_key: v })}
+            options={[
+              { v: "", l: t("بدون", "None") },
+              { v: "corporate_training", l: t("الإتقان المؤسسي للتدريب والتصميم التعليمي", "Corporate Training & Instructional Mastery") },
+              { v: "talent_management", l: t("إدارة المواهب", "Talent Management") },
+              { v: "soft_skills", l: t("المهارات الناعمة", "Soft Skills") },
+            ]} />
+          <Select label={t("المرحلة", "Phase")} value={f.phase} onChange={(v) => setF({ ...f, phase: v })}
+            options={[
+              { v: "1", l: t("المرحلة 1 (الأسس)", "Phase 1 (Foundations)") },
+              { v: "2", l: t("المرحلة 2 (الإتقان)", "Phase 2 (Mastery)") },
+              { v: "3", l: t("المرحلة 3 (متقدم)", "Phase 3 (Advanced)") },
+            ]} />
+        </div>
       </div>
 
       {/* White-Label branding section */}

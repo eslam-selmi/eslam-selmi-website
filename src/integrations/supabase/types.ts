@@ -333,11 +333,13 @@ export type Database = {
           is_archived: boolean
           logo_url: string | null
           online_url: string | null
+          phase: number
           price: number | null
           slug: string | null
           starts_at: string | null
           title: string
           total_hours: number
+          track_key: string | null
         }
         Insert: {
           active?: boolean
@@ -355,11 +357,13 @@ export type Database = {
           is_archived?: boolean
           logo_url?: string | null
           online_url?: string | null
+          phase?: number
           price?: number | null
           slug?: string | null
           starts_at?: string | null
           title: string
           total_hours?: number
+          track_key?: string | null
         }
         Update: {
           active?: boolean
@@ -377,11 +381,13 @@ export type Database = {
           is_archived?: boolean
           logo_url?: string | null
           online_url?: string | null
+          phase?: number
           price?: number | null
           slug?: string | null
           starts_at?: string | null
           title?: string
           total_hours?: number
+          track_key?: string | null
         }
         Relationships: []
       }
