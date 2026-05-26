@@ -19,6 +19,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VerifyIdRouteImport } from './routes/verify.$id'
+import { Route as CSlugRouteImport } from './routes/c.$slug'
 
 const TrainerRoute = TrainerRouteImport.update({
   id: '/trainer',
@@ -70,6 +71,11 @@ const VerifyIdRoute = VerifyIdRouteImport.update({
   path: '/verify/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CSlugRoute = CSlugRouteImport.update({
+  id: '/c/$slug',
+  path: '/c/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/portal': typeof PortalRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/trainer': typeof TrainerRoute
+  '/c/$slug': typeof CSlugRoute
   '/verify/$id': typeof VerifyIdRoute
 }
 export interface FileRoutesByTo {
@@ -93,6 +100,7 @@ export interface FileRoutesByTo {
   '/portal': typeof PortalRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/trainer': typeof TrainerRoute
+  '/c/$slug': typeof CSlugRoute
   '/verify/$id': typeof VerifyIdRoute
 }
 export interface FileRoutesById {
@@ -106,6 +114,7 @@ export interface FileRoutesById {
   '/portal': typeof PortalRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/trainer': typeof TrainerRoute
+  '/c/$slug': typeof CSlugRoute
   '/verify/$id': typeof VerifyIdRoute
 }
 export interface FileRouteTypes {
@@ -120,6 +129,7 @@ export interface FileRouteTypes {
     | '/portal'
     | '/sitemap.xml'
     | '/trainer'
+    | '/c/$slug'
     | '/verify/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -132,6 +142,7 @@ export interface FileRouteTypes {
     | '/portal'
     | '/sitemap.xml'
     | '/trainer'
+    | '/c/$slug'
     | '/verify/$id'
   id:
     | '__root__'
@@ -144,6 +155,7 @@ export interface FileRouteTypes {
     | '/portal'
     | '/sitemap.xml'
     | '/trainer'
+    | '/c/$slug'
     | '/verify/$id'
   fileRoutesById: FileRoutesById
 }
@@ -157,6 +169,7 @@ export interface RootRouteChildren {
   PortalRoute: typeof PortalRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TrainerRoute: typeof TrainerRoute
+  CSlugRoute: typeof CSlugRoute
   VerifyIdRoute: typeof VerifyIdRoute
 }
 
@@ -232,6 +245,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VerifyIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/c/$slug': {
+      id: '/c/$slug'
+      path: '/c/$slug'
+      fullPath: '/c/$slug'
+      preLoaderRoute: typeof CSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -245,6 +265,7 @@ const rootRouteChildren: RootRouteChildren = {
   PortalRoute: PortalRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TrainerRoute: TrainerRoute,
+  CSlugRoute: CSlugRoute,
   VerifyIdRoute: VerifyIdRoute,
 }
 export const routeTree = rootRouteImport

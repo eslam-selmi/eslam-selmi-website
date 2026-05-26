@@ -892,9 +892,16 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
     installments_count: String(course.installments_count), online_url: course.online_url ?? "",
     cover_emoji: course.cover_emoji ?? "🎓",
     total_hours: String(course.total_hours ?? 0),
+    slug: (course as any).slug ?? "",
+    logo_url: (course as any).logo_url ?? "",
+    brand_name: (course as any).brand_name ?? "",
+    brand_primary_color: (course as any).brand_primary_color ?? "",
+    brand_tagline_ar: (course as any).brand_tagline_ar ?? "",
+    brand_tagline_en: (course as any).brand_tagline_en ?? "",
   });
 
   async function save() {
+    const slugClean = f.slug.trim().toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "");
     const { error } = await supabase.from("courses").update({
       title: f.title, description: f.description || null,
       price: Number(f.price) || 0, currency: f.currency,
@@ -902,11 +909,19 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
       installments_count: Number(f.installments_count) || 1,
       online_url: f.online_url || null, cover_emoji: f.cover_emoji || "🎓",
       total_hours: Number(f.total_hours) || 0,
+      slug: slugClean || null,
+      logo_url: f.logo_url.trim() || null,
+      brand_name: f.brand_name.trim() || null,
+      brand_primary_color: f.brand_primary_color.trim() || null,
+      brand_tagline_ar: f.brand_tagline_ar.trim() || null,
+      brand_tagline_en: f.brand_tagline_en.trim() || null,
     }).eq("id", course.id);
     if (error) return toast.error(error.message);
     toast.success(t("تم الحفظ", "Saved"));
     onSaved();
   }
+
+  const whiteLabelUrl = f.slug ? `${window.location.origin}/c/${f.slug.trim().toLowerCase().replace(/[^a-z0-9-]+/g, "-")}` : "";
 
   return (
     <div className="space-y-3">
@@ -930,6 +945,27 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
         <Input label={t("رابط الكورس", "Course link")} value={f.online_url} onChange={(v) => setF({ ...f, online_url: v })} />
         <Input label={t("عدد ساعات الكورس", "Total hours")} type="number" value={f.total_hours} onChange={(v) => setF({ ...f, total_hours: v })} />
       </div>
+
+      {/* White-Label branding section */}
+      <div className="pt-4 mt-4 border-t border-border space-y-3">
+        <div className="text-sm font-bold text-foreground">{t("علامة مخصصة (White-Label)", "Custom Branding (White-Label)")}</div>
+        <div className="grid grid-cols-2 gap-3">
+          <Input label={t("المعرّف في الرابط (slug)", "URL slug")} value={f.slug} onChange={(v) => setF({ ...f, slug: v })} />
+          <Input label={t("لون العلامة (مثال: #0b1736)", "Brand color (e.g. #0b1736)")} value={f.brand_primary_color} onChange={(v) => setF({ ...f, brand_primary_color: v })} />
+        </div>
+        <Input label={t("اسم العلامة (يظهر بدل اسم الأكاديمية)", "Brand name (replaces academy name)")} value={f.brand_name} onChange={(v) => setF({ ...f, brand_name: v })} />
+        <Input label={t("رابط شعار الكورس (URL)", "Course logo URL")} value={f.logo_url} onChange={(v) => setF({ ...f, logo_url: v })} />
+        <div className="grid grid-cols-2 gap-3">
+          <Input label={t("شعار قصير (عربي)", "Tagline (AR)")} value={f.brand_tagline_ar} onChange={(v) => setF({ ...f, brand_tagline_ar: v })} />
+          <Input label={t("شعار قصير (إنجليزي)", "Tagline (EN)")} value={f.brand_tagline_en} onChange={(v) => setF({ ...f, brand_tagline_en: v })} />
+        </div>
+        {whiteLabelUrl && (
+          <a href={whiteLabelUrl} target="_blank" rel="noreferrer" className="block text-xs text-primary underline break-all">
+            {whiteLabelUrl}
+          </a>
+        )}
+      </div>
+
       <button onClick={save} className="w-full h-11 rounded-xl font-semibold" style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
         {t("حفظ التعديلات", "Save changes")}
       </button>
@@ -1011,6 +1047,8 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
         totalHours: Number(course.total_hours ?? 0),
         issueDate,
         certificateId: enrollment.id,
+        courseLogoUrl: (course as any).logo_url ?? null,
+        courseBrandName: (course as any).brand_name ?? null,
       };
       const [pdfAr, pdfEn] = await Promise.all([
         generateCertificatePdf({ ...common, lang: "ar", studentName: nameAr }),

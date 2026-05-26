@@ -319,6 +319,10 @@ export type Database = {
       courses: {
         Row: {
           active: boolean
+          brand_name: string | null
+          brand_primary_color: string | null
+          brand_tagline_ar: string | null
+          brand_tagline_en: string | null
           cover_emoji: string | null
           created_at: string
           currency: string
@@ -327,14 +331,20 @@ export type Database = {
           id: string
           installments_count: number
           is_archived: boolean
+          logo_url: string | null
           online_url: string | null
           price: number | null
+          slug: string | null
           starts_at: string | null
           title: string
           total_hours: number
         }
         Insert: {
           active?: boolean
+          brand_name?: string | null
+          brand_primary_color?: string | null
+          brand_tagline_ar?: string | null
+          brand_tagline_en?: string | null
           cover_emoji?: string | null
           created_at?: string
           currency?: string
@@ -343,14 +353,20 @@ export type Database = {
           id?: string
           installments_count?: number
           is_archived?: boolean
+          logo_url?: string | null
           online_url?: string | null
           price?: number | null
+          slug?: string | null
           starts_at?: string | null
           title: string
           total_hours?: number
         }
         Update: {
           active?: boolean
+          brand_name?: string | null
+          brand_primary_color?: string | null
+          brand_tagline_ar?: string | null
+          brand_tagline_en?: string | null
           cover_emoji?: string | null
           created_at?: string
           currency?: string
@@ -359,8 +375,10 @@ export type Database = {
           id?: string
           installments_count?: number
           is_archived?: boolean
+          logo_url?: string | null
           online_url?: string | null
           price?: number | null
+          slug?: string | null
           starts_at?: string | null
           title?: string
           total_hours?: number
