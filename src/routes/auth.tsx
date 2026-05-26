@@ -23,6 +23,7 @@ function AuthPage() {
   const [fullName, setFullName] = useState("");
   const [countryCode, setCountryCode] = useState("EG");
   const [phone, setPhone] = useState("");
+  const [phoneError, setPhoneError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [confirmEmail, setConfirmEmail] = useState<string | null>(null);
   const nav = useNavigate();
