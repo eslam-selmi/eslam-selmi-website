@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/portal-auth";
 import { toast } from "sonner";
 import { GraduationCap, ShieldCheck, Loader2, ArrowRight } from "lucide-react";
+import { COUNTRIES, findCountry } from "@/lib/countries";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -20,6 +21,7 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [countryCode, setCountryCode] = useState("EG");
   const [phone, setPhone] = useState("");
   const [busy, setBusy] = useState(false);
   const [confirmEmail, setConfirmEmail] = useState<string | null>(null);
@@ -37,12 +39,23 @@ function AuthPage() {
     setBusy(true);
     try {
       if (mode === "signup") {
+        const country = findCountry(countryCode);
+        const dial = country?.dial ?? "";
+        // Auto-prefix dial code unless user already typed one
+        const normalizedPhone = phone.trim().startsWith("+")
+          ? phone.trim()
+          : `${dial}${phone.trim().replace(/^0+/, "")}`;
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
             emailRedirectTo: `${window.location.origin}/portal`,
-            data: { full_name: fullName, phone },
+            data: {
+              full_name: fullName,
+              phone: normalizedPhone,
+              country: country?.code ?? null,
+              country_code: dial,
+            },
           },
         });
         if (error) throw error;
@@ -96,7 +109,38 @@ function AuthPage() {
             {mode === "signup" && (
               <>
                 <Field label="الاسم الكامل" value={fullName} onChange={setFullName} placeholder="اكتب اسمك الثلاثي" required />
-                <Field label="رقم الهاتف" value={phone} onChange={setPhone} placeholder="01xxxxxxxxx" required />
+                <label className="block">
+                  <span className="block text-xs text-white/70 mb-1.5 font-medium">الدولة</span>
+                  <select
+                    value={countryCode}
+                    onChange={(e) => setCountryCode(e.target.value)}
+                    required
+                    className="w-full h-11 px-4 rounded-xl bg-white/5 border border-white/15 text-white focus:outline-none focus:border-[var(--gold)]/60 focus:bg-white/10 transition"
+                  >
+                    {COUNTRIES.map((c) => (
+                      <option key={c.code} value={c.code} className="bg-[#0b1736]">
+                        {c.flag} {c.name_ar} ({c.dial})
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="block">
+                  <span className="block text-xs text-white/70 mb-1.5 font-medium">رقم الهاتف</span>
+                  <div className="flex gap-2" dir="ltr">
+                    <span className="h-11 px-3 rounded-xl bg-white/10 border border-white/15 text-white/80 inline-flex items-center text-sm font-mono">
+                      {findCountry(countryCode)?.dial}
+                    </span>
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="1xxxxxxxxx"
+                      required
+                      dir="ltr"
+                      className="flex-1 h-11 px-4 rounded-xl bg-white/5 border border-white/15 text-white placeholder:text-white/30 focus:outline-none focus:border-[var(--gold)]/60 focus:bg-white/10 transition"
+                    />
+                  </div>
+                </label>
               </>
             )}
             <Field type="email" label="البريد الإلكتروني" value={email} onChange={setEmail} placeholder="name@example.com" required />

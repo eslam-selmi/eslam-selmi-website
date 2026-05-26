@@ -12,6 +12,7 @@ import {
   FileText, X, ToggleLeft, ToggleRight, Calendar, Layers, Link as LinkIcon,
   StickyNote, Paperclip, Pencil, Check, Clock, Settings2, Sparkles, Ticket, Percent,
 } from "lucide-react";
+import { findCountry } from "@/lib/countries";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -37,7 +38,7 @@ type EnrollmentRow = {
   certificate_url_ar: string | null; certificate_url_en: string | null;
   certificate_requested_at: string | null;
   courses: Course | null;
-  profiles: { full_name: string | null; email: string | null; phone: string | null } | null;
+  profiles: { full_name: string | null; email: string | null; phone: string | null; country: string | null; country_code: string | null; account_blocked: boolean | null } | null;
 };
 
 function AdminPage() {
@@ -46,7 +47,7 @@ function AdminPage() {
 
   const { user, role, loading } = useAuth();
   const nav = useNavigate();
-  const [tab, setTab] = useState<"enrollments" | "courses" | "coupons">("enrollments");
+  const [tab, setTab] = useState<"enrollments" | "courses" | "coupons" | "banned">("enrollments");
   const [courses, setCourses] = useState<Course[]>([]);
   const [enrollments, setEnrollments] = useState<EnrollmentRow[]>([]);
   const [drawer, setDrawer] = useState<EnrollmentRow | null>(null);
@@ -69,7 +70,7 @@ function AdminPage() {
     if (userIds.length) {
       const { data: profs } = await supabase
         .from("profiles")
-        .select("id, full_name, email, phone")
+        .select("id, full_name, email, phone, country, country_code, account_blocked")
         .in("id", userIds);
       profileMap = Object.fromEntries((profs ?? []).map((p: any) => [p.id, p]));
     }
@@ -127,23 +128,26 @@ function AdminPage() {
             { id: "enrollments", label: `${t("طلبات وانضمامات", "Requests & enrollments")} (${enrollments.length})` },
             { id: "courses", label: `${t("الكورسات", "Courses")} (${courses.length})` },
             { id: "coupons", label: t("كوبونات الخصم", "Discount coupons") },
-          ].map((t) => (
+            { id: "banned", label: `${t("الموقوفون", "Banned")} (${enrollments.filter(e => e.profiles?.account_blocked).length})` },
+          ].map((tb) => (
             <button
-              key={t.id}
-              onClick={() => setTab(t.id as any)}
+              key={tb.id}
+              onClick={() => setTab(tb.id as any)}
               className={`px-4 py-3 text-sm font-semibold transition ${
-                tab === t.id ? "text-[var(--gold)] border-b-2 border-[var(--gold)] -mb-px" : "text-white/60 hover:text-white"
+                tab === tb.id ? "text-[var(--gold)] border-b-2 border-[var(--gold)] -mb-px" : "text-white/60 hover:text-white"
               }`}
-            >{t.label}</button>
+            >{tb.label}</button>
           ))}
         </div>
 
         {tab === "enrollments" ? (
-          <EnrollmentsTable enrollments={enrollments} onOpen={setDrawer} refresh={refresh} />
+          <EnrollmentsTable enrollments={enrollments} courses={courses} onOpen={setDrawer} refresh={refresh} />
         ) : tab === "courses" ? (
           <CoursesPanel courses={courses} refresh={refresh} onEdit={setEditingCourse} />
-        ) : (
+        ) : tab === "coupons" ? (
           <CouponsPanel courses={courses} />
+        ) : (
+          <BannedPanel enrollments={enrollments} refresh={refresh} />
         )}
       </div>
 
@@ -168,10 +172,11 @@ function StatCard({ icon: Icon, label, value, color }: { icon: any; label: strin
 }
 
 function EnrollmentsTable({
-  enrollments, onOpen, refresh,
-}: { enrollments: EnrollmentRow[]; onOpen: (e: EnrollmentRow) => void; refresh: () => void }) {
+  enrollments, courses, onOpen, refresh,
+}: { enrollments: EnrollmentRow[]; courses: Course[]; onOpen: (e: EnrollmentRow) => void; refresh: () => void }) {
   const { lang } = useI18n();
   const t = (a: string, b: string) => (lang === "ar" ? a : b);
+  const [filter, setFilter] = useState<string>("all");
 
   async function setStatus(id: string, status: "approved" | "rejected") {
     const { error } = await supabase.from("enrollments").update({ status }).eq("id", id);
@@ -183,47 +188,183 @@ function EnrollmentsTable({
   if (enrollments.length === 0)
     return <div className="rounded-2xl border border-dashed border-white/15 p-10 text-center text-white/50">{t("لا توجد طلبات بعد.", "No requests yet.")}</div>;
 
+  // Group enrollments by course id
+  const filtered = filter === "all" ? enrollments : enrollments.filter((e) => e.course_id === filter);
+  const groups = new Map<string, EnrollmentRow[]>();
+  for (const en of filtered) {
+    const key = en.course_id;
+    const arr = groups.get(key) ?? [];
+    arr.push(en);
+    groups.set(key, arr);
+  }
+  const courseMap = new Map(courses.map((c) => [c.id, c]));
+
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden">
+    <div className="space-y-4">
+      {/* Course filter */}
+      <div className="flex flex-wrap gap-2">
+        <button
+          onClick={() => setFilter("all")}
+          className={`text-xs px-3 h-9 rounded-lg border ${filter === "all" ? "bg-[var(--gold)] text-[#0b1736] border-[var(--gold)] font-semibold" : "bg-white/5 border-white/15 text-white/70 hover:bg-white/10"}`}
+        >
+          {t("كل الكورسات", "All courses")} ({enrollments.length})
+        </button>
+        {courses.map((c) => {
+          const count = enrollments.filter((e) => e.course_id === c.id).length;
+          if (count === 0) return null;
+          return (
+            <button
+              key={c.id}
+              onClick={() => setFilter(c.id)}
+              className={`text-xs px-3 h-9 rounded-lg border ${filter === c.id ? "bg-[var(--gold)] text-[#0b1736] border-[var(--gold)] font-semibold" : "bg-white/5 border-white/15 text-white/70 hover:bg-white/10"}`}
+            >
+              {c.cover_emoji} {c.title} ({count})
+            </button>
+          );
+        })}
+      </div>
+
+      {Array.from(groups.entries()).map(([courseId, rows]) => {
+        const course = courseMap.get(courseId);
+        const approvedCount = rows.filter((r) => r.status === "approved").length;
+        return (
+          <div key={courseId} className="rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden">
+            <div className="px-4 py-3 bg-white/5 border-b border-white/10 flex items-center justify-between flex-wrap gap-2">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">{course?.cover_emoji ?? "🎓"}</span>
+                <h4 className="font-bold">{course?.title}</h4>
+              </div>
+              <div className="flex gap-2 text-xs">
+                <span className="px-2 py-1 rounded-md bg-emerald-500/15 text-emerald-300 border border-emerald-500/25">
+                  {t("ملتحقون:", "Enrolled:")} {approvedCount}
+                </span>
+                <span className="px-2 py-1 rounded-md bg-white/5 text-white/60 border border-white/15">
+                  {t("الإجمالي:", "Total:")} {rows.length}
+                </span>
+              </div>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-white/[0.02] text-xs text-white/60 uppercase">
+                  <tr>
+                    <th className="px-4 py-3 text-right font-medium">{t("المتدرب", "Trainee")}</th>
+                    <th className="px-4 py-3 text-right font-medium">{t("الدولة", "Country")}</th>
+                    <th className="px-4 py-3 text-right font-medium">{t("الحالة", "Status")}</th>
+                    <th className="px-4 py-3 text-right font-medium">{t("الشهادة", "Certificate")}</th>
+                    <th className="px-4 py-3 text-right font-medium">{t("إجراء", "Action")}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {rows.map((en) => {
+                    const country = findCountry(en.profiles?.country);
+                    return (
+                      <tr key={en.id} className={`hover:bg-white/[0.02] ${en.status === "pending" ? "bg-amber-300/[0.04]" : ""}`}>
+                        <td className="px-4 py-3">
+                          <div className="font-medium flex items-center gap-2">
+                            {en.profiles?.full_name || "—"}
+                            {en.profiles?.account_blocked && <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">{t("موقوف", "Banned")}</span>}
+                          </div>
+                          <div className="text-xs text-white/50">{en.profiles?.email}</div>
+                          <div className="text-xs text-white/40" dir="ltr">{en.profiles?.phone}</div>
+                        </td>
+                        <td className="px-4 py-3 text-xs">
+                          {country ? (
+                            <span className="inline-flex items-center gap-1.5">
+                              <span className="text-base">{country.flag}</span>
+                              <span className="text-white/80">{lang === "ar" ? country.name_ar : country.name_en}</span>
+                            </span>
+                          ) : <span className="text-white/40">—</span>}
+                        </td>
+                        <td className="px-4 py-3"><StatusPill status={en.status} /></td>
+                        <td className="px-4 py-3 text-xs text-white/60">
+                          {en.certificate_issued ? <span className="text-emerald-300">{t("✓ صادرة", "✓ Issued")}</span> : "—"}
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex gap-1.5 flex-wrap">
+                            {en.status === "pending" && (
+                              <>
+                                <button onClick={() => setStatus(en.id, "approved")} className="text-xs px-2.5 h-8 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30">{t("قبول", "Approve")}</button>
+                                <button onClick={() => setStatus(en.id, "rejected")} className="text-xs px-2.5 h-8 rounded-lg bg-rose-500/20 text-rose-300 border border-rose-500/30 hover:bg-rose-500/30">{t("رفض", "Reject")}</button>
+                              </>
+                            )}
+                            <button onClick={() => onOpen(en)} className="text-xs px-2.5 h-8 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold">{t("إدارة", "Manage")}</button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function BannedPanel({ enrollments, refresh }: { enrollments: EnrollmentRow[]; refresh: () => void }) {
+  const { lang } = useI18n();
+  const t = (a: string, b: string) => (lang === "ar" ? a : b);
+  // Unique users that are account_blocked
+  const seen = new Set<string>();
+  const banned: EnrollmentRow[] = [];
+  for (const e of enrollments) {
+    if (e.profiles?.account_blocked && !seen.has(e.user_id)) {
+      seen.add(e.user_id);
+      banned.push(e);
+    }
+  }
+
+  async function unban(userId: string) {
+    if (!confirm(t("إعادة تفعيل حساب هذا المتدرب؟", "Reactivate this trainee's account?"))) return;
+    const { error } = await supabase.from("profiles").update({ account_blocked: false } as any).eq("id", userId);
+    if (error) return toast.error(error.message);
+    toast.success(t("تم إلغاء الحظر", "Account unbanned"));
+    refresh();
+  }
+
+  if (banned.length === 0) {
+    return <div className="rounded-2xl border border-dashed border-white/15 p-10 text-center text-white/50">{t("لا يوجد متدربون موقوفون.", "No banned trainees.")}</div>;
+  }
+
+  return (
+    <div className="rounded-2xl border border-rose-300/20 bg-rose-300/5 overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="bg-white/5 text-xs text-white/60 uppercase">
+          <thead className="bg-rose-300/10 text-xs text-rose-200/80 uppercase">
             <tr>
               <th className="px-4 py-3 text-right font-medium">{t("المتدرب", "Trainee")}</th>
-              <th className="px-4 py-3 text-right font-medium">{t("الكورس", "Course")}</th>
-              <th className="px-4 py-3 text-right font-medium">{t("الحالة", "Status")}</th>
-              <th className="px-4 py-3 text-right font-medium">{t("الشهادة", "Certificate")}</th>
+              <th className="px-4 py-3 text-right font-medium">{t("الدولة", "Country")}</th>
               <th className="px-4 py-3 text-right font-medium">{t("إجراء", "Action")}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
-            {enrollments.map((en) => (
-              <tr key={en.id} className={`hover:bg-white/[0.02] ${en.status === "pending" ? "bg-amber-300/[0.04]" : ""}`}>
-                <td className="px-4 py-3">
-                  <div className="font-medium">{en.profiles?.full_name || "—"}</div>
-                  <div className="text-xs text-white/50">{en.profiles?.email}</div>
-                  <div className="text-xs text-white/40">{en.profiles?.phone}</div>
-                </td>
-                <td className="px-4 py-3">{en.courses?.title}</td>
-                <td className="px-4 py-3">
-                  <StatusPill status={en.status} />
-                </td>
-                <td className="px-4 py-3 text-xs text-white/60">
-                  {en.certificate_issued ? <span className="text-emerald-300">{t("✓ صادرة", "✓ Issued")}</span> : "—"}
-                </td>
-                <td className="px-4 py-3">
-                  <div className="flex gap-1.5 flex-wrap">
-                    {en.status === "pending" && (
-                      <>
-                        <button onClick={() => setStatus(en.id, "approved")} className="text-xs px-2.5 h-8 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30">{t("قبول", "Approve")}</button>
-                        <button onClick={() => setStatus(en.id, "rejected")} className="text-xs px-2.5 h-8 rounded-lg bg-rose-500/20 text-rose-300 border border-rose-500/30 hover:bg-rose-500/30">{t("رفض", "Reject")}</button>
-                      </>
-                    )}
-                    <button onClick={() => onOpen(en)} className="text-xs px-2.5 h-8 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold">{t("إدارة", "Manage")}</button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {banned.map((en) => {
+              const country = findCountry(en.profiles?.country);
+              return (
+                <tr key={en.user_id} className="hover:bg-white/[0.02]">
+                  <td className="px-4 py-3">
+                    <div className="font-medium">{en.profiles?.full_name || "—"}</div>
+                    <div className="text-xs text-white/50">{en.profiles?.email}</div>
+                    <div className="text-xs text-white/40" dir="ltr">{en.profiles?.phone}</div>
+                  </td>
+                  <td className="px-4 py-3 text-xs">
+                    {country ? (
+                      <span className="inline-flex items-center gap-1.5">
+                        <span className="text-base">{country.flag}</span>
+                        <span className="text-white/80">{lang === "ar" ? country.name_ar : country.name_en}</span>
+                      </span>
+                    ) : <span className="text-white/40">—</span>}
+                  </td>
+                  <td className="px-4 py-3">
+                    <button onClick={() => unban(en.user_id)} className="text-xs px-3 h-8 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold">
+                      {t("✓ إلغاء الحظر", "✓ Unban")}
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -784,7 +925,7 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
   }
   useEffect(() => { refreshLists(); }, [enrollment.id]);
 
-  const totalPaid = payments.reduce((s, p) => s + Number(p.amount || 0), 0);
+  const totalPaid = payments.filter((p) => p.status !== "rejected" && p.status !== "pending").reduce((s, p) => s + Number(p.amount || 0), 0);
   const rawPrice = Number(enrollment.courses?.price ?? 0);
   const discount = Number((enrollment as any).discount_amount ?? 0);
   const coursePrice = Math.max(0, rawPrice - discount);
@@ -951,6 +1092,9 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
           <section className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm space-y-1.5">
             <div className="flex justify-between"><span className="text-white/50">{t("البريد", "Email")}</span><span dir="ltr">{enrollment.profiles?.email}</span></div>
             <div className="flex justify-between"><span className="text-white/50">{t("الهاتف", "Phone")}</span><span dir="ltr">{enrollment.profiles?.phone || "—"}</span></div>
+            <div className="flex justify-between"><span className="text-white/50">{t("الدولة", "Country")}</span>
+              <span>{(() => { const c = findCountry(enrollment.profiles?.country); return c ? `${c.flag} ${lang === "ar" ? c.name_ar : c.name_en}` : "—"; })()}</span>
+            </div>
             <div className="flex justify-between items-center"><span className="text-white/50">{t("الحالة", "Status")}</span><StatusPill status={enrollment.status} /></div>
             {blocked && <div className="flex justify-between items-center"><span className="text-white/50">{t("الوصول", "Access")}</span><span className="text-xs px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">{t("محظور مؤقتاً", "Temporarily blocked")}</span></div>}
             <div className="flex justify-between"><span className="text-white/50">{t("سعر الكورس", "Course price")}</span>
@@ -1056,14 +1200,41 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
             <ul className="space-y-1.5">
               {payments.length === 0 ? <li className="text-xs text-white/40">{t("لا توجد مدفوعات", "No payments")}</li> :
                 payments.map((p) => (
-                  <li key={p.id} className="flex items-center justify-between text-sm bg-white/5 rounded-lg px-3 py-2 border border-white/10 gap-3">
-                    <span className="font-semibold">{Number(p.amount).toLocaleString()} {p.currency}</span>
-                    <span className="text-xs text-white/50 flex-1 truncate">{p.note}</span>
-                    <span className="text-xs text-white/40">{new Date(p.paid_at).toLocaleDateString("ar-EG")}</span>
-                    <button onClick={() => delPay(p.id)} className="text-rose-300/70 hover:text-rose-300"><Trash2 className="w-3.5 h-3.5" /></button>
+                  <li key={p.id} className={`text-sm rounded-lg px-3 py-2 border gap-3 ${p.status === "pending" ? "bg-amber-300/10 border-amber-300/30" : p.status === "rejected" ? "bg-rose-500/10 border-rose-500/30 opacity-70" : "bg-white/5 border-white/10"}`}>
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="font-semibold">{Number(p.amount).toLocaleString()} {p.currency}</span>
+                      <span className="text-xs text-white/50 flex-1 truncate">{p.note}</span>
+                      <span className="text-xs text-white/40">{new Date(p.paid_at).toLocaleDateString("ar-EG")}</span>
+                      <button onClick={() => delPay(p.id)} className="text-rose-300/70 hover:text-rose-300"><Trash2 className="w-3.5 h-3.5" /></button>
+                    </div>
+                    {p.status === "pending" && (
+                      <div className="mt-2 flex items-center gap-2 flex-wrap">
+                        <span className="text-[11px] px-2 py-0.5 rounded bg-amber-300/20 text-amber-200 border border-amber-300/30">{t("بانتظار المراجعة", "Pending review")}</span>
+                        {p.proof_url && (
+                          <ProofLink path={p.proof_url} label={t("عرض الإيصال", "View proof")} />
+                        )}
+                        <button onClick={async () => { await supabase.from("payments").update({ status: "approved" } as any).eq("id", p.id); toast.success(t("تم اعتماد الدفعة", "Payment approved")); refreshLists(); }} className="text-[11px] px-2.5 h-7 rounded bg-emerald-500/25 text-emerald-200 border border-emerald-500/40 font-semibold">{t("اعتماد", "Approve")}</button>
+                        <button onClick={async () => { await supabase.from("payments").update({ status: "rejected" } as any).eq("id", p.id); toast.success(t("تم رفض الدفعة", "Payment rejected")); refreshLists(); }} className="text-[11px] px-2.5 h-7 rounded bg-rose-500/25 text-rose-200 border border-rose-500/40 font-semibold">{t("رفض", "Reject")}</button>
+                      </div>
+                    )}
+                    {p.status === "rejected" && (
+                      <div className="mt-1 text-[11px] text-rose-300">{t("مرفوضة — لا تُحتسب", "Rejected — not counted")}</div>
+                    )}
                   </li>
                 ))}
             </ul>
+            {!fullyPaid && coursePrice > 0 && (
+              <button
+                onClick={async () => {
+                  await supabase.from("enrollments").update({ payment_reminder_dismissed_at: new Date().toISOString() } as any).eq("id", enrollment.id);
+                  toast.success(t("تم إخفاء تذكير الدفع للمتدرب", "Trainee payment reminder cleared"));
+                  refresh();
+                }}
+                className="mt-3 w-full h-10 rounded-lg text-xs font-semibold bg-white/5 border border-white/15 text-white/70 hover:bg-white/10"
+              >
+                {t("✓ تأكيد استلام الدفعة وإيقاف تذكير المتدرب", "✓ Confirm receipt & dismiss trainee reminder")}
+              </button>
+            )}
           </section>
 
           <section>
@@ -1536,3 +1707,18 @@ function NewCouponModal({ courses, onClose, onSaved }: { courses: Course[]; onCl
   );
 }
 
+
+function ProofLink({ path, label }: { path: string; label: string }) {
+  const [url, setUrl] = useState<string | null>(null);
+  useEffect(() => {
+    supabase.storage.from("payment-proofs").createSignedUrl(path, 300)
+      .then(({ data }) => setUrl(data?.signedUrl ?? null));
+  }, [path]);
+  if (!url) return <span className="text-[11px] text-white/40">…</span>;
+  return (
+    <a href={url} target="_blank" rel="noreferrer"
+      className="text-[11px] px-2 h-7 inline-flex items-center gap-1 rounded bg-sky-500/20 text-sky-200 border border-sky-500/40">
+      <Paperclip className="w-3 h-3" /> {label}
+    </a>
+  );
+}

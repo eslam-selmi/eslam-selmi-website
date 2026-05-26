@@ -31,11 +31,12 @@ type Course = {
   total_hours: number | null;
 };
 type Enrollment = {
-  id: string; course_id: string; status: "pending" | "approved" | "rejected";
+  id: string; user_id: string; course_id: string; status: "pending" | "approved" | "rejected";
   certificate_url: string | null; certificate_issued: boolean; notes: string | null;
   name_ar: string | null; name_en: string | null;
   certificate_url_ar: string | null; certificate_url_en: string | null;
   certificate_requested_at: string | null;
+  payment_reminder_dismissed_at: string | null;
   courses: Course | null;
 };
 type Profile = { full_name: string | null; email: string | null; phone: string | null; account_blocked?: boolean };
@@ -395,7 +396,7 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
   }
   useEffect(() => { load(); }, [c.id, enrollment.id]);
 
-  const totalPaid = payments.reduce((s, p) => s + Number(p.amount), 0);
+  const totalPaid = payments.filter((p) => p.status !== "rejected" && p.status !== "pending").reduce((s, p) => s + Number(p.amount), 0);
   const coursePrice = Number(c.price ?? 0);
   const completedCount = modules.filter((m) => m.completed_by_admin).length;
   const progressPct = modules.length ? Math.round((completedCount / modules.length) * 100) : 0;
@@ -553,13 +554,16 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
           {payments.length === 0 ? <p className="text-xs text-white/40">{isAr ? "لا توجد مدفوعات مسجلة بعد." : "No payments recorded yet."}</p> :
             <ul className="space-y-1.5">
               {payments.map((p) => (
-                <li key={p.id} className="flex justify-between text-xs bg-white/5 rounded px-2.5 py-2">
+                <li key={p.id} className={`flex justify-between items-center text-xs rounded px-2.5 py-2 ${p.status === "pending" ? "bg-amber-300/10 border border-amber-300/30" : p.status === "rejected" ? "bg-rose-500/10 border border-rose-500/30 opacity-70" : "bg-white/5"}`}>
                   <span className="font-semibold">{Number(p.amount).toLocaleString()} {p.currency}</span>
+                  {p.status === "pending" && <span className="text-amber-300">{isAr ? "بانتظار التأكيد" : "Awaiting confirmation"}</span>}
+                  {p.status === "rejected" && <span className="text-rose-300">{isAr ? "مرفوضة" : "Rejected"}</span>}
                   <span className="text-white/40">{new Date(p.paid_at).toLocaleDateString(isAr ? "ar-EG" : "en-GB")}</span>
                 </li>
               ))}
             </ul>
           }
+          <ProofUploader enrollmentId={enrollment.id} userId={enrollment.user_id ?? ""} currency={c.currency} onUploaded={load} isAr={isAr} />
           {installments.length > 0 && (
             <>
               <p className="text-xs text-white/50 mt-4 mb-2">{isAr ? "الأقساط" : "Installments"}</p>
@@ -1038,6 +1042,60 @@ function EnrollModal({ course, onClose, onConfirm }: { course: Course; onClose: 
         </div>
       </div>
 
+    </div>
+  );
+}
+
+function ProofUploader({ enrollmentId, userId, currency, onUploaded, isAr }: { enrollmentId: string; userId: string; currency: string; onUploaded: () => void; isAr: boolean }) {
+  const [amount, setAmount] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function submit() {
+    if (!amount || !file) {
+      toast.error(isAr ? "أدخل المبلغ وصورة الإيصال" : "Enter amount and proof image");
+      return;
+    }
+    setBusy(true);
+    try {
+      const path = `${userId}/${enrollmentId}-${Date.now()}-${file.name}`;
+      const { error: upErr } = await supabase.storage.from("payment-proofs").upload(path, file);
+      if (upErr) throw upErr;
+      const { error: insErr } = await supabase.from("payments").insert({
+        enrollment_id: enrollmentId,
+        amount: Number(amount),
+        currency,
+        proof_url: path,
+        status: "pending",
+        submitted_by: userId,
+        note: isAr ? "إيصال من المتدرب" : "Trainee proof",
+      } as any);
+      if (insErr) throw insErr;
+      toast.success(isAr ? "تم إرسال إيصال الدفع، بانتظار اعتماد الإدارة" : "Proof submitted, awaiting admin approval");
+      setAmount(""); setFile(null);
+      onUploaded();
+    } catch (e: any) {
+      toast.error(e?.message ?? (isAr ? "حدث خطأ" : "Error"));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="mt-4 rounded-xl border border-[var(--gold)]/25 bg-[var(--gold)]/5 p-3 space-y-2">
+      <p className="text-xs font-semibold text-[var(--gold)]">{isAr ? "📤 إرسال إيصال دفع" : "📤 Submit payment proof"}</p>
+      <div className="flex gap-2">
+        <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder={isAr ? "المبلغ" : "Amount"}
+          className="flex-1 h-9 px-3 rounded-lg bg-white/5 border border-white/15 text-sm" />
+        <span className="h-9 px-3 inline-flex items-center text-xs text-white/60 bg-white/5 rounded-lg border border-white/10">{currency}</span>
+      </div>
+      <input type="file" accept="image/*,.pdf" onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+        className="block w-full text-xs file:me-2 file:px-3 file:py-1.5 file:rounded file:border-0 file:bg-white/10 file:text-white" />
+      <button onClick={submit} disabled={busy}
+        className="w-full h-9 rounded-lg text-xs font-semibold disabled:opacity-50"
+        style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
+        {busy ? (isAr ? "جاري الإرسال..." : "Submitting...") : (isAr ? "إرسال الإيصال للمراجعة" : "Send proof for review")}
+      </button>
     </div>
   );
 }
