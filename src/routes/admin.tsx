@@ -1905,9 +1905,17 @@ function TrainersPanel({ courses }: { courses: Course[] }) {
   }
   useEffect(() => { refresh(); }, []);
 
+  function isStrongPwd(p: string) {
+    return p.length >= 10 && /[A-Z]/.test(p) && /[a-z]/.test(p) && /[0-9]/.test(p) && /[^A-Za-z0-9]/.test(p);
+  }
+
   async function handleCreate() {
-    if (!name.trim() || !email.trim() || pwd.length < 8) {
-      toast.error(t("الرجاء إكمال البيانات (كلمة مرور 8 أحرف على الأقل).", "Fill all fields (password ≥ 8 chars)."));
+    if (!name.trim() || !email.trim()) {
+      toast.error(t("الرجاء إكمال البيانات.", "Fill all fields."));
+      return;
+    }
+    if (!isStrongPwd(pwd)) {
+      toast.error(t("كلمة المرور ضعيفة: 10+ حروف وتشمل حرف كبير وصغير ورقم ورمز.", "Weak password: 10+ chars incl. upper, lower, digit, symbol."));
       return;
     }
     setBusy(true);
@@ -1919,7 +1927,12 @@ function TrainersPanel({ courses }: { courses: Course[] }) {
       setName(""); setEmail(""); setPwd(""); setPickedCourses([]); setShowCreate(false);
       await refresh();
     } catch (e: any) {
-      toast.error(e?.message || t("فشل الإنشاء", "Creation failed"));
+      const msg = String(e?.message || "");
+      if (msg.toLowerCase().includes("weak")) {
+        toast.error(t("كلمة المرور معروفة وضعيفة. اختر كلمة مرور أقوى وغير شائعة.", "Password is known/weak. Choose a stronger, uncommon password."));
+      } else {
+        toast.error(msg || t("فشل الإنشاء", "Creation failed"));
+      }
     } finally { setBusy(false); }
   }
 
@@ -1936,12 +1949,21 @@ function TrainersPanel({ courses }: { courses: Course[] }) {
   }
 
   async function handleResetPassword(trainerId: string) {
-    const newPwd = window.prompt(t("كلمة المرور المؤقتة الجديدة (8+ حروف). سيُطلب من المدرّب تغييرها فوراً.", "New temporary password (8+ chars). The trainer will be forced to change it."));
-    if (!newPwd || newPwd.length < 8) return;
+    const newPwd = window.prompt(t("كلمة مرور مؤقتة قوية (10+ حروف، حرف كبير/صغير/رقم/رمز).", "Strong temporary password (10+ chars, upper/lower/digit/symbol)."));
+    if (!newPwd) return;
+    if (!isStrongPwd(newPwd)) {
+      toast.error(t("كلمة المرور ضعيفة. اختر كلمة أقوى.", "Weak password. Choose a stronger one."));
+      return;
+    }
     try {
       await resetTrainerPassword({ data: { user_id: trainerId, password: newPwd } });
       toast.success(t("تم تحديث كلمة المرور", "Password updated"));
-    } catch (e: any) { toast.error(e?.message || "Failed"); }
+    } catch (e: any) {
+      const msg = String(e?.message || "");
+      toast.error(msg.toLowerCase().includes("weak")
+        ? t("كلمة المرور معروفة وضعيفة. اختر كلمة أقوى وغير شائعة.", "Password is known/weak. Choose a stronger one.")
+        : (msg || "Failed"));
+    }
   }
 
   async function handleSuspend(trainerId: string, suspended: boolean) {
