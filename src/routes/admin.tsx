@@ -1707,3 +1707,18 @@ function NewCouponModal({ courses, onClose, onSaved }: { courses: Course[]; onCl
   );
 }
 
+
+function ProofLink({ path, label }: { path: string; label: string }) {
+  const [url, setUrl] = useState<string | null>(null);
+  useEffect(() => {
+    supabase.storage.from("payment-proofs").createSignedUrl(path, 300)
+      .then(({ data }) => setUrl(data?.signedUrl ?? null));
+  }, [path]);
+  if (!url) return <span className="text-[11px] text-white/40">…</span>;
+  return (
+    <a href={url} target="_blank" rel="noreferrer"
+      className="text-[11px] px-2 h-7 inline-flex items-center gap-1 rounded bg-sky-500/20 text-sky-200 border border-sky-500/40">
+      <Paperclip className="w-3 h-3" /> {label}
+    </a>
+  );
+}
