@@ -37,10 +37,13 @@ type Submission = {
 };
 
 function TrainerPage() {
-  const { user, role, loading } = useAuth();
+  const { user, role, loading, forcePasswordReset } = useAuth();
   const nav = useNavigate();
   const { lang } = useI18n();
   const t = (a: string, b: string) => (lang === "ar" ? a : b);
+  const [resetDone, setResetDone] = useState(false);
+  const mustReset = forcePasswordReset && !resetDone;
+
 
   const [courses, setCourses] = useState<Course[]>([]);
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
