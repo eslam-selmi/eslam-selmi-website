@@ -165,7 +165,7 @@ function Seal({ lang }: { lang: "ar" | "en" }) {
   );
 }
 
-function CertificateCard({ p }: { p: CertificatePayload }) {
+function CertificateCard({ p, qrDataUrl, verifyUrl }: { p: CertificatePayload; qrDataUrl?: string; verifyUrl?: string }) {
   const t = COPY[p.lang];
   const dateStr =
     p.lang === "ar"
