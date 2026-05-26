@@ -605,7 +605,14 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
               ))}
             </ul>
           }
-          <ProofUploader enrollmentId={enrollment.id} userId={enrollment.user_id ?? ""} currency={c.currency} onUploaded={load} isAr={isAr} />
+          <ProofUploader
+            enrollmentId={enrollment.id}
+            userId={enrollment.user_id ?? ""}
+            currency={c.currency}
+            remaining={Math.max(0, coursePrice - Number((enrollment as any).discount_amount || 0) - totalPaid)}
+            onUploaded={load}
+            isAr={isAr}
+          />
           {installments.length > 0 && (
             <>
               <p className="text-xs text-white/50 mt-4 mb-2">{isAr ? "الأقساط" : "Installments"}</p>
@@ -877,10 +884,14 @@ type Assignment = {
   id: string; module_id: string; course_id: string;
   title: string; instructions: string | null;
   due_date: string | null; max_score: number;
+  is_graduation_project?: boolean;
+  is_visible?: boolean;
+  reference_url?: string | null;
 };
 type Submission = {
   id: string; assignment_id: string; user_id: string;
   content: string | null; link: string | null;
+  file_path?: string | null;
   score: number | null; feedback: string | null;
   submitted_at: string; graded_at: string | null;
 };
@@ -908,7 +919,6 @@ function AssignmentsSection({ courseId }: { courseId: string }) {
   }
   useEffect(() => { load(); }, [courseId, user?.id]);
 
-  // realtime
   useEffect(() => {
     if (!user) return;
     const ch = supabase.channel(`assignments-${courseId}-${user.id}`)
@@ -919,46 +929,93 @@ function AssignmentsSection({ courseId }: { courseId: string }) {
   }, [courseId, user?.id]);
 
   if (loading) return null;
-  if (assignments.length === 0) return null;
+  // Hide invisible assignments from trainees
+  const visible = assignments.filter((a) => a.is_visible !== false);
+  const regular = visible.filter((a) => !a.is_graduation_project);
+  const grad = visible.filter((a) => !!a.is_graduation_project);
+  if (visible.length === 0) return null;
 
   return (
-    <section>
-      <h2 className="text-lg font-bold mb-3 flex items-center gap-2"><FileText className="w-5 h-5 text-[var(--gold)]" /> {isAr ? "التكليفات" : "Assignments"}</h2>
-      <div className="space-y-3">
-        {assignments.map((a) => (
-          <AssignmentCard key={a.id} a={a} sub={subs[a.id]} userId={user!.id} onChange={load} />
-        ))}
-      </div>
+    <section className="space-y-6">
+      {regular.length > 0 && (
+        <div>
+          <h2 className="text-lg font-bold mb-3 flex items-center gap-2"><FileText className="w-5 h-5 text-[var(--gold)]" /> {isAr ? "التكليفات" : "Assignments"}</h2>
+          <div className="space-y-3">
+            {regular.map((a) => (
+              <AssignmentCard key={a.id} a={a} sub={subs[a.id]} userId={user!.id} onChange={load} />
+            ))}
+          </div>
+        </div>
+      )}
+      {grad.length > 0 && (
+        <div>
+          <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
+            <Award className="w-5 h-5 text-[var(--gold)]" /> {isAr ? "مشروع التخرّج (Capstone)" : "Capstone Graduation Project"}
+          </h2>
+          <div className="space-y-3">
+            {grad.map((a) => (
+              <AssignmentCard key={a.id} a={a} sub={subs[a.id]} userId={user!.id} onChange={load} />
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   );
 }
 
+const GRAD_ALLOWED_EXT = ["pdf", "zip", "rar", "pptx"];
+const GRAD_MAX_BYTES = 20 * 1024 * 1024;
 
 function AssignmentCard({ a, sub, userId, onChange }: { a: Assignment; sub: Submission | undefined; userId: string; onChange: () => void }) {
   const { lang } = useI18n();
   const isAr = lang === "ar";
   const [content, setContent] = useState(sub?.content ?? "");
   const [link, setLink] = useState(sub?.link ?? "");
+  const [file, setFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
   const overdue = a.due_date && new Date(a.due_date) < new Date() && !sub;
   const graded = sub && sub.score !== null;
+  const isGrad = !!a.is_graduation_project;
 
   async function submit() {
-    if (!content.trim() && !link.trim()) return toast.error(isAr ? "اكتب إجابة أو ضع رابط" : "Write an answer or paste a link");
-    setSaving(true);
-    if (sub) {
-      const { error } = await supabase.from("assignment_submissions")
-        .update({ content: content || null, link: link || null, submitted_at: new Date().toISOString() })
-        .eq("id", sub.id);
-      if (error) { setSaving(false); return toast.error(error.message); }
-    } else {
-      const { error } = await supabase.from("assignment_submissions")
-        .insert({ assignment_id: a.id, user_id: userId, content: content || null, link: link || null });
-      if (error) { setSaving(false); return toast.error(error.message); }
+    if (!isGrad) {
+      if (!content.trim() && !link.trim()) return toast.error(isAr ? "اكتب إجابة أو ضع رابط" : "Write an answer or paste a link");
     }
-    toast.success(isAr ? "تم إرسال التسليم" : "Submission sent");
-    setSaving(false);
-    onChange();
+    setSaving(true);
+    let uploadedPath: string | null = sub?.file_path ?? null;
+    try {
+      if (isGrad && file) {
+        const ext = (file.name.split(".").pop() || "").toLowerCase();
+        if (!GRAD_ALLOWED_EXT.includes(ext)) {
+          setSaving(false);
+          return toast.error(isAr ? "الامتدادات المسموح بها: pdf, zip, rar, pptx" : "Allowed extensions: pdf, zip, rar, pptx");
+        }
+        if (file.size > GRAD_MAX_BYTES) {
+          setSaving(false);
+          return toast.error(isAr ? "الحد الأقصى لحجم الملف 20 ميجابايت" : "Max file size is 20MB");
+        }
+        const path = `${a.course_id}/${userId}/${a.id}/${Date.now()}-${file.name}`;
+        const { error: upErr } = await supabase.storage.from("assignment-files").upload(path, file, { upsert: true });
+        if (upErr) { setSaving(false); return toast.error(upErr.message); }
+        uploadedPath = path;
+      }
+
+      if (sub) {
+        const { error } = await supabase.from("assignment_submissions")
+          .update({ content: content || null, link: link || null, file_path: uploadedPath, submitted_at: new Date().toISOString() } as any)
+          .eq("id", sub.id);
+        if (error) { setSaving(false); return toast.error(error.message); }
+      } else {
+        const { error } = await supabase.from("assignment_submissions")
+          .insert({ assignment_id: a.id, user_id: userId, content: content || null, link: link || null, file_path: uploadedPath } as any);
+        if (error) { setSaving(false); return toast.error(error.message); }
+      }
+      toast.success(isAr ? "تم إرسال التسليم" : "Submission sent");
+      setFile(null);
+      onChange();
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -967,6 +1024,11 @@ function AssignmentCard({ a, sub, userId, onChange }: { a: Assignment; sub: Subm
         <div className="flex-1 min-w-0">
           <h4 className="font-bold flex items-center gap-2"><FileText className="w-4 h-4 text-[var(--gold)]" /> {a.title}</h4>
           {a.instructions && <p className="text-sm text-white/65 mt-2 whitespace-pre-wrap">{a.instructions}</p>}
+          {a.reference_url && (
+            <a href={a.reference_url} target="_blank" rel="noopener" className="mt-2 inline-flex items-center gap-1 text-xs text-sky-300 hover:underline">
+              <LinkIcon className="w-3 h-3" /> {isAr ? "مرجع خارجي" : "External reference"} <ExternalLink className="w-3 h-3" />
+            </a>
+          )}
           <div className="flex flex-wrap gap-3 mt-2 text-[11px] text-white/55">
             {a.due_date && <span className={overdue ? "text-rose-300" : ""}><Calendar className="inline w-3 h-3 me-1" />{new Date(a.due_date).toLocaleDateString(isAr ? "ar-EG" : "en-GB")}</span>}
             <span>{isAr ? "درجة قصوى" : "Max score"}: <span className="text-[var(--gold)]">{a.max_score}</span></span>
@@ -993,10 +1055,43 @@ function AssignmentCard({ a, sub, userId, onChange }: { a: Assignment; sub: Subm
             placeholder={isAr ? "اكتب إجابتك أو وصف تسليمك..." : "Write your answer or describe your submission..."}
             rows={3}
             className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/15 text-sm focus:outline-none focus:border-[var(--gold)]/60" />
-          <input value={link} onChange={(e) => setLink(e.target.value)}
-            placeholder={isAr ? "رابط (Drive / GitHub / ...)" : "Link (Drive / GitHub / ...)"} dir="ltr"
-            className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/15 text-sm focus:outline-none focus:border-[var(--gold)]/60" />
-          <div className="flex items-center justify-between">
+
+          {isGrad ? (
+            <>
+              <div>
+                <label className="text-[11px] text-white/60 block mb-1">
+                  {isAr ? "ملف المشروع (pdf / zip / rar / pptx — حد أقصى 20MB)" : "Project file (pdf / zip / rar / pptx — max 20MB)"}
+                </label>
+                <input
+                  type="file"
+                  accept=".pdf,.zip,.rar,.pptx"
+                  onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                  className="block w-full text-xs file:me-2 file:px-3 file:py-1.5 file:rounded file:border-0 file:bg-white/10 file:text-white"
+                />
+                {sub?.file_path && !file && (
+                  <p className="text-[11px] text-emerald-300 mt-1">
+                    ✓ {isAr ? "تم رفع ملف سابق — يمكنك استبداله بملف جديد" : "Previous file uploaded — you can replace it"}
+                  </p>
+                )}
+              </div>
+              <input value={link} onChange={(e) => setLink(e.target.value)}
+                placeholder={isAr ? "رابط إضافي اختياري (Google Drive / OneDrive / ...)" : "Optional extra link (Google Drive / OneDrive / ...)"} dir="ltr"
+                className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/15 text-sm focus:outline-none focus:border-[var(--gold)]/60" />
+            </>
+          ) : (
+            <>
+              <input value={link} onChange={(e) => setLink(e.target.value)}
+                placeholder={isAr ? "رابط التسليم (Google Drive / OneDrive)" : "Submission link (Google Drive / OneDrive)"} dir="ltr"
+                className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/15 text-sm focus:outline-none focus:border-[var(--gold)]/60" />
+              <p className="text-[11px] text-white/55 leading-relaxed">
+                {isAr
+                  ? "برجاء التأكد من ضبط إعدادات مشاركة الرابط ليكون 'عام / لأي شخص يمتلك الرابط' قبل إرفاقه، لضمان مراجعته واعتماده بنجاح."
+                  : "Please make sure the link sharing setting is 'Public / Anyone with the link' before submitting, so the trainer can review and approve it."}
+              </p>
+            </>
+          )}
+
+          <div className="flex items-center justify-between gap-2 flex-wrap">
             <p className="text-[11px] text-white/50">
               {sub ? (isAr ? `آخر تسليم: ${new Date(sub.submitted_at).toLocaleString("ar-EG")} — يمكنك تعديله حتى يتم التقييم`
                           : `Last submitted: ${new Date(sub.submitted_at).toLocaleString("en-GB")} — editable until graded`)
@@ -1008,6 +1103,7 @@ function AssignmentCard({ a, sub, userId, onChange }: { a: Assignment; sub: Subm
             </button>
           </div>
         </div>
+
       )}
     </div>
   );
@@ -1132,7 +1228,10 @@ function EnrollModal({ course, onClose, onConfirm }: { course: Course; onClose: 
   );
 }
 
-function ProofUploader({ enrollmentId, userId, currency, onUploaded, isAr }: { enrollmentId: string; userId: string; currency: string; onUploaded: () => void; isAr: boolean }) {
+const PROOF_ALLOWED_EXT = ["jpg", "jpeg", "png", "pdf"];
+const PROOF_MAX_BYTES = 5 * 1024 * 1024;
+
+function ProofUploader({ enrollmentId, userId, currency, remaining, onUploaded, isAr }: { enrollmentId: string; userId: string; currency: string; remaining: number; onUploaded: () => void; isAr: boolean }) {
   const [amount, setAmount] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
@@ -1140,13 +1239,26 @@ function ProofUploader({ enrollmentId, userId, currency, onUploaded, isAr }: { e
   const [selected, setSelected] = useState<any | null>(null);
 
   useEffect(() => {
+    if (remaining <= 0) return;
     supabase.from("payment_methods" as any).select("*").eq("active", true).order("order_index")
       .then(({ data }) => setMethods((data as any[]) ?? []));
-  }, []);
+  }, [remaining]);
+
+  // Hide uploader entirely when nothing is owed
+  if (remaining <= 0) return null;
 
   async function submit() {
     if (!selected) { toast.error(isAr ? "اختر طريقة الدفع أولاً" : "Select a payment method first"); return; }
     if (!amount || !file) { toast.error(isAr ? "أدخل المبلغ وصورة الإيصال" : "Enter amount and proof image"); return; }
+    const ext = (file.name.split(".").pop() || "").toLowerCase();
+    if (!PROOF_ALLOWED_EXT.includes(ext)) {
+      toast.error(isAr ? "الامتدادات المسموح بها: jpg, jpeg, png, pdf" : "Allowed extensions: jpg, jpeg, png, pdf");
+      return;
+    }
+    if (file.size > PROOF_MAX_BYTES) {
+      toast.error(isAr ? "الحد الأقصى لحجم الملف 5 ميجابايت" : "Max file size is 5MB");
+      return;
+    }
     setBusy(true);
     try {
       const path = `${userId}/${enrollmentId}-${Date.now()}-${file.name}`;
@@ -1212,8 +1324,9 @@ function ProofUploader({ enrollmentId, userId, currency, onUploaded, isAr }: { e
                   className="flex-1 h-9 px-3 rounded-lg bg-white/5 border border-white/15 text-sm" />
                 <span className="h-9 px-3 inline-flex items-center text-xs text-white/60 bg-white/5 rounded-lg border border-white/10">{currency}</span>
               </div>
-              <input type="file" accept="image/*,.pdf" onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+              <input type="file" accept=".jpg,.jpeg,.png,.pdf" onChange={(e) => setFile(e.target.files?.[0] ?? null)}
                 className="block w-full text-xs file:me-2 file:px-3 file:py-1.5 file:rounded file:border-0 file:bg-white/10 file:text-white" />
+              <p className="text-[10px] text-white/50">{isAr ? "الامتدادات المسموح بها: jpg, jpeg, png, pdf — حد أقصى 5MB" : "Allowed: jpg, jpeg, png, pdf — max 5MB"}</p>
               <button onClick={submit} disabled={busy}
                 className="w-full h-9 rounded-lg text-xs font-semibold disabled:opacity-50"
                 style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>

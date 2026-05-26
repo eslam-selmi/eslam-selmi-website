@@ -1522,22 +1522,32 @@ function CourseAssignmentsAdmin({ courseId }: { courseId: string }) {
   }
   useEffect(() => { load(); }, [courseId]);
 
+  const [refUrl, setRefUrl] = useState("");
+
   async function addAssignment() {
     if (!moduleId || !title.trim()) return toast.error(t("اختر باب وأدخل عنوان", "Select a module and enter a title"));
     const { error } = await supabase.from("assignments").insert({
       course_id: courseId, module_id: moduleId, title, instructions: instructions || null,
       due_date: due ? new Date(due).toISOString() : null, max_score: maxScore,
       is_graduation_project: isGrad,
-    });
+      reference_url: isGrad && refUrl.trim() ? refUrl.trim() : null,
+    } as any);
     if (error) return toast.error(error.message);
     toast.success(t("تم إنشاء التكليف", "Assignment created"));
-    setTitle(""); setInstructions(""); setDue(""); setMaxScore(100); setIsGrad(false);
+    setTitle(""); setInstructions(""); setDue(""); setMaxScore(100); setIsGrad(false); setRefUrl("");
     load();
   }
 
   async function delAssignment(id: string) {
     if (!confirm(t("حذف التكليف وكل تسليماته؟", "Delete assignment and all its submissions?"))) return;
     await supabase.from("assignments").delete().eq("id", id);
+    load();
+  }
+
+  async function toggleVisibility(id: string, next: boolean) {
+    const { error } = await supabase.from("assignments").update({ is_visible: next } as any).eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success(next ? t("ظاهر للمتدربين", "Visible to trainees") : t("مخفي عن المتدربين", "Hidden from trainees"));
     load();
   }
 
@@ -1576,6 +1586,10 @@ function CourseAssignmentsAdmin({ courseId }: { courseId: string }) {
           <input type="checkbox" checked={isGrad} onChange={(e) => setIsGrad(e.target.checked)} className="accent-[var(--gold)]" />
           🎓 {t("مشروع التخرّج (يُشترط اعتماده قبل إصدار الشهادة)", "Graduation project (must be approved before issuing certificate)")}
         </label>
+        {isGrad && (
+          <input value={refUrl} onChange={(e) => setRefUrl(e.target.value)} placeholder={t("رابط مرجعي خارجي (اختياري)", "External reference link (optional)")}
+            className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/15 text-sm" dir="ltr" />
+        )}
       </div>
 
       {assignments.length === 0 ? (
@@ -1584,26 +1598,41 @@ function CourseAssignmentsAdmin({ courseId }: { courseId: string }) {
         <div className="space-y-3">
           {assignments.map((a) => {
             const aSubs = subs.filter((s) => s.assignment_id === a.id);
+            const visible = a.is_visible !== false;
             return (
-              <div key={a.id} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+              <div key={a.id} className={`rounded-2xl border p-4 ${visible ? "border-white/10 bg-white/[0.03]" : "border-amber-300/30 bg-amber-300/[0.04]"}`}>
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
-                    <h5 className="font-bold flex items-center gap-2">
+                    <h5 className="font-bold flex items-center gap-2 flex-wrap">
                       {a.title}
                       {a.is_graduation_project && (
                         <span className="text-[10px] px-2 py-0.5 rounded-full bg-[var(--gold)]/20 text-[var(--gold)] border border-[var(--gold)]/40">
                           🎓 {t("مشروع التخرّج", "Graduation project")}
                         </span>
                       )}
+                      {!visible && (
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-300/20 text-amber-200 border border-amber-300/40">
+                          {t("مخفي", "Hidden")}
+                        </span>
+                      )}
                     </h5>
                     {a.instructions && <p className="text-xs text-white/55 mt-1 whitespace-pre-wrap">{a.instructions}</p>}
+                    {a.reference_url && (
+                      <a href={a.reference_url} target="_blank" rel="noopener" className="text-[11px] text-sky-300 hover:underline mt-1 inline-block" dir="ltr">{a.reference_url}</a>
+                    )}
                     <p className="text-[11px] text-white/45 mt-1">
                       {a.due_date ? `${t("تسليم", "Due")}: ${new Date(a.due_date).toLocaleString(lang === "ar" ? "ar-EG" : "en-GB")}` : t("بدون موعد", "No due date")} · {t("درجة قصوى", "Max score")} {a.max_score}
                     </p>
                   </div>
-                  <button onClick={() => delAssignment(a.id)} className="text-rose-300 hover:bg-rose-500/10 p-1.5 rounded-lg">
-                    <X className="w-4 h-4" />
-                  </button>
+                  <div className="flex items-center gap-1">
+                    <button onClick={() => toggleVisibility(a.id, !visible)}
+                      className={`text-[11px] px-2 h-7 rounded-lg border ${visible ? "bg-emerald-500/15 border-emerald-400/40 text-emerald-200" : "bg-amber-300/15 border-amber-300/40 text-amber-200"}`}>
+                      {visible ? t("ظاهر", "Visible") : t("مخفي", "Hidden")}
+                    </button>
+                    <button onClick={() => delAssignment(a.id)} className="text-rose-300 hover:bg-rose-500/10 p-1.5 rounded-lg">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
                 <div className="mt-3 border-t border-white/5 pt-3">
                   <p className="text-[11px] text-white/50 mb-2">{t("التسليمات", "Submissions")} ({aSubs.length})</p>
@@ -2862,6 +2891,9 @@ function FinancePanel({ courses, enrollments }: { courses: Course[]; enrollments
         </button>
       </div>
 
+      <BulkReceiptsTool />
+
+
       <div className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
         <table className="w-full text-sm">
           <thead className="bg-white/5 text-xs text-white/60">
@@ -2975,6 +3007,99 @@ function ExportDebtsModal({ courses, enrollments, payments, onClose }: { courses
           </button>
         </div>
       </div>
+    </div>
+  );
+}
+
+function BulkReceiptsTool() {
+  const { lang } = useI18n();
+  const t = (a: string, b: string) => (lang === "ar" ? a : b);
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState<string>("");
+
+  async function listPayments() {
+    let q = supabase.from("payments").select("id,proof_url,paid_at").not("proof_url", "is", null);
+    if (from) q = q.gte("paid_at", new Date(from).toISOString());
+    if (to) q = q.lte("paid_at", new Date(to + "T23:59:59").toISOString());
+    const { data, error } = await q.order("paid_at", { ascending: false });
+    if (error) { toast.error(error.message); return []; }
+    return (data ?? []).filter((p: any) => p.proof_url) as any[];
+  }
+
+  async function bulkDownload() {
+    setBusy(true); setProgress(t("جاري التحميل...", "Preparing..."));
+    try {
+      const items = await listPayments();
+      if (items.length === 0) { toast.error(t("لا توجد إيصالات", "No receipts found")); return; }
+      const JSZip = (await import("jszip")).default;
+      const { saveAs } = await import("file-saver");
+      const zip = new JSZip();
+      const CHUNK = 45;
+      for (let i = 0; i < items.length; i += CHUNK) {
+        const chunk = items.slice(i, i + CHUNK);
+        setProgress(`${i + chunk.length} / ${items.length}`);
+        await Promise.all(chunk.map(async (p: any) => {
+          const { data } = await supabase.storage.from("payment-proofs").createSignedUrl(p.proof_url, 300);
+          if (!data?.signedUrl) return;
+          const res = await fetch(data.signedUrl);
+          if (!res.ok) return;
+          const blob = await res.blob();
+          const name = p.proof_url.split("/").pop() || `${p.id}`;
+          zip.file(`${p.paid_at?.slice(0, 10) ?? "unknown"}_${name}`, blob);
+        }));
+      }
+      setProgress(t("ضغط الملفات...", "Compressing..."));
+      const out = await zip.generateAsync({ type: "blob" });
+      saveAs(out, `receipts-${Date.now()}.zip`);
+      toast.success(t("تم التحميل", "Download ready"));
+    } catch (e: any) {
+      toast.error(e?.message ?? "Error");
+    } finally {
+      setBusy(false); setProgress("");
+    }
+  }
+
+  async function purge() {
+    if (!confirm(t("هل أنت متأكد من حذف الإيصالات في النطاق المحدد؟", "Are you sure you want to delete receipts in this range?"))) return;
+    if (!confirm(t("تأكيد نهائي: هذا الإجراء لا يمكن التراجع عنه.", "Final confirmation: this cannot be undone."))) return;
+    setBusy(true); setProgress(t("جاري الحذف...", "Deleting..."));
+    try {
+      const items = await listPayments();
+      if (items.length === 0) { toast.error(t("لا توجد إيصالات", "No receipts found")); return; }
+      const paths = items.map((p: any) => p.proof_url as string);
+      const CHUNK = 50;
+      for (let i = 0; i < paths.length; i += CHUNK) {
+        const slice = paths.slice(i, i + CHUNK);
+        await supabase.storage.from("payment-proofs").remove(slice);
+        setProgress(`${i + slice.length} / ${paths.length}`);
+      }
+      await supabase.from("payments").update({ proof_url: null } as any).in("id", items.map((p: any) => p.id));
+      toast.success(`${t("تم حذف", "Deleted")} ${paths.length}`);
+    } catch (e: any) {
+      toast.error(e?.message ?? "Error");
+    } finally {
+      setBusy(false); setProgress("");
+    }
+  }
+
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+      <p className="text-xs font-semibold text-[var(--gold)]">{t("🗂️ أداة الإيصالات (تحميل / حذف جماعي)", "🗂️ Receipts tool (bulk download / purge)")}</p>
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+        <Input label={t("من تاريخ", "From")} type="date" value={from} onChange={setFrom} />
+        <Input label={t("إلى تاريخ", "To")} type="date" value={to} onChange={setTo} />
+        <button onClick={bulkDownload} disabled={busy}
+          className="h-11 self-end px-4 rounded-xl bg-sky-500/20 border border-sky-500/40 text-sky-200 text-sm font-semibold disabled:opacity-50">
+          {busy ? progress || "..." : t("📦 تحميل مضغوط", "📦 Bulk download")}
+        </button>
+        <button onClick={purge} disabled={busy}
+          className="h-11 self-end px-4 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-200 text-sm font-semibold disabled:opacity-50">
+          {t("🗑️ حذف من السيرفر", "🗑️ Purge storage")}
+        </button>
+      </div>
+      <p className="text-[10px] text-white/40">{t("الحذف نهائي ولا يمكن التراجع عنه. يرجى التحميل أولاً.", "Purge is permanent. Download first if needed.")}</p>
     </div>
   );
 }
