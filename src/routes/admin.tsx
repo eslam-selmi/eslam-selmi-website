@@ -2893,14 +2893,6 @@ function FinancePanel({ courses, enrollments }: { courses: Course[]; enrollments
 
       <BulkReceiptsTool />
 
-      <div className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-white/5 text-xs text-white/60">
-            <tr><th className="text-start p-3">{t("التاريخ", "Date")}</th><th className="text-start p-3">{t("المتدرب", "Trainee")}</th><th className="text-start p-3">{t("الكورس", "Course")}</th><th className="text-start p-3">{t("المبلغ", "Amount")}</th><th className="text-start p-3">{t("الطريقة", "Method")}</th><th className="text-start p-3">{t("الحالة", "Status")}</th></tr>
-          </thead>
-          <tbody>
-            {filtered.slice(0, 200).map((p) => {
-      </div>
 
       <div className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
         <table className="w-full text-sm">
