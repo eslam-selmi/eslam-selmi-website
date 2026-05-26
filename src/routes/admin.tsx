@@ -1396,6 +1396,10 @@ function CourseAssignmentsAdmin({ courseId }: { courseId: string }) {
             <Plus className="w-4 h-4 inline" /> {t("إضافة", "Add")}
           </button>
         </div>
+        <label className="flex items-center gap-2 text-xs text-white/70 cursor-pointer select-none">
+          <input type="checkbox" checked={isGrad} onChange={(e) => setIsGrad(e.target.checked)} className="accent-[var(--gold)]" />
+          🎓 {t("مشروع التخرّج (يُشترط اعتماده قبل إصدار الشهادة)", "Graduation project (must be approved before issuing certificate)")}
+        </label>
       </div>
 
       {assignments.length === 0 ? (
