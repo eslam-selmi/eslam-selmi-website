@@ -109,7 +109,38 @@ function AuthPage() {
             {mode === "signup" && (
               <>
                 <Field label="الاسم الكامل" value={fullName} onChange={setFullName} placeholder="اكتب اسمك الثلاثي" required />
-                <Field label="رقم الهاتف" value={phone} onChange={setPhone} placeholder="01xxxxxxxxx" required />
+                <label className="block">
+                  <span className="block text-xs text-white/70 mb-1.5 font-medium">الدولة</span>
+                  <select
+                    value={countryCode}
+                    onChange={(e) => setCountryCode(e.target.value)}
+                    required
+                    className="w-full h-11 px-4 rounded-xl bg-white/5 border border-white/15 text-white focus:outline-none focus:border-[var(--gold)]/60 focus:bg-white/10 transition"
+                  >
+                    {COUNTRIES.map((c) => (
+                      <option key={c.code} value={c.code} className="bg-[#0b1736]">
+                        {c.flag} {c.name_ar} ({c.dial})
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="block">
+                  <span className="block text-xs text-white/70 mb-1.5 font-medium">رقم الهاتف</span>
+                  <div className="flex gap-2" dir="ltr">
+                    <span className="h-11 px-3 rounded-xl bg-white/10 border border-white/15 text-white/80 inline-flex items-center text-sm font-mono">
+                      {findCountry(countryCode)?.dial}
+                    </span>
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="1xxxxxxxxx"
+                      required
+                      dir="ltr"
+                      className="flex-1 h-11 px-4 rounded-xl bg-white/5 border border-white/15 text-white placeholder:text-white/30 focus:outline-none focus:border-[var(--gold)]/60 focus:bg-white/10 transition"
+                    />
+                  </div>
+                </label>
               </>
             )}
             <Field type="email" label="البريد الإلكتروني" value={email} onChange={setEmail} placeholder="name@example.com" required />
