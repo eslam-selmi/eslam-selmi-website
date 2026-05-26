@@ -1010,6 +1010,7 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
 
   const [payments, setPayments] = useState<any[]>([]);
   const [installments, setInstallments] = useState<any[]>([]);
+  const [methods, setMethods] = useState<any[]>([]);
   const [uploading, setUploading] = useState(false);
   const [issued, setIssued] = useState(enrollment.certificate_issued);
 
@@ -1017,6 +1018,7 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
   const [payAmount, setPayAmount] = useState("");
   const [payCurr, setPayCurr] = useState(courseCur);
   const [payNote, setPayNote] = useState("");
+  const [payMethodId, setPayMethodId] = useState("");
 
   const [insAmount, setInsAmount] = useState("");
   const [insCurr, setInsCurr] = useState(courseCur);
