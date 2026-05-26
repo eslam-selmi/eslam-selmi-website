@@ -31,11 +31,12 @@ type Course = {
   total_hours: number | null;
 };
 type Enrollment = {
-  id: string; course_id: string; status: "pending" | "approved" | "rejected";
+  id: string; user_id: string; course_id: string; status: "pending" | "approved" | "rejected";
   certificate_url: string | null; certificate_issued: boolean; notes: string | null;
   name_ar: string | null; name_en: string | null;
   certificate_url_ar: string | null; certificate_url_en: string | null;
   certificate_requested_at: string | null;
+  payment_reminder_dismissed_at: string | null;
   courses: Course | null;
 };
 type Profile = { full_name: string | null; email: string | null; phone: string | null; account_blocked?: boolean };
