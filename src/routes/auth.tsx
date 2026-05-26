@@ -31,7 +31,7 @@ function AuthPage() {
 
   useEffect(() => {
     if (!loading && user) {
-      nav({ to: role === "admin" ? "/admin" : "/portal" });
+      nav({ to: role === "admin" ? "/admin" : role === "trainer" ? "/trainer" : "/portal" });
     }
   }, [user, role, loading, nav]);
 
