@@ -131,6 +131,8 @@ function AdminPage() {
             { id: "courses", label: `${t("الكورسات", "Courses")} (${courses.length})` },
             { id: "trainers", label: t("المدرّبون", "Trainers") },
             { id: "coupons", label: t("كوبونات الخصم", "Discount coupons") },
+            { id: "additions", label: t("أحدث الإضافات", "Latest additions") },
+
             { id: "banned", label: `${t("الموقوفون", "Banned")} (${enrollments.filter(e => e.profiles?.account_blocked).length})` },
           ].map((tb) => (
             <button
