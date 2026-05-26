@@ -129,15 +129,15 @@ const en: Dict = {
 
   // library
   library_eyebrow: "Resources",
-  library_title: "Knowledge Library",
+  library_title: "Knowledge Vault",
   library_desc: "A curated vault of e-books, frameworks, templates and resources I share with the community. Always growing, so bookmark it.",
-  library_btn: "Open the library",
+  library_btn: "Open the vault",
   library_meta: "E-books · Templates · Frameworks",
-  library_modal_title: "Knowledge Library",
+  library_modal_title: "Knowledge Vault",
   library_modal_desc: "Browse and download the latest resources.",
   library_open_drive: "Open in Google Drive",
   nav_courses: "Courses",
-  nav_library: "Library",
+  nav_library: "Vault",
   nav_empowerment: "New Grad?",
 
   // empowerment tools
