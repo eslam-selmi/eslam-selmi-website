@@ -108,9 +108,16 @@ export function AdminSupportPanel({ adminUserId }: { adminUserId: string }) {
   async function load() {
     const { data } = await supabase
       .from("support_tickets")
-      .select("*, profile:profiles!support_tickets_user_id_fkey(full_name,email), course:courses(title)")
+      .select("*, course:courses(title)")
       .order("last_message_at", { ascending: false });
-    setTickets((data as any) ?? []);
+    const rows = (data as any[]) ?? [];
+    const userIds = Array.from(new Set(rows.map((r) => r.user_id))).filter(Boolean);
+    let profilesMap: Record<string, { full_name: string | null; email: string | null }> = {};
+    if (userIds.length) {
+      const { data: profs } = await supabase.from("profiles").select("id, full_name, email").in("id", userIds);
+      profilesMap = Object.fromEntries((profs ?? []).map((p: any) => [p.id, { full_name: p.full_name, email: p.email }]));
+    }
+    setTickets(rows.map((r) => ({ ...r, profile: profilesMap[r.user_id] ?? null })));
     setLoading(false);
   }
 
