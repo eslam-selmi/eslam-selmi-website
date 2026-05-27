@@ -248,7 +248,7 @@ const PROGRAMS = [
     ],
   },
   {
-    track: { en: "Soft Skills", ar: "المهارات الناعمة" },
+    track: { en: "Soft Skills Management", ar: "إدارة المهارات الناعمة" },
     intro: { en: "Workshops that transform how you connect, lead, and grow.", ar: "ورش تحوّل طريقة التواصل والقيادة والنمو." },
     items: [
       { name: { en: "Communication Skills", ar: "مهارات التواصل" }, desc: { en: "Clear, persuasive, empathetic communication.", ar: "تواصل واضح ومُقنع ومتعاطف." } },
