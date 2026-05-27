@@ -40,7 +40,7 @@ function OnboardingPage() {
     if (!user) return;
     (async () => {
       const [s, p] = await Promise.all([
-        supabase.from("platform_settings").select("admin_whatsapp_e164,activation_request_template_ar,activation_request_template_en").maybeSingle(),
+        supabase.rpc("get_activation_contact"),
         supabase.from("profiles").select("full_name,email").eq("id", user.id).maybeSingle(),
       ]);
       setSettings((s.data as any) ?? null);
