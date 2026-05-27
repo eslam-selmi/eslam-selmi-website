@@ -905,6 +905,7 @@ export type Database = {
         Args: { _code: string; _enrollment_id: string }
         Returns: Json
       }
+      get_activation_contact: { Args: never; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
