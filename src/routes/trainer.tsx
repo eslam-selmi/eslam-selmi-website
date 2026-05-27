@@ -265,7 +265,7 @@ function SubmissionCard({ sub, assignment, profile, refresh, t }: {
         <div className="text-xs text-white/50 flex items-center gap-1"><Calendar className="w-3 h-3" /> {new Date(sub.submitted_at).toLocaleString()}</div>
       </div>
       {sub.content && <div className="text-sm bg-white/5 rounded-lg p-3 whitespace-pre-wrap">{sub.content}</div>}
-      {sub.link && <a href={sub.link} target="_blank" rel="noreferrer" className="text-xs text-[var(--gold)] underline">{sub.link}</a>}
+      {safeHref(sub.link) && <a href={safeHref(sub.link)!} target="_blank" rel="noreferrer" className="text-xs text-[var(--gold)] underline">{sub.link}</a>}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         <input type="number" value={score} onChange={(e) => setScore(e.target.value)}
           placeholder={`${t("الدرجة", "Score")} / ${assignment?.max_score ?? 100}`}
