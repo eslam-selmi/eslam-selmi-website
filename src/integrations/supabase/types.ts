@@ -833,6 +833,88 @@ export type Database = {
         }
         Relationships: []
       }
+      support_ticket_messages: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          sender_id: string
+          sender_role: string
+          ticket_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          sender_id: string
+          sender_role: string
+          ticket_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          sender_id?: string
+          sender_role?: string
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_ticket_messages_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "support_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      support_tickets: {
+        Row: {
+          course_id: string | null
+          created_at: string
+          id: string
+          last_message_at: string
+          status: Database["public"]["Enums"]["support_ticket_status"]
+          subject: string
+          unread_for_admin: boolean
+          unread_for_user: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          course_id?: string | null
+          created_at?: string
+          id?: string
+          last_message_at?: string
+          status?: Database["public"]["Enums"]["support_ticket_status"]
+          subject: string
+          unread_for_admin?: boolean
+          unread_for_user?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          course_id?: string | null
+          created_at?: string
+          id?: string
+          last_message_at?: string
+          status?: Database["public"]["Enums"]["support_ticket_status"]
+          subject?: string
+          unread_for_admin?: boolean
+          unread_for_user?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_tickets_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       trainer_permissions: {
         Row: {
           can_approve_enrollments: boolean
@@ -942,6 +1024,11 @@ export type Database = {
       coupon_discount_type: "percent" | "fixed"
       enrollment_status: "pending" | "approved" | "rejected"
       payment_status: "pending" | "approved" | "rejected"
+      support_ticket_status:
+        | "open"
+        | "pending_admin"
+        | "pending_user"
+        | "closed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1073,6 +1160,12 @@ export const Constants = {
       coupon_discount_type: ["percent", "fixed"],
       enrollment_status: ["pending", "approved", "rejected"],
       payment_status: ["pending", "approved", "rejected"],
+      support_ticket_status: [
+        "open",
+        "pending_admin",
+        "pending_user",
+        "closed",
+      ],
     },
   },
 } as const

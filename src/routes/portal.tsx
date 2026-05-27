@@ -12,6 +12,7 @@ import { Clock, CheckCircle2, XCircle, Download, Upload, BookOpen, Wallet, Loade
   Paperclip, Check, ChevronLeft, PlayCircle, PhoneOutgoing, Award, Linkedin, GraduationCap, Hourglass,
   FileText, Send, AlertCircle, X, Star } from "lucide-react";
 import { MediaViewerModal, type MediaItem } from "@/components/MediaViewerModal";
+import { TraineeSupportButton } from "@/components/SupportTickets";
 
 
 
@@ -247,24 +248,16 @@ function PortalPage() {
                 <span>{profile?.full_name || (lang === "ar" ? "متدرب جديد" : "New trainee")}</span>
               </h1>
               <p className="text-white/60 mt-2 max-w-xl">{lang === "ar"
-                ? "تابع كورساتك ومحاضراتك وشهاداتك ومدفوعاتك من مكان واحد. ستصلك إشعارات لحظية بأي تحديث."
-                : "Track your courses, sessions, certificates and payments in one place. You'll get live notifications for every update."}</p>
+                ? "نظرة سريعة على كورساتك وتقدمك."
+                : "A quick look at your courses and progress."}</p>
             </div>
             <div className="flex items-center gap-2">
-              <button onClick={() => setShowUpload(true)}
-                className="flex items-center gap-2 px-5 h-12 rounded-xl font-semibold transition-all hover:scale-[1.02]"
-                style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
-                <Upload className="w-4 h-4" /> {lang === "ar" ? "رفع ملفات الاختبار" : "Upload test files"}
-              </button>
-              <button onClick={() => {
-                const message = encodeURIComponent(`Hello admin, I am ${profile?.full_name || ''} (${profile?.email || ''}) requesting assistance.`);
-                const waUrl = `https://wa.me/1234567890?text=${message}`;
-                window.open(waUrl, "_blank");
-              }}
-                className="flex items-center gap-2 px-5 h-12 rounded-xl font-semibold transition-all hover:scale-[1.02]"
-                style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
-                <PhoneOutgoing className="w-4 h-4" /> {lang === "ar" ? "تفعيل واتساب" : "Activate WhatsApp"}
-              </button>
+              <TraineeSupportButton
+                userId={user.id}
+                enrolledCourses={trEnrollments
+                  .filter((e) => e.status === "approved" && e.courses)
+                  .map((e) => ({ id: e.course_id, title: e.courses!.title }))}
+              />
             </div>
           </div>
 
