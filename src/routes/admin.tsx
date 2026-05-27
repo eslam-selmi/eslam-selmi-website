@@ -19,6 +19,7 @@ import {
 } from "@/lib/admin-trainers.functions";
 
 import { findCountry } from "@/lib/countries";
+import { safeHref } from "@/lib/safe-url";
 
 type AdminSearch = {
   tab?: "enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods";
