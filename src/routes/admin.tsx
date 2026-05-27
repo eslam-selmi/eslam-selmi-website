@@ -217,6 +217,8 @@ function AdminPage() {
           <CouponsPanel courses={courses} />
         ) : tab === "additions" ? (
           <LatestAdditionsPanel />
+        ) : tab === "tickets" ? (
+          user ? <AdminSupportPanel adminUserId={user.id} /> : null
         ) : tab === "finance" ? (
           <FinancePanel courses={courses} enrollments={enrollments} />
         ) : tab === "methods" ? (
