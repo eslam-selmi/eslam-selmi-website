@@ -1684,7 +1684,7 @@ function SubmissionRow({ s, maxScore, profile, onGrade }: { s: any; maxScore: nu
         {s.score !== null && <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">{t("مُقيّم", "Graded")}: {s.score}/{maxScore}</span>}
       </div>
       {s.content && <p className="text-xs text-white/75 mt-2 whitespace-pre-wrap p-2 bg-white/5 rounded">{s.content}</p>}
-      {s.link && <a href={s.link} target="_blank" rel="noopener" className="text-xs text-[var(--gold)] hover:underline block mt-1 truncate" dir="ltr">{s.link}</a>}
+      {safeHref(s.link) && <a href={safeHref(s.link)!} target="_blank" rel="noopener" className="text-xs text-[var(--gold)] hover:underline block mt-1 truncate" dir="ltr">{s.link}</a>}
       <div className="flex gap-2 mt-2">
         <input type="number" value={score} onChange={(e) => setScore(e.target.value)} placeholder={`/${maxScore}`}
           className="w-20 h-8 px-2 rounded bg-white/5 border border-white/15 text-xs" />
