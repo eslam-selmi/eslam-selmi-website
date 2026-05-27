@@ -319,9 +319,6 @@ function PortalPage() {
                     {Number(c.total_hours) > 0 && (
                       <span className="flex items-center gap-1 text-[var(--gold)]/90"><Clock className="w-3 h-3" /> {c.total_hours} {lang === "ar" ? "ساعة" : "hrs"}</span>
                     )}
-                    <button onClick={() => openRatingModal(c)} className="flex items-center gap-1 hover:text-white transition" title={lang === "ar" ? "تقييم" : "Rate"}>
-                      <Star className="w-3 h-3" /> {lang === "ar" ? "قيّم" : "Rate"}
-                    </button>
                   </div>
                   <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
                     <span className="text-[var(--gold)] font-semibold text-sm">
