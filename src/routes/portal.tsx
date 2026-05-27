@@ -12,6 +12,7 @@ import { Clock, CheckCircle2, XCircle, Download, Upload, BookOpen, Wallet, Loade
   Paperclip, Check, ChevronLeft, PlayCircle, PhoneOutgoing, Award, Linkedin, GraduationCap, Hourglass,
   FileText, Send, AlertCircle, X, Star } from "lucide-react";
 import { MediaViewerModal, type MediaItem } from "@/components/MediaViewerModal";
+import { TraineeSupportButton } from "@/components/SupportTickets";
 
 
 
