@@ -494,11 +494,11 @@ function ConversationView({
   // mark as read
   useEffect(() => {
     (async () => {
-      const patch: Record<string, any> = {};
-      if (role === "user" && ticket.unread_for_user) patch.unread_for_user = false;
-      if (role === "admin" && ticket.unread_for_admin) patch.unread_for_admin = false;
-      if (Object.keys(patch).length) {
-        await supabase.from("support_tickets").update(patch).eq("id", ticket.id);
+      if (role === "user" && ticket.unread_for_user) {
+        await supabase.from("support_tickets").update({ unread_for_user: false }).eq("id", ticket.id);
+        onChange();
+      } else if (role === "admin" && ticket.unread_for_admin) {
+        await supabase.from("support_tickets").update({ unread_for_admin: false }).eq("id", ticket.id);
         onChange();
       }
     })();
