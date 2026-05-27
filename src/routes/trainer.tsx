@@ -182,7 +182,7 @@ function TrainerPage() {
   );
 }
 
-function maskEmail(email: string | undefined) {
+function maskEmail(email: string | null | undefined) {
   if (!email) return "";
   const [local, domain] = email.split("@");
   const masked = local.slice(0, 2) + "...";
