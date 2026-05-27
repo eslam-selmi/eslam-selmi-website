@@ -209,12 +209,12 @@ const SERVICES = [
 const PROGRAMS = [
   {
     track: {
-      en: "Training & Development Management",
-      ar: "إدارة التدريب و التطوير",
+      en: "Training & Development Programs",
+      ar: "برامج التدريب والتطوير",
     },
     intro: {
-      en: "A unified journey under the Training & Development Management taxonomy: build foundational L&D and instructional design competencies, then graduate into advanced facilitation and TOT delivery mastery.",
-      ar: "مسار موحّد ضمن تصنيف \"إدارة التدريب و التطوير\": تبدأ بأسس التعلم والتطوير وتصميم التعليم، ثم تتدرّج لإتقان تيسير التدريب وتقديمه (TOT) على مستوى المدربين المعتمدين.",
+      en: "A unified journey under the Training & Development Programs taxonomy: build foundational L&D and instructional design competencies, then graduate into advanced facilitation and TOT delivery mastery.",
+      ar: "مسار موحّد ضمن تصنيف \"برامج التدريب والتطوير\": تبدأ بأسس التعلم والتطوير وتصميم التعليم، ثم تتدرّج لإتقان تيسير التدريب وتقديمه (TOT) على مستوى المدربين المعتمدين.",
     },
     items: [
       {
