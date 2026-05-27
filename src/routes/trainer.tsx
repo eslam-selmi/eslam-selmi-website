@@ -7,6 +7,7 @@ import { useI18n } from "@/lib/i18n";
 import { toast } from "sonner";
 import { Loader2, BookOpen, Users, FileText, Check, Calendar, GraduationCap } from "lucide-react";
 import { ForcePasswordResetGate } from "@/components/ForcePasswordResetGate";
+import { safeHref } from "@/lib/safe-url";
 
 
 export const Route = createFileRoute("/trainer")({
