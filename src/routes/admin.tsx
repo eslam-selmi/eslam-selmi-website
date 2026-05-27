@@ -22,7 +22,7 @@ import { findCountry } from "@/lib/countries";
 import { safeHref } from "@/lib/safe-url";
 
 type AdminSearch = {
-  tab?: "enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods";
+  tab?: "enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods" | "tickets";
   drawer?: string;
   editCourse?: string;
 };
