@@ -111,7 +111,8 @@ export function MediaViewerModal({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-5xl h-[88vh] rounded-2xl border border-white/15 bg-[#0b1736] shadow-2xl overflow-hidden flex flex-col"
+        className="w-full max-w-5xl rounded-2xl border border-white/15 bg-[#0b1736] shadow-2xl overflow-hidden flex flex-col"
+        style={{ height: "min(88dvh, 88vh)", maxHeight: "calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 48px)" }}
       >
         <div className="flex items-center gap-3 px-4 h-14 border-b border-white/10 shrink-0">
           <div className="flex-1 min-w-0">
@@ -161,7 +162,7 @@ export function MediaViewerModal({
                 <div>
                   <h4 className="text-xl font-bold text-white mb-2">{isAr ? "رابط خارجي" : "External Link"}</h4>
                   <p className="text-white/60 max-w-md mx-auto">
-                    {isAr ? "هذا المحتوى يفتح في صفحة جديدة للحفاظ على أمان تصفحك وتجنب أخطاء العرض." : "This content opens in a new tab for security and to prevent display errors."}
+                    {isAr ? "سيُفتح الرابط في تبويب جديد لتصفح سلس ومريح." : "Opening in a new tab for a seamless browsing experience."}
                   </p>
                 </div>
                 <a href={resolvedUrl} target="_blank" rel="noopener noreferrer" className="mt-2 px-6 h-12 rounded-xl bg-[var(--gold)] hover:bg-[#b8923f] text-[#0b1736] font-bold inline-flex items-center justify-center gap-2 transition">

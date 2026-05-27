@@ -7,6 +7,12 @@ import { GraduationCap, ShieldCheck, Loader2, ArrowRight } from "lucide-react";
 import { COUNTRIES, findCountry, sanitizeNationalNumber, validatePhoneForCountry } from "@/lib/countries";
 import brandLogo from "@/assets/brand-logo.png";
 
+async function fetchAdminWhatsApp(): Promise<string> {
+  const { data } = await supabase.rpc("get_activation_contact");
+  const num = ((data as any)?.admin_whatsapp_e164 ?? "").replace(/\D/g, "");
+  return num || "201221448888";
+}
+
 export const Route = createFileRoute("/auth")({
   validateSearch: (search: Record<string, unknown>) => ({
     role: (search.role as string) || "trainee",
@@ -83,8 +89,9 @@ function AuthPage() {
         });
         if (error) throw error;
         if (!data.session) {
+          const waNumber = await fetchAdminWhatsApp();
           const message = encodeURIComponent(`مرحباً، أود تفعيل حسابي كمتدرب جديد.\nالاسم: ${fullName}\nالبريد: ${email}\nرقم الهاتف: ${v.e164}`);
-          const waUrl = `https://wa.me/201221448888?text=${message}`; // Use academy whatsapp
+          const waUrl = `https://wa.me/${waNumber}?text=${message}`;
           toast.success("تم تسجيل بياناتك بنجاح. سيتم تحويلك لطلب التفعيل عبر واتساب...");
           setTimeout(() => {
             window.open(waUrl, "_blank");
@@ -132,8 +139,8 @@ function AuthPage() {
           <div className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent to-transparent ${isAdminView ? "via-amber-500/50" : "via-[var(--gold)]"}`} />
 
           <div className="flex flex-col items-center text-center mb-7">
-            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-4 border transition-colors ${isAdminView ? "border-amber-500/40" : "border-[var(--gold)]/40"} glass`} style={isAdminView ? { background: "linear-gradient(135deg, rgba(245,158,11,0.25), transparent)" } : { background: "linear-gradient(135deg, rgba(212,178,89,0.25), transparent)" }}>
-              <img src={brandLogo} alt="Logo" className="h-7 w-auto" />
+            <div className={`w-20 h-20 rounded-2xl flex items-center justify-center mb-4 border transition-colors ${isAdminView ? "border-amber-500/40" : "border-[var(--gold)]/40"} glass`} style={isAdminView ? { background: "linear-gradient(135deg, rgba(245,158,11,0.25), transparent)" } : { background: "linear-gradient(135deg, rgba(212,178,89,0.25), transparent)" }}>
+              <img src={brandLogo} alt="Logo" className="h-12 w-auto" />
             </div>
             <h1 className="text-2xl font-bold">
               {isAdminView ? "تسجيل دخول الإدارة" : (mode === "login" ? "تسجيل الدخول" : "إنشاء حساب متدرب")}

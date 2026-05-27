@@ -314,9 +314,19 @@ function PortalPage() {
                     )}
                   </div>
                   <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
-                    <span className="text-[var(--gold)] font-semibold text-sm">
-                      {Number(c.price) > 0 ? `${Number(c.price).toLocaleString()} ${c.currency}` : (lang === "ar" ? "مجاني" : "Free")}
-                    </span>
+                    <div className="flex flex-col gap-1">
+                      <span className="text-[var(--gold)] font-semibold text-sm">
+                        {Number(c.price) > 0 ? `${Number(c.price).toLocaleString()} ${c.currency}` : (lang === "ar" ? "مجاني" : "Free")}
+                      </span>
+                      {c.installments_count > 1 && Number(c.price) > 0 && (
+                        <span className="text-[10px] text-white/50 flex items-center gap-1">
+                          <Layers className="w-2.5 h-2.5" />
+                          {lang === "ar"
+                            ? `${c.installments_count} أقساط · ${Math.ceil(Number(c.price) / c.installments_count).toLocaleString()} ${c.currency} / قسط`
+                            : `${c.installments_count} installments · ${Math.ceil(Number(c.price) / c.installments_count).toLocaleString()} ${c.currency} each`}
+                        </span>
+                      )}
+                    </div>
                     <button onClick={() => setEnrollingCourse(c)} className="text-xs px-3 h-8 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold hover:opacity-90">
                       {lang === "ar" ? "تقديم طلب" : "Apply"}
                     </button>
@@ -1090,10 +1100,13 @@ function AssignmentCard({ a, sub, userId, onChange }: { a: Assignment; sub: Subm
               <input value={link} onChange={(e) => setLink(e.target.value)}
                 placeholder={isAr ? "رابط التسليم (Google Drive / OneDrive)" : "Submission link (Google Drive / OneDrive)"} dir="ltr"
                 className="w-full h-10 px-3 rounded-lg bg-white/5 border border-white/15 text-sm focus:outline-none focus:border-[var(--gold)]/60" />
-              <p className="text-[11px] text-white/55 leading-relaxed">
-                {isAr
-                  ? "برجاء التأكد من ضبط إعدادات مشاركة الرابط ليكون 'عام / لأي شخص يمتلك الرابط' قبل إرفاقه، لضمان مراجعته واعتماده بنجاح."
-                  : "Please make sure the link sharing setting is 'Public / Anyone with the link' before submitting, so the trainer can review and approve it."}
+              <p className="text-[11px] leading-relaxed flex items-start gap-1.5 px-2.5 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300">
+                <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+                <span>
+                  {isAr
+                    ? "⚡ برجاء التأكد من ضبط إعدادات مشاركة الرابط ليكون 'عام / لأي شخص يمتلك الرابط' قبل إرفاقه، لضمان مراجعته واعتماده بنجاح."
+                    : "⚡ Make sure the link sharing is set to 'Public / Anyone with the link' before submitting — otherwise the trainer won't be able to open it."}
+                </span>
               </p>
             </>
           )}
