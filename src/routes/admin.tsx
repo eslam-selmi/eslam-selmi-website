@@ -73,7 +73,7 @@ function AdminPage() {
   const { user, role, loading } = useAuth();
   const nav = useNavigate();
   const search = Route.useSearch();
-  const [tabState, setTabState] = useState<"enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods">(search.tab || "enrollments");
+  const [tabState, setTabState] = useState<"enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods" | "tickets">(search.tab || "enrollments");
   const tab = tabState;
   const setTab = setTabState;
 
