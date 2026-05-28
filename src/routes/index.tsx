@@ -15,8 +15,8 @@ import { useI18n, type Lang } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
 import { LatestAdditionsSection } from "@/components/LatestAdditions";
 
-import headshot from "@/assets/portfolio/headshot.png";
-import brandLogo from "@/assets/brand-logo.png";
+import headshot from "@/assets/portfolio/headshot.webp";
+import brandLogo from "@/assets/brand-logo.webp";
 
 import snap1 from "@/assets/snapshots/snap-1.jpg";
 import snap2 from "@/assets/snapshots/snap-2.jpg";
