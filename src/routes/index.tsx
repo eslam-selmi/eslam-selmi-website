@@ -15,8 +15,8 @@ import { useI18n, type Lang } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
 import { LatestAdditionsSection } from "@/components/LatestAdditions";
 
-import headshot from "@/assets/portfolio/headshot.png";
-import brandLogo from "@/assets/brand-logo.png";
+import headshot from "@/assets/portfolio/headshot.webp";
+import brandLogo from "@/assets/brand-logo.webp";
 
 import snap1 from "@/assets/snapshots/snap-1.jpg";
 import snap2 from "@/assets/snapshots/snap-2.jpg";
@@ -1036,7 +1036,7 @@ function Journey() {
                   {j.year[lang]}
                 </span>
                 <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground bg-foreground/[0.04] rounded-full px-2.5 py-1">
-                  <img src={`https://flagcdn.com/${country.flag}.svg`} alt="" className="w-4 h-3 rounded-[2px] object-cover" />
+                  <img src={`https://flagcdn.com/${country.flag}.svg`} alt="" loading="lazy" decoding="async" className="w-4 h-3 rounded-[2px] object-cover" />
                   {country.name[lang]}
                 </span>
               </div>

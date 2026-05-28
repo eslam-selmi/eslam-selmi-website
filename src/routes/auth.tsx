@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/portal-auth";
 import { toast } from "sonner";
 import { GraduationCap, ShieldCheck, Loader2, ArrowRight } from "lucide-react";
 import { COUNTRIES, findCountry, sanitizeNationalNumber, validatePhoneForCountry } from "@/lib/countries";
-import brandLogo from "@/assets/brand-logo.png";
+import brandLogo from "@/assets/brand-logo.webp";
 
 async function fetchAdminWhatsApp(): Promise<string> {
   const { data } = await supabase.rpc("get_activation_contact");
