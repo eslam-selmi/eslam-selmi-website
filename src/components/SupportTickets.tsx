@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { LifeBuoy, X, Send, Loader2, Plus, MessageSquare, Sparkles, BookOpen, CircleDot, CheckCircle2 } from "lucide-react";
