@@ -248,10 +248,12 @@ function SupportPopup({
     return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  return (
-    <div className="fixed inset-0 z-[90] flex items-center justify-center p-4 animate-in fade-in duration-150">
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-4 animate-in fade-in duration-150">
       <div className="absolute inset-0 bg-[#040818]/85 backdrop-blur-md" onClick={onClose} />
-      <div className="relative w-full max-w-5xl h-[78vh] max-h-[720px] rounded-3xl overflow-hidden border border-[var(--gold)]/25 bg-gradient-to-br from-[#0d1a3d] via-[#0b1736] to-[#08122a] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)] flex flex-col animate-in zoom-in-95 duration-200">
+      <div className="relative w-full sm:max-w-5xl h-[92dvh] sm:h-[78vh] sm:max-h-[720px] rounded-t-3xl sm:rounded-3xl overflow-hidden border-t sm:border border-[var(--gold)]/25 bg-gradient-to-br from-[#0d1a3d] via-[#0b1736] to-[#08122a] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)] flex flex-col animate-in slide-in-from-bottom-4 sm:zoom-in-95 duration-200">
         {/* Header */}
         <div className="relative px-6 py-4 border-b border-white/10 bg-gradient-to-r from-[var(--gold)]/[0.08] via-transparent to-[var(--gold)]/[0.08] flex items-center justify-between">
           <div className="flex items-center gap-3">
