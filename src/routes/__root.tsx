@@ -86,8 +86,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:title", content: "Eslam Selmi" },
       { name: "twitter:description", content: "Let’s Build an Exceptional Learning Experience" },
 
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/de7df6ff-651f-4298-8cc3-021011ccbb33" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/de7df6ff-651f-4298-8cc3-021011ccbb33" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/0986072b-52b5-4474-bc91-50bf3c05bf57" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/0986072b-52b5-4474-bc91-50bf3c05bf57" },
     ],
     links: [
       { rel: "icon", type: "image/png", href: "/favicon.png" },
