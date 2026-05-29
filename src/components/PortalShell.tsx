@@ -121,16 +121,21 @@ export function PortalShell({ userId, role, userLabel, children }: Props) {
   };
 
   return (
-    <div dir={dir} className="min-h-screen bg-[#0b1736] text-white">
-      <div className="absolute inset-x-0 top-0 h-[420px] bg-aurora opacity-50 pointer-events-none" />
-      <header className="relative border-b border-white/10 backdrop-blur-xl bg-[rgba(11,23,54,0.7)] sticky top-0 z-40">
+    <div dir={dir} className="relative min-h-screen dash-bg text-white">
+      <div className="absolute inset-0 dash-grid pointer-events-none opacity-70" />
+      <div className="absolute inset-x-0 top-0 h-[520px] bg-aurora opacity-40 pointer-events-none" />
+      <header className="relative border-b border-white/10 backdrop-blur-xl bg-[rgba(8,16,40,0.72)] sticky top-0 z-40">
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/40 to-transparent" />
         <div className="max-w-7xl mx-auto px-4 sm:px-5 h-16 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <Link to="/" className="flex items-center gap-2.5 group">
-              <img src={brandLogo} alt="Eslam Selmi" className="h-9 w-9 rounded-lg object-contain bg-white/10 p-1 border border-white/10 group-hover:border-[var(--gold)]/50 transition" />
+              <div className="relative">
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[var(--gold)]/30 to-transparent blur-md opacity-0 group-hover:opacity-100 transition" />
+                <img src={brandLogo} alt="Eslam Selmi" className="relative h-9 w-9 rounded-xl object-contain bg-white/10 p-1 border border-white/15 group-hover:border-[var(--gold)]/60 transition" />
+              </div>
               <div className="hidden sm:block leading-tight">
-                <p className="text-[11px] text-white/50 tracking-wider">ESLAM SELMI</p>
-                <p className="text-xs font-bold text-[var(--gold)]">
+                <p className="text-[10px] text-white/45 tracking-[0.18em] font-semibold">ESLAM SELMI</p>
+                <p className="text-xs font-bold text-[var(--gold)] tracking-wide">
                   {role === "admin" ? L.panelAdmin : role === "trainer" ? L.panelTrainer : L.panelTrainee}
                 </p>
               </div>
@@ -166,19 +171,19 @@ export function PortalShell({ userId, role, userLabel, children }: Props) {
             </nav>
           </div>
           <div className="flex items-center gap-2">
-            <button onClick={() => setLang(isAr ? "en" : "ar")} title={L.switchLang} className="flex items-center gap-1.5 text-xs px-3 h-10 rounded-xl border border-white/15 hover:bg-white/5 transition">
+            <button onClick={() => setLang(isAr ? "en" : "ar")} title={L.switchLang} className="flex items-center gap-1.5 text-xs px-3 h-10 rounded-xl border border-white/15 bg-white/[0.03] hover:bg-white/10 hover:border-[var(--gold)]/40 transition">
               <Languages className="w-3.5 h-3.5" />
               <span className="hidden sm:inline font-semibold tracking-wide">{L.switchLang}</span>
             </button>
-            <button onClick={() => setShowChangePassword(true)} title={isAr ? "تغيير كلمة المرور" : "Change Password"} className="flex items-center gap-1.5 text-xs px-3 h-10 rounded-xl border border-white/15 hover:bg-white/5 transition">
+            <button onClick={() => setShowChangePassword(true)} title={isAr ? "تغيير كلمة المرور" : "Change Password"} className="flex items-center gap-1.5 text-xs px-3 h-10 rounded-xl border border-white/15 bg-white/[0.03] hover:bg-white/10 hover:border-[var(--gold)]/40 transition">
               <KeyRound className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">{isAr ? "تغيير كلمة المرور" : "Change Password"}</span>
+              <span className="hidden md:inline">{isAr ? "كلمة المرور" : "Password"}</span>
             </button>
             <NotificationsBell userId={userId} />
             {userLabel && (
-              <span className="hidden lg:inline text-xs text-white/60 max-w-[160px] truncate">{userLabel}</span>
+              <span className="hidden lg:inline text-xs text-white/60 max-w-[160px] truncate px-2">{userLabel}</span>
             )}
-            <button onClick={() => { signOut(); nav({ to: "/auth" }); }} className="flex items-center gap-1.5 text-xs px-3 h-10 rounded-xl border border-white/15 hover:bg-white/5 transition">
+            <button onClick={() => { signOut(); nav({ to: "/auth" }); }} className="flex items-center gap-1.5 text-xs px-3 h-10 rounded-xl border border-white/15 bg-white/[0.03] hover:bg-rose-500/15 hover:border-rose-400/40 hover:text-rose-200 transition">
               <LogOut className="w-3.5 h-3.5" /> <span className="hidden sm:inline">{L.logout}</span>
             </button>
           </div>
@@ -186,76 +191,53 @@ export function PortalShell({ userId, role, userLabel, children }: Props) {
       </header>
       {forcePasswordReset && <ForcePasswordResetGate onDone={() => {}} />}
       {showChangePassword && (
-        <div className="fixed inset-0 z-[80] bg-[#070b1c]/80 backdrop-blur flex items-center justify-center p-4">
-          <form onSubmit={handleChangePassword} className="w-full max-w-md rounded-2xl border border-[var(--gold)]/30 bg-[#0b1736] p-6 space-y-4 shadow-2xl relative">
+        <div className="fixed inset-0 z-[80] bg-[#040818]/85 backdrop-blur-md flex items-end sm:items-center justify-center sm:p-4 animate-in fade-in duration-150">
+          <div className="absolute inset-0" onClick={() => setShowChangePassword(false)} />
+          <form
+            onSubmit={handleChangePassword}
+            className="premium-dialog relative w-full sm:max-w-md max-h-[92dvh] overflow-y-auto rounded-t-3xl sm:rounded-2xl p-6 space-y-4 animate-in slide-in-from-bottom-4 sm:zoom-in-95 duration-200"
+          >
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/60 to-transparent" />
             <button
               type="button"
               onClick={() => setShowChangePassword(false)}
-              className="absolute top-4 end-4 text-white/50 hover:text-white text-lg font-bold"
+              aria-label="Close"
+              className="absolute end-4 top-4 w-9 h-9 rounded-lg border border-white/15 bg-white/5 hover:bg-white/10 hover:border-[var(--gold)]/40 flex items-center justify-center transition text-white/80"
             >
               ✕
             </button>
             <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-xl bg-[var(--gold)]/15 border border-[var(--gold)]/30 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-[var(--gold)]/15 border border-[var(--gold)]/30 flex items-center justify-center shadow-[0_0_24px_rgba(212,175,55,0.25)]">
                 <KeyRound className="w-5 h-5 text-[var(--gold)]" />
               </div>
               <div>
                 <h2 className="font-bold text-base">{isAr ? "تغيير كلمة المرور" : "Change Password"}</h2>
-                <p className="text-xs text-white/60">{isAr ? "أدخل كلمة المرور الحالية والجديدة لتحديث حسابك." : "Enter current and new passwords to update account."}</p>
+                <p className="text-xs text-white/55">{isAr ? "أدخل كلمة المرور الحالية والجديدة." : "Enter current and new passwords."}</p>
               </div>
             </div>
-            
+
+            <div className="gold-divider" />
+
             <div className="space-y-3">
               <div>
-                <label className="block text-xs text-white/60 mb-1">{isAr ? "كلمة المرور الحالية" : "Current Password"}</label>
-                <input
-                  type="password"
-                  required
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 h-11 text-sm text-white focus:outline-none focus:border-[var(--gold)]/50"
-                />
+                <label className="block text-[11px] uppercase tracking-wider text-white/55 mb-1.5 font-semibold">{isAr ? "كلمة المرور الحالية" : "Current Password"}</label>
+                <input type="password" required value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="••••••••" className="premium-input" />
               </div>
-              
               <div>
-                <label className="block text-xs text-white/60 mb-1">{isAr ? "كلمة المرور الجديدة" : "New Password"}</label>
-                <input
-                  type="password"
-                  required
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 h-11 text-sm text-white focus:outline-none focus:border-[var(--gold)]/50"
-                />
+                <label className="block text-[11px] uppercase tracking-wider text-white/55 mb-1.5 font-semibold">{isAr ? "كلمة المرور الجديدة" : "New Password"}</label>
+                <input type="password" required value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="••••••••" className="premium-input" />
               </div>
-              
               <div>
-                <label className="block text-xs text-white/60 mb-1">{isAr ? "تأكيد كلمة المرور الجديدة" : "Confirm New Password"}</label>
-                <input
-                  type="password"
-                  required
-                  value={confirmNewPassword}
-                  onChange={(e) => setConfirmNewPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 h-11 text-sm text-white focus:outline-none focus:border-[var(--gold)]/50"
-                />
+                <label className="block text-[11px] uppercase tracking-wider text-white/55 mb-1.5 font-semibold">{isAr ? "تأكيد كلمة المرور" : "Confirm New Password"}</label>
+                <input type="password" required value={confirmNewPassword} onChange={(e) => setConfirmNewPassword(e.target.value)} placeholder="••••••••" className="premium-input" />
               </div>
             </div>
-            
+
             <div className="flex gap-3 pt-2">
-              <button
-                type="button"
-                onClick={() => setShowChangePassword(false)}
-                className="flex-1 bg-white/5 hover:bg-white/10 text-white font-semibold text-sm h-11 rounded-lg transition"
-              >
+              <button type="button" onClick={() => setShowChangePassword(false)} className="flex-1 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold text-sm h-11 rounded-xl transition">
                 {isAr ? "إلغاء" : "Cancel"}
               </button>
-              <button
-                type="submit"
-                disabled={changingPassword}
-                className="flex-1 bg-[var(--gold)] text-[#0b1736] font-bold text-sm h-11 rounded-lg disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-110 transition"
-              >
+              <button type="submit" disabled={changingPassword} className="flex-1 bg-gradient-to-r from-[var(--gold)] to-[#e8c870] text-[#0b1736] font-bold text-sm h-11 rounded-xl disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-110 shadow-[0_8px_24px_-8px_rgba(212,175,55,0.6)] transition">
                 {changingPassword && <span className="animate-spin border-2 border-[#0b1736] border-t-transparent rounded-full w-4 h-4" />}
                 {isAr ? "تحديث" : "Update"}
               </button>

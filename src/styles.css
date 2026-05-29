@@ -223,6 +223,96 @@ html[lang="ar"] {
   }
   .ms-auto { margin-inline-start: auto; }
   .me-auto { margin-inline-end: auto; }
+
+  /* ============================================================
+     Premium Dashboard System (trainee / admin / trainer shells)
+     ============================================================ */
+  .dash-bg {
+    background:
+      radial-gradient(ellipse 85% 55% at 12% -5%, oklch(0.55 0.18 258 / 0.32), transparent 60%),
+      radial-gradient(ellipse 70% 50% at 88% -8%, oklch(0.72 0.13 180 / 0.18), transparent 60%),
+      radial-gradient(ellipse 60% 45% at 50% 110%, oklch(0.34 0.13 290 / 0.22), transparent 60%),
+      linear-gradient(180deg, #07112a 0%, #0a1635 40%, #08122a 100%);
+  }
+  .dash-grid {
+    background-image:
+      linear-gradient(to right, oklch(1 0 0 / 0.025) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(1 0 0 / 0.025) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 20%, #000 30%, transparent 80%);
+  }
+  .dash-card {
+    background:
+      linear-gradient(155deg, oklch(1 0 0 / 0.06), oklch(1 0 0 / 0.015) 55%, transparent),
+      oklch(0.18 0.05 252 / 0.55);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    border: 1px solid oklch(1 0 0 / 0.08);
+    box-shadow:
+      0 24px 60px -28px oklch(0 0 0 / 0.6),
+      inset 0 1px 0 oklch(1 0 0 / 0.08);
+    border-radius: 1.25rem;
+  }
+  .dash-card-hover { transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease; }
+  .dash-card-hover:hover {
+    transform: translateY(-2px);
+    border-color: oklch(0.78 0.14 90 / 0.35);
+    box-shadow:
+      0 30px 70px -28px oklch(0 0 0 / 0.7),
+      0 0 0 1px oklch(0.78 0.14 90 / 0.18),
+      inset 0 1px 0 oklch(1 0 0 / 0.12);
+  }
+  .dash-pill {
+    display: inline-flex; align-items: center; gap: .375rem;
+    padding: .25rem .625rem; border-radius: 999px;
+    font-size: 11px; font-weight: 600; letter-spacing: .02em;
+    background: oklch(1 0 0 / 0.05);
+    border: 1px solid oklch(1 0 0 / 0.1);
+    color: oklch(1 0 0 / 0.72);
+  }
+  .gold-divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, oklch(0.78 0.14 90 / 0.55), transparent);
+  }
+  .gold-glow {
+    box-shadow:
+      0 0 0 1px oklch(0.78 0.14 90 / 0.35),
+      0 0 30px -6px oklch(0.78 0.14 90 / 0.45);
+  }
+  .premium-dialog {
+    background:
+      linear-gradient(160deg, oklch(1 0 0 / 0.05), transparent 45%),
+      linear-gradient(180deg, #0d1a3d 0%, #0b1736 55%, #08122a 100%);
+    border: 1px solid oklch(0.78 0.14 90 / 0.22);
+    box-shadow:
+      0 40px 100px -30px oklch(0 0 0 / 0.8),
+      0 0 0 1px oklch(1 0 0 / 0.04),
+      inset 0 1px 0 oklch(1 0 0 / 0.08);
+    color: #fff;
+  }
+  .premium-input {
+    width: 100%;
+    background: oklch(1 0 0 / 0.04);
+    border: 1px solid oklch(1 0 0 / 0.1);
+    border-radius: .75rem;
+    padding: 0 .875rem; height: 2.75rem;
+    color: #fff; font-size: .875rem;
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .premium-input:focus { outline: none; border-color: oklch(0.78 0.14 90 / 0.55); background: oklch(1 0 0 / 0.06); }
+
+  @keyframes shimmer-x {
+    0% { background-position: -160% 0; }
+    100% { background-position: 260% 0; }
+  }
+  .shimmer-gold::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(110deg, transparent 35%, oklch(1 0 0 / 0.18) 50%, transparent 65%);
+    background-size: 200% 100%;
+    animation: shimmer-x 3.2s ease-in-out infinite;
+    pointer-events: none;
+  }
 }
 
 @keyframes float-slow {
