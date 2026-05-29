@@ -121,16 +121,21 @@ export function PortalShell({ userId, role, userLabel, children }: Props) {
   };
 
   return (
-    <div dir={dir} className="min-h-screen bg-[#0b1736] text-white">
-      <div className="absolute inset-x-0 top-0 h-[420px] bg-aurora opacity-50 pointer-events-none" />
-      <header className="relative border-b border-white/10 backdrop-blur-xl bg-[rgba(11,23,54,0.7)] sticky top-0 z-40">
+    <div dir={dir} className="relative min-h-screen dash-bg text-white">
+      <div className="absolute inset-0 dash-grid pointer-events-none opacity-70" />
+      <div className="absolute inset-x-0 top-0 h-[520px] bg-aurora opacity-40 pointer-events-none" />
+      <header className="relative border-b border-white/10 backdrop-blur-xl bg-[rgba(8,16,40,0.72)] sticky top-0 z-40">
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/40 to-transparent" />
         <div className="max-w-7xl mx-auto px-4 sm:px-5 h-16 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <Link to="/" className="flex items-center gap-2.5 group">
-              <img src={brandLogo} alt="Eslam Selmi" className="h-9 w-9 rounded-lg object-contain bg-white/10 p-1 border border-white/10 group-hover:border-[var(--gold)]/50 transition" />
+              <div className="relative">
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[var(--gold)]/30 to-transparent blur-md opacity-0 group-hover:opacity-100 transition" />
+                <img src={brandLogo} alt="Eslam Selmi" className="relative h-9 w-9 rounded-xl object-contain bg-white/10 p-1 border border-white/15 group-hover:border-[var(--gold)]/60 transition" />
+              </div>
               <div className="hidden sm:block leading-tight">
-                <p className="text-[11px] text-white/50 tracking-wider">ESLAM SELMI</p>
-                <p className="text-xs font-bold text-[var(--gold)]">
+                <p className="text-[10px] text-white/45 tracking-[0.18em] font-semibold">ESLAM SELMI</p>
+                <p className="text-xs font-bold text-[var(--gold)] tracking-wide">
                   {role === "admin" ? L.panelAdmin : role === "trainer" ? L.panelTrainer : L.panelTrainee}
                 </p>
               </div>
@@ -166,19 +171,19 @@ export function PortalShell({ userId, role, userLabel, children }: Props) {
             </nav>
           </div>
           <div className="flex items-center gap-2">
-            <button onClick={() => setLang(isAr ? "en" : "ar")} title={L.switchLang} className="flex items-center gap-1.5 text-xs px-3 h-10 rounded-xl border border-white/15 hover:bg-white/5 transition">
+            <button onClick={() => setLang(isAr ? "en" : "ar")} title={L.switchLang} className="flex items-center gap-1.5 text-xs px-3 h-10 rounded-xl border border-white/15 bg-white/[0.03] hover:bg-white/10 hover:border-[var(--gold)]/40 transition">
               <Languages className="w-3.5 h-3.5" />
               <span className="hidden sm:inline font-semibold tracking-wide">{L.switchLang}</span>
             </button>
-            <button onClick={() => setShowChangePassword(true)} title={isAr ? "تغيير كلمة المرور" : "Change Password"} className="flex items-center gap-1.5 text-xs px-3 h-10 rounded-xl border border-white/15 hover:bg-white/5 transition">
+            <button onClick={() => setShowChangePassword(true)} title={isAr ? "تغيير كلمة المرور" : "Change Password"} className="flex items-center gap-1.5 text-xs px-3 h-10 rounded-xl border border-white/15 bg-white/[0.03] hover:bg-white/10 hover:border-[var(--gold)]/40 transition">
               <KeyRound className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">{isAr ? "تغيير كلمة المرور" : "Change Password"}</span>
+              <span className="hidden md:inline">{isAr ? "كلمة المرور" : "Password"}</span>
             </button>
             <NotificationsBell userId={userId} />
             {userLabel && (
-              <span className="hidden lg:inline text-xs text-white/60 max-w-[160px] truncate">{userLabel}</span>
+              <span className="hidden lg:inline text-xs text-white/60 max-w-[160px] truncate px-2">{userLabel}</span>
             )}
-            <button onClick={() => { signOut(); nav({ to: "/auth" }); }} className="flex items-center gap-1.5 text-xs px-3 h-10 rounded-xl border border-white/15 hover:bg-white/5 transition">
+            <button onClick={() => { signOut(); nav({ to: "/auth" }); }} className="flex items-center gap-1.5 text-xs px-3 h-10 rounded-xl border border-white/15 bg-white/[0.03] hover:bg-rose-500/15 hover:border-rose-400/40 hover:text-rose-200 transition">
               <LogOut className="w-3.5 h-3.5" /> <span className="hidden sm:inline">{L.logout}</span>
             </button>
           </div>
