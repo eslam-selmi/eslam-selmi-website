@@ -152,17 +152,22 @@ function TrainerPage() {
               })}
             </div>
 
-            <div className="flex gap-2 border-b border-white/10">
+            <div className="dash-card p-1.5 flex gap-1 w-fit">
               {[
                 { id: "trainees", label: `${t("المتدرّبون", "Trainees")} (${courseEnrollees.length})` },
                 { id: "submissions", label: `${t("التسليمات", "Submissions")} (${courseSubmissions.length})` },
               ].map((x) => (
                 <button key={x.id} onClick={() => setTab(x.id as any)}
-                  className={`px-4 py-3 text-sm font-semibold transition ${tab === x.id ? "text-[var(--gold)] border-b-2 border-[var(--gold)] -mb-px" : "text-white/60 hover:text-white"}`}>
+                  className={`whitespace-nowrap px-4 h-10 rounded-xl text-sm font-semibold transition ${
+                    tab === x.id
+                      ? "bg-gradient-to-b from-[var(--gold)] to-[#c89a3a] text-[#0b1736] shadow-[0_8px_24px_-10px_rgba(212,175,55,0.6)]"
+                      : "text-white/65 hover:text-white hover:bg-white/5"
+                  }`}>
                   {x.label}
                 </button>
               ))}
             </div>
+
 
             {tab === "trainees" ? (
               <TraineesList items={courseEnrollees} t={t} />
