@@ -228,7 +228,7 @@ function PortalPage() {
   return (
     <PortalShell userId={user.id} role="trainee" userLabel={profile?.full_name || profile?.email}>
       <div className="space-y-10">
-        <section className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.04)] p-7 sm:p-9 backdrop-blur-xl">
+        <section className="dash-card p-7 sm:p-9 backdrop-blur-xl">
           <div className="flex items-start justify-between gap-6 flex-wrap">
             <div>
               <p className="text-xs tracking-widest text-[var(--gold)] mb-2">{lang === "ar" ? "مرحباً بك" : "Welcome"}</p>
@@ -292,7 +292,7 @@ function PortalPage() {
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {trAvailable.map((c) => (
-                <div key={c.id} className="group rounded-2xl border border-white/10 bg-white/5 p-5 hover:border-[var(--gold)]/40 transition flex flex-col">
+                <div key={c.id} className="group dash-card dash-card-hover p-5 hover:border-[var(--gold)]/40 transition flex flex-col">
                   <div className="flex items-start gap-3 mb-3">
                     <div className="w-12 h-12 rounded-xl bg-[var(--gold)]/10 border border-[var(--gold)]/30 flex items-center justify-center text-2xl shrink-0">
                       {c.cover_emoji || "🎓"}
@@ -366,7 +366,7 @@ function EnrollmentCard({ en, onOpen, onWithdraw }: { en: Enrollment; onOpen: ()
   const c = en.courses;
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-5 flex flex-col">
+    <div className="dash-card dash-card-hover p-5 flex flex-col">
       <div className="flex items-start gap-3">
         <div className="w-12 h-12 rounded-xl bg-[var(--gold)]/10 border border-[var(--gold)]/30 flex items-center justify-center text-2xl shrink-0">
           {c?.cover_emoji || "🎓"}
@@ -462,7 +462,7 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
         <ChevronLeft className="w-4 h-4 rtl-flip" /> {isAr ? "العودة لكورساتي" : "Back to my courses"}
       </button>
 
-      <section className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.04)] p-6 sm:p-8 backdrop-blur-xl">
+      <section className="dash-card p-6 sm:p-8 backdrop-blur-xl">
         <div className="flex items-start gap-5 flex-wrap">
           <div className="w-20 h-20 rounded-2xl bg-[var(--gold)]/10 border border-[var(--gold)]/30 flex items-center justify-center text-4xl">
             {c.cover_emoji || "🎓"}
@@ -608,7 +608,7 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
 
       {/* Payments + Certificate */}
       <section className="grid lg:grid-cols-2 gap-4">
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+        <div className="dash-card dash-card-hover p-5">
           <h3 className="font-bold mb-3 flex items-center gap-2"><Wallet className="w-4 h-4 text-[var(--gold)]" /> {isAr ? "المدفوعات" : "Payments"}</h3>
           {coursePrice > 0 && (
             <p className="text-xs text-white/60 mb-3">
@@ -760,7 +760,7 @@ function CertificatePanel({
   const canRequest = allModulesDone && namesSaved && (!gradState.required || gradState.approved);
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+    <div className="dash-card dash-card-hover p-5">
       <h3 className="font-bold mb-3 flex items-center gap-2"><Award className="w-4 h-4 text-[var(--gold)]" /> {isAr ? "الشهادة" : "Certificate"}</h3>
 
       {issued ? (

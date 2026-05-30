@@ -242,7 +242,7 @@ function StatCard({ icon: Icon, label, value, color }: { icon: any; label: strin
     gold: "text-[var(--gold)]", lavender: "text-[var(--lavender)]",
   };
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl">
+    <div className="dash-card dash-card-hover p-5 backdrop-blur-xl">
       <Icon className={`w-5 h-5 ${map[color]}`} />
       <p className="text-2xl font-bold mt-3">{value}</p>
       <p className="text-xs text-white/60 mt-1">{label}</p>
@@ -317,7 +317,7 @@ function EnrollmentsTable({
         const pendingCount = rows.filter((r) => r.status === "pending").length;
         const open = isOpen(courseId, pendingCount > 0);
         return (
-          <div key={courseId} className="rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden">
+          <div key={courseId} className="dash-card dash-card-hover overflow-hidden">
             <button
               type="button"
               onClick={() => setOpenGroups((g) => ({ ...g, [courseId]: !open }))}
@@ -551,7 +551,7 @@ function CoursesPanel({ courses, enrollments, refresh, onEdit }: { courses: Cour
             const activeCount = courseEnrollments.filter((e) => e.status === "approved" && !e.profiles?.account_blocked).length;
             const pendingCount = courseEnrollments.filter((e) => e.status === "pending").length;
             return (
-            <div key={c.id} className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 hover:border-[var(--gold)]/30 transition">
+            <div key={c.id} className="dash-card dash-card-hover p-5 hover:border-[var(--gold)]/30 transition">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-xl bg-[var(--gold)]/10 border border-[var(--gold)]/30 flex items-center justify-center text-2xl shrink-0">
                   {c.cover_emoji || "🎓"}
@@ -600,7 +600,7 @@ function CoursesPanel({ courses, enrollments, refresh, onEdit }: { courses: Cour
         }
       </div>
 
-      <form onSubmit={addCourse} className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 space-y-3 h-fit sticky top-24">
+      <form onSubmit={addCourse} className="dash-card dash-card-hover p-5 space-y-3 h-fit sticky top-24">
         <h4 className="font-bold flex items-center gap-2"><Plus className="w-4 h-4 text-[var(--gold)]" /> {t("إضافة كورس", "Add course")}</h4>
         <div className="grid grid-cols-[80px_1fr] gap-3">
           <Input label={t("إيموجي", "Emoji")} value={form.cover_emoji} onChange={(v) => setForm({ ...form, cover_emoji: v })} />
@@ -930,7 +930,7 @@ function CourseSessions({ courseId }: { courseId: string }) {
 
   return (
     <div className="space-y-4">
-      <form onSubmit={add} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 space-y-3">
+      <form onSubmit={add} className="dash-card dash-card-hover p-4 space-y-3">
         <Input label={t("عنوان المحاضرة", "Session title")} value={form.title} onChange={(v) => setForm({ ...form, title: v })} required />
         <div className="grid grid-cols-2 gap-3">
           <Input label={t("التاريخ والوقت", "Date & time")} type="datetime-local" value={form.starts_at} onChange={(v) => setForm({ ...form, starts_at: v })} required />
@@ -1279,7 +1279,7 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
         </div>
 
         <div className="p-6 space-y-7">
-          <section className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm space-y-1.5">
+          <section className="dash-card dash-card-hover p-4 text-sm space-y-1.5">
             <div className="flex justify-between"><span className="text-white/50">{t("البريد", "Email")}</span><span dir="ltr">{enrollment.profiles?.email}</span></div>
             <div className="flex justify-between"><span className="text-white/50">{t("الهاتف", "Phone")}</span><span dir="ltr">{enrollment.profiles?.phone || "—"}</span></div>
             <div className="flex justify-between"><span className="text-white/50">{t("الدولة", "Country")}</span>
@@ -1365,7 +1365,7 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
                 <p className="text-xs text-emerald-300 text-center">{t("✓ تم إصدار الشهادة بنجاح", "✓ Certificate issued successfully")}</p>
               )}
             </div>
-            <details className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+            <details className="dash-card dash-card-hover p-4 space-y-3">
               <summary className="text-xs text-white/50 cursor-pointer">{t("رفع ملف يدوي (اختياري)", "Upload file manually (optional)")}</summary>
               <label className="block mt-3">
                 <span className="text-xs text-white/60 mb-2 block">{t("رفع ملف الشهادة (PDF / صورة)", "Upload certificate file (PDF / image)")}</span>
@@ -1385,7 +1385,7 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
 
           <section>
             <h4 className="font-bold mb-3 flex items-center gap-2"><Wallet className="w-4 h-4 text-[var(--gold)]" /> {t("المدفوعات", "Payments")}</h4>
-            <form onSubmit={addPayment} className="rounded-2xl border border-white/10 bg-white/5 p-4 grid grid-cols-[1fr_110px_auto] gap-2 items-end mb-3">
+            <form onSubmit={addPayment} className="dash-card dash-card-hover p-4 grid grid-cols-[1fr_110px_auto] gap-2 items-end mb-3">
               <Input label={t("المبلغ", "Amount")} type="number" value={payAmount} onChange={setPayAmount} />
               <Select label={t("العملة", "Currency")} value={payCurr} onChange={setPayCurr}
                 options={[{ v: "EGP", l: t("جنيه", "EGP") }, { v: "SAR", l: t("ريال", "SAR") }, { v: "USD", l: t("دولار", "USD") }, { v: "AED", l: t("درهم", "AED") }]} />
@@ -1446,7 +1446,7 @@ function EnrollmentDrawer({ enrollment, onClose, refresh }: { enrollment: Enroll
                 </button>
               )}
             </div>
-            <form onSubmit={addInstallment} className="rounded-2xl border border-white/10 bg-white/5 p-4 grid grid-cols-[1fr_110px_140px_auto] gap-2 items-end mb-3">
+            <form onSubmit={addInstallment} className="dash-card dash-card-hover p-4 grid grid-cols-[1fr_110px_140px_auto] gap-2 items-end mb-3">
               <Input label={t("المبلغ", "Amount")} type="number" value={insAmount} onChange={setInsAmount} />
               <Select label={t("العملة", "Currency")} value={insCurr} onChange={setInsCurr}
                 options={[{ v: "EGP", l: t("جنيه", "EGP") }, { v: "SAR", l: t("ريال", "SAR") }, { v: "USD", l: t("دولار", "USD") }, { v: "AED", l: t("درهم", "AED") }]} />
@@ -2201,7 +2201,7 @@ function TrainersPanel({ courses }: { courses: Course[] }) {
       </div>
 
       {showCreate && (
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+        <div className="dash-card dash-card-hover p-4 space-y-3">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <input value={name} onChange={(e) => setName(e.target.value)} placeholder={t("الاسم الكامل", "Full name")}
               className="bg-white/5 border border-white/10 rounded-lg px-3 h-10 text-sm" />
@@ -2447,7 +2447,7 @@ function LatestAdditionsPanel() {
   return (
     <div className="space-y-6">
       {settings && (
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5 space-y-3">
+        <div className="dash-card dash-card-hover p-5 space-y-3">
           <h3 className="font-bold flex items-center gap-2"><Sparkles className="w-4 h-4 text-[var(--gold)]" /> {t("إعدادات قسم \"أحدث الإضافات\"", "Section settings")}</h3>
           <div className="grid sm:grid-cols-2 gap-3">
             <Input label={t("العنوان (عربي)", "Title (AR)")} value={settings.title_ar ?? ""} onChange={(v) => setSettings({ ...settings, title_ar: v })} />
@@ -2493,7 +2493,7 @@ function LatestAdditionsPanel() {
         </button>
       </div>
 
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+      <div className="dash-card dash-card-hover p-5">
         <h3 className="font-bold mb-3">{t("العناصر الحالية", "Current items")} ({items.length})</h3>
         {items.length === 0 ? (
           <p className="text-sm text-white/40">{t("لا توجد عناصر بعد.", "No items yet.")}</p>
@@ -2634,7 +2634,7 @@ function ActivationsPanel() {
   return (
     <div className="space-y-6">
       {/* Settings card */}
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-5 space-y-3">
+      <div className="dash-card dash-card-hover p-5 space-y-3">
         <div className="flex items-center gap-2">
           <Settings2 className="w-4 h-4 text-[var(--gold)]" />
           <h3 className="font-bold text-sm">{t("إعدادات تفعيل الحساب عبر واتساب", "WhatsApp activation settings")}</h3>
@@ -2707,7 +2707,7 @@ function ActivationsPanel() {
       </div>
 
       {/* List */}
-      <div className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
+      <div className="dash-card dash-card-hover overflow-hidden">
         {list.length === 0 ? (
           <div className="p-8 text-center text-white/50 text-sm">{t("لا توجد حسابات في هذه الحالة.", "No accounts in this state.")}</div>
         ) : (
@@ -2807,7 +2807,7 @@ function PaymentMethodsPanel() {
 
   return (
     <div className="space-y-5">
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-5 space-y-3">
+      <div className="dash-card dash-card-hover p-5 space-y-3">
         <h3 className="font-bold flex items-center gap-2"><Wallet className="w-4 h-4 text-[var(--gold)]" /> {t("إضافة طريقة دفع جديدة", "Add new payment method")}</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Input label={t("الاسم (عربي)", "Name (Arabic)")} value={f.name_ar} onChange={(v) => setF({ ...f, name_ar: v })} />
@@ -2898,7 +2898,7 @@ function FinancePanel({ courses, enrollments }: { courses: Course[]; enrollments
         <StatCard icon={Clock} label={t("بانتظار المراجعة", "Pending review")} value={filtered.filter((p) => p.status === "pending").length} color="amber" />
       </div>
 
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-4 grid grid-cols-1 sm:grid-cols-4 gap-3">
+      <div className="dash-card dash-card-hover p-4 grid grid-cols-1 sm:grid-cols-4 gap-3">
         <Select label={t("طريقة الدفع", "Payment method")} value={methodFilter} onChange={setMethodFilter}
           options={[{ v: "", l: t("كل الطرق", "All methods") }, ...methods.map((m) => ({ v: m.id, l: lang === "ar" ? m.name_ar : m.name_en }))]} />
         <Select label={t("الكورس", "Course")} value={courseFilter} onChange={setCourseFilter}
@@ -2913,7 +2913,7 @@ function FinancePanel({ courses, enrollments }: { courses: Course[]; enrollments
       <BulkReceiptsTool />
 
 
-      <div className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
+      <div className="dash-card dash-card-hover overflow-hidden">
         <table className="w-full text-sm">
           <thead className="bg-white/5 text-xs text-white/60">
             <tr><th className="text-start p-3">{t("التاريخ", "Date")}</th><th className="text-start p-3">{t("المتدرب", "Trainee")}</th><th className="text-start p-3">{t("الكورس", "Course")}</th><th className="text-start p-3">{t("المبلغ", "Amount")}</th><th className="text-start p-3">{t("الطريقة", "Method")}</th><th className="text-start p-3">{t("الحالة", "Status")}</th></tr>
@@ -3104,7 +3104,7 @@ function BulkReceiptsTool() {
   }
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+    <div className="dash-card dash-card-hover p-4 space-y-3">
       <p className="text-xs font-semibold text-[var(--gold)]">{t("🗂️ أداة الإيصالات (تحميل / حذف جماعي)", "🗂️ Receipts tool (bulk download / purge)")}</p>
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
         <Input label={t("من تاريخ", "From")} type="date" value={from} onChange={setFrom} />
