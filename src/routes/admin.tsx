@@ -182,7 +182,7 @@ function AdminPage() {
           <StatCard icon={BookOpen} label={t("إجمالي الكورسات", "Total courses")} value={courses.length} color="lavender" />
         </div>
 
-        <div className="flex gap-2 border-b border-white/10 flex-wrap">
+        <div className="dash-card p-1.5 flex gap-1 overflow-x-auto flex-nowrap sm:flex-wrap">
           {[
             { id: "activations", label: `${t("تفعيل الحسابات", "Activations")}${pendingActivations > 0 ? ` (${pendingActivations})` : ""}` },
             { id: "enrollments", label: `${t("طلبات وانضمامات", "Requests & enrollments")} (${enrollments.length})` },
@@ -199,12 +199,15 @@ function AdminPage() {
             <button
               key={tb.id}
               onClick={() => setTab(tb.id as any)}
-              className={`px-4 py-3 text-sm font-semibold transition ${
-                tab === tb.id ? "text-[var(--gold)] border-b-2 border-[var(--gold)] -mb-px" : "text-white/60 hover:text-white"
+              className={`whitespace-nowrap px-3.5 h-10 rounded-xl text-xs sm:text-sm font-semibold transition ${
+                tab === tb.id
+                  ? "bg-gradient-to-b from-[var(--gold)] to-[#c89a3a] text-[#0b1736] shadow-[0_8px_24px_-10px_rgba(212,175,55,0.6)]"
+                  : "text-white/65 hover:text-white hover:bg-white/5"
               }`}
             >{tb.label}</button>
           ))}
         </div>
+
 
         {tab === "activations" ? (
           <ActivationsPanel />
