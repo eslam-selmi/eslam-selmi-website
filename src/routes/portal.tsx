@@ -228,7 +228,7 @@ function PortalPage() {
   return (
     <PortalShell userId={user.id} role="trainee" userLabel={profile?.full_name || profile?.email}>
       <div className="space-y-10">
-        <section className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.04)] p-7 sm:p-9 backdrop-blur-xl">
+        <section className="dash-card p-7 sm:p-9 backdrop-blur-xl">
           <div className="flex items-start justify-between gap-6 flex-wrap">
             <div>
               <p className="text-xs tracking-widest text-[var(--gold)] mb-2">{lang === "ar" ? "مرحباً بك" : "Welcome"}</p>
@@ -292,7 +292,7 @@ function PortalPage() {
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {trAvailable.map((c) => (
-                <div key={c.id} className="group rounded-2xl border border-white/10 bg-white/5 p-5 hover:border-[var(--gold)]/40 transition flex flex-col">
+                <div key={c.id} className="group dash-card dash-card-hover p-5 hover:border-[var(--gold)]/40 transition flex flex-col">
                   <div className="flex items-start gap-3 mb-3">
                     <div className="w-12 h-12 rounded-xl bg-[var(--gold)]/10 border border-[var(--gold)]/30 flex items-center justify-center text-2xl shrink-0">
                       {c.cover_emoji || "🎓"}
@@ -366,7 +366,7 @@ function EnrollmentCard({ en, onOpen, onWithdraw }: { en: Enrollment; onOpen: ()
   const c = en.courses;
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-5 flex flex-col">
+    <div className="dash-card dash-card-hover p-5 flex flex-col">
       <div className="flex items-start gap-3">
         <div className="w-12 h-12 rounded-xl bg-[var(--gold)]/10 border border-[var(--gold)]/30 flex items-center justify-center text-2xl shrink-0">
           {c?.cover_emoji || "🎓"}
@@ -462,7 +462,7 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
         <ChevronLeft className="w-4 h-4 rtl-flip" /> {isAr ? "العودة لكورساتي" : "Back to my courses"}
       </button>
 
-      <section className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.04)] p-6 sm:p-8 backdrop-blur-xl">
+      <section className="dash-card p-6 sm:p-8 backdrop-blur-xl">
         <div className="flex items-start gap-5 flex-wrap">
           <div className="w-20 h-20 rounded-2xl bg-[var(--gold)]/10 border border-[var(--gold)]/30 flex items-center justify-center text-4xl">
             {c.cover_emoji || "🎓"}
@@ -608,7 +608,7 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
 
       {/* Payments + Certificate */}
       <section className="grid lg:grid-cols-2 gap-4">
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+        <div className="dash-card dash-card-hover p-5">
           <h3 className="font-bold mb-3 flex items-center gap-2"><Wallet className="w-4 h-4 text-[var(--gold)]" /> {isAr ? "المدفوعات" : "Payments"}</h3>
           {coursePrice > 0 && (
             <p className="text-xs text-white/60 mb-3">
@@ -668,23 +668,29 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
 
 function StatCard({ icon: Icon, label, value, accent, suffix }: { icon: any; label: string; value: number | string; accent: "emerald" | "amber" | "sky" | "gold"; suffix?: string }) {
   const tone = {
-    emerald: "from-emerald-400/15 to-emerald-400/5 border-emerald-400/25 text-emerald-300",
-    amber: "from-amber-400/15 to-amber-400/5 border-amber-400/25 text-amber-300",
-    sky: "from-sky-400/15 to-sky-400/5 border-sky-400/25 text-sky-300",
-    gold: "from-[var(--gold)]/20 to-[var(--gold)]/5 border-[var(--gold)]/30 text-[var(--gold)]",
+    emerald: { ring: "bg-emerald-400/10 border-emerald-400/30", text: "text-emerald-300", glow: "from-emerald-400/25" },
+    amber:   { ring: "bg-amber-400/10 border-amber-400/30",     text: "text-amber-300",   glow: "from-amber-400/25" },
+    sky:     { ring: "bg-sky-400/10 border-sky-400/30",         text: "text-sky-300",     glow: "from-sky-400/25" },
+    gold:    { ring: "bg-[var(--gold)]/10 border-[var(--gold)]/30", text: "text-[var(--gold)]", glow: "from-[var(--gold)]/30" },
   }[accent];
   return (
-    <div className={`rounded-2xl border bg-gradient-to-br ${tone} p-4 flex items-center gap-3`}>
-      <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
-        <Icon className="w-5 h-5" />
-      </div>
-      <div className="min-w-0">
-        <p className="text-2xl font-bold leading-none">{value}{suffix && <span className="text-sm font-medium opacity-70 ms-1">{suffix}</span>}</p>
-        <p className="text-[11px] text-white/60 mt-1">{label}</p>
+    <div className="dash-card dash-card-hover relative overflow-hidden p-5">
+      <div className={`pointer-events-none absolute -top-12 -end-12 w-32 h-32 rounded-full bg-gradient-to-br ${tone.glow} to-transparent blur-2xl`} />
+      <div className="relative flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-[11px] uppercase tracking-wider text-white/55 font-semibold">{label}</p>
+          <p className="text-3xl font-bold mt-2 leading-none truncate">
+            {value}{suffix && <span className="text-sm font-medium opacity-70 ms-1">{suffix}</span>}
+          </p>
+        </div>
+        <div className={`w-11 h-11 rounded-2xl border ${tone.ring} flex items-center justify-center shrink-0`}>
+          <Icon className={`w-5 h-5 ${tone.text}`} />
+        </div>
       </div>
     </div>
   );
 }
+
 
 function CertificatePanel({
   enrollment, course, allModulesDone, totalModules, completedModules, onDownloadCert, onRefresh,
@@ -760,7 +766,7 @@ function CertificatePanel({
   const canRequest = allModulesDone && namesSaved && (!gradState.required || gradState.approved);
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+    <div className="dash-card dash-card-hover p-5">
       <h3 className="font-bold mb-3 flex items-center gap-2"><Award className="w-4 h-4 text-[var(--gold)]" /> {isAr ? "الشهادة" : "Certificate"}</h3>
 
       {issued ? (

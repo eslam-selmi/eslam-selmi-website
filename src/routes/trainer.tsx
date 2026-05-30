@@ -130,7 +130,7 @@ function TrainerPage() {
         </div>
 
         {courses.length === 0 ? (
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-8 text-center text-white/70">
+          <div className="dash-card dash-card-hover p-8 text-center text-white/70">
             <BookOpen className="w-10 h-10 mx-auto mb-3 text-white/40" />
             {t("لم يتمّ تعيينك على أي كورس بعد.", "You have not been assigned to any course yet.")}
           </div>
@@ -152,17 +152,22 @@ function TrainerPage() {
               })}
             </div>
 
-            <div className="flex gap-2 border-b border-white/10">
+            <div className="dash-card p-1.5 flex gap-1 w-fit">
               {[
                 { id: "trainees", label: `${t("المتدرّبون", "Trainees")} (${courseEnrollees.length})` },
                 { id: "submissions", label: `${t("التسليمات", "Submissions")} (${courseSubmissions.length})` },
               ].map((x) => (
                 <button key={x.id} onClick={() => setTab(x.id as any)}
-                  className={`px-4 py-3 text-sm font-semibold transition ${tab === x.id ? "text-[var(--gold)] border-b-2 border-[var(--gold)] -mb-px" : "text-white/60 hover:text-white"}`}>
+                  className={`whitespace-nowrap px-4 h-10 rounded-xl text-sm font-semibold transition ${
+                    tab === x.id
+                      ? "bg-gradient-to-b from-[var(--gold)] to-[#c89a3a] text-[#0b1736] shadow-[0_8px_24px_-10px_rgba(212,175,55,0.6)]"
+                      : "text-white/65 hover:text-white hover:bg-white/5"
+                  }`}>
                   {x.label}
                 </button>
               ))}
             </div>
+
 
             {tab === "trainees" ? (
               <TraineesList items={courseEnrollees} t={t} />
@@ -193,7 +198,7 @@ function maskEmail(email: string | null | undefined) {
 function TraineesList({ items, t }: { items: Enrollment[]; t: (a: string, b: string) => string }) {
   if (items.length === 0) return <p className="text-white/60 text-sm">{t("لا يوجد متدرّبون مقبولون بعد.", "No approved trainees yet.")}</p>;
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
+    <div className="dash-card dash-card-hover overflow-hidden">
       <table className="w-full text-sm">
         <thead className="bg-white/5 text-white/60">
           <tr><th className="text-start p-3">{t("الاسم", "Name")}</th><th className="text-start p-3">{t("البريد", "Email")}</th><th className="text-start p-3">{t("الحالة", "Status")}</th></tr>
@@ -257,7 +262,7 @@ function SubmissionCard({ sub, assignment, profile, refresh, t }: {
   }
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+    <div className="dash-card dash-card-hover p-4 space-y-3">
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
           <p className="font-bold text-sm">{assignment?.title || "—"}</p>
