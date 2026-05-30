@@ -668,23 +668,29 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
 
 function StatCard({ icon: Icon, label, value, accent, suffix }: { icon: any; label: string; value: number | string; accent: "emerald" | "amber" | "sky" | "gold"; suffix?: string }) {
   const tone = {
-    emerald: "from-emerald-400/15 to-emerald-400/5 border-emerald-400/25 text-emerald-300",
-    amber: "from-amber-400/15 to-amber-400/5 border-amber-400/25 text-amber-300",
-    sky: "from-sky-400/15 to-sky-400/5 border-sky-400/25 text-sky-300",
-    gold: "from-[var(--gold)]/20 to-[var(--gold)]/5 border-[var(--gold)]/30 text-[var(--gold)]",
+    emerald: { ring: "bg-emerald-400/10 border-emerald-400/30", text: "text-emerald-300", glow: "from-emerald-400/25" },
+    amber:   { ring: "bg-amber-400/10 border-amber-400/30",     text: "text-amber-300",   glow: "from-amber-400/25" },
+    sky:     { ring: "bg-sky-400/10 border-sky-400/30",         text: "text-sky-300",     glow: "from-sky-400/25" },
+    gold:    { ring: "bg-[var(--gold)]/10 border-[var(--gold)]/30", text: "text-[var(--gold)]", glow: "from-[var(--gold)]/30" },
   }[accent];
   return (
-    <div className={`rounded-2xl border bg-gradient-to-br ${tone} p-4 flex items-center gap-3`}>
-      <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
-        <Icon className="w-5 h-5" />
-      </div>
-      <div className="min-w-0">
-        <p className="text-2xl font-bold leading-none">{value}{suffix && <span className="text-sm font-medium opacity-70 ms-1">{suffix}</span>}</p>
-        <p className="text-[11px] text-white/60 mt-1">{label}</p>
+    <div className="dash-card dash-card-hover relative overflow-hidden p-5">
+      <div className={`pointer-events-none absolute -top-12 -end-12 w-32 h-32 rounded-full bg-gradient-to-br ${tone.glow} to-transparent blur-2xl`} />
+      <div className="relative flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-[11px] uppercase tracking-wider text-white/55 font-semibold">{label}</p>
+          <p className="text-3xl font-bold mt-2 leading-none truncate">
+            {value}{suffix && <span className="text-sm font-medium opacity-70 ms-1">{suffix}</span>}
+          </p>
+        </div>
+        <div className={`w-11 h-11 rounded-2xl border ${tone.ring} flex items-center justify-center shrink-0`}>
+          <Icon className={`w-5 h-5 ${tone.text}`} />
+        </div>
       </div>
     </div>
   );
 }
+
 
 function CertificatePanel({
   enrollment, course, allModulesDone, totalModules, completedModules, onDownloadCert, onRefresh,
