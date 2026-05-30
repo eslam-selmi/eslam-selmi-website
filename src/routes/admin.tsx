@@ -664,21 +664,24 @@ function CourseEditor({ course, onClose, refresh }: { course: Course; onClose: (
           <button onClick={onClose} className="p-2 rounded-lg hover:bg-white/5"><X className="w-5 h-5" /></button>
         </div>
 
-        <div className="px-6 pt-4 flex gap-1 border-b border-white/10">
+        <div className="px-6 pt-4 pb-2 flex gap-1 overflow-x-auto">
           {[
             { id: "content", label: t("المحتوى والأبواب", "Content & modules"), icon: Layers },
             { id: "assignments", label: t("التكليفات", "Assignments"), icon: Layers },
             { id: "sessions", label: t("المحاضرات والمواعيد", "Sessions & schedule"), icon: Calendar },
             { id: "settings", label: t("إعدادات", "Settings"), icon: Settings2 },
-          ].map((t) => (
-            <button key={t.id} onClick={() => setSection(t.id as any)}
-              className={`flex items-center gap-1.5 px-3 py-2.5 text-xs font-semibold transition ${
-                section === t.id ? "text-[var(--gold)] border-b-2 border-[var(--gold)] -mb-px" : "text-white/55 hover:text-white"
+          ].map((tb) => (
+            <button key={tb.id} onClick={() => setSection(tb.id as any)}
+              className={`flex items-center gap-1.5 whitespace-nowrap px-3.5 h-10 rounded-xl text-xs font-semibold transition ${
+                section === tb.id
+                  ? "bg-gradient-to-b from-[var(--gold)] to-[#c89a3a] text-[#0b1736] shadow-[0_6px_18px_-8px_rgba(212,175,55,0.6)]"
+                  : "text-white/60 hover:text-white hover:bg-white/5"
               }`}>
-              <t.icon className="w-3.5 h-3.5" /> {t.label}
+              <tb.icon className="w-3.5 h-3.5" /> {tb.label}
             </button>
           ))}
         </div>
+
 
         <div className="p-6">
           {section === "content" && <CourseContent courseId={course.id} />}
