@@ -40,6 +40,12 @@ export const Route = createFileRoute("/admin")({
     if (!data.session?.user) {
       throw redirect({ to: "/auth" });
     }
+    // Server-side admin role enforcement (defence-in-depth alongside RLS).
+    try {
+      await assertAdmin();
+    } catch {
+      throw redirect({ to: "/portal" });
+    }
     return {};
   },
   head: () => ({
