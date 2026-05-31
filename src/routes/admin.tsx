@@ -21,6 +21,7 @@ import {
 import { findCountry } from "@/lib/countries";
 import { safeHref } from "@/lib/safe-url";
 import { AdminSupportPanel } from "@/components/SupportTickets";
+import { assertAdmin } from "@/lib/admin-guard.functions";
 
 type AdminSearch = {
   tab?: "enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods" | "tickets";
