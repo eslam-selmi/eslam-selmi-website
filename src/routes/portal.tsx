@@ -479,8 +479,8 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
               <span>{c.installments_count === 1 ? (isAr ? "دفعة كاملة" : "Single payment") : (isAr ? `${c.installments_count} أقساط` : `${c.installments_count} installments`)}</span>
               {Number(c.total_hours) > 0 && <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5 text-[var(--gold)]" /> {c.total_hours} {isAr ? "ساعة تدريبية" : "training hrs"}</span>}
             </div>
-            {c.online_url && (
-              <a href={c.online_url} target="_blank" rel="noopener"
+            {safeHref(c.online_url) && (
+              <a href={safeHref(c.online_url)!} target="_blank" rel="noopener"
                 className="mt-4 inline-flex items-center gap-2 text-sm px-4 h-10 rounded-xl bg-[var(--gold)]/15 border border-[var(--gold)]/40 text-[var(--gold)] hover:bg-[var(--gold)]/25 transition">
                 <PlayCircle className="w-4 h-4" /> {isAr ? "رابط المحاضرة" : "Lecture link"} <ExternalLink className="w-3 h-3" />
               </a>
