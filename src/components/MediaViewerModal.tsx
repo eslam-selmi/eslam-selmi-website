@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { X, ExternalLink, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
+import { safeHref } from "@/lib/safe-url";
 
 export type MediaItem = {
   title: string;
