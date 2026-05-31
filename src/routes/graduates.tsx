@@ -5,7 +5,7 @@ import {
   Footer,
   WhatsAppFloat,
   CalendlyDialog,
-  LanguageHint,
+  
 } from "./index";
 import { useI18n } from "@/lib/i18n";
 
