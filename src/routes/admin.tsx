@@ -864,7 +864,7 @@ function ModuleCard({ m, index, items, onToggle, onDelete, onChangeOnlineUrl, on
                         window.open(data.signedUrl, "_blank", "noopener");
                       }} className="text-xs text-[var(--gold)] truncate block mt-0.5 hover:underline" dir="ltr">{it.url}</button>
                     ) : (
-                      <a href={it.url} target="_blank" rel="noopener" className="text-xs text-[var(--gold)] truncate block mt-0.5" dir="ltr">{it.url}</a>
+                      safeHref(it.url) && <a href={safeHref(it.url)!} target="_blank" rel="noopener" className="text-xs text-[var(--gold)] truncate block mt-0.5" dir="ltr">{it.url}</a>
                     ))}
                   </div>
                   <button onClick={() => delItem(it.id)} className="text-rose-300/60 hover:text-rose-300"><Trash2 className="w-3.5 h-3.5" /></button>
