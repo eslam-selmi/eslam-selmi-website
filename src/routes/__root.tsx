@@ -132,15 +132,18 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const isMobile = useIsMobile();
 
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <I18nProvider>
-          <main>
-            <Outlet />
-          </main>
-          <Toaster position="top-center" richColors />
+          <MotionConfig reducedMotion={isMobile ? "always" : "never"}>
+            <main>
+              <Outlet />
+            </main>
+            <Toaster position="top-center" richColors />
+          </MotionConfig>
         </I18nProvider>
       </ThemeProvider>
     </QueryClientProvider>
