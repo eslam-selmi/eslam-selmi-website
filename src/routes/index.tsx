@@ -305,7 +305,6 @@ function Portfolio() {
       <WhatsAppFloat />
       <ScrollTop />
       <CalendlyDialog />
-      <LanguageHint />
     </div>
   );
 }
