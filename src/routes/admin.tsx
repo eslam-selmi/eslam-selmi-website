@@ -1654,7 +1654,7 @@ function CourseAssignmentsAdmin({ courseId }: { courseId: string }) {
                     </h5>
                     {a.instructions && <p className="text-xs text-white/55 mt-1 whitespace-pre-wrap">{a.instructions}</p>}
                     {a.reference_url && (
-                      <a href={a.reference_url} target="_blank" rel="noopener" className="text-[11px] text-sky-300 hover:underline mt-1 inline-block" dir="ltr">{a.reference_url}</a>
+                      {safeHref(a.reference_url) && <a href={safeHref(a.reference_url)!} target="_blank" rel="noopener" className="text-[11px] text-sky-300 hover:underline mt-1 inline-block" dir="ltr">{a.reference_url}</a>}
                     )}
                     <p className="text-[11px] text-white/45 mt-1">
                       {a.due_date ? `${t("تسليم", "Due")}: ${new Date(a.due_date).toLocaleString(lang === "ar" ? "ar-EG" : "en-GB")}` : t("بدون موعد", "No due date")} · {t("درجة قصوى", "Max score")} {a.max_score}
