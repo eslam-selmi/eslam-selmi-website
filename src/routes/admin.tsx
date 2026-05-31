@@ -969,7 +969,7 @@ function CourseSessions({ courseId }: { courseId: string }) {
                 <p className="text-xs text-white/55">
                   {new Date(s.starts_at).toLocaleString("ar-EG")} · {s.duration_minutes}{t("د", "m")}
                 </p>
-                {s.online_url && <a href={s.online_url} target="_blank" rel="noopener" className="text-[11px] text-[var(--gold)] truncate block" dir="ltr">{s.online_url}</a>}
+                {safeHref(s.online_url) && <a href={safeHref(s.online_url)!} target="_blank" rel="noopener" className="text-[11px] text-[var(--gold)] truncate block" dir="ltr">{s.online_url}</a>}
               </div>
               <button onClick={() => del(s.id)} className="p-2 rounded-lg hover:bg-rose-500/10 text-rose-300"><Trash2 className="w-3.5 h-3.5" /></button>
             </li>
