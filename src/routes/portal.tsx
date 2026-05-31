@@ -550,8 +550,8 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
                     <h4 className="font-bold">{trModuleTitles[i] || m.title}</h4>
                     {m.completed_by_admin && <p className="text-[11px] text-emerald-300/80 mt-0.5">✓ {isAr ? "تم إكمال هذا الجزء" : "This module is complete"}</p>}
                   </div>
-                  {m.online_url && (
-                    <a href={m.online_url} target="_blank" rel="noopener" className="text-xs px-3 h-9 rounded-lg bg-[var(--gold)]/15 text-[var(--gold)] border border-[var(--gold)]/30 flex items-center gap-1">
+                  {safeHref(m.online_url) && (
+                    <a href={safeHref(m.online_url)!} target="_blank" rel="noopener" className="text-xs px-3 h-9 rounded-lg bg-[var(--gold)]/15 text-[var(--gold)] border border-[var(--gold)]/30 flex items-center gap-1">
                       <PlayCircle className="w-3.5 h-3.5" /> {isAr ? "رابط المحاضرة" : "Lecture"}
                     </a>
                   )}
