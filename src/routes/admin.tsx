@@ -21,6 +21,7 @@ import {
 import { findCountry } from "@/lib/countries";
 import { safeHref } from "@/lib/safe-url";
 import { AdminSupportPanel } from "@/components/SupportTickets";
+import { assertAdmin } from "@/lib/admin-guard.functions";
 
 type AdminSearch = {
   tab?: "enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods" | "tickets";
@@ -38,6 +39,12 @@ export const Route = createFileRoute("/admin")({
     const { data } = await supabase.auth.getSession();
     if (!data.session?.user) {
       throw redirect({ to: "/auth" });
+    }
+    // Server-side admin role enforcement (defence-in-depth alongside RLS).
+    try {
+      await assertAdmin();
+    } catch {
+      throw redirect({ to: "/portal" });
     }
     return {};
   },
@@ -864,7 +871,7 @@ function ModuleCard({ m, index, items, onToggle, onDelete, onChangeOnlineUrl, on
                         window.open(data.signedUrl, "_blank", "noopener");
                       }} className="text-xs text-[var(--gold)] truncate block mt-0.5 hover:underline" dir="ltr">{it.url}</button>
                     ) : (
-                      <a href={it.url} target="_blank" rel="noopener" className="text-xs text-[var(--gold)] truncate block mt-0.5" dir="ltr">{it.url}</a>
+                      safeHref(it.url) && <a href={safeHref(it.url)!} target="_blank" rel="noopener" className="text-xs text-[var(--gold)] truncate block mt-0.5" dir="ltr">{it.url}</a>
                     ))}
                   </div>
                   <button onClick={() => delItem(it.id)} className="text-rose-300/60 hover:text-rose-300"><Trash2 className="w-3.5 h-3.5" /></button>
@@ -969,7 +976,7 @@ function CourseSessions({ courseId }: { courseId: string }) {
                 <p className="text-xs text-white/55">
                   {new Date(s.starts_at).toLocaleString("ar-EG")} · {s.duration_minutes}{t("د", "m")}
                 </p>
-                {s.online_url && <a href={s.online_url} target="_blank" rel="noopener" className="text-[11px] text-[var(--gold)] truncate block" dir="ltr">{s.online_url}</a>}
+                {safeHref(s.online_url) && <a href={safeHref(s.online_url)!} target="_blank" rel="noopener" className="text-[11px] text-[var(--gold)] truncate block" dir="ltr">{s.online_url}</a>}
               </div>
               <button onClick={() => del(s.id)} className="p-2 rounded-lg hover:bg-rose-500/10 text-rose-300"><Trash2 className="w-3.5 h-3.5" /></button>
             </li>
@@ -1653,8 +1660,8 @@ function CourseAssignmentsAdmin({ courseId }: { courseId: string }) {
                       )}
                     </h5>
                     {a.instructions && <p className="text-xs text-white/55 mt-1 whitespace-pre-wrap">{a.instructions}</p>}
-                    {a.reference_url && (
-                      <a href={a.reference_url} target="_blank" rel="noopener" className="text-[11px] text-sky-300 hover:underline mt-1 inline-block" dir="ltr">{a.reference_url}</a>
+                    {safeHref(a.reference_url) && (
+                      <a href={safeHref(a.reference_url)!} target="_blank" rel="noopener" className="text-[11px] text-sky-300 hover:underline mt-1 inline-block" dir="ltr">{a.reference_url}</a>
                     )}
                     <p className="text-[11px] text-white/45 mt-1">
                       {a.due_date ? `${t("تسليم", "Due")}: ${new Date(a.due_date).toLocaleString(lang === "ar" ? "ar-EG" : "en-GB")}` : t("بدون موعد", "No due date")} · {t("درجة قصوى", "Max score")} {a.max_score}

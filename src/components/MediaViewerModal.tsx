@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { X, ExternalLink, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
+import { safeHref } from "@/lib/safe-url";
 
 export type MediaItem = {
   title: string;
@@ -165,9 +166,11 @@ export function MediaViewerModal({
                     {isAr ? "سيُفتح الرابط في تبويب جديد لتصفح سلس ومريح." : "Opening in a new tab for a seamless browsing experience."}
                   </p>
                 </div>
-                <a href={resolvedUrl} target="_blank" rel="noopener noreferrer" className="mt-2 px-6 h-12 rounded-xl bg-[var(--gold)] hover:bg-[#b8923f] text-[#0b1736] font-bold inline-flex items-center justify-center gap-2 transition">
-                  {isAr ? "فتح الرابط الآن" : "Open Link Now"} <ExternalLink className="w-4 h-4" />
-                </a>
+                {safeHref(resolvedUrl) && (
+                  <a href={safeHref(resolvedUrl)!} target="_blank" rel="noopener noreferrer" className="mt-2 px-6 h-12 rounded-xl bg-[var(--gold)] hover:bg-[#b8923f] text-[#0b1736] font-bold inline-flex items-center justify-center gap-2 transition">
+                    {isAr ? "فتح الرابط الآن" : "Open Link Now"} <ExternalLink className="w-4 h-4" />
+                  </a>
+                )}
               </div>
             ) : (
               <iframe

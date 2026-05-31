@@ -7,6 +7,7 @@ import { useI18n } from "@/lib/i18n";
 import { useTranslatedTexts } from "@/lib/useTranslatedTexts";
 import { toast } from "sonner";
 import { findCountry } from "@/lib/countries";
+import { safeHref } from "@/lib/safe-url";
 import { Clock, CheckCircle2, XCircle, Download, Upload, BookOpen, Wallet, Loader2,
   ExternalLink, Sparkles, ArrowRight, Calendar, Layers, StickyNote, Link as LinkIcon,
   Paperclip, Check, ChevronLeft, PlayCircle, PhoneOutgoing, Award, Linkedin, GraduationCap, Hourglass,
@@ -478,8 +479,8 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
               <span>{c.installments_count === 1 ? (isAr ? "دفعة كاملة" : "Single payment") : (isAr ? `${c.installments_count} أقساط` : `${c.installments_count} installments`)}</span>
               {Number(c.total_hours) > 0 && <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5 text-[var(--gold)]" /> {c.total_hours} {isAr ? "ساعة تدريبية" : "training hrs"}</span>}
             </div>
-            {c.online_url && (
-              <a href={c.online_url} target="_blank" rel="noopener"
+            {safeHref(c.online_url) && (
+              <a href={safeHref(c.online_url)!} target="_blank" rel="noopener"
                 className="mt-4 inline-flex items-center gap-2 text-sm px-4 h-10 rounded-xl bg-[var(--gold)]/15 border border-[var(--gold)]/40 text-[var(--gold)] hover:bg-[var(--gold)]/25 transition">
                 <PlayCircle className="w-4 h-4" /> {isAr ? "رابط المحاضرة" : "Lecture link"} <ExternalLink className="w-3 h-3" />
               </a>
@@ -517,8 +518,8 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
                     <div className="flex-1 min-w-0">
                       <h4 className="font-semibold">{trSessionTitles[sessions.indexOf(s)] || s.title}</h4>
                       <p className="text-xs text-white/60 mt-1">{dt.toLocaleString(isAr ? "ar-EG" : "en-GB")} · {s.duration_minutes}{isAr ? "د" : "m"}</p>
-                      {s.online_url && !past && (
-                        <a href={s.online_url} target="_blank" rel="noopener"
+                      {safeHref(s.online_url) && !past && (
+                        <a href={safeHref(s.online_url)!} target="_blank" rel="noopener"
                           className="mt-3 inline-flex items-center gap-1.5 text-xs px-3 h-8 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold">
                           {isAr ? "الانضمام" : "Join"} <ExternalLink className="w-3 h-3" />
                         </a>
@@ -549,8 +550,8 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
                     <h4 className="font-bold">{trModuleTitles[i] || m.title}</h4>
                     {m.completed_by_admin && <p className="text-[11px] text-emerald-300/80 mt-0.5">✓ {isAr ? "تم إكمال هذا الجزء" : "This module is complete"}</p>}
                   </div>
-                  {m.online_url && (
-                    <a href={m.online_url} target="_blank" rel="noopener" className="text-xs px-3 h-9 rounded-lg bg-[var(--gold)]/15 text-[var(--gold)] border border-[var(--gold)]/30 flex items-center gap-1">
+                  {safeHref(m.online_url) && (
+                    <a href={safeHref(m.online_url)!} target="_blank" rel="noopener" className="text-xs px-3 h-9 rounded-lg bg-[var(--gold)]/15 text-[var(--gold)] border border-[var(--gold)]/30 flex items-center gap-1">
                       <PlayCircle className="w-3.5 h-3.5" /> {isAr ? "رابط المحاضرة" : "Lecture"}
                     </a>
                   )}
@@ -1047,8 +1048,8 @@ function AssignmentCard({ a, sub, userId, onChange }: { a: Assignment; sub: Subm
         <div className="flex-1 min-w-0">
           <h4 className="font-bold flex items-center gap-2"><FileText className="w-4 h-4 text-[var(--gold)]" /> {a.title}</h4>
           {a.instructions && <p className="text-sm text-white/65 mt-2 whitespace-pre-wrap">{a.instructions}</p>}
-          {a.reference_url && (
-            <a href={a.reference_url} target="_blank" rel="noopener" className="mt-2 inline-flex items-center gap-1 text-xs text-sky-300 hover:underline">
+          {safeHref(a.reference_url) && (
+            <a href={safeHref(a.reference_url)!} target="_blank" rel="noopener" className="mt-2 inline-flex items-center gap-1 text-xs text-sky-300 hover:underline">
               <LinkIcon className="w-3 h-3" /> {isAr ? "مرجع خارجي" : "External reference"} <ExternalLink className="w-3 h-3" />
             </a>
           )}
