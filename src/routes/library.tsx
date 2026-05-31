@@ -42,7 +42,7 @@ function LibraryPage() {
       <Footer />
       <WhatsAppFloat />
       <CalendlyDialog />
-      <LanguageHint />
+      
     </div>
   );
 }
