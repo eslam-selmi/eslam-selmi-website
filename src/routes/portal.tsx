@@ -518,8 +518,8 @@ function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrol
                     <div className="flex-1 min-w-0">
                       <h4 className="font-semibold">{trSessionTitles[sessions.indexOf(s)] || s.title}</h4>
                       <p className="text-xs text-white/60 mt-1">{dt.toLocaleString(isAr ? "ar-EG" : "en-GB")} · {s.duration_minutes}{isAr ? "د" : "m"}</p>
-                      {s.online_url && !past && (
-                        <a href={s.online_url} target="_blank" rel="noopener"
+                      {safeHref(s.online_url) && !past && (
+                        <a href={safeHref(s.online_url)!} target="_blank" rel="noopener"
                           className="mt-3 inline-flex items-center gap-1.5 text-xs px-3 h-8 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold">
                           {isAr ? "الانضمام" : "Join"} <ExternalLink className="w-3 h-3" />
                         </a>
