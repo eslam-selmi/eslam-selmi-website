@@ -982,9 +982,9 @@ function About() {
 
 function BigStat({ n, l }: { n: string; l: string }) {
   return (
-    <div className="rounded-2xl bg-white/[0.07] border border-white/15 backdrop-blur-md p-3.5 text-center">
-      <div className="font-display text-2xl sm:text-[26px] font-extrabold leading-none text-white">{n}</div>
-      <div className="mt-1.5 text-[9px] uppercase tracking-[0.2em] text-white/70">{l}</div>
+    <div className="rounded-2xl bg-foreground/[0.04] border border-foreground/10 p-3.5 text-center">
+      <div className="font-display text-2xl sm:text-[26px] font-extrabold leading-none" style={{ color: "var(--accent)" }}>{n}</div>
+      <div className="mt-1.5 text-[9px] uppercase tracking-[0.2em] text-muted-foreground">{l}</div>
     </div>
   );
 }
