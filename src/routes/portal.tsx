@@ -1048,8 +1048,8 @@ function AssignmentCard({ a, sub, userId, onChange }: { a: Assignment; sub: Subm
         <div className="flex-1 min-w-0">
           <h4 className="font-bold flex items-center gap-2"><FileText className="w-4 h-4 text-[var(--gold)]" /> {a.title}</h4>
           {a.instructions && <p className="text-sm text-white/65 mt-2 whitespace-pre-wrap">{a.instructions}</p>}
-          {a.reference_url && (
-            <a href={a.reference_url} target="_blank" rel="noopener" className="mt-2 inline-flex items-center gap-1 text-xs text-sky-300 hover:underline">
+          {safeHref(a.reference_url) && (
+            <a href={safeHref(a.reference_url)!} target="_blank" rel="noopener" className="mt-2 inline-flex items-center gap-1 text-xs text-sky-300 hover:underline">
               <LinkIcon className="w-3 h-3" /> {isAr ? "مرجع خارجي" : "External reference"} <ExternalLink className="w-3 h-3" />
             </a>
           )}
