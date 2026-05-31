@@ -305,7 +305,6 @@ function Portfolio() {
       <WhatsAppFloat />
       <ScrollTop />
       <CalendlyDialog />
-      <LanguageHint />
     </div>
   );
 }
@@ -905,19 +904,25 @@ function About() {
   ];
   return (
     <Section id="about" eyebrow={t("about_eyebrow")} title={t("about_title")}>
-      {/* Editorial intro card */}
-      <motion.div {...fadeUp} className="relative overflow-hidden rounded-[2.5rem] border border-white/10 p-8 sm:p-10 text-white" style={{ background: "linear-gradient(135deg, #0b1736 0%, #14224d 55%, #1f2a5a 100%)" }}>
-        <div className="pointer-events-none absolute -top-24 -end-24 size-72 rounded-full bg-[var(--gold)]/20 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-32 -start-20 size-80 rounded-full bg-[var(--lavender)]/25 blur-3xl" />
-        <div className="pointer-events-none absolute inset-0 opacity-[0.06]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)", backgroundSize: "22px 22px" }} />
+      {/* Editorial intro card — refined premium layout */}
+      <motion.div
+        {...fadeUp}
+        className="relative overflow-hidden rounded-[2rem] border border-foreground/10 bg-card"
+      >
+        {/* Left accent rail */}
+        <div className="pointer-events-none absolute inset-y-0 start-0 w-1.5 bg-gradient-to-b from-[var(--gold)] via-[var(--accent)] to-[var(--lavender-deep)]" />
+        {/* Soft corner glows */}
+        <div className="pointer-events-none absolute -top-24 -end-20 size-72 rounded-full bg-[var(--accent)]/10 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-28 -start-10 size-72 rounded-full bg-[var(--lavender)]/10 blur-3xl" />
 
-        <div className="relative grid gap-8 lg:grid-cols-[1.45fr_1fr] lg:items-center">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 px-3 py-1 text-[10px] uppercase tracking-[0.28em] text-white/85">
-              <span className="size-1.5 rounded-full bg-[var(--gold)]" /> {lang === "ar" ? "ملف القائد" : "Leader profile"}
+        <div className="relative p-7 sm:p-10 grid gap-10 lg:grid-cols-[1.5fr_1fr] lg:items-center">
+          <div className="min-w-0">
+            <div className="inline-flex items-center gap-2 rounded-full bg-foreground/[0.04] border border-foreground/10 px-3 py-1 text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
+              <span className="size-1.5 rounded-full bg-[var(--gold)]" />
+              {lang === "ar" ? "نبذة عني" : "About me"}
             </div>
-            <Quote className="mt-5 size-7 text-[var(--gold)] rtl-flip" />
-            <p className="mt-3 text-[15px] sm:text-base leading-[1.75] text-white/90 max-w-xl">
+            <Quote className="mt-5 size-7 text-[var(--accent)] rtl-flip opacity-80" />
+            <p className="mt-3 text-[15px] sm:text-base leading-[1.85] text-foreground/85 max-w-xl">
               {t("about_intro")}
             </p>
           </div>
@@ -977,9 +982,9 @@ function About() {
 
 function BigStat({ n, l }: { n: string; l: string }) {
   return (
-    <div className="rounded-2xl bg-white/[0.07] border border-white/15 backdrop-blur-md p-3.5 text-center">
-      <div className="font-display text-2xl sm:text-[26px] font-extrabold leading-none text-white">{n}</div>
-      <div className="mt-1.5 text-[9px] uppercase tracking-[0.2em] text-white/70">{l}</div>
+    <div className="rounded-2xl bg-foreground/[0.04] border border-foreground/10 p-3.5 text-center">
+      <div className="font-display text-2xl sm:text-[26px] font-extrabold leading-none" style={{ color: "var(--accent)" }}>{n}</div>
+      <div className="mt-1.5 text-[9px] uppercase tracking-[0.2em] text-muted-foreground">{l}</div>
     </div>
   );
 }

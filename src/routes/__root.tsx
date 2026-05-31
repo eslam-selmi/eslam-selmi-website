@@ -12,6 +12,8 @@ import appCss from "../styles.css?url";
 import { I18nProvider } from "@/lib/i18n";
 import { ThemeProvider } from "@/lib/theme";
 import { Toaster } from "@/components/ui/sonner";
+import { MotionConfig } from "motion/react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 function NotFoundComponent() {
   return (
@@ -130,15 +132,18 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const isMobile = useIsMobile();
 
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <I18nProvider>
-          <main>
-            <Outlet />
-          </main>
-          <Toaster position="top-center" richColors />
+          <MotionConfig reducedMotion={isMobile ? "always" : "never"}>
+            <main>
+              <Outlet />
+            </main>
+            <Toaster position="top-center" richColors />
+          </MotionConfig>
         </I18nProvider>
       </ThemeProvider>
     </QueryClientProvider>
