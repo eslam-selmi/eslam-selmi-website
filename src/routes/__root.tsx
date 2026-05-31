@@ -12,6 +12,8 @@ import appCss from "../styles.css?url";
 import { I18nProvider } from "@/lib/i18n";
 import { ThemeProvider } from "@/lib/theme";
 import { Toaster } from "@/components/ui/sonner";
+import { MotionConfig } from "motion/react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 function NotFoundComponent() {
   return (
