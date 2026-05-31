@@ -60,7 +60,7 @@ function GraduatesPage() {
       <Footer />
       <WhatsAppFloat />
       <CalendlyDialog />
-      <LanguageHint />
+      
     </div>
   );
 }
