@@ -22,9 +22,10 @@ import { findCountry } from "@/lib/countries";
 import { safeHref } from "@/lib/safe-url";
 import { AdminSupportPanel } from "@/components/SupportTickets";
 import { assertAdmin } from "@/lib/admin-guard.functions";
+import { SiteManagementPanel } from "@/components/admin/SiteManagementPanel";
 
 type AdminSearch = {
-  tab?: "enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods" | "tickets";
+  tab?: "enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods" | "tickets" | "site";
   drawer?: string;
   editCourse?: string;
 };
@@ -81,7 +82,7 @@ function AdminPage() {
   const { user, role, loading } = useAuth();
   const nav = useNavigate();
   const search = Route.useSearch();
-  const [tabState, setTabState] = useState<"enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods" | "tickets">(search.tab || "enrollments");
+  const [tabState, setTabState] = useState<"enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods" | "tickets" | "site">(search.tab || "enrollments");
   const tab = tabState;
   const setTab = setTabState;
 
@@ -197,6 +198,7 @@ function AdminPage() {
             { id: "trainers", label: t("المدرّبون", "Trainers") },
             { id: "coupons", label: t("كوبونات الخصم", "Discount coupons") },
             { id: "additions", label: t("أحدث الإضافات", "Latest additions") },
+            { id: "site", label: t("إدارة الموقع", "Site management") },
             { id: "tickets", label: t("تذاكر الدعم", "Support tickets") },
             { id: "finance", label: t("المعاملات المالية", "Financial logs") },
             { id: "methods", label: t("طرق الدفع", "Payment methods") },
@@ -228,6 +230,8 @@ function AdminPage() {
           <CouponsPanel courses={courses} />
         ) : tab === "additions" ? (
           <LatestAdditionsPanel />
+        ) : tab === "site" ? (
+          <SiteManagementPanel />
         ) : tab === "tickets" ? (
           user ? <AdminSupportPanel adminUserId={user.id} /> : null
         ) : tab === "finance" ? (

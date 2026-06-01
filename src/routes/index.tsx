@@ -14,6 +14,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useI18n, type Lang } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
 import { LatestAdditionsSection } from "@/components/LatestAdditions";
+import { useSiteContent } from "@/lib/site-content";
+import { SitePopup } from "@/components/SitePopup";
 
 import headshot from "@/assets/portfolio/headshot.webp";
 import brandLogo from "@/assets/brand-logo.webp";
@@ -277,34 +279,37 @@ const fadeUp = {
 
 function Portfolio() {
   const { theme, toggle } = useTheme();
+  const { isVisible } = useSiteContent();
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-accent/25">
       <Nav theme={theme as ThemeMode} onThemeToggle={toggle} />
-      <Hero />
-      <About />
-      <Pillars />
-      <Journey />
-      <Brands />
-      <Services />
-      <Programs />
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-5 py-12">
-        <LatestAdditionsSection />
-      </div>
+      {isVisible("home.hero") && <Hero />}
+      {isVisible("home.about") && <About />}
+      {isVisible("home.pillars") && <Pillars />}
+      {isVisible("home.journey") && <Journey />}
+      {isVisible("home.brands") && <Brands />}
+      {isVisible("home.services") && <Services />}
+      {isVisible("home.programs") && <Programs />}
 
-      <CurrentCourses />
-      
-      
-      <Podcast />
-      <Clients />
-      <Snapshots />
-      <BookCTA />
-      <Contact />
-      <Footer />
+      {isVisible("home.latest_additions") && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-5 py-12">
+          <LatestAdditionsSection />
+        </div>
+      )}
+
+      {isVisible("home.current_courses") && <CurrentCourses />}
+
+      {isVisible("home.podcast") && <Podcast />}
+      {isVisible("home.clients") && <Clients />}
+      {isVisible("home.snapshots") && <Snapshots />}
+      {isVisible("home.cta") && <BookCTA />}
+      {isVisible("home.contact") && <Contact />}
+      {isVisible("home.footer") && <Footer />}
       <WhatsAppFloat />
       <ScrollTop />
       <CalendlyDialog />
+      <SitePopup />
     </div>
   );
 }
