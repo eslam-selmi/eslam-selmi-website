@@ -198,6 +198,7 @@ function AdminPage() {
             { id: "trainers", label: t("المدرّبون", "Trainers") },
             { id: "coupons", label: t("كوبونات الخصم", "Discount coupons") },
             { id: "additions", label: t("أحدث الإضافات", "Latest additions") },
+            { id: "site", label: t("إدارة الموقع", "Site management") },
             { id: "tickets", label: t("تذاكر الدعم", "Support tickets") },
             { id: "finance", label: t("المعاملات المالية", "Financial logs") },
             { id: "methods", label: t("طرق الدفع", "Payment methods") },
