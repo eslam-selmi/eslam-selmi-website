@@ -833,6 +833,96 @@ export type Database = {
         }
         Relationships: []
       }
+      site_content: {
+        Row: {
+          content: Json
+          id: string
+          is_visible: boolean
+          label: string | null
+          section_key: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          content?: Json
+          id?: string
+          is_visible?: boolean
+          label?: string | null
+          section_key: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          content?: Json
+          id?: string
+          is_visible?: boolean
+          label?: string | null
+          section_key?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      site_popups: {
+        Row: {
+          body_ar: string | null
+          body_en: string | null
+          created_at: string
+          cta_label_ar: string | null
+          cta_label_en: string | null
+          cta_url: string | null
+          delay_seconds: number
+          ends_at: string | null
+          frequency: string
+          frequency_days: number
+          id: string
+          image_url: string | null
+          is_active: boolean
+          starts_at: string | null
+          title_ar: string
+          title_en: string | null
+          updated_at: string
+        }
+        Insert: {
+          body_ar?: string | null
+          body_en?: string | null
+          created_at?: string
+          cta_label_ar?: string | null
+          cta_label_en?: string | null
+          cta_url?: string | null
+          delay_seconds?: number
+          ends_at?: string | null
+          frequency?: string
+          frequency_days?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          starts_at?: string | null
+          title_ar: string
+          title_en?: string | null
+          updated_at?: string
+        }
+        Update: {
+          body_ar?: string | null
+          body_en?: string | null
+          created_at?: string
+          cta_label_ar?: string | null
+          cta_label_en?: string | null
+          cta_url?: string | null
+          delay_seconds?: number
+          ends_at?: string | null
+          frequency?: string
+          frequency_days?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          starts_at?: string | null
+          title_ar?: string
+          title_en?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       support_ticket_messages: {
         Row: {
           body: string
