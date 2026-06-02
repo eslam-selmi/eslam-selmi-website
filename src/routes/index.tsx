@@ -1259,8 +1259,10 @@ function Brands() {
         <img
           src={b.src}
           alt={lang === "ar" ? b.nameAr : b.name}
-          loading="eager"
+          loading="lazy"
           decoding="async"
+          width={180}
+          height={90}
           className="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105"
         />
       </div>
@@ -1352,8 +1354,10 @@ function Snapshots() {
       <img
         src={src}
         alt={`Snapshot ${originalIndex + 1}`}
-        loading="eager"
+        loading="lazy"
         decoding="async"
+        width={260}
+        height={325}
         className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
       />
       <div className="image-scrim absolute inset-0 opacity-0 group-hover:opacity-100 transition" />
