@@ -361,25 +361,15 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 /* ============================================================
    GLOBAL ANIMATION KILL SWITCH
    Disables all transitions/animations site-wide.
-   Whitelisted: marquee tracks (companies + snapshots).
+   Whitelisted: marquee tracks for companies (Clients) + snapshots
+   ("لحظات شكّلت المسيرة") which must keep scrolling.
    ============================================================ */
-*, *::before, *::after {
+*:not(.marquee-track):not(.marquee-track-reverse):not(.marquee-track-rtl):not(.animate-marquee):not(.animate-marquee-slow):not(.animate-marquee-rtl):not(.animate-marquee-x):not(.animate-marquee-x-reverse),
+*::before,
+*::after {
   animation-duration: 0s !important;
   animation-delay: 0s !important;
   animation-iteration-count: 1 !important;
   transition-duration: 0s !important;
   transition-delay: 0s !important;
-}
-
-/* Re-enable marquee animations for companies + snapshots only */
-.marquee-track,
-.marquee-track-reverse,
-.marquee-track-rtl,
-.animate-marquee,
-.animate-marquee-slow,
-.animate-marquee-rtl,
-.animate-marquee-x,
-.animate-marquee-x-reverse {
-  animation-duration: inherit !important;
-  animation-iteration-count: infinite !important;
 }
