@@ -1259,8 +1259,10 @@ function Brands() {
         <img
           src={b.src}
           alt={lang === "ar" ? b.nameAr : b.name}
-          loading="eager"
+          loading="lazy"
           decoding="async"
+          width={180}
+          height={90}
           className="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105"
         />
       </div>
