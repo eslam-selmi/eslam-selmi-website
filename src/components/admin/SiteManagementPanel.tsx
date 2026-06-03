@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { invalidateSiteContent } from "@/lib/site-content";
 import { toast } from "sonner";
-import { Eye, EyeOff, Save, Plus, Trash2, Pencil, X, Calendar, Clock, Link as LinkIcon } from "lucide-react";
+import { Eye, EyeOff, Save, Plus, Trash2, Pencil, X, Calendar, Clock, Link as LinkIcon, Wrench, Power } from "lucide-react";
 
 type Row = {
   id: string;
