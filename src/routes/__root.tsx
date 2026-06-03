@@ -143,7 +143,9 @@ function RootComponent() {
         <I18nProvider>
           <MotionConfig reducedMotion={isMobile ? "always" : "never"}>
             <main>
-              <Outlet />
+              <MaintenanceGate>
+                <Outlet />
+              </MaintenanceGate>
             </main>
             <Toaster position="top-center" richColors />
           </MotionConfig>
