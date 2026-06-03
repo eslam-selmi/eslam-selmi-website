@@ -364,12 +364,15 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
    Whitelisted: marquee tracks for companies (Clients) + snapshots
    ("لحظات شكّلت المسيرة") which must keep scrolling.
    ============================================================ */
-*:not(.marquee-track):not(.marquee-track-reverse):not(.marquee-track-rtl):not(.animate-marquee):not(.animate-marquee-slow):not(.animate-marquee-rtl):not(.animate-marquee-x):not(.animate-marquee-x-reverse),
-*::before,
-*::after {
-  animation-duration: 0s !important;
-  animation-delay: 0s !important;
-  animation-iteration-count: 1 !important;
-  transition-duration: 0s !important;
-  transition-delay: 0s !important;
+/* Mobile-only kill switch: disable all animations/transitions except marquees and <img> elements */
+@media (max-width: 767px) {
+  *:not(.marquee-track):not(.marquee-track-reverse):not(.marquee-track-rtl):not(.animate-marquee):not(.animate-marquee-slow):not(.animate-marquee-rtl):not(.animate-marquee-x):not(.animate-marquee-x-reverse):not(img),
+  *::before,
+  *::after {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+  }
 }
