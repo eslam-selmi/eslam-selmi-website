@@ -75,7 +75,7 @@ function TrainerPage() {
     }
     const [cRes, eRes, aRes] = await Promise.all([
       supabase.from("courses").select("id,title,cover_emoji,starts_at,ends_at,description").in("id", ids),
-      supabase.from("enrollments").select("id,user_id,course_id,status,blocked").in("course_id", ids),
+      supabase.from("trainer_enrollments" as any).select("id,user_id,course_id,status,blocked").in("course_id", ids),
       supabase.from("assignments").select("id,title,course_id,max_score,due_date").in("course_id", ids),
     ]);
     const cList = (cRes.data as Course[]) ?? [];
