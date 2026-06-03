@@ -14,6 +14,7 @@ import { ThemeProvider } from "@/lib/theme";
 import { Toaster } from "@/components/ui/sonner";
 import { MotionConfig } from "motion/react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { MaintenanceGate } from "@/components/MaintenanceGate";
 
 function NotFoundComponent() {
   return (
@@ -142,7 +143,9 @@ function RootComponent() {
         <I18nProvider>
           <MotionConfig reducedMotion={isMobile ? "always" : "never"}>
             <main>
-              <Outlet />
+              <MaintenanceGate>
+                <Outlet />
+              </MaintenanceGate>
             </main>
             <Toaster position="top-center" richColors />
           </MotionConfig>

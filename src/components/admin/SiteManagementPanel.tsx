@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { invalidateSiteContent } from "@/lib/site-content";
 import { toast } from "sonner";
-import { Eye, EyeOff, Save, Plus, Trash2, Pencil, X, Calendar, Clock, Link as LinkIcon } from "lucide-react";
+import { Eye, EyeOff, Save, Plus, Trash2, Pencil, X, Calendar, Clock, Link as LinkIcon, Wrench, Power } from "lucide-react";
 
 type Row = {
   id: string;
@@ -30,14 +30,15 @@ type Popup = {
 export function SiteManagementPanel() {
   const { lang } = useI18n();
   const t = (a: string, b: string) => (lang === "ar" ? a : b);
-  const [sub, setSub] = useState<"content" | "popups">("content");
+  const [sub, setSub] = useState<"content" | "popups" | "maintenance">("content");
 
   return (
     <div className="space-y-4">
-      <div className="dash-card p-1.5 inline-flex gap-1">
+      <div className="dash-card p-1.5 inline-flex gap-1 flex-wrap">
         {[
           { id: "content", label: t("محتوى الموقع", "Site content") },
           { id: "popups", label: t("النوافذ المنبثقة", "Popups") },
+          { id: "maintenance", label: t("وضع الصيانة", "Maintenance") },
         ].map((x) => (
           <button
             key={x.id}
@@ -50,7 +51,7 @@ export function SiteManagementPanel() {
           >{x.label}</button>
         ))}
       </div>
-      {sub === "content" ? <ContentPanel /> : <PopupsPanel />}
+      {sub === "content" ? <ContentPanel /> : sub === "popups" ? <PopupsPanel /> : <MaintenancePanel />}
     </div>
   );
 }
@@ -385,6 +386,172 @@ function Field({ label, children, full }: { label: string; children: React.React
     <div className={full ? "sm:col-span-2" : ""}>
       <label className="text-[11px] text-white/55 block mb-1 font-medium">{label}</label>
       {children}
+    </div>
+  );
+}
+
+/* ---------------- MAINTENANCE ---------------- */
+
+function MaintenancePanel() {
+  const { lang } = useI18n();
+  const t = (a: string, b: string) => (lang === "ar" ? a : b);
+  const [rowId, setRowId] = useState<string | null>(null);
+  const [enabled, setEnabled] = useState(false);
+  const [msgAr, setMsgAr] = useState("");
+  const [msgEn, setMsgEn] = useState("");
+  const [until, setUntil] = useState<string>("");
+  const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  async function load() {
+    setLoading(true);
+    const { data } = await supabase
+      .from("site_content").select("*")
+      .eq("section_key", "site.maintenance").maybeSingle();
+    if (data) {
+      setRowId(data.id);
+      const c = (data.content || {}) as any;
+      setEnabled(!!c.enabled);
+      setMsgAr(c.message_ar || "");
+      setMsgEn(c.message_en || "");
+      setUntil(c.until ? toLocalInput(c.until) : "");
+    }
+    setLoading(false);
+  }
+  useEffect(() => { load(); }, []);
+
+  function toLocalInput(iso: string) {
+    try {
+      const d = new Date(iso);
+      const pad = (n: number) => String(n).padStart(2, "0");
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    } catch { return ""; }
+  }
+
+  async function save(nextEnabled?: boolean) {
+    setSaving(true);
+    const finalEnabled = typeof nextEnabled === "boolean" ? nextEnabled : enabled;
+    const content = {
+      enabled: finalEnabled,
+      message_ar: msgAr,
+      message_en: msgEn,
+      until: until ? new Date(until).toISOString() : "",
+    };
+    let error;
+    if (rowId) {
+      ({ error } = await supabase.from("site_content")
+        .update({ content, is_visible: finalEnabled }).eq("id", rowId));
+    } else {
+      const { data, error: insErr } = await supabase.from("site_content")
+        .insert({ section_key: "site.maintenance", label: "Maintenance mode", content, is_visible: finalEnabled })
+        .select("id").maybeSingle();
+      error = insErr;
+      if (data) setRowId(data.id);
+    }
+    setSaving(false);
+    if (error) return toast.error(error.message);
+    if (typeof nextEnabled === "boolean") setEnabled(nextEnabled);
+    invalidateSiteContent();
+    toast.success(
+      finalEnabled
+        ? t("تم تفعيل وضع الصيانة", "Maintenance mode enabled")
+        : t("تم تعطيل وضع الصيانة", "Maintenance mode disabled")
+    );
+  }
+
+  if (loading) {
+    return <div className="dash-card p-6 text-sm text-white/55">{t("جارٍ التحميل...", "Loading...")}</div>;
+  }
+
+  return (
+    <div className="dash-card p-5 md:p-6 space-y-5">
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div className="flex items-start gap-3">
+          <div
+            className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
+            style={{
+              background: enabled ? "oklch(0.65 0.20 30 / 0.18)" : "oklch(1 0 0 / 0.05)",
+              border: `1px solid ${enabled ? "oklch(0.65 0.20 30 / 0.45)" : "oklch(1 0 0 / 0.1)"}`,
+            }}
+          >
+            <Wrench className={`w-5 h-5 ${enabled ? "text-orange-300" : "text-white/55"}`} />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold">{t("وضع الصيانة", "Maintenance mode")}</h3>
+            <p className="text-xs text-white/55 mt-1 max-w-md">
+              {t(
+                "عند التفعيل سيرى الزوار صفحة صيانة مميزة مع رسالتك وعدّاد تنازلي. الأدمن يستطيع تصفّح الموقع بشكل طبيعي.",
+                "When enabled, visitors see a premium maintenance page with your message and a countdown. Admins keep full access."
+              )}
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={() => save(!enabled)}
+          disabled={saving}
+          className={`h-10 px-4 rounded-lg text-sm font-semibold flex items-center gap-2 transition disabled:opacity-50 ${
+            enabled
+              ? "bg-orange-500/20 text-orange-200 border border-orange-400/40 hover:bg-orange-500/30"
+              : "bg-emerald-500/15 text-emerald-300 border border-emerald-400/30 hover:bg-emerald-500/25"
+          }`}
+        >
+          <Power className="w-4 h-4" />
+          {enabled ? t("الموقع تحت الصيانة الآن", "Currently in maintenance") : t("الموقع يعمل بشكل طبيعي", "Site is live")}
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+          <label className="text-[11px] text-white/55 block mb-1 font-medium">
+            {t("الرسالة (عربي)", "Message (Arabic)")}
+          </label>
+          <textarea
+            rows={4}
+            value={msgAr}
+            onChange={(e) => setMsgAr(e.target.value)}
+            className="w-full bg-white/5 border border-white/10 rounded-lg p-2.5 text-sm text-white"
+            placeholder={t("اكتب رسالة الصيانة بالعربية...", "Arabic maintenance message...")}
+          />
+        </div>
+        <div>
+          <label className="text-[11px] text-white/55 block mb-1 font-medium">
+            {t("الرسالة (English)", "Message (English)")}
+          </label>
+          <textarea
+            rows={4}
+            value={msgEn}
+            onChange={(e) => setMsgEn(e.target.value)}
+            className="w-full bg-white/5 border border-white/10 rounded-lg p-2.5 text-sm text-white"
+            placeholder={t("English maintenance message...", "English maintenance message...")}
+          />
+        </div>
+        <div className="md:col-span-2">
+          <label className="text-[11px] text-white/55 block mb-1 font-medium flex items-center gap-1.5">
+            <Clock className="w-3.5 h-3.5" />
+            {t("موعد عودة الموقع (يظهر كعدّاد تنازلي)", "Back-online date & time (shown as countdown)")}
+          </label>
+          <input
+            type="datetime-local"
+            value={until}
+            onChange={(e) => setUntil(e.target.value)}
+            className="w-full h-10 bg-white/5 border border-white/10 rounded-lg px-3 text-sm text-white"
+          />
+          <p className="text-[10px] text-white/40 mt-1">
+            {t("اتركه فارغاً إذا لا ترغب بإظهار عدّاد.", "Leave empty to hide the countdown.")}
+          </p>
+        </div>
+      </div>
+
+      <div className="flex justify-end pt-2">
+        <button
+          onClick={() => save()}
+          disabled={saving}
+          className="h-10 px-5 rounded-lg bg-gradient-to-b from-[var(--gold)] to-[#c89a3a] text-[#0b1736] font-semibold text-sm flex items-center gap-1.5 disabled:opacity-50"
+        >
+          <Save className="w-3.5 h-3.5" />
+          {saving ? t("جارٍ الحفظ...", "Saving...") : t("حفظ الإعدادات", "Save settings")}
+        </button>
+      </div>
     </div>
   );
 }
