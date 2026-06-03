@@ -140,7 +140,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <I18nProvider>
-          <MotionConfig reducedMotion="always">
+          <MotionConfig reducedMotion={isMobile ? "always" : "never"}>
             <main>
               <Outlet />
             </main>
