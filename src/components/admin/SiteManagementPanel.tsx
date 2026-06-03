@@ -30,14 +30,15 @@ type Popup = {
 export function SiteManagementPanel() {
   const { lang } = useI18n();
   const t = (a: string, b: string) => (lang === "ar" ? a : b);
-  const [sub, setSub] = useState<"content" | "popups">("content");
+  const [sub, setSub] = useState<"content" | "popups" | "maintenance">("content");
 
   return (
     <div className="space-y-4">
-      <div className="dash-card p-1.5 inline-flex gap-1">
+      <div className="dash-card p-1.5 inline-flex gap-1 flex-wrap">
         {[
           { id: "content", label: t("محتوى الموقع", "Site content") },
           { id: "popups", label: t("النوافذ المنبثقة", "Popups") },
+          { id: "maintenance", label: t("وضع الصيانة", "Maintenance") },
         ].map((x) => (
           <button
             key={x.id}
@@ -50,7 +51,7 @@ export function SiteManagementPanel() {
           >{x.label}</button>
         ))}
       </div>
-      {sub === "content" ? <ContentPanel /> : <PopupsPanel />}
+      {sub === "content" ? <ContentPanel /> : sub === "popups" ? <PopupsPanel /> : <MaintenancePanel />}
     </div>
   );
 }
