@@ -523,6 +523,13 @@ export type Database = {
             referencedRelation: "enrollments"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "installments_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "trainer_enrollments"
+            referencedColumns: ["id"]
+          },
         ]
       }
       latest_additions: {
@@ -744,6 +751,13 @@ export type Database = {
             columns: ["enrollment_id"]
             isOneToOne: false
             referencedRelation: "enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "trainer_enrollments"
             referencedColumns: ["id"]
           },
           {
@@ -1070,7 +1084,63 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      trainer_enrollments: {
+        Row: {
+          blocked: boolean | null
+          certificate_issued: boolean | null
+          certificate_requested_at: string | null
+          course_id: string | null
+          created_at: string | null
+          id: string | null
+          name_ar: string | null
+          name_en: string | null
+          status: Database["public"]["Enums"]["enrollment_status"] | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          blocked?: boolean | null
+          certificate_issued?: boolean | null
+          certificate_requested_at?: string | null
+          course_id?: string | null
+          created_at?: string | null
+          id?: string | null
+          name_ar?: string | null
+          name_en?: string | null
+          status?: Database["public"]["Enums"]["enrollment_status"] | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          blocked?: boolean | null
+          certificate_issued?: boolean | null
+          certificate_requested_at?: string | null
+          course_id?: string | null
+          created_at?: string | null
+          id?: string | null
+          name_ar?: string | null
+          name_en?: string | null
+          status?: Database["public"]["Enums"]["enrollment_status"] | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enrollments_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "enrollments_user_id_profiles_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       apply_coupon_to_enrollment: {
