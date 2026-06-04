@@ -25,7 +25,7 @@ import { assertAdmin } from "@/lib/admin-guard.functions";
 import { SiteManagementPanel } from "@/components/admin/SiteManagementPanel";
 
 type AdminSearch = {
-  tab?: "enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods" | "tickets" | "site";
+  tab?: "enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods" | "tickets" | "site" | "leads";
   drawer?: string;
   editCourse?: string;
 };
@@ -82,7 +82,7 @@ function AdminPage() {
   const { user, role, loading } = useAuth();
   const nav = useNavigate();
   const search = Route.useSearch();
-  const [tabState, setTabState] = useState<"enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods" | "tickets" | "site">(search.tab || "enrollments");
+  const [tabState, setTabState] = useState<"enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods" | "tickets" | "site" | "leads">(search.tab || "enrollments");
   const tab = tabState;
   const setTab = setTabState;
 
@@ -199,6 +199,7 @@ function AdminPage() {
             { id: "coupons", label: t("كوبونات الخصم", "Discount coupons") },
             { id: "additions", label: t("أحدث الإضافات", "Latest additions") },
             { id: "site", label: t("إدارة الموقع", "Site management") },
+            { id: "leads", label: t("اهتمامات الكورسات", "Course leads") },
             { id: "tickets", label: t("تذاكر الدعم", "Support tickets") },
             { id: "finance", label: t("المعاملات المالية", "Financial logs") },
             { id: "methods", label: t("طرق الدفع", "Payment methods") },
@@ -232,6 +233,8 @@ function AdminPage() {
           <LatestAdditionsPanel />
         ) : tab === "site" ? (
           <SiteManagementPanel />
+        ) : tab === "leads" ? (
+          <CourseLeadsPanel />
         ) : tab === "tickets" ? (
           user ? <AdminSupportPanel adminUserId={user.id} /> : null
         ) : tab === "finance" ? (
