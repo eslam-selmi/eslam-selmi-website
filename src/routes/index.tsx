@@ -1570,6 +1570,8 @@ function BookCTA() {
 }
 
 /* ---------- CURRENT COURSES (live from DB) ---------- */
+const COURSES_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSePiL3_X7XaxWa6oAMlUc0TgT80z1mozFSExDzZnqvfmP4nRA/viewform?embedded=true";
+
 type PublicCourse = {
   id: string;
   title: string;
@@ -1721,7 +1723,7 @@ function CourseCard({ c, onOpen, isAr, upcoming = false }: { c: PublicCourse; on
       <div className="mt-4 flex items-center justify-between gap-2 flex-wrap">
         <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
           {c.total_hours > 0 && (
-            <span className="inline-flex items-center gap-1"><Clock4 className="size-3" /> {c.total_hours} {tt("ساعة", "h")}</span>
+            <span className="inline-flex items-center gap-1"><Calendar className="size-3" /> {c.total_hours} {tt("ساعة", "h")}</span>
           )}
           {c.starts_at && (
             <span className="inline-flex items-center gap-1"><Calendar className="size-3" /> {new Date(c.starts_at).toLocaleDateString(isAr ? "ar-EG" : "en-GB", { day: "numeric", month: "short" })}</span>
@@ -1780,7 +1782,7 @@ function CourseDetailsModal({ course, isAr, dir, onClose, onInterest }: {
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {course.total_hours > 0 && (
-              <DetailStat icon={Clock4} label={tt("الساعات", "Hours")} value={`${course.total_hours}`} />
+              <DetailStat icon={Calendar} label={tt("الساعات", "Hours")} value={`${course.total_hours}`} />
             )}
             {course.starts_at && (
               <DetailStat icon={Calendar} label={tt("يبدأ", "Starts")} value={new Date(course.starts_at).toLocaleDateString(isAr ? "ar-EG" : "en-GB")} />
