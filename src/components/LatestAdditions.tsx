@@ -92,7 +92,6 @@ export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
   }, [onView]);
 
   if (loading) return null;
-  if (!items.length && !settings) return null;
 
   const title = settings ? (isAr ? settings.title_ar : settings.title_en) : isAr ? "أحدث الإضافات" : "Latest Additions";
   const subtitle = settings ? (isAr ? settings.subtitle_ar : settings.subtitle_en) : null;

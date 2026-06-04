@@ -898,58 +898,135 @@ function CompactStat({ n, l }: { n: string; l: string }) {
 }
 
 
-/* ---------- ABOUT ---------- */
+/* ---------- ABOUT (Premium Edition) ---------- */
 function About() {
   const { t, lang } = useI18n();
+  const isAr = lang === "ar";
   const strengths = [
-    { t: { en: "Corporate Training Management", ar: "إدارة التدريب المؤسسي" }, d: { en: "End-to-end training operations within large-scale environments.", ar: "عمليات تدريب متكاملة في بيئات واسعة." } },
-    { t: { en: "Project Management", ar: "إدارة المشاريع" }, d: { en: "PMP methodologies for complex training projects across regions.", ar: "منهجيات PMP لمشاريع التدريب المعقدة." } },
-    { t: { en: "Performance Excellence", ar: "تميز الأداء" }, d: { en: "Robust KPIs and frameworks that drive organizational growth.", ar: "مؤشرات أداء وأطُر تقود نمو المنظمات." } },
-    { t: { en: "Strategic Development", ar: "التطوير الاستراتيجي" }, d: { en: "Competency models and dynamic training plans optimizing ROI.", ar: "نماذج جدارات وخطط تدريب تُحسّن العائد." } },
+    { t: { en: "Corporate Training Management", ar: "إدارة التدريب المؤسسي" }, d: { en: "End-to-end training operations within large-scale environments.", ar: "عمليات تدريب متكاملة في بيئات واسعة." }, icon: Presentation },
+    { t: { en: "Project Management", ar: "إدارة المشاريع" }, d: { en: "PMP methodologies for complex training projects across regions.", ar: "منهجيات PMP لمشاريع التدريب المعقدة." }, icon: Compass },
+    { t: { en: "Performance Excellence", ar: "تميز الأداء" }, d: { en: "Robust KPIs and frameworks that drive organizational growth.", ar: "مؤشرات أداء وأطُر تقود نمو المنظمات." }, icon: TrendingUp },
+    { t: { en: "Strategic Development", ar: "التطوير الاستراتيجي" }, d: { en: "Competency models and dynamic training plans optimizing ROI.", ar: "نماذج جدارات وخطط تدريب تُحسّن العائد." }, icon: Target },
   ];
   return (
     <Section id="about" eyebrow={t("about_eyebrow")} title={t("about_title")}>
-      {/* Editorial intro card — refined premium layout */}
+      {/* Premium editorial hero */}
       <motion.div
         {...fadeUp}
-        className="relative overflow-hidden rounded-[2rem] border border-foreground/10 bg-card"
+        className="relative overflow-hidden rounded-[2.25rem] border border-foreground/10 bg-gradient-to-br from-card via-card to-foreground/[0.02]"
+        style={{
+          boxShadow:
+            "0 40px 120px -60px color-mix(in oklab, var(--accent) 50%, transparent), 0 1px 0 color-mix(in oklab, var(--gold) 25%, transparent) inset",
+        }}
       >
-        {/* Left accent rail */}
-        <div className="pointer-events-none absolute inset-y-0 start-0 w-1.5 bg-gradient-to-b from-[var(--gold)] via-[var(--accent)] to-[var(--lavender-deep)]" />
-        {/* Soft corner glows */}
-        <div className="pointer-events-none absolute -top-24 -end-20 size-72 rounded-full bg-[var(--accent)]/10 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-28 -start-10 size-72 rounded-full bg-[var(--lavender)]/10 blur-3xl" />
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -top-32 -end-24 size-[28rem] rounded-full bg-[var(--accent)]/15 blur-[110px]" />
+          <div className="absolute -bottom-32 -start-24 size-[28rem] rounded-full bg-[var(--lavender)]/15 blur-[110px]" />
+          <div className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 size-[22rem] rounded-full bg-[var(--gold)]/[0.08] blur-[120px]" />
+        </div>
 
-        <div className="relative p-7 sm:p-10 grid gap-10 lg:grid-cols-[1.5fr_1fr] lg:items-center">
+        <div className="pointer-events-none absolute inset-y-6 start-0 w-[3px] bg-gradient-to-b from-transparent via-[var(--gold)] to-transparent" />
+        <div className="pointer-events-none absolute inset-y-10 start-2 w-[1px] bg-gradient-to-b from-transparent via-[var(--gold)]/40 to-transparent" />
+
+        <div className="relative p-7 sm:p-12 grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <div className="min-w-0">
-            <div className="inline-flex items-center gap-2 rounded-full bg-foreground/[0.04] border border-foreground/10 px-3 py-1 text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
-              <span className="size-1.5 rounded-full bg-[var(--gold)]" />
-              {lang === "ar" ? "نبذة عني" : "About me"}
+            <div className="inline-flex items-center gap-2 rounded-full bg-[var(--gold)]/10 border border-[var(--gold)]/30 px-4 py-1.5 text-[10px] uppercase tracking-[0.32em] font-bold" style={{ color: "var(--gold)" }}>
+              <Sparkles className="size-3" />
+              {isAr ? "نبذة عني" : "About me"}
             </div>
-            <Quote className="mt-5 size-7 text-[var(--accent)] rtl-flip opacity-80" />
-            <p className="mt-3 text-[15px] sm:text-base leading-[1.85] text-foreground/85 max-w-xl">
-              {t("about_intro")}
-            </p>
+
+            <h3 className="mt-6 font-display font-extrabold text-[clamp(1.75rem,3vw,2.5rem)] leading-[1.15] tracking-tight">
+              <span className="bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(110deg, var(--foreground) 30%, var(--accent) 60%, var(--gold) 95%)" }}>
+                {isAr ? "إسلام سلمي" : "Eslam Selmi"}
+              </span>
+              <span className="block text-base sm:text-lg font-semibold text-muted-foreground mt-2 tracking-normal">
+                {isAr ? "رئيس التعلم والتطوير وإدارة المواهب" : "Head of Learning, Development & Talent"}
+              </span>
+            </h3>
+
+            <div className="relative mt-7 ps-5">
+              <Quote className="absolute -top-1 start-0 size-5 text-[var(--gold)] rtl-flip opacity-90" />
+              <p className="text-[15px] sm:text-base leading-[1.95] text-foreground/85 max-w-xl">
+                {t("about_intro")}
+              </p>
+            </div>
+
+            <div className="mt-8 grid grid-cols-3 gap-3 max-w-md">
+              <BigStat n="9+" l={isAr ? "سنوات" : "Years"} />
+              <BigStat n="12" l={isAr ? "دولة" : "Countries"} />
+              <BigStat n="4" l={isAr ? "قطاعات" : "Sectors"} />
+            </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-2.5">
-            <BigStat n="9+" l={lang === "ar" ? "سنوات" : "Years"} />
-            <BigStat n="12" l={lang === "ar" ? "دولة" : "Countries"} />
-            <BigStat n="4" l={lang === "ar" ? "قطاعات" : "Sectors"} />
+          <div className="relative">
+            <div className="relative mx-auto max-w-sm">
+              <div className="absolute -inset-6 rounded-[2rem] bg-gradient-to-br from-[var(--gold)]/30 via-[var(--accent)]/15 to-[var(--lavender)]/25 blur-2xl" />
+
+              <div
+                className="relative rounded-[1.75rem] overflow-hidden border border-[var(--gold)]/30 bg-card"
+                style={{ boxShadow: "0 30px 80px -30px color-mix(in oklab, var(--accent) 70%, transparent)" }}
+              >
+                <img
+                  src={headshot}
+                  alt={isAr ? "إسلام سلمي" : "Eslam Selmi"}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full aspect-[4/5] object-cover"
+                />
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+
+                <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+                  <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 px-3 py-1 text-[10px] uppercase tracking-[0.25em] font-bold">
+                    <span className="size-1.5 rounded-full bg-[var(--gold)] shadow-[0_0_8px_var(--gold)]" />
+                    {isAr ? "متاح للاستشارات" : "Available for consulting"}
+                  </div>
+                  <div className="mt-2 font-display font-extrabold text-lg leading-tight">
+                    {isAr ? "خبرة معتمدة عبر ١٢ دولة" : "Certified expertise across 12 countries"}
+                  </div>
+                </div>
+
+                <div className="absolute top-4 start-4 size-12 rounded-full bg-gradient-to-br from-[var(--gold)] to-[#b88a2e] grid place-items-center text-[#0b1736] shadow-xl border-2 border-white/40">
+                  <Award className="size-5" />
+                </div>
+              </div>
+
+              <div className="absolute -bottom-4 -end-3 sm:-end-6 rounded-2xl bg-card border border-foreground/10 px-4 py-2.5 shadow-xl backdrop-blur">
+                <div className="flex items-center gap-2">
+                  <BadgeCheck className="size-4 text-[var(--gold)]" />
+                  <div className="text-[11px] font-bold leading-tight">
+                    <div>PMP · TOT · ID</div>
+                    <div className="text-[9px] uppercase tracking-[0.18em] text-muted-foreground mt-0.5">
+                      {isAr ? "اعتمادات دولية" : "Global certifications"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </motion.div>
 
-      {/* Strengths */}
-      <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {strengths.map((s, i) => (
-          <motion.div key={s.t.en} {...fadeUp} transition={{ duration: 0.6, delay: i * 0.08 }}
-            className="relative glass-panel rounded-3xl p-6 group hover:-translate-y-1 transition overflow-hidden">
-            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[var(--gold)] via-[var(--lavender)] to-[var(--gold)] opacity-70" />
-            <div className="font-display text-3xl font-extrabold leading-none" style={{ color: "var(--accent)" }}>
-              {String(i + 1).padStart(2, "0")}
+          <motion.div
+            key={s.t.en}
+            {...fadeUp}
+            transition={{ duration: 0.55, delay: i * 0.08 }}
+            className="relative glass-panel rounded-3xl p-6 group hover:-translate-y-1.5 transition overflow-hidden"
+            style={{ boxShadow: "0 20px 50px -30px color-mix(in oklab, var(--accent) 60%, transparent)" }}
+          >
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)] to-transparent opacity-80" />
+            <div className="absolute -top-16 -end-16 size-32 rounded-full bg-[var(--accent)]/15 blur-2xl opacity-0 group-hover:opacity-100 transition" />
+
+            <div className="relative flex items-start justify-between">
+              <div className="size-11 rounded-2xl bg-gradient-to-br from-[var(--gold)]/25 to-[var(--accent)]/15 border border-[var(--gold)]/30 grid place-items-center" style={{ color: "var(--gold)" }}>
+                <s.icon className="size-5" />
+              </div>
+              <div className="font-display text-3xl font-extrabold leading-none opacity-70" style={{ color: "var(--accent)" }}>
+                {String(i + 1).padStart(2, "0")}
+              </div>
             </div>
-            <h3 className="mt-3 font-semibold text-base leading-tight">{s.t[lang]}</h3>
+            <h3 className="mt-5 font-semibold text-base leading-tight">{s.t[lang]}</h3>
             <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.d[lang]}</p>
           </motion.div>
         ))}
@@ -1492,100 +1569,393 @@ function BookCTA() {
   );
 }
 
-/* ---------- CURRENT COURSES ---------- */
+/* ---------- CURRENT COURSES (live from DB) ---------- */
 const COURSES_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSePiL3_X7XaxWa6oAMlUc0TgT80z1mozFSExDzZnqvfmP4nRA/viewform?embedded=true";
 
+type PublicCourse = {
+  id: string;
+  title: string;
+  description: string | null;
+  cover_emoji: string | null;
+  price: number | null;
+  currency: string;
+  starts_at: string | null;
+  ends_at: string | null;
+  total_hours: number;
+  online_url: string | null;
+  brand_name: string | null;
+  brand_tagline_ar: string | null;
+  brand_tagline_en: string | null;
+  is_upcoming: boolean;
+};
+
 function CurrentCourses() {
-  const { t, dir } = useI18n();
-  const [open, setOpen] = useState(false);
+  const { lang, dir } = useI18n();
+  const isAr = lang === "ar";
+  const tt = (a: string, b: string) => (isAr ? a : b);
+  const [courses, setCourses] = useState<PublicCourse[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState<PublicCourse | null>(null);
+  const [interest, setInterest] = useState<PublicCourse | null>(null);
+
   useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    (async () => {
+      const { data } = await supabase
+        .from("courses")
+        .select("id,title,description,cover_emoji,price,currency,starts_at,ends_at,total_hours,online_url,brand_name,brand_tagline_ar,brand_tagline_en,is_upcoming")
+        .eq("active", true)
+        .eq("is_archived", false)
+        .order("starts_at", { ascending: true, nullsFirst: false });
+      setCourses((data as PublicCourse[]) ?? []);
+      setLoading(false);
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (!selected && !interest) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") { setSelected(null); setInterest(null); } };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open]);
-  return (
-    <Section id="current-courses" eyebrow={t("current_eyebrow")} title={t("current_title")}>
-      <motion.div {...fadeUp}
-        className="relative mx-auto max-w-5xl rounded-[2rem] overflow-hidden bg-card border border-foreground/10 shadow-[0_30px_80px_-40px_oklch(0.22_0.06_252/0.35)]">
-        <div className="grid md:grid-cols-[1fr_1.2fr]">
-          {/* Accent panel */}
-          <div className="relative hidden md:block p-10 overflow-hidden" style={{ background: "linear-gradient(135deg, var(--navy-deep) 0%, var(--lavender-deep) 60%, var(--accent) 100%)" }}>
-            <div className="absolute inset-0 grain opacity-25 pointer-events-none" />
-            <div className="relative h-full flex flex-col justify-between text-white">
-              <div className="size-14 grid place-items-center rounded-2xl bg-white/15 backdrop-blur border border-white/25">
-                <GraduationCap className="size-7" />
-              </div>
-              <div>
-                <div className="text-[11px] font-bold uppercase tracking-[0.3em] text-white/80">
-                  {t("current_meta")}
-                </div>
-                <div className="mt-3 font-display text-3xl font-extrabold leading-tight">
-                  {t("current_eyebrow")}
-                </div>
-              </div>
-            </div>
-          </div>
-          {/* Content */}
-          <div className="p-7 sm:p-10 flex flex-col gap-5">
-            <div className="inline-flex md:hidden items-center gap-2 self-start rounded-full bg-primary/10 text-primary px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em]">
-              <Sparkles className="size-3.5" /> {t("current_eyebrow")}
-            </div>
-            <h3 className="font-display font-extrabold text-foreground leading-[1.15] text-[clamp(1.5rem,2.6vw,2rem)]">
-              {t("current_title")}
-            </h3>
-            <p className="text-muted-foreground leading-relaxed max-w-xl">
-              {t("current_desc")}
-            </p>
-            <div className="rule" />
-            <div className="flex flex-wrap items-center gap-3">
-              <button
-                onClick={() => setOpen(true)}
-                className="group inline-flex items-center gap-2.5 rounded-full bg-primary text-primary-foreground px-6 py-3.5 text-sm font-bold hover:opacity-90 transition shadow-lg cursor-pointer"
-              >
-                <BookOpen className="size-4" />
-                {t("current_btn")}
-                <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
-              </button>
-              <div className="text-xs text-muted-foreground md:hidden">{t("current_meta")}</div>
-            </div>
-          </div>
-        </div>
-      </motion.div>
+  }, [selected, interest]);
 
-      {open && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-sm"
-          onClick={() => setOpen(false)}
-          dir={dir}
-        >
-          <div
-            className="relative w-full max-w-2xl h-[90vh] rounded-2xl overflow-hidden bg-card shadow-2xl border border-foreground/10 flex flex-col"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between px-5 py-3 border-b border-foreground/10 bg-card shrink-0">
-              <div className="min-w-0">
-                <div className="font-display font-bold text-sm sm:text-base truncate">{t("current_modal_title")}</div>
-                <div className="text-xs text-muted-foreground truncate">{t("current_modal_desc")}</div>
-              </div>
-              <button
-                onClick={() => setOpen(false)}
-                aria-label="Close"
-                className="size-9 grid place-items-center rounded-full hover:bg-foreground/10 transition shrink-0"
-              >
-                <X className="size-4" />
-              </button>
-            </div>
-            <iframe
-              src={COURSES_FORM_URL}
-              title="Current courses enrollment"
-              className="w-full flex-1 border-0 bg-white"
-              loading="lazy"
-            />
-          </div>
+  const current = courses.filter((c) => !c.is_upcoming);
+  const upcoming = courses.filter((c) => c.is_upcoming);
+
+  return (
+    <Section id="current-courses" eyebrow={tt("الكورسات الحالية", "Current Courses")} title={tt("سجّل اليوم في كورساتنا", "Enroll in our courses today")}>
+      {loading ? (
+        <div className="text-center py-10 text-muted-foreground text-sm">{tt("جارٍ التحميل…", "Loading…")}</div>
+      ) : courses.length === 0 ? (
+        <div className="text-center py-12 rounded-3xl border border-dashed border-foreground/15 text-muted-foreground">
+          {tt("لا توجد كورسات متاحة حالياً.", "No courses available right now.")}
         </div>
+      ) : (
+        <>
+          {current.length > 0 && (
+            <>
+              <h3 className="text-xs uppercase tracking-[0.3em] font-bold mb-4" style={{ color: "var(--gold)" }}>
+                {tt("متاحة الآن للتسجيل", "Open for enrollment")}
+              </h3>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {current.map((c) => (
+                  <CourseCard key={c.id} c={c} onOpen={() => setSelected(c)} isAr={isAr} />
+                ))}
+              </div>
+            </>
+          )}
+
+          {upcoming.length > 0 && (
+            <div className="mt-12">
+              <h3 className="text-xs uppercase tracking-[0.3em] font-bold mb-4 flex items-center gap-2" style={{ color: "var(--accent)" }}>
+                <Calendar className="size-3.5" />
+                {tt("كورسات قادمة", "Upcoming Courses")}
+              </h3>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {upcoming.map((c) => (
+                  <CourseCard
+                    key={c.id}
+                    c={c}
+                    onOpen={() => setSelected(c)}
+                    isAr={isAr}
+                    upcoming
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
+      {selected && (
+        <CourseDetailsModal
+          course={selected}
+          isAr={isAr}
+          dir={dir}
+          onClose={() => setSelected(null)}
+          onInterest={() => { setInterest(selected); setSelected(null); }}
+        />
+      )}
+
+      {interest && (
+        <InterestFormModal
+          course={interest}
+          isAr={isAr}
+          dir={dir}
+          onClose={() => setInterest(null)}
+        />
       )}
     </Section>
+  );
+}
+
+function CourseCard({ c, onOpen, isAr, upcoming = false }: { c: PublicCourse; onOpen: () => void; isAr: boolean; upcoming?: boolean }) {
+  const tt = (a: string, b: string) => (isAr ? a : b);
+  const tagline = isAr ? c.brand_tagline_ar : c.brand_tagline_en;
+  return (
+    <motion.button
+      type="button"
+      onClick={onOpen}
+      {...fadeUp}
+      className="group relative text-start rounded-3xl border border-foreground/10 bg-card p-6 overflow-hidden hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px_oklch(0.22_0.06_252/0.5)] transition-all"
+    >
+      <div className={`absolute inset-x-0 top-0 h-1 ${upcoming ? "bg-gradient-to-r from-[var(--accent)] via-[var(--lavender)] to-[var(--accent)]" : "bg-gradient-to-r from-[var(--gold)] via-[var(--accent)] to-[var(--gold)]"} opacity-80`} />
+      <div className="absolute -top-16 -end-16 size-32 rounded-full bg-[var(--gold)]/10 blur-2xl opacity-0 group-hover:opacity-100 transition" />
+
+      <div className="relative flex items-start justify-between gap-3">
+        <div className="text-4xl leading-none">{c.cover_emoji || "🎓"}</div>
+        {upcoming ? (
+          <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] font-bold rounded-full bg-[var(--accent)]/15 text-[var(--accent)] px-2.5 py-1 border border-[var(--accent)]/30">
+            <Calendar className="size-3" /> {tt("قريباً", "Soon")}
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] font-bold rounded-full bg-[var(--gold)]/15 text-[var(--gold)] px-2.5 py-1 border border-[var(--gold)]/30">
+            <Sparkles className="size-3" /> {tt("متاح", "Live")}
+          </span>
+        )}
+      </div>
+
+      <h4 className="mt-4 font-display font-extrabold text-lg leading-tight">{c.title}</h4>
+      {tagline && <p className="text-[11px] uppercase tracking-[0.15em] font-bold mt-1.5 text-muted-foreground">{tagline}</p>}
+      {c.description && (
+        <p className="mt-3 text-sm text-muted-foreground leading-relaxed line-clamp-3">{c.description}</p>
+      )}
+
+      <div className="mt-4 flex items-center justify-between gap-2 flex-wrap">
+        <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+          {c.total_hours > 0 && (
+            <span className="inline-flex items-center gap-1"><Calendar className="size-3" /> {c.total_hours} {tt("ساعة", "h")}</span>
+          )}
+          {c.starts_at && (
+            <span className="inline-flex items-center gap-1"><Calendar className="size-3" /> {new Date(c.starts_at).toLocaleDateString(isAr ? "ar-EG" : "en-GB", { day: "numeric", month: "short" })}</span>
+          )}
+        </div>
+        {!upcoming && c.price != null && c.price > 0 && (
+          <span className="font-display font-extrabold text-base" style={{ color: "var(--gold)" }}>
+            {c.price} {c.currency}
+          </span>
+        )}
+      </div>
+
+      <div className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold" style={{ color: "var(--accent)" }}>
+        {tt("اعرف المزيد", "Learn more")} <ArrowRight className="size-3 group-hover:translate-x-1 rtl-flip transition" />
+      </div>
+    </motion.button>
+  );
+}
+
+function CourseDetailsModal({ course, isAr, dir, onClose, onInterest }: {
+  course: PublicCourse; isAr: boolean; dir: string; onClose: () => void; onInterest: () => void;
+}) {
+  const tt = (a: string, b: string) => (isAr ? a : b);
+  const tagline = isAr ? course.brand_tagline_ar : course.brand_tagline_en;
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-sm"
+      onClick={onClose}
+      dir={dir}
+    >
+      <div
+        className="relative w-full max-w-2xl max-h-[90vh] overflow-auto rounded-3xl bg-card shadow-2xl border border-foreground/10"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="relative p-7 sm:p-10" style={{ background: "linear-gradient(135deg, var(--navy-deep) 0%, var(--lavender-deep) 70%, var(--accent) 100%)" }}>
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="absolute top-4 end-4 size-9 grid place-items-center rounded-full bg-white/15 hover:bg-white/25 text-white transition"
+          >
+            <X className="size-4" />
+          </button>
+          <div className="flex items-start gap-4 text-white">
+            <div className="text-5xl">{course.cover_emoji || "🎓"}</div>
+            <div className="min-w-0">
+              {tagline && <div className="text-[11px] uppercase tracking-[0.2em] font-bold text-white/80">{tagline}</div>}
+              <h3 className="mt-1 font-display font-extrabold text-2xl sm:text-3xl leading-tight">{course.title}</h3>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-7 sm:p-10 space-y-5">
+          {course.description && (
+            <p className="text-foreground/85 leading-[1.9] whitespace-pre-wrap">{course.description}</p>
+          )}
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {course.total_hours > 0 && (
+              <DetailStat icon={Calendar} label={tt("الساعات", "Hours")} value={`${course.total_hours}`} />
+            )}
+            {course.starts_at && (
+              <DetailStat icon={Calendar} label={tt("يبدأ", "Starts")} value={new Date(course.starts_at).toLocaleDateString(isAr ? "ar-EG" : "en-GB")} />
+            )}
+            {course.ends_at && (
+              <DetailStat icon={Calendar} label={tt("ينتهي", "Ends")} value={new Date(course.ends_at).toLocaleDateString(isAr ? "ar-EG" : "en-GB")} />
+            )}
+            {!course.is_upcoming && course.price != null && course.price > 0 && (
+              <DetailStat icon={BadgeCheck} label={tt("السعر", "Price")} value={`${course.price} ${course.currency}`} />
+            )}
+          </div>
+
+          <div className="rule" />
+
+          <div className="flex flex-wrap items-center gap-3">
+            {course.is_upcoming ? (
+              <button
+                onClick={onInterest}
+                className="group inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-6 py-3.5 text-sm font-bold hover:opacity-90 transition shadow-lg cursor-pointer"
+              >
+                <Sparkles className="size-4" />
+                {tt("سجّل اهتمامك الآن", "Register your interest")}
+                <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
+              </button>
+            ) : (
+              <Link
+                to="/auth"
+                search={{ role: "trainee" }}
+                className="group inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-6 py-3.5 text-sm font-bold hover:opacity-90 transition shadow-lg cursor-pointer"
+              >
+                <LogIn className="size-4" />
+                {tt("اشترك في الكورس", "Enroll now")}
+                <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
+              </Link>
+            )}
+            <button
+              onClick={onClose}
+              className="inline-flex items-center gap-2 rounded-full border border-foreground/15 px-5 py-3 text-sm font-semibold hover:bg-foreground/5 transition"
+            >
+              {tt("إغلاق", "Close")}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DetailStat({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
+  return (
+    <div className="rounded-2xl bg-foreground/[0.04] border border-foreground/10 p-4">
+      <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground">
+        <Icon className="size-3.5" /> {label}
+      </div>
+      <div className="mt-1.5 font-display font-extrabold text-base">{value}</div>
+    </div>
+  );
+}
+
+function InterestFormModal({ course, isAr, dir, onClose }: {
+  course: PublicCourse; isAr: boolean; dir: string; onClose: () => void;
+}) {
+  const tt = (a: string, b: string) => (isAr ? a : b);
+  const [full_name, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [notes, setNotes] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [done, setDone] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!full_name.trim() || !email.trim()) return;
+    setBusy(true);
+    const { error } = await supabase.from("course_interests").insert({
+      course_id: course.id,
+      course_title: course.title,
+      full_name: full_name.trim(),
+      email: email.trim().toLowerCase(),
+      phone: phone.trim() || null,
+      notes: notes.trim() || null,
+      language: isAr ? "ar" : "en",
+      user_agent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 200) : null,
+    });
+    setBusy(false);
+    if (error) { return; }
+    setDone(true);
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-[110] flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-sm"
+      onClick={onClose}
+      dir={dir}
+    >
+      <div
+        className="relative w-full max-w-md rounded-3xl bg-card shadow-2xl border border-foreground/10 overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="p-6 border-b border-foreground/10 flex items-start gap-3">
+          <div className="size-11 rounded-2xl bg-[var(--accent)]/15 border border-[var(--accent)]/30 grid place-items-center text-[var(--accent)] shrink-0">
+            <Sparkles className="size-5" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground">{tt("كورس قادم", "Upcoming course")}</div>
+            <div className="font-display font-extrabold text-base truncate">{course.title}</div>
+          </div>
+          <button onClick={onClose} aria-label="Close" className="size-9 grid place-items-center rounded-full hover:bg-foreground/10 transition">
+            <X className="size-4" />
+          </button>
+        </div>
+
+        {done ? (
+          <div className="p-8 text-center">
+            <div className="mx-auto size-14 rounded-full bg-emerald-500/15 border border-emerald-500/30 grid place-items-center text-emerald-400">
+              <CheckCircle2 className="size-7" />
+            </div>
+            <h4 className="mt-4 font-display font-extrabold text-lg">{tt("تم تسجيل اهتمامك ✓", "Interest registered ✓")}</h4>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {tt("سنتواصل معك فور فتح باب التسجيل لهذا الكورس.", "We'll reach out as soon as enrollment opens.")}
+            </p>
+            <button
+              onClick={onClose}
+              className="mt-5 inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-2.5 text-sm font-bold"
+            >
+              {tt("تمام", "Done")}
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={submit} className="p-6 space-y-3">
+            <input
+              required
+              value={full_name}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder={tt("الاسم الكامل", "Full name")}
+              className="w-full bg-foreground/[0.04] border border-foreground/10 rounded-xl px-4 h-11 text-sm"
+            />
+            <input
+              required
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={tt("البريد الإلكتروني", "Email")}
+              className="w-full bg-foreground/[0.04] border border-foreground/10 rounded-xl px-4 h-11 text-sm"
+            />
+            <input
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder={tt("رقم الهاتف (اختياري)", "Phone (optional)")}
+              className="w-full bg-foreground/[0.04] border border-foreground/10 rounded-xl px-4 h-11 text-sm"
+            />
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder={tt("ملاحظات (اختياري)", "Notes (optional)")}
+              rows={3}
+              className="w-full bg-foreground/[0.04] border border-foreground/10 rounded-xl px-4 py-3 text-sm resize-none"
+            />
+            <button
+              type="submit"
+              disabled={busy}
+              className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-3 text-sm font-bold disabled:opacity-50"
+            >
+              {busy ? <Loader2 className="size-4 animate-spin" /> : <Sparkles className="size-4" />}
+              {tt("إرسال اهتمامي", "Submit interest")}
+            </button>
+            <p className="text-[11px] text-muted-foreground text-center pt-1">
+              {tt("لن يتم إنشاء حساب لك. سنتواصل معك يدوياً.", "No account will be created. We'll reach out manually.")}
+            </p>
+          </form>
+        )}
+      </div>
+    </div>
   );
 }
 

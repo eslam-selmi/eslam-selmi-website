@@ -25,7 +25,7 @@ import { assertAdmin } from "@/lib/admin-guard.functions";
 import { SiteManagementPanel } from "@/components/admin/SiteManagementPanel";
 
 type AdminSearch = {
-  tab?: "enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods" | "tickets" | "site";
+  tab?: "enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods" | "tickets" | "site" | "leads";
   drawer?: string;
   editCourse?: string;
 };
@@ -82,7 +82,7 @@ function AdminPage() {
   const { user, role, loading } = useAuth();
   const nav = useNavigate();
   const search = Route.useSearch();
-  const [tabState, setTabState] = useState<"enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods" | "tickets" | "site">(search.tab || "enrollments");
+  const [tabState, setTabState] = useState<"enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods" | "tickets" | "site" | "leads">(search.tab || "enrollments");
   const tab = tabState;
   const setTab = setTabState;
 
@@ -199,6 +199,7 @@ function AdminPage() {
             { id: "coupons", label: t("كوبونات الخصم", "Discount coupons") },
             { id: "additions", label: t("أحدث الإضافات", "Latest additions") },
             { id: "site", label: t("إدارة الموقع", "Site management") },
+            { id: "leads", label: t("اهتمامات الكورسات", "Course leads") },
             { id: "tickets", label: t("تذاكر الدعم", "Support tickets") },
             { id: "finance", label: t("المعاملات المالية", "Financial logs") },
             { id: "methods", label: t("طرق الدفع", "Payment methods") },
@@ -232,6 +233,8 @@ function AdminPage() {
           <LatestAdditionsPanel />
         ) : tab === "site" ? (
           <SiteManagementPanel />
+        ) : tab === "leads" ? (
+          <CourseLeadsPanel />
         ) : tab === "tickets" ? (
           user ? <AdminSupportPanel adminUserId={user.id} /> : null
         ) : tab === "finance" ? (
@@ -1010,6 +1013,7 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
     brand_tagline_en: (course as any).brand_tagline_en ?? "",
     track_key: (course as any).track_key ?? "",
     phase: String((course as any).phase ?? 1),
+    is_upcoming: Boolean((course as any).is_upcoming),
   });
 
   async function save() {
@@ -1029,7 +1033,8 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
       brand_tagline_en: f.brand_tagline_en.trim() || null,
       track_key: f.track_key.trim() || null,
       phase: Math.max(1, Math.min(3, Number(f.phase) || 1)),
-    }).eq("id", course.id);
+      is_upcoming: f.is_upcoming,
+    } as any).eq("id", course.id);
     if (error) return toast.error(error.message);
     toast.success(t("تم الحفظ", "Saved"));
     onSaved();
@@ -1081,6 +1086,19 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
       </div>
 
 
+
+      <label className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-3 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={f.is_upcoming}
+          onChange={(e) => setF({ ...f, is_upcoming: e.target.checked })}
+          className="size-4 accent-[var(--gold)]"
+        />
+        <div className="min-w-0">
+          <div className="font-semibold text-sm">{t("كورس قادم (لم يُفتح التسجيل بعد)", "Upcoming course (enrollment not yet open)")}</div>
+          <div className="text-[11px] text-white/55">{t("سيظهر في قسم 'كورسات قادمة' بنموذج تسجيل اهتمام بدل زر الاشتراك.", "Shows in the 'Upcoming' section with an interest form instead of an enroll button.")}</div>
+        </div>
+      </label>
 
       <button onClick={save} className="w-full h-11 rounded-xl font-semibold" style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
         {t("حفظ التعديلات", "Save changes")}
@@ -3147,6 +3165,151 @@ function BulkReceiptsTool() {
         </button>
       </div>
       <p className="text-[10px] text-white/40">{t("الحذف نهائي ولا يمكن التراجع عنه. يرجى التحميل أولاً.", "Purge is permanent. Download first if needed.")}</p>
+    </div>
+  );
+}
+
+/* ---------- COURSE LEADS PANEL ---------- */
+type CourseLead = {
+  id: string;
+  course_id: string | null;
+  course_title: string | null;
+  full_name: string;
+  email: string;
+  phone: string | null;
+  notes: string | null;
+  language: string;
+  status: string;
+  created_at: string;
+};
+
+function CourseLeadsPanel() {
+  const { lang } = useI18n();
+  const t = (a: string, b: string) => (lang === "ar" ? a : b);
+  const [leads, setLeads] = useState<CourseLead[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState<"all" | "new" | "contacted" | "converted" | "archived">("all");
+
+  async function refresh() {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("course_interests" as any)
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) toast.error(error.message);
+    setLeads(((data as any[]) ?? []) as CourseLead[]);
+    setLoading(false);
+  }
+  useEffect(() => { refresh(); }, []);
+
+  async function updateStatus(id: string, status: string) {
+    const { error } = await supabase.from("course_interests" as any).update({ status }).eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success(t("تم التحديث", "Updated"));
+    refresh();
+  }
+  async function remove(id: string) {
+    if (!confirm(t("هل تريد حذف هذا الاهتمام؟", "Delete this lead?"))) return;
+    const { error } = await supabase.from("course_interests" as any).delete().eq("id", id);
+    if (error) return toast.error(error.message);
+    refresh();
+  }
+
+  const filtered = filter === "all" ? leads : leads.filter((l) => l.status === filter);
+
+  return (
+    <div className="dash-card p-5 space-y-4">
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h3 className="text-lg font-bold">{t("اهتمامات الكورسات القادمة", "Upcoming-course interest leads")}</h3>
+          <p className="text-xs text-white/55 mt-1">
+            {t("الأشخاص الذين سجّلوا اهتمامهم بكورس قادم دون إنشاء حساب متدرّب.", "People who registered interest in an upcoming course without creating a trainee account.")}
+          </p>
+        </div>
+        <div className="flex items-center gap-1 flex-wrap">
+          {(["all", "new", "contacted", "converted", "archived"] as const).map((f) => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={`px-3 h-8 rounded-lg text-xs font-semibold transition ${
+                filter === f ? "bg-[var(--gold)]/20 text-[var(--gold)] border border-[var(--gold)]/30" : "text-white/55 hover:text-white border border-transparent"
+              }`}
+            >
+              {f === "all" ? t("الكل", "All") : f === "new" ? t("جديد", "New") : f === "contacted" ? t("تم التواصل", "Contacted") : f === "converted" ? t("تحوّل لمتدرب", "Converted") : t("مؤرشف", "Archived")}
+              <span className="opacity-60 ms-1">({f === "all" ? leads.length : leads.filter((l) => l.status === f).length})</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {loading ? (
+        <div className="text-center py-10 text-white/50 text-sm">{t("جارٍ التحميل…", "Loading…")}</div>
+      ) : filtered.length === 0 ? (
+        <div className="text-center py-12 rounded-2xl border border-dashed border-white/15 text-white/50 text-sm">
+          {t("لا توجد اهتمامات بعد.", "No leads yet.")}
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {filtered.map((l) => (
+            <div key={l.id} className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+              <div className="flex items-start justify-between gap-3 flex-wrap">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <div className="font-bold text-sm">{l.full_name}</div>
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
+                      l.status === "new" ? "bg-amber-500/15 text-amber-300 border border-amber-500/30" :
+                      l.status === "contacted" ? "bg-sky-500/15 text-sky-300 border border-sky-500/30" :
+                      l.status === "converted" ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30" :
+                      "bg-white/5 text-white/50 border border-white/10"
+                    }`}>{l.status}</span>
+                    <span className="text-[10px] uppercase tracking-wider text-white/40">{l.language}</span>
+                  </div>
+                  <div className="mt-1.5 grid sm:grid-cols-2 gap-1 text-xs text-white/70">
+                    <a href={`mailto:${l.email}`} className="hover:text-[var(--gold)] truncate">✉ {l.email}</a>
+                    {l.phone && <a href={`tel:${l.phone}`} className="hover:text-[var(--gold)] truncate">📞 {l.phone}</a>}
+                  </div>
+                  {l.course_title && (
+                    <div className="mt-2 inline-flex items-center gap-1.5 text-[11px] rounded-full bg-[var(--accent)]/15 text-[var(--accent)] border border-[var(--accent)]/30 px-2.5 py-1 font-semibold">
+                      <BookOpen className="w-3 h-3" /> {l.course_title}
+                    </div>
+                  )}
+                  {l.notes && (
+                    <div className="mt-2 text-xs text-white/60 bg-white/[0.02] border border-white/10 rounded-lg p-2">{l.notes}</div>
+                  )}
+                </div>
+                <div className="text-[10px] text-white/40 shrink-0 text-end">
+                  {new Date(l.created_at).toLocaleString(lang === "ar" ? "ar-EG" : "en-GB")}
+                </div>
+              </div>
+              <div className="mt-3 flex items-center gap-1.5 flex-wrap">
+                {l.status !== "contacted" && (
+                  <button onClick={() => updateStatus(l.id, "contacted")} className="text-[11px] px-3 h-7 rounded-lg bg-sky-500/15 text-sky-200 border border-sky-500/30 hover:bg-sky-500/25 font-semibold">
+                    {t("تم التواصل", "Mark contacted")}
+                  </button>
+                )}
+                {l.status !== "converted" && (
+                  <button onClick={() => updateStatus(l.id, "converted")} className="text-[11px] px-3 h-7 rounded-lg bg-emerald-500/15 text-emerald-200 border border-emerald-500/30 hover:bg-emerald-500/25 font-semibold">
+                    {t("تحوّل لمتدرب", "Converted")}
+                  </button>
+                )}
+                {l.status !== "archived" && (
+                  <button onClick={() => updateStatus(l.id, "archived")} className="text-[11px] px-3 h-7 rounded-lg bg-white/5 text-white/55 border border-white/10 hover:bg-white/10 font-semibold">
+                    {t("أرشفة", "Archive")}
+                  </button>
+                )}
+                {l.status !== "new" && (
+                  <button onClick={() => updateStatus(l.id, "new")} className="text-[11px] px-3 h-7 rounded-lg bg-amber-500/15 text-amber-200 border border-amber-500/30 hover:bg-amber-500/25 font-semibold">
+                    {t("إرجاع لجديد", "Reset to new")}
+                  </button>
+                )}
+                <button onClick={() => remove(l.id)} className="text-[11px] px-3 h-7 rounded-lg bg-rose-500/15 text-rose-200 border border-rose-500/30 hover:bg-rose-500/25 font-semibold inline-flex items-center gap-1">
+                  <Trash2 className="w-3 h-3" /> {t("حذف", "Delete")}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
