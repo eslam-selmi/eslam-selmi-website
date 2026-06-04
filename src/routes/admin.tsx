@@ -1013,6 +1013,7 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
     brand_tagline_en: (course as any).brand_tagline_en ?? "",
     track_key: (course as any).track_key ?? "",
     phase: String((course as any).phase ?? 1),
+    is_upcoming: Boolean((course as any).is_upcoming),
   });
 
   async function save() {
@@ -1032,7 +1033,8 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
       brand_tagline_en: f.brand_tagline_en.trim() || null,
       track_key: f.track_key.trim() || null,
       phase: Math.max(1, Math.min(3, Number(f.phase) || 1)),
-    }).eq("id", course.id);
+      is_upcoming: f.is_upcoming,
+    } as any).eq("id", course.id);
     if (error) return toast.error(error.message);
     toast.success(t("تم الحفظ", "Saved"));
     onSaved();
@@ -1084,6 +1086,19 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
       </div>
 
 
+
+      <label className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-3 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={f.is_upcoming}
+          onChange={(e) => setF({ ...f, is_upcoming: e.target.checked })}
+          className="size-4 accent-[var(--gold)]"
+        />
+        <div className="min-w-0">
+          <div className="font-semibold text-sm">{t("كورس قادم (لم يُفتح التسجيل بعد)", "Upcoming course (enrollment not yet open)")}</div>
+          <div className="text-[11px] text-white/55">{t("سيظهر في قسم 'كورسات قادمة' بنموذج تسجيل اهتمام بدل زر الاشتراك.", "Shows in the 'Upcoming' section with an interest form instead of an enroll button.")}</div>
+        </div>
+      </label>
 
       <button onClick={save} className="w-full h-11 rounded-xl font-semibold" style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
         {t("حفظ التعديلات", "Save changes")}
