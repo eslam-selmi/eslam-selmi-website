@@ -193,6 +193,62 @@ export type Database = {
         }
         Relationships: []
       }
+      course_interests: {
+        Row: {
+          country_code: string | null
+          course_id: string | null
+          course_title: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          language: string
+          notes: string | null
+          phone: string | null
+          status: string
+          updated_at: string
+          user_agent: string | null
+        }
+        Insert: {
+          country_code?: string | null
+          course_id?: string | null
+          course_title?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          language?: string
+          notes?: string | null
+          phone?: string | null
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Update: {
+          country_code?: string | null
+          course_id?: string | null
+          course_title?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          language?: string
+          notes?: string | null
+          phone?: string | null
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_interests_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       course_leads: {
         Row: {
           created_at: string
@@ -340,6 +396,7 @@ export type Database = {
           id: string
           installments_count: number
           is_archived: boolean
+          is_upcoming: boolean
           logo_url: string | null
           online_url: string | null
           phase: number
@@ -364,6 +421,7 @@ export type Database = {
           id?: string
           installments_count?: number
           is_archived?: boolean
+          is_upcoming?: boolean
           logo_url?: string | null
           online_url?: string | null
           phase?: number
@@ -388,6 +446,7 @@ export type Database = {
           id?: string
           installments_count?: number
           is_archived?: boolean
+          is_upcoming?: boolean
           logo_url?: string | null
           online_url?: string | null
           phase?: number
