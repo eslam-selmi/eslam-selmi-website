@@ -898,58 +898,135 @@ function CompactStat({ n, l }: { n: string; l: string }) {
 }
 
 
-/* ---------- ABOUT ---------- */
+/* ---------- ABOUT (Premium Edition) ---------- */
 function About() {
   const { t, lang } = useI18n();
+  const isAr = lang === "ar";
   const strengths = [
-    { t: { en: "Corporate Training Management", ar: "إدارة التدريب المؤسسي" }, d: { en: "End-to-end training operations within large-scale environments.", ar: "عمليات تدريب متكاملة في بيئات واسعة." } },
-    { t: { en: "Project Management", ar: "إدارة المشاريع" }, d: { en: "PMP methodologies for complex training projects across regions.", ar: "منهجيات PMP لمشاريع التدريب المعقدة." } },
-    { t: { en: "Performance Excellence", ar: "تميز الأداء" }, d: { en: "Robust KPIs and frameworks that drive organizational growth.", ar: "مؤشرات أداء وأطُر تقود نمو المنظمات." } },
-    { t: { en: "Strategic Development", ar: "التطوير الاستراتيجي" }, d: { en: "Competency models and dynamic training plans optimizing ROI.", ar: "نماذج جدارات وخطط تدريب تُحسّن العائد." } },
+    { t: { en: "Corporate Training Management", ar: "إدارة التدريب المؤسسي" }, d: { en: "End-to-end training operations within large-scale environments.", ar: "عمليات تدريب متكاملة في بيئات واسعة." }, icon: Presentation },
+    { t: { en: "Project Management", ar: "إدارة المشاريع" }, d: { en: "PMP methodologies for complex training projects across regions.", ar: "منهجيات PMP لمشاريع التدريب المعقدة." }, icon: Compass },
+    { t: { en: "Performance Excellence", ar: "تميز الأداء" }, d: { en: "Robust KPIs and frameworks that drive organizational growth.", ar: "مؤشرات أداء وأطُر تقود نمو المنظمات." }, icon: TrendingUp },
+    { t: { en: "Strategic Development", ar: "التطوير الاستراتيجي" }, d: { en: "Competency models and dynamic training plans optimizing ROI.", ar: "نماذج جدارات وخطط تدريب تُحسّن العائد." }, icon: Target },
   ];
   return (
     <Section id="about" eyebrow={t("about_eyebrow")} title={t("about_title")}>
-      {/* Editorial intro card — refined premium layout */}
+      {/* Premium editorial hero */}
       <motion.div
         {...fadeUp}
-        className="relative overflow-hidden rounded-[2rem] border border-foreground/10 bg-card"
+        className="relative overflow-hidden rounded-[2.25rem] border border-foreground/10 bg-gradient-to-br from-card via-card to-foreground/[0.02]"
+        style={{
+          boxShadow:
+            "0 40px 120px -60px color-mix(in oklab, var(--accent) 50%, transparent), 0 1px 0 color-mix(in oklab, var(--gold) 25%, transparent) inset",
+        }}
       >
-        {/* Left accent rail */}
-        <div className="pointer-events-none absolute inset-y-0 start-0 w-1.5 bg-gradient-to-b from-[var(--gold)] via-[var(--accent)] to-[var(--lavender-deep)]" />
-        {/* Soft corner glows */}
-        <div className="pointer-events-none absolute -top-24 -end-20 size-72 rounded-full bg-[var(--accent)]/10 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-28 -start-10 size-72 rounded-full bg-[var(--lavender)]/10 blur-3xl" />
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -top-32 -end-24 size-[28rem] rounded-full bg-[var(--accent)]/15 blur-[110px]" />
+          <div className="absolute -bottom-32 -start-24 size-[28rem] rounded-full bg-[var(--lavender)]/15 blur-[110px]" />
+          <div className="absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 size-[22rem] rounded-full bg-[var(--gold)]/[0.08] blur-[120px]" />
+        </div>
 
-        <div className="relative p-7 sm:p-10 grid gap-10 lg:grid-cols-[1.5fr_1fr] lg:items-center">
+        <div className="pointer-events-none absolute inset-y-6 start-0 w-[3px] bg-gradient-to-b from-transparent via-[var(--gold)] to-transparent" />
+        <div className="pointer-events-none absolute inset-y-10 start-2 w-[1px] bg-gradient-to-b from-transparent via-[var(--gold)]/40 to-transparent" />
+
+        <div className="relative p-7 sm:p-12 grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <div className="min-w-0">
-            <div className="inline-flex items-center gap-2 rounded-full bg-foreground/[0.04] border border-foreground/10 px-3 py-1 text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
-              <span className="size-1.5 rounded-full bg-[var(--gold)]" />
-              {lang === "ar" ? "نبذة عني" : "About me"}
+            <div className="inline-flex items-center gap-2 rounded-full bg-[var(--gold)]/10 border border-[var(--gold)]/30 px-4 py-1.5 text-[10px] uppercase tracking-[0.32em] font-bold" style={{ color: "var(--gold)" }}>
+              <Sparkles className="size-3" />
+              {isAr ? "نبذة عني" : "About me"}
             </div>
-            <Quote className="mt-5 size-7 text-[var(--accent)] rtl-flip opacity-80" />
-            <p className="mt-3 text-[15px] sm:text-base leading-[1.85] text-foreground/85 max-w-xl">
-              {t("about_intro")}
-            </p>
+
+            <h3 className="mt-6 font-display font-extrabold text-[clamp(1.75rem,3vw,2.5rem)] leading-[1.15] tracking-tight">
+              <span className="bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(110deg, var(--foreground) 30%, var(--accent) 60%, var(--gold) 95%)" }}>
+                {isAr ? "إسلام سلمي" : "Eslam Selmi"}
+              </span>
+              <span className="block text-base sm:text-lg font-semibold text-muted-foreground mt-2 tracking-normal">
+                {isAr ? "رئيس التعلم والتطوير وإدارة المواهب" : "Head of Learning, Development & Talent"}
+              </span>
+            </h3>
+
+            <div className="relative mt-7 ps-5">
+              <Quote className="absolute -top-1 start-0 size-5 text-[var(--gold)] rtl-flip opacity-90" />
+              <p className="text-[15px] sm:text-base leading-[1.95] text-foreground/85 max-w-xl">
+                {t("about_intro")}
+              </p>
+            </div>
+
+            <div className="mt-8 grid grid-cols-3 gap-3 max-w-md">
+              <BigStat n="9+" l={isAr ? "سنوات" : "Years"} />
+              <BigStat n="12" l={isAr ? "دولة" : "Countries"} />
+              <BigStat n="4" l={isAr ? "قطاعات" : "Sectors"} />
+            </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-2.5">
-            <BigStat n="9+" l={lang === "ar" ? "سنوات" : "Years"} />
-            <BigStat n="12" l={lang === "ar" ? "دولة" : "Countries"} />
-            <BigStat n="4" l={lang === "ar" ? "قطاعات" : "Sectors"} />
+          <div className="relative">
+            <div className="relative mx-auto max-w-sm">
+              <div className="absolute -inset-6 rounded-[2rem] bg-gradient-to-br from-[var(--gold)]/30 via-[var(--accent)]/15 to-[var(--lavender)]/25 blur-2xl" />
+
+              <div
+                className="relative rounded-[1.75rem] overflow-hidden border border-[var(--gold)]/30 bg-card"
+                style={{ boxShadow: "0 30px 80px -30px color-mix(in oklab, var(--accent) 70%, transparent)" }}
+              >
+                <img
+                  src={headshot}
+                  alt={isAr ? "إسلام سلمي" : "Eslam Selmi"}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full aspect-[4/5] object-cover"
+                />
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+
+                <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+                  <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 px-3 py-1 text-[10px] uppercase tracking-[0.25em] font-bold">
+                    <span className="size-1.5 rounded-full bg-[var(--gold)] shadow-[0_0_8px_var(--gold)]" />
+                    {isAr ? "متاح للاستشارات" : "Available for consulting"}
+                  </div>
+                  <div className="mt-2 font-display font-extrabold text-lg leading-tight">
+                    {isAr ? "خبرة معتمدة عبر ١٢ دولة" : "Certified expertise across 12 countries"}
+                  </div>
+                </div>
+
+                <div className="absolute top-4 start-4 size-12 rounded-full bg-gradient-to-br from-[var(--gold)] to-[#b88a2e] grid place-items-center text-[#0b1736] shadow-xl border-2 border-white/40">
+                  <Award className="size-5" />
+                </div>
+              </div>
+
+              <div className="absolute -bottom-4 -end-3 sm:-end-6 rounded-2xl bg-card border border-foreground/10 px-4 py-2.5 shadow-xl backdrop-blur">
+                <div className="flex items-center gap-2">
+                  <BadgeCheck className="size-4 text-[var(--gold)]" />
+                  <div className="text-[11px] font-bold leading-tight">
+                    <div>PMP · TOT · ID</div>
+                    <div className="text-[9px] uppercase tracking-[0.18em] text-muted-foreground mt-0.5">
+                      {isAr ? "اعتمادات دولية" : "Global certifications"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </motion.div>
 
-      {/* Strengths */}
-      <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {strengths.map((s, i) => (
-          <motion.div key={s.t.en} {...fadeUp} transition={{ duration: 0.6, delay: i * 0.08 }}
-            className="relative glass-panel rounded-3xl p-6 group hover:-translate-y-1 transition overflow-hidden">
-            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[var(--gold)] via-[var(--lavender)] to-[var(--gold)] opacity-70" />
-            <div className="font-display text-3xl font-extrabold leading-none" style={{ color: "var(--accent)" }}>
-              {String(i + 1).padStart(2, "0")}
+          <motion.div
+            key={s.t.en}
+            {...fadeUp}
+            transition={{ duration: 0.55, delay: i * 0.08 }}
+            className="relative glass-panel rounded-3xl p-6 group hover:-translate-y-1.5 transition overflow-hidden"
+            style={{ boxShadow: "0 20px 50px -30px color-mix(in oklab, var(--accent) 60%, transparent)" }}
+          >
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)] to-transparent opacity-80" />
+            <div className="absolute -top-16 -end-16 size-32 rounded-full bg-[var(--accent)]/15 blur-2xl opacity-0 group-hover:opacity-100 transition" />
+
+            <div className="relative flex items-start justify-between">
+              <div className="size-11 rounded-2xl bg-gradient-to-br from-[var(--gold)]/25 to-[var(--accent)]/15 border border-[var(--gold)]/30 grid place-items-center" style={{ color: "var(--gold)" }}>
+                <s.icon className="size-5" />
+              </div>
+              <div className="font-display text-3xl font-extrabold leading-none opacity-70" style={{ color: "var(--accent)" }}>
+                {String(i + 1).padStart(2, "0")}
+              </div>
             </div>
-            <h3 className="mt-3 font-semibold text-base leading-tight">{s.t[lang]}</h3>
+            <h3 className="mt-5 font-semibold text-base leading-tight">{s.t[lang]}</h3>
             <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.d[lang]}</p>
           </motion.div>
         ))}
