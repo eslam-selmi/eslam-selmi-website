@@ -1569,100 +1569,391 @@ function BookCTA() {
   );
 }
 
-/* ---------- CURRENT COURSES ---------- */
-const COURSES_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSePiL3_X7XaxWa6oAMlUc0TgT80z1mozFSExDzZnqvfmP4nRA/viewform?embedded=true";
+/* ---------- CURRENT COURSES (live from DB) ---------- */
+type PublicCourse = {
+  id: string;
+  title: string;
+  description: string | null;
+  cover_emoji: string | null;
+  price: number | null;
+  currency: string;
+  starts_at: string | null;
+  ends_at: string | null;
+  total_hours: number;
+  online_url: string | null;
+  brand_name: string | null;
+  brand_tagline_ar: string | null;
+  brand_tagline_en: string | null;
+  is_upcoming: boolean;
+};
 
 function CurrentCourses() {
-  const { t, dir } = useI18n();
-  const [open, setOpen] = useState(false);
+  const { lang, dir } = useI18n();
+  const isAr = lang === "ar";
+  const tt = (a: string, b: string) => (isAr ? a : b);
+  const [courses, setCourses] = useState<PublicCourse[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState<PublicCourse | null>(null);
+  const [interest, setInterest] = useState<PublicCourse | null>(null);
+
   useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    (async () => {
+      const { data } = await supabase
+        .from("courses")
+        .select("id,title,description,cover_emoji,price,currency,starts_at,ends_at,total_hours,online_url,brand_name,brand_tagline_ar,brand_tagline_en,is_upcoming")
+        .eq("active", true)
+        .eq("is_archived", false)
+        .order("starts_at", { ascending: true, nullsFirst: false });
+      setCourses((data as PublicCourse[]) ?? []);
+      setLoading(false);
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (!selected && !interest) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") { setSelected(null); setInterest(null); } };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open]);
-  return (
-    <Section id="current-courses" eyebrow={t("current_eyebrow")} title={t("current_title")}>
-      <motion.div {...fadeUp}
-        className="relative mx-auto max-w-5xl rounded-[2rem] overflow-hidden bg-card border border-foreground/10 shadow-[0_30px_80px_-40px_oklch(0.22_0.06_252/0.35)]">
-        <div className="grid md:grid-cols-[1fr_1.2fr]">
-          {/* Accent panel */}
-          <div className="relative hidden md:block p-10 overflow-hidden" style={{ background: "linear-gradient(135deg, var(--navy-deep) 0%, var(--lavender-deep) 60%, var(--accent) 100%)" }}>
-            <div className="absolute inset-0 grain opacity-25 pointer-events-none" />
-            <div className="relative h-full flex flex-col justify-between text-white">
-              <div className="size-14 grid place-items-center rounded-2xl bg-white/15 backdrop-blur border border-white/25">
-                <GraduationCap className="size-7" />
-              </div>
-              <div>
-                <div className="text-[11px] font-bold uppercase tracking-[0.3em] text-white/80">
-                  {t("current_meta")}
-                </div>
-                <div className="mt-3 font-display text-3xl font-extrabold leading-tight">
-                  {t("current_eyebrow")}
-                </div>
-              </div>
-            </div>
-          </div>
-          {/* Content */}
-          <div className="p-7 sm:p-10 flex flex-col gap-5">
-            <div className="inline-flex md:hidden items-center gap-2 self-start rounded-full bg-primary/10 text-primary px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em]">
-              <Sparkles className="size-3.5" /> {t("current_eyebrow")}
-            </div>
-            <h3 className="font-display font-extrabold text-foreground leading-[1.15] text-[clamp(1.5rem,2.6vw,2rem)]">
-              {t("current_title")}
-            </h3>
-            <p className="text-muted-foreground leading-relaxed max-w-xl">
-              {t("current_desc")}
-            </p>
-            <div className="rule" />
-            <div className="flex flex-wrap items-center gap-3">
-              <button
-                onClick={() => setOpen(true)}
-                className="group inline-flex items-center gap-2.5 rounded-full bg-primary text-primary-foreground px-6 py-3.5 text-sm font-bold hover:opacity-90 transition shadow-lg cursor-pointer"
-              >
-                <BookOpen className="size-4" />
-                {t("current_btn")}
-                <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
-              </button>
-              <div className="text-xs text-muted-foreground md:hidden">{t("current_meta")}</div>
-            </div>
-          </div>
-        </div>
-      </motion.div>
+  }, [selected, interest]);
 
-      {open && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-sm"
-          onClick={() => setOpen(false)}
-          dir={dir}
-        >
-          <div
-            className="relative w-full max-w-2xl h-[90vh] rounded-2xl overflow-hidden bg-card shadow-2xl border border-foreground/10 flex flex-col"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between px-5 py-3 border-b border-foreground/10 bg-card shrink-0">
-              <div className="min-w-0">
-                <div className="font-display font-bold text-sm sm:text-base truncate">{t("current_modal_title")}</div>
-                <div className="text-xs text-muted-foreground truncate">{t("current_modal_desc")}</div>
-              </div>
-              <button
-                onClick={() => setOpen(false)}
-                aria-label="Close"
-                className="size-9 grid place-items-center rounded-full hover:bg-foreground/10 transition shrink-0"
-              >
-                <X className="size-4" />
-              </button>
-            </div>
-            <iframe
-              src={COURSES_FORM_URL}
-              title="Current courses enrollment"
-              className="w-full flex-1 border-0 bg-white"
-              loading="lazy"
-            />
-          </div>
+  const current = courses.filter((c) => !c.is_upcoming);
+  const upcoming = courses.filter((c) => c.is_upcoming);
+
+  return (
+    <Section id="current-courses" eyebrow={tt("الكورسات الحالية", "Current Courses")} title={tt("سجّل اليوم في كورساتنا", "Enroll in our courses today")}>
+      {loading ? (
+        <div className="text-center py-10 text-muted-foreground text-sm">{tt("جارٍ التحميل…", "Loading…")}</div>
+      ) : courses.length === 0 ? (
+        <div className="text-center py-12 rounded-3xl border border-dashed border-foreground/15 text-muted-foreground">
+          {tt("لا توجد كورسات متاحة حالياً.", "No courses available right now.")}
         </div>
+      ) : (
+        <>
+          {current.length > 0 && (
+            <>
+              <h3 className="text-xs uppercase tracking-[0.3em] font-bold mb-4" style={{ color: "var(--gold)" }}>
+                {tt("متاحة الآن للتسجيل", "Open for enrollment")}
+              </h3>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {current.map((c) => (
+                  <CourseCard key={c.id} c={c} onOpen={() => setSelected(c)} isAr={isAr} />
+                ))}
+              </div>
+            </>
+          )}
+
+          {upcoming.length > 0 && (
+            <div className="mt-12">
+              <h3 className="text-xs uppercase tracking-[0.3em] font-bold mb-4 flex items-center gap-2" style={{ color: "var(--accent)" }}>
+                <Calendar className="size-3.5" />
+                {tt("كورسات قادمة", "Upcoming Courses")}
+              </h3>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {upcoming.map((c) => (
+                  <CourseCard
+                    key={c.id}
+                    c={c}
+                    onOpen={() => setSelected(c)}
+                    isAr={isAr}
+                    upcoming
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
+      {selected && (
+        <CourseDetailsModal
+          course={selected}
+          isAr={isAr}
+          dir={dir}
+          onClose={() => setSelected(null)}
+          onInterest={() => { setInterest(selected); setSelected(null); }}
+        />
+      )}
+
+      {interest && (
+        <InterestFormModal
+          course={interest}
+          isAr={isAr}
+          dir={dir}
+          onClose={() => setInterest(null)}
+        />
       )}
     </Section>
+  );
+}
+
+function CourseCard({ c, onOpen, isAr, upcoming = false }: { c: PublicCourse; onOpen: () => void; isAr: boolean; upcoming?: boolean }) {
+  const tt = (a: string, b: string) => (isAr ? a : b);
+  const tagline = isAr ? c.brand_tagline_ar : c.brand_tagline_en;
+  return (
+    <motion.button
+      type="button"
+      onClick={onOpen}
+      {...fadeUp}
+      className="group relative text-start rounded-3xl border border-foreground/10 bg-card p-6 overflow-hidden hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px_oklch(0.22_0.06_252/0.5)] transition-all"
+    >
+      <div className={`absolute inset-x-0 top-0 h-1 ${upcoming ? "bg-gradient-to-r from-[var(--accent)] via-[var(--lavender)] to-[var(--accent)]" : "bg-gradient-to-r from-[var(--gold)] via-[var(--accent)] to-[var(--gold)]"} opacity-80`} />
+      <div className="absolute -top-16 -end-16 size-32 rounded-full bg-[var(--gold)]/10 blur-2xl opacity-0 group-hover:opacity-100 transition" />
+
+      <div className="relative flex items-start justify-between gap-3">
+        <div className="text-4xl leading-none">{c.cover_emoji || "🎓"}</div>
+        {upcoming ? (
+          <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] font-bold rounded-full bg-[var(--accent)]/15 text-[var(--accent)] px-2.5 py-1 border border-[var(--accent)]/30">
+            <Calendar className="size-3" /> {tt("قريباً", "Soon")}
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] font-bold rounded-full bg-[var(--gold)]/15 text-[var(--gold)] px-2.5 py-1 border border-[var(--gold)]/30">
+            <Sparkles className="size-3" /> {tt("متاح", "Live")}
+          </span>
+        )}
+      </div>
+
+      <h4 className="mt-4 font-display font-extrabold text-lg leading-tight">{c.title}</h4>
+      {tagline && <p className="text-[11px] uppercase tracking-[0.15em] font-bold mt-1.5 text-muted-foreground">{tagline}</p>}
+      {c.description && (
+        <p className="mt-3 text-sm text-muted-foreground leading-relaxed line-clamp-3">{c.description}</p>
+      )}
+
+      <div className="mt-4 flex items-center justify-between gap-2 flex-wrap">
+        <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+          {c.total_hours > 0 && (
+            <span className="inline-flex items-center gap-1"><Clock4 className="size-3" /> {c.total_hours} {tt("ساعة", "h")}</span>
+          )}
+          {c.starts_at && (
+            <span className="inline-flex items-center gap-1"><Calendar className="size-3" /> {new Date(c.starts_at).toLocaleDateString(isAr ? "ar-EG" : "en-GB", { day: "numeric", month: "short" })}</span>
+          )}
+        </div>
+        {!upcoming && c.price != null && c.price > 0 && (
+          <span className="font-display font-extrabold text-base" style={{ color: "var(--gold)" }}>
+            {c.price} {c.currency}
+          </span>
+        )}
+      </div>
+
+      <div className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold" style={{ color: "var(--accent)" }}>
+        {tt("اعرف المزيد", "Learn more")} <ArrowRight className="size-3 group-hover:translate-x-1 rtl-flip transition" />
+      </div>
+    </motion.button>
+  );
+}
+
+function CourseDetailsModal({ course, isAr, dir, onClose, onInterest }: {
+  course: PublicCourse; isAr: boolean; dir: string; onClose: () => void; onInterest: () => void;
+}) {
+  const tt = (a: string, b: string) => (isAr ? a : b);
+  const tagline = isAr ? course.brand_tagline_ar : course.brand_tagline_en;
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-sm"
+      onClick={onClose}
+      dir={dir}
+    >
+      <div
+        className="relative w-full max-w-2xl max-h-[90vh] overflow-auto rounded-3xl bg-card shadow-2xl border border-foreground/10"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="relative p-7 sm:p-10" style={{ background: "linear-gradient(135deg, var(--navy-deep) 0%, var(--lavender-deep) 70%, var(--accent) 100%)" }}>
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="absolute top-4 end-4 size-9 grid place-items-center rounded-full bg-white/15 hover:bg-white/25 text-white transition"
+          >
+            <X className="size-4" />
+          </button>
+          <div className="flex items-start gap-4 text-white">
+            <div className="text-5xl">{course.cover_emoji || "🎓"}</div>
+            <div className="min-w-0">
+              {tagline && <div className="text-[11px] uppercase tracking-[0.2em] font-bold text-white/80">{tagline}</div>}
+              <h3 className="mt-1 font-display font-extrabold text-2xl sm:text-3xl leading-tight">{course.title}</h3>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-7 sm:p-10 space-y-5">
+          {course.description && (
+            <p className="text-foreground/85 leading-[1.9] whitespace-pre-wrap">{course.description}</p>
+          )}
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {course.total_hours > 0 && (
+              <DetailStat icon={Clock4} label={tt("الساعات", "Hours")} value={`${course.total_hours}`} />
+            )}
+            {course.starts_at && (
+              <DetailStat icon={Calendar} label={tt("يبدأ", "Starts")} value={new Date(course.starts_at).toLocaleDateString(isAr ? "ar-EG" : "en-GB")} />
+            )}
+            {course.ends_at && (
+              <DetailStat icon={Calendar} label={tt("ينتهي", "Ends")} value={new Date(course.ends_at).toLocaleDateString(isAr ? "ar-EG" : "en-GB")} />
+            )}
+            {!course.is_upcoming && course.price != null && course.price > 0 && (
+              <DetailStat icon={BadgeCheck} label={tt("السعر", "Price")} value={`${course.price} ${course.currency}`} />
+            )}
+          </div>
+
+          <div className="rule" />
+
+          <div className="flex flex-wrap items-center gap-3">
+            {course.is_upcoming ? (
+              <button
+                onClick={onInterest}
+                className="group inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-6 py-3.5 text-sm font-bold hover:opacity-90 transition shadow-lg cursor-pointer"
+              >
+                <Sparkles className="size-4" />
+                {tt("سجّل اهتمامك الآن", "Register your interest")}
+                <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
+              </button>
+            ) : (
+              <Link
+                to="/auth"
+                search={{ role: "trainee" }}
+                className="group inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-6 py-3.5 text-sm font-bold hover:opacity-90 transition shadow-lg cursor-pointer"
+              >
+                <LogIn className="size-4" />
+                {tt("اشترك في الكورس", "Enroll now")}
+                <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
+              </Link>
+            )}
+            <button
+              onClick={onClose}
+              className="inline-flex items-center gap-2 rounded-full border border-foreground/15 px-5 py-3 text-sm font-semibold hover:bg-foreground/5 transition"
+            >
+              {tt("إغلاق", "Close")}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DetailStat({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
+  return (
+    <div className="rounded-2xl bg-foreground/[0.04] border border-foreground/10 p-4">
+      <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground">
+        <Icon className="size-3.5" /> {label}
+      </div>
+      <div className="mt-1.5 font-display font-extrabold text-base">{value}</div>
+    </div>
+  );
+}
+
+function InterestFormModal({ course, isAr, dir, onClose }: {
+  course: PublicCourse; isAr: boolean; dir: string; onClose: () => void;
+}) {
+  const tt = (a: string, b: string) => (isAr ? a : b);
+  const [full_name, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [notes, setNotes] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [done, setDone] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!full_name.trim() || !email.trim()) return;
+    setBusy(true);
+    const { error } = await supabase.from("course_interests").insert({
+      course_id: course.id,
+      course_title: course.title,
+      full_name: full_name.trim(),
+      email: email.trim().toLowerCase(),
+      phone: phone.trim() || null,
+      notes: notes.trim() || null,
+      language: isAr ? "ar" : "en",
+      user_agent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 200) : null,
+    });
+    setBusy(false);
+    if (error) { return; }
+    setDone(true);
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-[110] flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-sm"
+      onClick={onClose}
+      dir={dir}
+    >
+      <div
+        className="relative w-full max-w-md rounded-3xl bg-card shadow-2xl border border-foreground/10 overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="p-6 border-b border-foreground/10 flex items-start gap-3">
+          <div className="size-11 rounded-2xl bg-[var(--accent)]/15 border border-[var(--accent)]/30 grid place-items-center text-[var(--accent)] shrink-0">
+            <Sparkles className="size-5" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground">{tt("كورس قادم", "Upcoming course")}</div>
+            <div className="font-display font-extrabold text-base truncate">{course.title}</div>
+          </div>
+          <button onClick={onClose} aria-label="Close" className="size-9 grid place-items-center rounded-full hover:bg-foreground/10 transition">
+            <X className="size-4" />
+          </button>
+        </div>
+
+        {done ? (
+          <div className="p-8 text-center">
+            <div className="mx-auto size-14 rounded-full bg-emerald-500/15 border border-emerald-500/30 grid place-items-center text-emerald-400">
+              <CheckCircle2 className="size-7" />
+            </div>
+            <h4 className="mt-4 font-display font-extrabold text-lg">{tt("تم تسجيل اهتمامك ✓", "Interest registered ✓")}</h4>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {tt("سنتواصل معك فور فتح باب التسجيل لهذا الكورس.", "We'll reach out as soon as enrollment opens.")}
+            </p>
+            <button
+              onClick={onClose}
+              className="mt-5 inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-2.5 text-sm font-bold"
+            >
+              {tt("تمام", "Done")}
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={submit} className="p-6 space-y-3">
+            <input
+              required
+              value={full_name}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder={tt("الاسم الكامل", "Full name")}
+              className="w-full bg-foreground/[0.04] border border-foreground/10 rounded-xl px-4 h-11 text-sm"
+            />
+            <input
+              required
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={tt("البريد الإلكتروني", "Email")}
+              className="w-full bg-foreground/[0.04] border border-foreground/10 rounded-xl px-4 h-11 text-sm"
+            />
+            <input
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder={tt("رقم الهاتف (اختياري)", "Phone (optional)")}
+              className="w-full bg-foreground/[0.04] border border-foreground/10 rounded-xl px-4 h-11 text-sm"
+            />
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder={tt("ملاحظات (اختياري)", "Notes (optional)")}
+              rows={3}
+              className="w-full bg-foreground/[0.04] border border-foreground/10 rounded-xl px-4 py-3 text-sm resize-none"
+            />
+            <button
+              type="submit"
+              disabled={busy}
+              className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-3 text-sm font-bold disabled:opacity-50"
+            >
+              {busy ? <Loader2 className="size-4 animate-spin" /> : <Sparkles className="size-4" />}
+              {tt("إرسال اهتمامي", "Submit interest")}
+            </button>
+            <p className="text-[11px] text-muted-foreground text-center pt-1">
+              {tt("لن يتم إنشاء حساب لك. سنتواصل معك يدوياً.", "No account will be created. We'll reach out manually.")}
+            </p>
+          </form>
+        )}
+      </div>
+    </div>
   );
 }
 
