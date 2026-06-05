@@ -2017,6 +2017,148 @@ function ProofLink({ path, label }: { path: string; label: string }) {
   );
 }
 
+
+type LatestAdditionAdminRow = {
+  id: string;
+  title_ar: string;
+  title_en: string;
+  subtitle_ar: string | null;
+  subtitle_en: string | null;
+  custom_label: string | null;
+  kind: "link" | "file" | "video" | "pdf" | "embed";
+  url: string;
+  created_at: string;
+};
+
+type LatestAdditionsSettingsRow = {
+  id: string;
+  title_ar: string;
+  title_en: string;
+  subtitle_ar: string | null;
+  subtitle_en: string | null;
+};
+
+function LatestAdditionsPanel() {
+  const { lang } = useI18n();
+  const t = (a: string, b: string) => (lang === "ar" ? a : b);
+  const [items, setItems] = useState<LatestAdditionAdminRow[]>([]);
+  const [settings, setSettings] = useState<LatestAdditionsSettingsRow | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [form, setForm] = useState({
+    title_ar: "",
+    title_en: "",
+    subtitle_ar: "",
+    subtitle_en: "",
+    custom_label: "",
+    kind: "link" as "link" | "embed",
+    url: "",
+  });
+
+  async function load() {
+    const [{ data: s }, { data: list }] = await Promise.all([
+      supabase.from("latest_additions_settings").select("*").limit(1).maybeSingle(),
+      supabase.from("latest_additions").select("*").order("created_at", { ascending: false }),
+    ]);
+    setSettings((s as LatestAdditionsSettingsRow) ?? null);
+    setItems(((list as LatestAdditionAdminRow[]) ?? []));
+  }
+
+  useEffect(() => { load(); }, []);
+
+  async function saveSettings() {
+    if (!settings) return;
+    const { error } = await supabase.from("latest_additions_settings").update({
+      title_ar: settings.title_ar,
+      title_en: settings.title_en,
+      subtitle_ar: settings.subtitle_ar,
+      subtitle_en: settings.subtitle_en,
+    }).eq("id", settings.id);
+    if (error) return toast.error(error.message);
+    toast.success(t("تم حفظ الإعدادات", "Settings saved"));
+    load();
+  }
+
+  async function addItem(e: React.FormEvent) {
+    e.preventDefault();
+    if (!form.title_ar.trim() || !form.title_en.trim() || !form.url.trim()) return;
+    setBusy(true);
+    const { error } = await supabase.from("latest_additions").insert({
+      title_ar: form.title_ar.trim(),
+      title_en: form.title_en.trim(),
+      subtitle_ar: form.subtitle_ar.trim() || null,
+      subtitle_en: form.subtitle_en.trim() || null,
+      custom_label: form.custom_label.trim() || null,
+      kind: form.kind,
+      url: form.url.trim(),
+    });
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    toast.success(t("تمت إضافة العنصر", "Item added"));
+    setForm({ title_ar: "", title_en: "", subtitle_ar: "", subtitle_en: "", custom_label: "", kind: "link", url: "" });
+    load();
+  }
+
+  async function del(id: string) {
+    if (!confirm(t("حذف هذا العنصر؟", "Delete this item?"))) return;
+    const { error } = await supabase.from("latest_additions").delete().eq("id", id);
+    if (error) return toast.error(error.message);
+    load();
+  }
+
+  return (
+    <div className="space-y-6">
+      {settings && (
+        <div className="dash-card dash-card-hover p-5 space-y-3">
+          <h3 className="font-bold flex items-center gap-2"><Sparkles className="w-4 h-4 text-[var(--gold)]" /> {t("إعدادات قسم أحدث الإضافات", "Latest additions settings")}</h3>
+          <div className="grid sm:grid-cols-2 gap-3">
+            <Input label={t("العنوان عربي", "Title AR")} value={settings.title_ar ?? ""} onChange={(v) => setSettings({ ...settings, title_ar: v })} />
+            <Input label={t("العنوان إنجليزي", "Title EN")} value={settings.title_en ?? ""} onChange={(v) => setSettings({ ...settings, title_en: v })} />
+            <Input label={t("وصف عربي", "Subtitle AR")} value={settings.subtitle_ar ?? ""} onChange={(v) => setSettings({ ...settings, subtitle_ar: v })} />
+            <Input label={t("وصف إنجليزي", "Subtitle EN")} value={settings.subtitle_en ?? ""} onChange={(v) => setSettings({ ...settings, subtitle_en: v })} />
+          </div>
+          <button onClick={saveSettings} className="text-xs px-4 h-9 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold">{t("حفظ الإعدادات", "Save settings")}</button>
+        </div>
+      )}
+
+      <form onSubmit={addItem} className="dash-card dash-card-hover p-5 space-y-3">
+        <h3 className="font-bold flex items-center gap-2"><Plus className="w-4 h-4 text-[var(--gold)]" /> {t("إضافة عنصر جديد", "Add new item")}</h3>
+        <div className="grid sm:grid-cols-2 gap-3">
+          <Input label={t("العنوان عربي", "Title AR")} value={form.title_ar} onChange={(v) => setForm({ ...form, title_ar: v })} required />
+          <Input label={t("العنوان إنجليزي", "Title EN")} value={form.title_en} onChange={(v) => setForm({ ...form, title_en: v })} required />
+          <Input label={t("وصف عربي", "Subtitle AR")} value={form.subtitle_ar} onChange={(v) => setForm({ ...form, subtitle_ar: v })} />
+          <Input label={t("وصف إنجليزي", "Subtitle EN")} value={form.subtitle_en} onChange={(v) => setForm({ ...form, subtitle_en: v })} />
+          <Input label={t("شارة", "Badge")} value={form.custom_label} onChange={(v) => setForm({ ...form, custom_label: v })} />
+          <Select label={t("النوع", "Kind")} value={form.kind} onChange={(v) => setForm({ ...form, kind: v as "link" | "embed" })} options={[{ v: "link", l: t("رابط", "Link") }, { v: "embed", l: t("فيديو مضمن", "Embed") }]} />
+        </div>
+        <Input label={t("الرابط", "URL")} value={form.url} onChange={(v) => setForm({ ...form, url: v })} required />
+        <button disabled={busy} type="submit" className="px-4 h-10 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold text-sm disabled:opacity-50">
+          {busy ? t("جارٍ الإضافة...", "Adding...") : t("إضافة", "Add")}
+        </button>
+      </form>
+
+      <div className="dash-card dash-card-hover p-5">
+        <h3 className="font-bold mb-3">{t("العناصر الحالية", "Current items")} ({items.length})</h3>
+        {items.length === 0 ? (
+          <p className="text-sm text-white/40">{t("لا توجد عناصر بعد.", "No items yet.")}</p>
+        ) : (
+          <ul className="space-y-2">
+            {items.map((it) => (
+              <li key={it.id} className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/5">
+                <FileText className="w-4 h-4 text-[var(--gold)] mt-0.5" />
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-sm">{it.title_ar} <span className="text-white/40">·</span> <span className="text-white/60">{it.title_en}</span></p>
+                  <p className="text-[11px] text-white/45 mt-0.5">[{it.kind}] {it.custom_label ? `· ${it.custom_label}` : ""} · {new Date(it.created_at).toLocaleString("ar-EG")}</p>
+                </div>
+                <button onClick={() => del(it.id)} className="p-2 rounded-lg md:hover:bg-rose-500/10 text-rose-300"><Trash2 className="w-4 h-4" /></button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ============================================================
 // Activations Panel — Pending account activation queue + settings
 // ============================================================
