@@ -13,11 +13,6 @@ import {
   StickyNote, Paperclip, Pencil, Check, Clock, Settings2, Sparkles, Ticket, Percent,
   UserPlus, KeyRound, GraduationCap, ShieldOff, ShieldCheck, UserX, Archive,
 } from "lucide-react";
-import {
-  createTrainerAccount, resetTrainerPassword,
-  setTrainerSuspended, terminateTrainerAccount, updateTrainerPermissions,
-} from "@/lib/admin-trainers.functions";
-
 import { findCountry } from "@/lib/countries";
 import { safeHref } from "@/lib/safe-url";
 import { AdminSupportPanel } from "@/components/SupportTickets";
@@ -25,7 +20,7 @@ import { assertAdmin } from "@/lib/admin-guard.functions";
 import { SiteManagementPanel } from "@/components/admin/SiteManagementPanel";
 
 type AdminSearch = {
-  tab?: "enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods" | "tickets" | "site" | "leads";
+  tab?: "enrollments" | "courses" | "coupons" | "banned" | "additions" | "activations" | "finance" | "methods" | "tickets" | "site" | "leads";
   drawer?: string;
   editCourse?: string;
 };
@@ -63,6 +58,7 @@ type Course = {
   currency: string; active: boolean; starts_at: string | null; ends_at: string | null;
   installments_count: number; online_url: string | null; cover_emoji: string | null;
   total_hours: number | null;
+  course_goals?: string | null; target_audience?: string | null;
 };
 type EnrollmentRow = {
   id: string; user_id: string; course_id: string; status: "pending" | "approved" | "rejected";
