@@ -1040,8 +1040,8 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
     brand_primary_color: (course as any).brand_primary_color ?? "",
     brand_tagline_ar: (course as any).brand_tagline_ar ?? "",
     brand_tagline_en: (course as any).brand_tagline_en ?? "",
-    track_key: (course as any).track_key ?? "",
-    phase: String((course as any).phase ?? 1),
+    course_goals: (course as any).course_goals ?? "",
+    target_audience: (course as any).target_audience ?? "",
     is_upcoming: Boolean((course as any).is_upcoming),
   });
 
@@ -1060,8 +1060,8 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
       brand_primary_color: f.brand_primary_color.trim() || null,
       brand_tagline_ar: f.brand_tagline_ar.trim() || null,
       brand_tagline_en: f.brand_tagline_en.trim() || null,
-      track_key: f.track_key.trim() || null,
-      phase: Math.max(1, Math.min(3, Number(f.phase) || 1)),
+      course_goals: f.course_goals.trim() || null,
+      target_audience: f.target_audience.trim() || null,
       is_upcoming: f.is_upcoming,
     } as any).eq("id", course.id);
     if (error) return toast.error(error.message);
@@ -1094,25 +1094,8 @@ function CourseSettings({ course, onSaved }: { course: Course; onSaved: () => vo
         <Input label={t("عدد ساعات الكورس", "Total hours")} type="number" value={f.total_hours} onChange={(v) => setF({ ...f, total_hours: v })} />
       </div>
 
-      {/* Unified track + phase */}
-      <div className="pt-4 mt-4 border-t border-border space-y-3">
-        <div className="text-sm font-bold text-foreground">{t("المسار الموحّد والمرحلة", "Unified Track & Phase")}</div>
-        <div className="grid grid-cols-2 gap-3">
-          <Select label={t("المسار", "Track")} value={f.track_key} onChange={(v) => setF({ ...f, track_key: v })}
-            options={[
-              { v: "", l: t("بدون", "None") },
-              { v: "educational_tracks", l: t("مسارات التعليم (التدريب المؤسسي + التصميم التعليمي + TOT)", "Educational Tracks (Corporate Training + ID + TOT)") },
-              { v: "talent_management", l: t("إدارة المواهب", "Talent Management") },
-              { v: "soft_skills", l: t("المهارات الناعمة", "Soft Skills") },
-            ]} />
-          <Select label={t("المرحلة", "Phase")} value={f.phase} onChange={(v) => setF({ ...f, phase: v })}
-            options={[
-              { v: "1", l: t("المرحلة 1 (الأسس)", "Phase 1 (Foundations)") },
-              { v: "2", l: t("المرحلة 2 (الإتقان)", "Phase 2 (Mastery)") },
-              { v: "3", l: t("المرحلة 3 (متقدم)", "Phase 3 (Advanced)") },
-            ]} />
-        </div>
-      </div>
+      <TextArea label={t("مخرجات الكورس", "Course outcomes")} value={f.course_goals} onChange={(v) => setF({ ...f, course_goals: v })} />
+      <TextArea label={t("هذا الكورس مناسب لـ", "This course is best for")} value={f.target_audience} onChange={(v) => setF({ ...f, target_audience: v })} />
 
 
 
