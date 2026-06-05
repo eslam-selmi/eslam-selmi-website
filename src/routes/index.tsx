@@ -16,6 +16,7 @@ import { useTheme } from "@/lib/theme";
 import { LatestAdditionsSection } from "@/components/LatestAdditions";
 import { useSiteContent } from "@/lib/site-content";
 import { SitePopup } from "@/components/SitePopup";
+import { COUNTRIES as PHONE_COUNTRIES, findCountry as findDialCountry, sanitizeNationalNumber, validatePhoneForCountry } from "@/lib/countries";
 
 import headshot from "@/assets/portfolio/headshot.webp";
 import brandLogo from "@/assets/brand-logo.webp";
@@ -212,7 +213,7 @@ const PROGRAMS = [
   {
     track: {
       en: "Training & Development Programs",
-      ar: "برامج التدريب والتطوير",
+      ar: "إدارة التدريب والتطوير",
     },
     intro: {
       en: "A unified journey under the Training & Development Programs taxonomy: build foundational L&D and instructional design competencies, then graduate into advanced facilitation and TOT delivery mastery.",
