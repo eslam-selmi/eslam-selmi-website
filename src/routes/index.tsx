@@ -9,6 +9,7 @@ import {
   Mic, BookOpen, Library as LibraryIcon, FileText, Download, ExternalLink,
   Rocket, Wand2, Mail as MailIcon, Palette, Trello, Table2, Bot, Quote,
   ShieldCheck, KeyRound, LogIn,
+  Clock,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n, type Lang } from "@/lib/i18n";
