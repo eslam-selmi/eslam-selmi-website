@@ -544,7 +544,7 @@ function CoursesPanel({ courses, enrollments, refresh, onEdit }: { courses: Cour
       course_goals: form.course_goals || null,
       target_audience: form.target_audience || null,
       active: true,
-    });
+    } as any);
     setBusy(false);
     if (error) return toast.error(error.message);
     toast.success(t("تمت إضافة الكورس", "Course added"));
@@ -645,6 +645,7 @@ function CoursesPanel({ courses, enrollments, refresh, onEdit }: { courses: Cour
                       {c.active ? <ToggleRight className="w-5 h-5 text-emerald-300" /> : <ToggleLeft className="w-5 h-5 text-white/40" />}
                     </button>
                     <button onClick={() => del(c.id, Boolean((c as any).is_archived))} className="p-2 rounded-lg hover:bg-rose-500/10 text-rose-300" title={(c as any).is_archived ? t("استعادة", "Restore") : t("أرشفة", "Archive")}><Trash2 className="w-4 h-4" /></button>
+                    <button onClick={() => deleteCourseForever(c.id, c.title)} className="p-2 rounded-lg hover:bg-red-500/10 text-red-300" title={t("حذف نهائي", "Delete forever")}><X className="w-4 h-4" /></button>
                   </div>
                 </div>
               </div>
@@ -674,6 +675,8 @@ function CoursesPanel({ courses, enrollments, refresh, onEdit }: { courses: Cour
         </div>
         <Input label={t("رابط الكورس", "Course link")} value={form.online_url} onChange={(v) => setForm({ ...form, online_url: v })} />
         <Input label={t("عدد ساعات الكورس", "Total hours")} type="number" value={form.total_hours} onChange={(v) => setForm({ ...form, total_hours: v })} />
+        <TextArea label={t("مخرجات الكورس", "Course outcomes")} value={form.course_goals} onChange={(v) => setForm({ ...form, course_goals: v })} />
+        <TextArea label={t("هذا الكورس مناسب لـ", "This course is best for")} value={form.target_audience} onChange={(v) => setForm({ ...form, target_audience: v })} />
         <button disabled={busy} type="submit" className="w-full h-11 rounded-xl font-semibold disabled:opacity-60"
           style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
           {busy ? "..." : t("إضافة الكورس", "Add course")}
