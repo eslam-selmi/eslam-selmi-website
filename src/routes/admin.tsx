@@ -13,6 +13,10 @@ import {
   StickyNote, Paperclip, Pencil, Check, Clock, Settings2, Sparkles, Ticket, Percent,
   UserPlus, KeyRound, GraduationCap, ShieldOff, ShieldCheck, UserX, Archive,
 } from "lucide-react";
+import {
+  createTrainerAccount, resetTrainerPassword,
+  setTrainerSuspended, terminateTrainerAccount, updateTrainerPermissions,
+} from "@/lib/admin-trainers.functions";
 import { findCountry } from "@/lib/countries";
 import { safeHref } from "@/lib/safe-url";
 import { AdminSupportPanel } from "@/components/SupportTickets";
