@@ -82,7 +82,7 @@ function AdminPage() {
   const { user, role, loading } = useAuth();
   const nav = useNavigate();
   const search = Route.useSearch();
-  const [tabState, setTabState] = useState<"enrollments" | "courses" | "coupons" | "banned" | "trainers" | "additions" | "activations" | "finance" | "methods" | "tickets" | "site" | "leads">(search.tab || "enrollments");
+  const [tabState, setTabState] = useState<"enrollments" | "courses" | "coupons" | "banned" | "additions" | "activations" | "finance" | "methods" | "tickets" | "site" | "leads">(search.tab || "enrollments");
   const tab = tabState;
   const setTab = setTabState;
 
@@ -195,7 +195,6 @@ function AdminPage() {
             { id: "activations", label: `${t("تفعيل الحسابات", "Activations")}${pendingActivations > 0 ? ` (${pendingActivations})` : ""}` },
             { id: "enrollments", label: `${t("طلبات وانضمامات", "Requests & enrollments")} (${enrollments.length})` },
             { id: "courses", label: `${t("الكورسات", "Courses")} (${courses.length})` },
-            { id: "trainers", label: t("المدرّبون", "Trainers") },
             { id: "coupons", label: t("كوبونات الخصم", "Discount coupons") },
             { id: "additions", label: t("أحدث الإضافات", "Latest additions") },
             { id: "site", label: t("إدارة الموقع", "Site management") },
@@ -225,8 +224,6 @@ function AdminPage() {
           <EnrollmentsTable enrollments={enrollments} courses={courses} onOpen={setDrawer} refresh={refresh} />
         ) : tab === "courses" ? (
           <CoursesPanel courses={courses} enrollments={enrollments} refresh={refresh} onEdit={setEditingCourse} />
-        ) : tab === "trainers" ? (
-          <TrainersPanel courses={courses} />
         ) : tab === "coupons" ? (
           <CouponsPanel courses={courses} />
         ) : tab === "additions" ? (
