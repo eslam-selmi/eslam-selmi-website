@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/portal-auth";
 import { toast } from "sonner";
-import { GraduationCap, ShieldCheck, Loader2, ArrowRight } from "lucide-react";
+import { GraduationCap, Loader2, ArrowRight } from "lucide-react";
 import { COUNTRIES, findCountry, sanitizeNationalNumber, validatePhoneForCountry } from "@/lib/countries";
 import brandLogo from "@/assets/brand-logo.webp";
 
@@ -37,7 +37,6 @@ function AuthPage() {
   const [phone, setPhone] = useState("");
   const [phoneError, setPhoneError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [confirmEmail, setConfirmEmail] = useState<string | null>(null);
   const nav = useNavigate();
   const { user, role, loading, activationStatus } = useAuth();
 
