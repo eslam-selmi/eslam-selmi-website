@@ -3271,7 +3271,9 @@ function CourseLeadsPanel() {
                       l.status === "contacted" ? "bg-sky-500/15 text-sky-300 border border-sky-500/30" :
                       l.status === "converted" ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30" :
                       "bg-white/5 text-white/50 border border-white/10"
-                    }`}>{l.status}</span>
+                    }`}>
+                      {l.status === "new" ? t("جديد", "New") : l.status === "contacted" ? t("تم التواصل", "Contacted") : l.status === "converted" ? t("تحول لمتدرب", "Converted to trainee") : t("مؤرشف", "Archived")}
+                    </span>
                     <span className="text-[10px] uppercase tracking-wider text-white/40">{l.language}</span>
                   </div>
                   <div className="mt-1.5 grid sm:grid-cols-2 gap-1 text-xs text-white/70">
@@ -3299,7 +3301,7 @@ function CourseLeadsPanel() {
                 )}
                 {l.status !== "converted" && (
                   <button onClick={() => updateStatus(l.id, "converted")} className="text-[11px] px-3 h-7 rounded-lg bg-emerald-500/15 text-emerald-200 border border-emerald-500/30 hover:bg-emerald-500/25 font-semibold">
-                    {t("تحوّل لمتدرب", "Converted")}
+                    {t("تحول لمتدرب", "Converted to trainee")}
                   </button>
                 )}
                 {l.status !== "archived" && (
