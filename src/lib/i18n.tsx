@@ -79,7 +79,8 @@ const en: Dict = {
   // brands
   brands_eyebrow: "Trusted by",
   brands_title: "Brands that trusted my craft",
-  brands_desc: "A snapshot of companies and partners I've designed, delivered and led L&D programs with across the region.",
+  brands_desc:
+    "A snapshot of companies and partners I've designed, delivered and led L&D programs with across the region.",
   brands_meta: "Brands & partners",
 
   // snapshots
@@ -102,7 +103,6 @@ const en: Dict = {
   podcast_ep4_title: "Episode 04: Coaching for Growth",
   podcast_ep4_desc: "How coaching and mentoring drive measurable workplace impact.",
 
-
   // book
   book_badge: "Free 30-minute session",
   book_title_1: "Book a free",
@@ -121,7 +121,8 @@ const en: Dict = {
   // current courses
   current_eyebrow: "Open now",
   current_title: "Live courses, enroll today",
-  current_desc: "Active cohorts running right now. Pick the program that fits you and apply in under a minute.",
+  current_desc:
+    "Active cohorts running right now. Pick the program that fits you and apply in under a minute.",
   current_btn: "Browse & enroll",
   current_meta: "Limited seats · Live sessions",
   current_modal_title: "Choose your course",
@@ -130,7 +131,8 @@ const en: Dict = {
   // library
   library_eyebrow: "Resources",
   library_title: "Knowledge Vault",
-  library_desc: "A curated vault of e-books, frameworks, templates and resources I share with the community. Always growing, so bookmark it.",
+  library_desc:
+    "A curated vault of e-books, frameworks, templates and resources I share with the community. Always growing, so bookmark it.",
   library_btn: "Open the vault",
   library_meta: "E-books · Templates · Frameworks",
   library_modal_title: "Knowledge Vault",
@@ -144,7 +146,8 @@ const en: Dict = {
   emp_eyebrow: "New graduates",
   emp_title: "Empowerment Tools",
   emp_tagline: "Workplace-ready in weeks, not years.",
-  emp_desc: "A hands-on program that prepares fresh graduates to master the everyday tools of modern work: practical AI use, professional Outlook workflows, design with Canva, project tracking with Trello, and data work with Google Sheets & Forms.",
+  emp_desc:
+    "A hands-on program that prepares fresh graduates to master the everyday tools of modern work: practical AI use, professional Outlook workflows, design with Canva, project tracking with Trello, and data work with Google Sheets & Forms.",
   emp_btn: "Enroll now",
   emp_meta: "Tools · Workflows · Confidence",
   emp_tool_ai: "AI at work",
@@ -273,7 +276,6 @@ const ar: Dict = {
   podcast_ep4_title: "الحلقة الرابعة: الكوتشينج للنمو",
   podcast_ep4_desc: "كيف يُحدث الكوتشينج والإرشاد أثرًا حقيقيًا في بيئة العمل.",
 
-
   book_badge: "جلسة مجانية ٣٠ دقيقة",
   book_title_1: "احجز جلسة",
   book_title_2: "فردية مجانية",
@@ -290,7 +292,8 @@ const ar: Dict = {
 
   current_eyebrow: "متاح الآن",
   current_title: "دورات مباشرة، سجّل اليوم",
-  current_desc: "انطلق في رحلتك التطويرية اليوم — التحق بإحدى دوراتنا المتاحة حاليًا وابدأ خطوتك الأولى نحو التميّز في أقل من دقيقة.",
+  current_desc:
+    "انطلق في رحلتك التطويرية اليوم — التحق بإحدى دوراتنا المتاحة حاليًا وابدأ خطوتك الأولى نحو التميّز في أقل من دقيقة.",
   current_btn: "تصفّح وسجّل الآن",
   current_meta: "مقاعد محدودة · جلسات مباشرة",
   current_modal_title: "اختر دورتك",
@@ -298,7 +301,8 @@ const ar: Dict = {
 
   library_eyebrow: "مصادر",
   library_title: "المصادر",
-  library_desc: "مكتبة مختارة من الكتب الإلكترونية والقوالب والأطر العملية والمصادر التي أشاركها مع المجتمع. تتجدّد باستمرار، فاحفظها للرجوع إليها.",
+  library_desc:
+    "مكتبة مختارة من الكتب الإلكترونية والقوالب والأطر العملية والمصادر التي أشاركها مع المجتمع. تتجدّد باستمرار، فاحفظها للرجوع إليها.",
   library_btn: "ادخل المصادر",
   library_meta: "كتب إلكترونية · قوالب · أطر عملية",
   library_modal_title: "المصادر",
@@ -311,7 +315,8 @@ const ar: Dict = {
   emp_eyebrow: "للخريجين الجدد",
   emp_title: "أدوات التمكين",
   emp_tagline: "جاهز لسوق العمل خلال أسابيع، لا سنوات.",
-  emp_desc: "برنامج عملي يؤهّل الخريجين الجدد لإتقان الأدوات الأساسية في بيئة العمل الحديثة: توظيف الذكاء الاصطناعي بفاعلية، إتقان Outlook، التصميم باستخدام Canva، إدارة المهام عبر Trello، والعمل مع Google Sheets و Google Forms.",
+  emp_desc:
+    "برنامج عملي يؤهّل الخريجين الجدد لإتقان الأدوات الأساسية في بيئة العمل الحديثة: توظيف الذكاء الاصطناعي بفاعلية، إتقان Outlook، التصميم باستخدام Canva، إدارة المهام عبر Trello، والعمل مع Google Sheets و Google Forms.",
   emp_btn: "سجّل الآن",
   emp_meta: "أدوات · مهارات · ثقة",
   emp_tool_ai: "الذكاء الاصطناعي",
@@ -330,7 +335,8 @@ const ar: Dict = {
 
   lead_eyebrow: "ابقَ على اطّلاع",
   lead_title: "اشترك في الدورات القادمة",
-  lead_desc: "كن أول من يعلم عند فتح دفعات جديدة في القيادة، التعلم والتطوير، التصميم التعليمي، وإدارة الأداء.",
+  lead_desc:
+    "كن أول من يعلم عند فتح دفعات جديدة في القيادة، التعلم والتطوير، التصميم التعليمي، وإدارة الأداء.",
   lead_placeholder: "بريدك الإلكتروني",
   lead_btn: "اشترك الآن",
   lead_success: "تم تسجيلك بنجاح. سأتواصل معك قريبًا.",
