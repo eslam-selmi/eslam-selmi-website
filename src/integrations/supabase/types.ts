@@ -388,7 +388,6 @@ export type Database = {
           brand_primary_color: string | null
           brand_tagline_ar: string | null
           brand_tagline_en: string | null
-          course_goals: string | null
           cover_emoji: string | null
           created_at: string
           currency: string
@@ -404,7 +403,6 @@ export type Database = {
           price: number | null
           slug: string | null
           starts_at: string | null
-          target_audience: string | null
           title: string
           total_hours: number
           track_key: string | null
@@ -415,7 +413,6 @@ export type Database = {
           brand_primary_color?: string | null
           brand_tagline_ar?: string | null
           brand_tagline_en?: string | null
-          course_goals?: string | null
           cover_emoji?: string | null
           created_at?: string
           currency?: string
@@ -431,7 +428,6 @@ export type Database = {
           price?: number | null
           slug?: string | null
           starts_at?: string | null
-          target_audience?: string | null
           title: string
           total_hours?: number
           track_key?: string | null
@@ -442,7 +438,6 @@ export type Database = {
           brand_primary_color?: string | null
           brand_tagline_ar?: string | null
           brand_tagline_en?: string | null
-          course_goals?: string | null
           cover_emoji?: string | null
           created_at?: string
           currency?: string
@@ -458,7 +453,6 @@ export type Database = {
           price?: number | null
           slug?: string | null
           starts_at?: string | null
-          target_audience?: string | null
           title?: string
           total_hours?: number
           track_key?: string | null
