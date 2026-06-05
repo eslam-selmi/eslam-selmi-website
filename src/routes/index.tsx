@@ -1750,6 +1750,17 @@ function CourseDetailsModal({ course, isAr, dir, onClose, onInterest }: {
             <p className="text-foreground/85 leading-[1.9] whitespace-pre-wrap">{course.description}</p>
           )}
 
+          {(course.course_goals || course.target_audience) && (
+            <div className="grid sm:grid-cols-2 gap-3">
+              {course.course_goals && (
+                <CourseInfoBlock icon={Target} title={tt("ماذا ستتقن؟", "What you'll master")} body={course.course_goals} />
+              )}
+              {course.target_audience && (
+                <CourseInfoBlock icon={Users} title={tt("مناسب لمن؟", "Best for")} body={course.target_audience} />
+              )}
+            </div>
+          )}
+
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {course.total_hours > 0 && (
               <DetailStat icon={Calendar} label={tt("الساعات", "Hours")} value={`${course.total_hours}`} />
@@ -1808,6 +1819,17 @@ function DetailStat({ icon: Icon, label, value }: { icon: any; label: string; va
         <Icon className="size-3.5" /> {label}
       </div>
       <div className="mt-1.5 font-display font-extrabold text-base">{value}</div>
+    </div>
+  );
+}
+
+function CourseInfoBlock({ icon: Icon, title, body }: { icon: any; title: string; body: string }) {
+  return (
+    <div className="rounded-2xl bg-foreground/[0.04] border border-foreground/10 p-4">
+      <div className="flex items-center gap-2 text-xs font-bold" style={{ color: "var(--gold)" }}>
+        <Icon className="size-4" /> {title}
+      </div>
+      <p className="mt-2 text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">{body}</p>
     </div>
   );
 }
