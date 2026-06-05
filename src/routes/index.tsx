@@ -2308,10 +2308,9 @@ function CourseCard({
       })
     : null;
   return (
-    <motion.button
+    <button
       type="button"
       onClick={onOpen}
-      {...fadeUp}
       className="group relative text-start rounded-[2rem] border border-foreground/10 bg-card p-0 overflow-hidden md:transition-all md:hover:-translate-y-1.5 md:hover:shadow-[0_36px_80px_-44px_color-mix(in_oklab,var(--accent)_65%,transparent)]"
     >
       <div
@@ -2375,7 +2374,7 @@ function CourseCard({
           </div>
         </div>
       </div>
-    </motion.button>
+    </button>
   );
 }
 
