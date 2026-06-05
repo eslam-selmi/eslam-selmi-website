@@ -962,7 +962,7 @@ function CourseSessions({ courseId }: { courseId: string }) {
   const t = (a: string, b: string) => (lang === "ar" ? a : b);
 
   const [sessions, setSessions] = useState<any[]>([]);
-  const [form, setForm] = useState({ title: "", starts_at: "", duration_minutes: "60", online_url: "" });
+  const [form, setForm] = useState({ title: "", starts_at: "", duration_minutes: "60" });
 
   async function load() {
     const { data } = await supabase.from("course_sessions").select("*").eq("course_id", courseId).order("starts_at");
@@ -975,11 +975,11 @@ function CourseSessions({ courseId }: { courseId: string }) {
     if (!form.title || !form.starts_at) return toast.error(t("العنوان والتاريخ مطلوبين", "Title and date are required"));
     const { error } = await supabase.from("course_sessions").insert({
       course_id: courseId, title: form.title, starts_at: new Date(form.starts_at).toISOString(),
-      duration_minutes: Number(form.duration_minutes), online_url: form.online_url || null,
+      duration_minutes: Number(form.duration_minutes),
     });
     if (error) return toast.error(error.message);
     toast.success(t("تمت إضافة المحاضرة وإشعار المتدربين", "Session added and trainees notified"));
-    setForm({ title: "", starts_at: "", duration_minutes: "60", online_url: "" });
+    setForm({ title: "", starts_at: "", duration_minutes: "60" });
     load();
   }
 
@@ -996,7 +996,6 @@ function CourseSessions({ courseId }: { courseId: string }) {
           <Input label={t("التاريخ والوقت", "Date & time")} type="datetime-local" value={form.starts_at} onChange={(v) => setForm({ ...form, starts_at: v })} required />
           <Input label={t("المدة (دقيقة)", "Duration (min)")} type="number" value={form.duration_minutes} onChange={(v) => setForm({ ...form, duration_minutes: v })} />
         </div>
-        <Input label={t("رابط الانضمام", "Join link")} value={form.online_url} onChange={(v) => setForm({ ...form, online_url: v })} />
         <button type="submit" className="w-full h-10 rounded-xl text-sm font-semibold" style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
           {t("إضافة المحاضرة", "Add session")}
         </button>
@@ -1012,7 +1011,6 @@ function CourseSessions({ courseId }: { courseId: string }) {
                 <p className="text-xs text-white/55">
                   {new Date(s.starts_at).toLocaleString("ar-EG")} · {s.duration_minutes}{t("د", "m")}
                 </p>
-                {safeHref(s.online_url) && <a href={safeHref(s.online_url)!} target="_blank" rel="noopener" className="text-[11px] text-[var(--gold)] truncate block" dir="ltr">{s.online_url}</a>}
               </div>
               <button onClick={() => del(s.id)} className="p-2 rounded-lg hover:bg-rose-500/10 text-rose-300"><Trash2 className="w-3.5 h-3.5" /></button>
             </li>
