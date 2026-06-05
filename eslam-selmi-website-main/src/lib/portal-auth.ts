@@ -1,0 +1,71 @@
+import { useEffect, useState } from "react";
+import type { Session, User } from "@supabase/supabase-js";
+import { supabase } from "@/integrations/supabase/client";
+
+export type Role = "admin" | "trainee" | "trainer" | null;
+export type ActivationStatus = "pending" | "active" | "rejected" | null;
+
+export function useAuth() {
+  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [role, setRole] = useState<Role>(null);
+  const [forcePasswordReset, setForcePasswordReset] = useState(false);
+  const [activationStatus, setActivationStatus] = useState<ActivationStatus>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+      setSession(s);
+      setUser(s?.user ?? null);
+      if (s?.user) {
+        setTimeout(() => fetchRoleAndFlags(s.user.id), 0);
+      } else {
+        setRole(null);
+        setForcePasswordReset(false);
+        setActivationStatus(null);
+        setLoading(false);
+      }
+    });
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session);
+      setUser(data.session?.user ?? null);
+      if (data.session?.user) {
+        fetchRoleAndFlags(data.session.user.id);
+      } else {
+        setLoading(false);
+      }
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  async function fetchRoleAndFlags(uid: string) {
+    const [roleRes, profRes] = await Promise.all([
+      supabase.from("user_roles").select("role").eq("user_id", uid).maybeSingle(),
+      supabase.from("profiles").select("force_password_reset,activation_status").eq("id", uid).maybeSingle(),
+    ]);
+    setRole((roleRes.data?.role as Role) ?? "trainee");
+    setForcePasswordReset(Boolean((profRes.data as any)?.force_password_reset));
+    setActivationStatus(((profRes.data as any)?.activation_status as ActivationStatus) ?? "active");
+    setLoading(false);
+  }
+
+  return { session, user, role, loading, forcePasswordReset, activationStatus };
+}
+
+export async function signOut() {
+  await supabase.auth.signOut();
+}
+
+// Fetch the current user's role without using React hooks.
+export async function fetchCurrentRole(): Promise<Role> {
+  // Get current session
+  const { data: sessionData } = await supabase.auth.getSession();
+  const userId = sessionData.session?.user?.id;
+  if (!userId) return null;
+  const { data: roleRes } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .maybeSingle();
+  return (roleRes?.role as Role) ?? "trainee";
+}
