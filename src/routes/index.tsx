@@ -1841,21 +1841,35 @@ function InterestFormModal({ course, isAr, dir, onClose }: {
   const tt = (a: string, b: string) => (isAr ? a : b);
   const [full_name, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [countryCode, setCountryCode] = useState("EG");
   const [phone, setPhone] = useState("");
+  const [phoneError, setPhoneError] = useState<string | null>(null);
   const [notes, setNotes] = useState("");
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
+  const country = findDialCountry(countryCode) ?? PHONE_COUNTRIES[0];
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!full_name.trim() || !email.trim()) return;
+    const v = validatePhoneForCountry(phone, country);
+    if (!v.ok) {
+      const msg = tt(
+        `رقم الهاتف لدولة ${country.name_ar} يجب أن يتكون من ${country.nsnLengths.join(" أو ")} أرقام بدون الصفر. مثال: ${v.example}`,
+        `Phone number for ${country.name_en} must be ${country.nsnLengths.join(" or ")} digits without leading zero. Example: ${v.example}`,
+      );
+      setPhoneError(msg);
+      return;
+    }
+    setPhoneError(null);
     setBusy(true);
     const { error } = await supabase.from("course_interests").insert({
       course_id: course.id,
       course_title: course.title,
       full_name: full_name.trim(),
       email: email.trim().toLowerCase(),
-      phone: phone.trim() || null,
+      phone: v.e164,
+      country_code: country.code,
       notes: notes.trim() || null,
       language: isAr ? "ar" : "en",
       user_agent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 200) : null,
@@ -1883,7 +1897,7 @@ function InterestFormModal({ course, isAr, dir, onClose }: {
             <div className="text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground">{tt("كورس قادم", "Upcoming course")}</div>
             <div className="font-display font-extrabold text-base truncate">{course.title}</div>
           </div>
-          <button onClick={onClose} aria-label="Close" className="size-9 grid place-items-center rounded-full hover:bg-foreground/10 transition">
+          <button onClick={onClose} aria-label="Close" className="size-9 grid place-items-center rounded-full md:hover:bg-foreground/10 md:transition">
             <X className="size-4" />
           </button>
         </div>
@@ -1921,12 +1935,43 @@ function InterestFormModal({ course, isAr, dir, onClose }: {
               placeholder={tt("البريد الإلكتروني", "Email")}
               className="w-full bg-foreground/[0.04] border border-foreground/10 rounded-xl px-4 h-11 text-sm"
             />
-            <input
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder={tt("رقم الهاتف (اختياري)", "Phone (optional)")}
-              className="w-full bg-foreground/[0.04] border border-foreground/10 rounded-xl px-4 h-11 text-sm"
-            />
+            <label className="block">
+              <span className="block text-xs text-muted-foreground mb-1.5 font-medium">{tt("الدولة", "Country")}</span>
+              <select
+                value={countryCode}
+                onChange={(e) => { setCountryCode(e.target.value); setPhone(""); setPhoneError(null); }}
+                required
+                className="w-full h-11 px-4 rounded-xl bg-foreground/[0.04] border border-foreground/10 text-foreground focus:outline-none focus:border-[var(--gold)]/60"
+              >
+                {PHONE_COUNTRIES.map((c) => (
+                  <option key={c.code} value={c.code} className="bg-background">
+                    {c.flag} {isAr ? c.name_ar : c.name_en} ({c.dial})
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="block">
+              <span className="block text-xs text-muted-foreground mb-1.5 font-medium">{tt("رقم الهاتف", "Phone")}</span>
+              <div className="flex gap-2" dir="ltr">
+                <span className="h-11 px-3 rounded-xl bg-foreground/[0.06] border border-foreground/10 text-muted-foreground inline-flex items-center text-sm font-mono">
+                  {country.dial}
+                </span>
+                <input
+                  required
+                  type="tel"
+                  inputMode="numeric"
+                  value={phone}
+                  onChange={(e) => {
+                    setPhone(sanitizeNationalNumber(e.target.value, country));
+                    setPhoneError(null);
+                  }}
+                  placeholder={country.nsnLengths[0] ? "5".padEnd(country.nsnLengths[0], "x") : "1xxxxxxxxx"}
+                  dir="ltr"
+                  className={`flex-1 bg-foreground/[0.04] border rounded-xl px-4 h-11 text-sm ${phoneError ? "border-rose-400/60" : "border-foreground/10"}`}
+                />
+              </div>
+              {phoneError && <p className="text-[11px] text-rose-400 mt-1.5 leading-relaxed">{phoneError}</p>}
+            </label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
