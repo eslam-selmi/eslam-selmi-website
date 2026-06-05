@@ -1,7 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /admin
-Disallow: /portal
-Disallow: /auth
-
-Sitemap: https://eslam-selmi.lovable.app/sitemap.xml
