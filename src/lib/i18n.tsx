@@ -243,7 +243,7 @@ const ar: Dict = {
   calendly_desc: "اختر الموعد الذي يناسبك.",
 
   programs_eyebrow: "البرامج",
-  programs_title: "برامج التدريب والتطوير",
+  programs_title: "إدارة التدريب والتطوير",
   programs_track: "المسار",
 
   clients_eyebrow: "العملاء",
