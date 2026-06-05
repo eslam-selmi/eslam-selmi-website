@@ -1651,55 +1651,65 @@ function CurrentCourses() {
 function CourseCard({ c, onOpen, isAr, upcoming = false }: { c: PublicCourse; onOpen: () => void; isAr: boolean; upcoming?: boolean }) {
   const tt = (a: string, b: string) => (isAr ? a : b);
   const tagline = isAr ? c.brand_tagline_ar : c.brand_tagline_en;
+  const date = c.starts_at ? new Date(c.starts_at).toLocaleDateString(isAr ? "ar-EG" : "en-GB", { day: "numeric", month: "short" }) : null;
   return (
     <motion.button
       type="button"
       onClick={onOpen}
       {...fadeUp}
-      className="group relative text-start rounded-3xl border border-foreground/10 bg-card p-6 overflow-hidden hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px_oklch(0.22_0.06_252/0.5)] transition-all"
+      className="group relative text-start rounded-[2rem] border border-foreground/10 bg-card p-0 overflow-hidden md:transition-all md:hover:-translate-y-1.5 md:hover:shadow-[0_36px_80px_-44px_color-mix(in_oklab,var(--accent)_65%,transparent)]"
     >
-      <div className={`absolute inset-x-0 top-0 h-1 ${upcoming ? "bg-gradient-to-r from-[var(--accent)] via-[var(--lavender)] to-[var(--accent)]" : "bg-gradient-to-r from-[var(--gold)] via-[var(--accent)] to-[var(--gold)]"} opacity-80`} />
-      <div className="absolute -top-16 -end-16 size-32 rounded-full bg-[var(--gold)]/10 blur-2xl opacity-0 group-hover:opacity-100 transition" />
-
-      <div className="relative flex items-start justify-between gap-3">
-        <div className="text-4xl leading-none">{c.cover_emoji || "🎓"}</div>
-        {upcoming ? (
-          <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] font-bold rounded-full bg-[var(--accent)]/15 text-[var(--accent)] px-2.5 py-1 border border-[var(--accent)]/30">
-            <Calendar className="size-3" /> {tt("قريباً", "Soon")}
+      <div className={`absolute inset-x-0 top-0 h-1.5 ${upcoming ? "bg-gradient-to-r from-[var(--accent)] via-[var(--lavender)] to-[var(--gold)]" : "bg-gradient-to-r from-[var(--gold)] via-[var(--accent)] to-[var(--gold)]"}`} />
+      <div className="absolute -end-20 -top-20 size-44 rounded-full bg-[var(--gold)]/10 blur-3xl md:opacity-0 md:group-hover:opacity-100 md:transition" />
+      <div className="relative p-5 sm:p-6">
+        <div className="flex items-start justify-between gap-4">
+          <div className="relative size-16 rounded-2xl border border-foreground/10 bg-foreground/[0.04] grid place-items-center text-4xl shrink-0">
+            <span>{c.cover_emoji || "🎓"}</span>
+            <span className="absolute -bottom-1 -end-1 size-5 rounded-full border border-card bg-[var(--gold)]" />
+          </div>
+          <span className={`inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] font-bold rounded-full px-2.5 py-1 border ${upcoming ? "bg-[var(--accent)]/15 text-[var(--accent)] border-[var(--accent)]/30" : "bg-[var(--gold)]/15 text-[var(--gold)] border-[var(--gold)]/30"}`}>
+            {upcoming ? <Calendar className="size-3" /> : <Sparkles className="size-3" />}
+            {upcoming ? tt("اهتمام", "Interest") : tt("مباشر", "Live")}
           </span>
-        ) : (
-          <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] font-bold rounded-full bg-[var(--gold)]/15 text-[var(--gold)] px-2.5 py-1 border border-[var(--gold)]/30">
-            <Sparkles className="size-3" /> {tt("متاح", "Live")}
-          </span>
-        )}
-      </div>
-
-      <h4 className="mt-4 font-display font-extrabold text-lg leading-tight">{c.title}</h4>
-      {tagline && <p className="text-[11px] uppercase tracking-[0.15em] font-bold mt-1.5 text-muted-foreground">{tagline}</p>}
-      {c.description && (
-        <p className="mt-3 text-sm text-muted-foreground leading-relaxed line-clamp-3">{c.description}</p>
-      )}
-
-      <div className="mt-4 flex items-center justify-between gap-2 flex-wrap">
-        <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
-          {c.total_hours > 0 && (
-            <span className="inline-flex items-center gap-1"><Calendar className="size-3" /> {c.total_hours} {tt("ساعة", "h")}</span>
-          )}
-          {c.starts_at && (
-            <span className="inline-flex items-center gap-1"><Calendar className="size-3" /> {new Date(c.starts_at).toLocaleDateString(isAr ? "ar-EG" : "en-GB", { day: "numeric", month: "short" })}</span>
-          )}
         </div>
-        {!upcoming && c.price != null && c.price > 0 && (
-          <span className="font-display font-extrabold text-base" style={{ color: "var(--gold)" }}>
-            {c.price} {c.currency}
-          </span>
-        )}
-      </div>
 
-      <div className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold" style={{ color: "var(--accent)" }}>
-        {tt("اعرف المزيد", "Learn more")} <ArrowRight className="size-3 group-hover:translate-x-1 rtl-flip transition" />
+        <h4 className="mt-5 font-display font-extrabold text-xl leading-tight text-foreground">{c.title}</h4>
+        {tagline && <p className="text-[11px] uppercase tracking-[0.15em] font-bold mt-1.5 text-muted-foreground">{tagline}</p>}
+        {c.description && (
+          <p className="mt-3 text-sm text-muted-foreground leading-relaxed line-clamp-3">{c.description}</p>
+        )}
+
+        <div className="mt-5 grid grid-cols-2 gap-2">
+          {c.total_hours > 0 && <CourseMiniMeta icon={Clock} label={tt("المدة", "Hours")} value={`${c.total_hours} ${tt("ساعة", "h")}`} />}
+          {date && <CourseMiniMeta icon={Calendar} label={tt("البداية", "Starts")} value={date} />}
+        </div>
+
+        <div className="mt-5 flex items-center justify-between gap-3 border-t border-foreground/10 pt-4">
+          <div className="min-w-0">
+            {!upcoming && c.price != null && c.price > 0 ? (
+              <div className="font-display font-extrabold text-lg" style={{ color: "var(--gold)" }}>{c.price} {c.currency}</div>
+            ) : (
+              <div className="text-xs font-bold text-muted-foreground">{upcoming ? tt("بدون حساب متدرب", "No trainee account") : tt("مجاني", "Free")}</div>
+            )}
+          </div>
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-4 py-2 text-xs font-bold">
+            {upcoming ? tt("سجّل اهتمامك", "Register interest") : tt("التفاصيل", "Details")}
+            <ArrowRight className="size-3 rtl-flip md:group-hover:translate-x-1 md:transition" />
+          </div>
+        </div>
       </div>
     </motion.button>
+  );
+}
+
+function CourseMiniMeta({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
+  return (
+    <div className="rounded-2xl border border-foreground/10 bg-foreground/[0.035] p-3 min-w-0">
+      <div className="flex items-center gap-1.5 text-[9px] uppercase tracking-[0.18em] font-bold text-muted-foreground">
+        <Icon className="size-3" /> {label}
+      </div>
+      <div className="mt-1 font-semibold text-sm truncate">{value}</div>
+    </div>
   );
 }
 
