@@ -523,7 +523,7 @@ function CoursesPanel({ courses, enrollments, refresh, onEdit }: { courses: Cour
   const [form, setForm] = useState({
     title: "", description: "", price: "", currency: "EGP",
     starts_at: "", ends_at: "", installments_count: "1", online_url: "", cover_emoji: "🎓",
-    total_hours: "",
+    total_hours: "", course_goals: "", target_audience: "",
   });
   const [busy, setBusy] = useState(false);
 
@@ -541,12 +541,14 @@ function CoursesPanel({ courses, enrollments, refresh, onEdit }: { courses: Cour
       online_url: form.online_url || null,
       cover_emoji: form.cover_emoji || "🎓",
       total_hours: form.total_hours ? Number(form.total_hours) : 0,
+      course_goals: form.course_goals || null,
+      target_audience: form.target_audience || null,
       active: true,
     });
     setBusy(false);
     if (error) return toast.error(error.message);
     toast.success(t("تمت إضافة الكورس", "Course added"));
-    setForm({ title: "", description: "", price: "", currency: "EGP", starts_at: "", ends_at: "", installments_count: "1", online_url: "", cover_emoji: "🎓", total_hours: "" });
+    setForm({ title: "", description: "", price: "", currency: "EGP", starts_at: "", ends_at: "", installments_count: "1", online_url: "", cover_emoji: "🎓", total_hours: "", course_goals: "", target_audience: "" });
     refresh();
   }
 
@@ -563,6 +565,33 @@ function CoursesPanel({ courses, enrollments, refresh, onEdit }: { courses: Cour
     const { error } = await supabase.from("courses").update({ is_archived: !archived }).eq("id", id);
     if (error) return toast.error(error.message);
     toast.success(archived ? t("تمت الاستعادة", "Restored") : t("تمت الأرشفة", "Archived"));
+    refresh();
+  }
+
+  async function deleteCourseForever(id: string, title: string) {
+    if (!confirm(t(`حذف الكورس "${title}" نهائياً؟ سيتم حذف المحتوى والطلبات والمدفوعات المرتبطة ولا يمكن التراجع.`, `Permanently delete "${title}"? Related content, enrollments, and payments will be removed and this cannot be undone.`))) return;
+    const { data: mods } = await supabase.from("course_modules").select("id").eq("course_id", id);
+    const moduleIds = (mods ?? []).map((m: any) => m.id);
+    const { data: assigns } = await supabase.from("assignments").select("id").eq("course_id", id);
+    const assignmentIds = (assigns ?? []).map((a: any) => a.id);
+    const { data: enrolls } = await supabase.from("enrollments").select("id").eq("course_id", id);
+    const enrollmentIds = (enrolls ?? []).map((e: any) => e.id);
+    if (assignmentIds.length) await supabase.from("assignment_submissions").delete().in("assignment_id", assignmentIds);
+    if (moduleIds.length) await supabase.from("module_items").delete().in("module_id", moduleIds);
+    if (enrollmentIds.length) {
+      await supabase.from("payments").delete().in("enrollment_id", enrollmentIds);
+      await supabase.from("installments").delete().in("enrollment_id", enrollmentIds);
+      await supabase.from("coupon_redemptions").delete().in("enrollment_id", enrollmentIds);
+    }
+    await supabase.from("assignments").delete().eq("course_id", id);
+    await supabase.from("course_sessions").delete().eq("course_id", id);
+    await supabase.from("course_trainers").delete().eq("course_id", id);
+    await supabase.from("course_interests").delete().eq("course_id", id);
+    await supabase.from("course_modules").delete().eq("course_id", id);
+    await supabase.from("enrollments").delete().eq("course_id", id);
+    const { error } = await supabase.from("courses").delete().eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success(t("تم حذف الكورس نهائياً", "Course permanently deleted"));
     refresh();
   }
 
