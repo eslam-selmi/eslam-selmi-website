@@ -11,7 +11,7 @@ import {
   Plus, Trash2, CheckCircle2, Upload, Wallet, Loader2, Users, BookOpen, Award,
   FileText, X, ToggleLeft, ToggleRight, Calendar, Layers, Link as LinkIcon,
   StickyNote, Paperclip, Pencil, Check, Clock, Settings2, Sparkles, Ticket, Percent,
-  UserPlus, KeyRound, GraduationCap, ShieldOff, ShieldCheck, UserX, Archive,
+  Archive,
 } from "lucide-react";
 import { findCountry } from "@/lib/countries";
 import { safeHref } from "@/lib/safe-url";
