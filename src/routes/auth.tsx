@@ -14,7 +14,8 @@ import brandLogo from "@/assets/brand-logo.webp";
 
 async function fetchAdminWhatsApp(): Promise<string> {
   const { data } = await supabase.rpc("get_activation_contact");
-  const num = ((data as any)?.admin_whatsapp_e164 ?? "").replace(/\D/g, "");
+  const payload = data as { admin_whatsapp_e164?: string } | null;
+  const num = (payload?.admin_whatsapp_e164 ?? "").replace(/\D/g, "");
   return num || "201221448888";
 }
 
@@ -110,8 +111,8 @@ function AuthPage() {
         if (error) throw error;
         toast.success("مرحباً بك");
       }
-    } catch (err: any) {
-      toast.error(err?.message ?? "حدث خطأ");
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "حدث خطأ");
     } finally {
       setBusy(false);
     }
