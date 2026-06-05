@@ -1544,6 +1544,8 @@ type PublicCourse = {
   brand_name: string | null;
   brand_tagline_ar: string | null;
   brand_tagline_en: string | null;
+  course_goals: string | null;
+  target_audience: string | null;
   is_upcoming: boolean;
 };
 
@@ -1560,7 +1562,7 @@ function CurrentCourses() {
     (async () => {
       const { data } = await supabase
         .from("courses")
-        .select("id,title,description,cover_emoji,price,currency,starts_at,ends_at,total_hours,online_url,brand_name,brand_tagline_ar,brand_tagline_en,is_upcoming")
+        .select("id,title,description,cover_emoji,price,currency,starts_at,ends_at,total_hours,online_url,brand_name,brand_tagline_ar,brand_tagline_en,course_goals,target_audience,is_upcoming")
         .eq("active", true)
         .eq("is_archived", false)
         .order("starts_at", { ascending: true, nullsFirst: false });
@@ -1580,7 +1582,7 @@ function CurrentCourses() {
   const upcoming = courses.filter((c) => c.is_upcoming);
 
   return (
-    <Section id="current-courses" eyebrow={tt("الكورسات الحالية", "Current Courses")} title={tt("سجّل اليوم في كورساتنا", "Enroll in our courses today")}>
+    <Section id="current-courses" eyebrow={tt("الكورسات", "Courses")} title={tt("دورات مباشرة واهتمامات قادمة", "Live courses and upcoming interests")}>
       {loading ? (
         <div className="text-center py-10 text-muted-foreground text-sm">{tt("جارٍ التحميل…", "Loading…")}</div>
       ) : courses.length === 0 ? (
@@ -1592,7 +1594,7 @@ function CurrentCourses() {
           {current.length > 0 && (
             <>
               <h3 className="text-xs uppercase tracking-[0.3em] font-bold mb-4" style={{ color: "var(--gold)" }}>
-                {tt("متاحة الآن للتسجيل", "Open for enrollment")}
+                {tt("دورات مباشرة · سجل اليوم", "Live courses · enroll today")}
               </h3>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {current.map((c) => (
@@ -1606,7 +1608,7 @@ function CurrentCourses() {
             <div className="mt-12">
               <h3 className="text-xs uppercase tracking-[0.3em] font-bold mb-4 flex items-center gap-2" style={{ color: "var(--accent)" }}>
                 <Calendar className="size-3.5" />
-                {tt("كورسات قادمة", "Upcoming Courses")}
+                {tt("كورسات قد تهمك قريباً", "Courses you may be interested in")}
               </h3>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {upcoming.map((c) => (
