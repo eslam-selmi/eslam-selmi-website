@@ -18,6 +18,8 @@ type Course = {
   brand_primary_color: string | null;
   brand_tagline_ar: string | null;
   brand_tagline_en: string | null;
+  course_goals: string | null;
+  target_audience: string | null;
   starts_at: string | null;
   ends_at: string | null;
 };
@@ -52,7 +54,7 @@ function WhiteLabelCoursePage() {
     queryFn: async (): Promise<Course | null> => {
       const { data, error } = await supabase
         .from("courses")
-        .select("id, slug, title, description, price, currency, cover_emoji, total_hours, logo_url, brand_name, brand_primary_color, brand_tagline_ar, brand_tagline_en, starts_at, ends_at")
+        .select("id, slug, title, description, price, currency, cover_emoji, total_hours, logo_url, brand_name, brand_primary_color, brand_tagline_ar, brand_tagline_en, course_goals, target_audience, starts_at, ends_at")
         .eq("slug", slug)
         .eq("active", true)
         .eq("is_archived", false)
@@ -149,6 +151,13 @@ function WhiteLabelCoursePage() {
           )}
         </div>
 
+        {(course.course_goals || course.target_audience) && (
+          <div className="grid gap-4 md:grid-cols-2 max-w-3xl mx-auto mb-10 text-start">
+            {course.course_goals && <InfoBox title={t("مخرجات الكورس", "Course outcomes")} body={course.course_goals} accent={accent} />}
+            {course.target_audience && <InfoBox title={t("هذا الكورس مناسب لـ", "Best for")} body={course.target_audience} accent={accent} />}
+          </div>
+        )}
+
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           {user ? (
             <Link
@@ -191,6 +200,15 @@ function Stat({ label, value, accent }: { label: string; value: string; accent: 
     <div className="p-4 rounded-xl border border-border bg-card/50">
       <div className="text-2xl font-bold" style={{ color: accent }}>{value}</div>
       <div className="text-xs text-muted-foreground mt-1">{label}</div>
+    </div>
+  );
+}
+
+function InfoBox({ title, body, accent }: { title: string; body: string; accent: string }) {
+  return (
+    <div className="p-5 rounded-xl border border-border bg-card/50">
+      <div className="text-sm font-bold" style={{ color: accent }}>{title}</div>
+      <p className="mt-2 text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">{body}</p>
     </div>
   );
 }
