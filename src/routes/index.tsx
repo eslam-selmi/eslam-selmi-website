@@ -218,7 +218,7 @@ const PROGRAMS = [
     },
     intro: {
       en: "A unified journey under the Training & Development Programs taxonomy: build foundational L&D and instructional design competencies, then graduate into advanced facilitation and TOT delivery mastery.",
-      ar: "مسار موحّد ضمن تصنيف \"برامج التدريب والتطوير\": تبدأ بأسس التعلم والتطوير وتصميم التعليم، ثم تتدرّج لإتقان تيسير التدريب وتقديمه (TOT) على مستوى المدربين المعتمدين.",
+      ar: "مسار موحّد ضمن تصنيف \"إدارة التدريب والتطوير\": تبدأ بأسس التعلم والتطوير وتصميم التعليم، ثم تتدرّج لإتقان تيسير التدريب وتقديمه (TOT) على مستوى المدربين المعتمدين.",
     },
     items: [
       {
