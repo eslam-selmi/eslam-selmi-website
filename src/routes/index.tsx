@@ -64,30 +64,48 @@ import {
   validatePhoneForCountry,
 } from "@/lib/countries";
 
-import headshot from "@/assets/portfolio/headshot.webp";
-import brandLogo from "@/assets/brand-logo.webp";
-
-import snap1 from "@/assets/snapshots/snap-1.jpg";
-import snap2 from "@/assets/snapshots/snap-2.jpg";
-import snap3 from "@/assets/snapshots/snap-3.jpg";
-import snap4 from "@/assets/snapshots/snap-4.jpg";
-import snap5 from "@/assets/snapshots/snap-5.jpg";
-import snap6 from "@/assets/snapshots/snap-6.jpg";
-import snap7 from "@/assets/snapshots/snap-7.jpg";
-import snap8 from "@/assets/snapshots/snap-8.jpg";
-
-import logoAramex from "@/assets/clients/aramex.jpg";
-import logoG4s from "@/assets/clients/g4s.jpg";
-import logoAllerAqua from "@/assets/clients/aller-aqua.jpg";
-import logoEvno from "@/assets/clients/evno.jpg";
-import logoBadreldin from "@/assets/clients/badreldin.jpg";
-import logoAmazonEg from "@/assets/clients/amazon-eg.jpg";
-import logoAlmajarah from "@/assets/clients/almajarah.jpg";
-import logoImtenan from "@/assets/clients/imtenan.jpg";
-import logoDaralnokba from "@/assets/clients/daralnokba.jpg";
-import logoMallOfEgypt from "@/assets/clients/mall-of-egypt.jpg";
-import logoNewBrand from "@/assets/clients/new-brand.jpg";
-
+import headshotAsset from "@/assets/portfolio/headshot.webp.asset.json";
+const headshot = headshotAsset.url;
+import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
+const brandLogo = brandLogoAsset.url;
+import snap1Asset from "@/assets/snapshots/snap-1.jpg.asset.json";
+const snap1 = snap1Asset.url;
+import snap2Asset from "@/assets/snapshots/snap-2.jpg.asset.json";
+const snap2 = snap2Asset.url;
+import snap3Asset from "@/assets/snapshots/snap-3.jpg.asset.json";
+const snap3 = snap3Asset.url;
+import snap4Asset from "@/assets/snapshots/snap-4.jpg.asset.json";
+const snap4 = snap4Asset.url;
+import snap5Asset from "@/assets/snapshots/snap-5.jpg.asset.json";
+const snap5 = snap5Asset.url;
+import snap6Asset from "@/assets/snapshots/snap-6.jpg.asset.json";
+const snap6 = snap6Asset.url;
+import snap7Asset from "@/assets/snapshots/snap-7.jpg.asset.json";
+const snap7 = snap7Asset.url;
+import snap8Asset from "@/assets/snapshots/snap-8.jpg.asset.json";
+const snap8 = snap8Asset.url;
+import logoAramexAsset from "@/assets/clients/aramex.jpg.asset.json";
+const logoAramex = logoAramexAsset.url;
+import logoG4sAsset from "@/assets/clients/g4s.jpg.asset.json";
+const logoG4s = logoG4sAsset.url;
+import logoAllerAquaAsset from "@/assets/clients/aller-aqua.jpg.asset.json";
+const logoAllerAqua = logoAllerAquaAsset.url;
+import logoEvnoAsset from "@/assets/clients/evno.jpg.asset.json";
+const logoEvno = logoEvnoAsset.url;
+import logoBadreldinAsset from "@/assets/clients/badreldin.jpg.asset.json";
+const logoBadreldin = logoBadreldinAsset.url;
+import logoAmazonEgAsset from "@/assets/clients/amazon-eg.jpg.asset.json";
+const logoAmazonEg = logoAmazonEgAsset.url;
+import logoAlmajarahAsset from "@/assets/clients/almajarah.jpg.asset.json";
+const logoAlmajarah = logoAlmajarahAsset.url;
+import logoImtenanAsset from "@/assets/clients/imtenan.jpg.asset.json";
+const logoImtenan = logoImtenanAsset.url;
+import logoDaralnokbaAsset from "@/assets/clients/daralnokba.jpg.asset.json";
+const logoDaralnokba = logoDaralnokbaAsset.url;
+import logoMallOfEgyptAsset from "@/assets/clients/mall-of-egypt.jpg.asset.json";
+const logoMallOfEgypt = logoMallOfEgyptAsset.url;
+import logoNewBrandAsset from "@/assets/clients/new-brand.jpg.asset.json";
+const logoNewBrand = logoNewBrandAsset.url;
 const BRANDS: { src: string; name: string; nameAr: string; specEn: string; specAr: string }[] = [
   {
     src: logoAramex,
@@ -167,14 +185,18 @@ const BRANDS: { src: string; name: string; nameAr: string; specEn: string; specA
     specAr: "شريك استراتيجي",
   },
 ];
-import snap10 from "@/assets/snapshots/snap-10.jpg";
-import snap11 from "@/assets/snapshots/snap-11.jpg";
-import snap12 from "@/assets/snapshots/snap-12.jpg";
-import snap13 from "@/assets/snapshots/snap-13.jpg";
-
-import snap15 from "@/assets/snapshots/snap-15.jpg";
-import snap16 from "@/assets/snapshots/snap-16.jpg";
-
+import snap10Asset from "@/assets/snapshots/snap-10.jpg.asset.json";
+const snap10 = snap10Asset.url;
+import snap11Asset from "@/assets/snapshots/snap-11.jpg.asset.json";
+const snap11 = snap11Asset.url;
+import snap12Asset from "@/assets/snapshots/snap-12.jpg.asset.json";
+const snap12 = snap12Asset.url;
+import snap13Asset from "@/assets/snapshots/snap-13.jpg.asset.json";
+const snap13 = snap13Asset.url;
+import snap15Asset from "@/assets/snapshots/snap-15.jpg.asset.json";
+const snap15 = snap15Asset.url;
+import snap16Asset from "@/assets/snapshots/snap-16.jpg.asset.json";
+const snap16 = snap16Asset.url;
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -186,7 +208,10 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:url", content: "https://eslam-selmi.lovable.app/" },
     ],
-    links: [{ rel: "canonical", href: "https://eslam-selmi.lovable.app/" }],
+    links: [
+      { rel: "canonical", href: "https://eslam-selmi.lovable.app/" },
+      { rel: "preload", as: "image", href: headshot, fetchpriority: "high" },
+    ],
     scripts: [
       {
         type: "application/ld+json",
@@ -3187,6 +3212,10 @@ function Podcast() {
                   <img
                     src={`https://i.ytimg.com/vi/${active.id}/maxresdefault.jpg`}
                     alt={t(active.titleKey)}
+                    width={1280}
+                    height={720}
+                    loading="lazy"
+                    decoding="async"
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     onError={(e) => {
                       (e.currentTarget as HTMLImageElement).src =

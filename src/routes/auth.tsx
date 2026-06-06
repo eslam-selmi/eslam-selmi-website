@@ -10,8 +10,8 @@ import {
   sanitizeNationalNumber,
   validatePhoneForCountry,
 } from "@/lib/countries";
-import brandLogo from "@/assets/brand-logo.webp";
-
+import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
+const brandLogo = brandLogoAsset.url;
 async function fetchAdminWhatsApp(): Promise<string> {
   const { data } = await supabase.rpc("get_activation_contact");
   const payload = data as { admin_whatsapp_e164?: string } | null;

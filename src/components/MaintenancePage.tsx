@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useI18n } from "@/lib/i18n";
-import brandLogo from "@/assets/brand-logo.webp";
-
+import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
+const brandLogo = brandLogoAsset.url;
 type Props = {
   message: string;
   until: string | null;

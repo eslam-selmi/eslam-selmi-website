@@ -2,8 +2,8 @@ import { createRoot } from "react-dom/client";
 import { toJpeg } from "html-to-image";
 import jsPDF from "jspdf";
 import QRCode from "qrcode";
-import brandLogo from "@/assets/brand-logo.webp";
-
+import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
+const brandLogo = brandLogoAsset.url;
 export type CertificatePayload = {
   studentName: string;
   courseTitle: string;
