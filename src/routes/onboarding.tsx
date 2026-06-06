@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, signOut } from "@/lib/portal-auth";
 import { Loader2, MessageCircle, Clock3, LogOut, CheckCircle2, XCircle } from "lucide-react";
-import brandLogo from "@/assets/brand-logo.webp";
+import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
+const brandLogo = brandLogoAsset.url;
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/onboarding")({

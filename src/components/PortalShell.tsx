@@ -5,7 +5,8 @@ import { LogOut, Home, ShieldCheck, GraduationCap, Languages, Sparkles, KeyRound
 import { NotificationsBell } from "@/lib/notifications";
 import { useI18n } from "@/lib/i18n";
 import { useLatestAdditionsBadge } from "@/components/LatestAdditions";
-import brandLogo from "@/assets/brand-logo.webp";
+import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
+const brandLogo = brandLogoAsset.url;
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
