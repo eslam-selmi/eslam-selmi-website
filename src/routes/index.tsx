@@ -3209,6 +3209,10 @@ function Podcast() {
                   <img
                     src={`https://i.ytimg.com/vi/${active.id}/maxresdefault.jpg`}
                     alt={t(active.titleKey)}
+                    width={1280}
+                    height={720}
+                    loading="lazy"
+                    decoding="async"
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     onError={(e) => {
                       (e.currentTarget as HTMLImageElement).src =
