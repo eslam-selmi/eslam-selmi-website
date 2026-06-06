@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
+import { motion, AnimatePresence, useScroll, useTransform, MotionConfig } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import {
   Sparkles,
@@ -580,8 +580,18 @@ const fadeUp = {
 function Portfolio() {
   const { theme, toggle } = useTheme();
   const { isVisible } = useSiteContent();
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const mql = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mql.matches);
+    update();
+    mql.addEventListener?.("change", update);
+    return () => mql.removeEventListener?.("change", update);
+  }, []);
 
   return (
+    <MotionConfig reducedMotion={isMobile ? "always" : "never"}>
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-accent/25">
       <Nav theme={theme as ThemeMode} onThemeToggle={toggle} />
       {isVisible("home.hero") && <Hero />}
@@ -611,6 +621,7 @@ function Portfolio() {
       <CalendlyDialog />
       <SitePopup />
     </div>
+    </MotionConfig>
   );
 }
 
