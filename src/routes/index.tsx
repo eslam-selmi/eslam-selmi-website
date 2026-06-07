@@ -3349,7 +3349,7 @@ function Section({
 }: {
   id: string;
   eyebrow: string;
-  title: string;
+  title?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -3357,14 +3357,18 @@ function Section({
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
       <div className="absolute -end-40 top-20 size-80 rounded-full bg-accent/10 blur-3xl" />
       <div className="mx-auto max-w-7xl">
-        <motion.div {...fadeUp} className="mb-12 lg:mb-16">
-          <div className="inline-flex items-center gap-2 rounded-full bg-foreground/[0.06] border border-foreground/10 px-3.5 py-1.5 text-[11px] uppercase tracking-[0.28em] text-foreground font-bold mb-5">
-            <span className="size-1.5 rounded-full bg-accent" />
-            {eyebrow}
-          </div>
-          <h2 className="font-display leading-[1.05] tracking-tight text-foreground text-[clamp(1.9rem,4.4vw,3.75rem)] whitespace-normal lg:whitespace-nowrap">
-            {title}
-          </h2>
+        <motion.div {...fadeUp} className={title ? "mb-12 lg:mb-16" : "mb-0"}>
+          {eyebrow && (
+            <div className="inline-flex items-center gap-2 rounded-full bg-foreground/[0.06] border border-foreground/10 px-3.5 py-1.5 text-[11px] uppercase tracking-[0.28em] text-foreground font-bold mb-5">
+              <span className="size-1.5 rounded-full bg-accent" />
+              {eyebrow}
+            </div>
+          )}
+          {title && (
+            <h2 className="font-display leading-[1.05] tracking-tight text-foreground text-[clamp(1.9rem,4.4vw,3.75rem)] whitespace-normal lg:whitespace-nowrap">
+              {title}
+            </h2>
+          )}
         </motion.div>
         {children}
       </div>
