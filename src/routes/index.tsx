@@ -1348,15 +1348,14 @@ function About() {
   const { t } = useI18n();
 
   return (
-    <section id="about" className="px-4 sm:px-6 py-24 lg:py-32 relative overflow-hidden">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
-      <div className="absolute -start-20 top-1/2 -translate-y-1/2 size-72 rounded-full bg-accent/[0.07] blur-3xl" />
-      <div className="absolute -end-20 top-1/2 -translate-y-1/2 size-72 rounded-full bg-gold/[0.05] blur-3xl" />
-
-      <div className="mx-auto max-w-4xl relative">
-        <div className="text-center">
-          <Quote className="size-8 text-gold/60 mx-auto mb-8 rtl-flip" />
-          <p className="text-xl sm:text-2xl lg:text-[1.75rem] font-medium leading-[2.2] text-foreground/90 tracking-wide">
+    <section id="about" className="px-4 sm:px-6 py-14 lg:py-20 relative">
+      <div className="mx-auto max-w-3xl">
+        <div className="relative rounded-2xl border border-foreground/10 bg-card/40 backdrop-blur-sm px-6 sm:px-10 py-8 sm:py-10">
+          <span className="absolute -top-3 start-6 px-3 py-1 rounded-full text-[11px] tracking-[0.2em] uppercase bg-background border border-foreground/10 text-muted-foreground">
+            {t("about_eyebrow") || "About"}
+          </span>
+          <Quote className="size-5 text-gold/70 mb-4 rtl-flip" />
+          <p className="text-base sm:text-lg leading-[1.9] text-foreground/85">
             {t("about_intro")}
           </p>
         </div>
