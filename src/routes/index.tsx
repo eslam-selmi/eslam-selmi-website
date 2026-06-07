@@ -1343,199 +1343,25 @@ function CompactStat({ n, l }: { n: string; l: string }) {
   );
 }
 
-/* ---------- ABOUT (No-photo Premium Edition) ---------- */
+/* ---------- ABOUT (Minimal Premium Edition) ---------- */
 function About() {
-  const { t, lang } = useI18n();
-  const isAr = lang === "ar";
-  const strengths = [
-    {
-      t: { en: "Training Governance", ar: "حوكمة التدريب" },
-      d: {
-        en: "Clear systems for training plans, operations, and measurable outcomes.",
-        ar: "أنظمة واضحة لخطط التدريب وتشغيلها وقياس أثرها.",
-      },
-      icon: Presentation,
-    },
-    {
-      t: { en: "Talent Enablement", ar: "تمكين المواهب" },
-      d: {
-        en: "Practical journeys that help people perform with confidence.",
-        ar: "رحلات عملية تساعد الأفراد على الأداء بثقة.",
-      },
-      icon: Compass,
-    },
-    {
-      t: { en: "Performance Design", ar: "تصميم الأداء" },
-      d: {
-        en: "KPIs, feedback loops, and development plans tied to business priorities.",
-        ar: "مؤشرات وتغذية راجعة وخطط تطوير مرتبطة بأولويات العمل.",
-      },
-      icon: TrendingUp,
-    },
-    {
-      t: { en: "Learning Experience", ar: "تجربة التعلم" },
-      d: {
-        en: "Sessions, materials, and follow-up designed for real transfer.",
-        ar: "محاضرات ومواد ومتابعة مصممة لنقل التعلم للتطبيق.",
-      },
-      icon: Target,
-    },
-  ];
-  const achievements = [
-    { n: "9+", l: isAr ? "سنوات ممارسة" : "Years in practice" },
-    { n: "12", l: isAr ? "دولة وتأثير" : "Countries touched" },
-    { n: "4", l: isAr ? "قطاعات متنوعة" : "Business sectors" },
-  ];
+  const { t } = useI18n();
 
   return (
-    <Section id="about" eyebrow={t("about_eyebrow")} title={t("about_title")}>
-      <motion.div
-        {...fadeUp}
-        className="relative overflow-hidden rounded-[2rem] border border-foreground/10 bg-card"
-        style={{
-          boxShadow: "0 36px 120px -70px color-mix(in oklab, var(--accent) 60%, transparent)",
-        }}
-      >
-        <div className="pointer-events-none absolute inset-0 grain opacity-35" />
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[var(--gold)] via-[var(--accent)] to-[var(--lavender)]" />
-        <div className="pointer-events-none absolute -end-24 -top-24 size-72 rounded-full bg-[var(--accent)]/10 blur-3xl md:bg-[var(--accent)]/20" />
-        <div className="pointer-events-none absolute -start-24 bottom-0 size-72 rounded-full bg-[var(--gold)]/10 blur-3xl md:bg-[var(--gold)]/20" />
+    <section id="about" className="px-4 sm:px-6 py-24 lg:py-32 relative overflow-hidden">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
+      <div className="absolute -start-20 top-1/2 -translate-y-1/2 size-72 rounded-full bg-accent/[0.07] blur-3xl" />
+      <div className="absolute -end-20 top-1/2 -translate-y-1/2 size-72 rounded-full bg-gold/[0.05] blur-3xl" />
 
-        <div className="relative grid gap-8 p-6 sm:p-10 lg:grid-cols-[0.95fr_1.05fr] lg:p-12">
-          <div className="rounded-[1.5rem] border border-foreground/10 bg-foreground/[0.03] p-5 sm:p-7">
-            <div className="flex items-center gap-3">
-              <div className="size-14 rounded-2xl border border-[var(--gold)]/35 bg-[var(--gold)]/10 grid place-items-center text-[var(--gold)]">
-                <Sparkles className="size-6" />
-              </div>
-              <div>
-                <div className="text-[10px] uppercase tracking-[0.24em] font-bold text-muted-foreground">
-                  {isAr ? "الهوية المهنية" : "Professional profile"}
-                </div>
-                <h3 className="font-display text-2xl font-extrabold leading-tight">
-                  {isAr ? "إسلام سلمي" : "Eslam Selmi"}
-                </h3>
-              </div>
-            </div>
-
-            <div className="mt-7 space-y-3">
-              <div className="rounded-2xl border border-foreground/10 bg-background/50 p-4">
-                <div
-                  className="text-[10px] uppercase tracking-[0.22em] font-bold"
-                  style={{ color: "var(--gold)" }}
-                >
-                  {isAr ? "الدور الحالي" : "Current role"}
-                </div>
-                <div className="mt-1 font-semibold text-lg">
-                  {isAr ? "رئيس قسم التعليم و التطوير" : "Head of Education & Development"}
-                </div>
-              </div>
-              <div className="rounded-2xl border border-foreground/10 bg-background/50 p-4">
-                <div
-                  className="text-[10px] uppercase tracking-[0.22em] font-bold"
-                  style={{ color: "var(--accent)" }}
-                >
-                  {isAr ? "المجال" : "Focus"}
-                </div>
-                <div className="mt-1 font-semibold text-lg">
-                  {isAr ? "ممارس إدارة المواهب والأداء" : "Talent & Performance Practitioner"}
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-3">
-              {achievements.map((a) => (
-                <BigStat key={a.l} n={a.n} l={a.l} />
-              ))}
-            </div>
-          </div>
-
-          <div className="flex flex-col justify-between gap-7">
-            <div>
-              <div
-                className="inline-flex items-center gap-2 rounded-full bg-[var(--gold)]/10 border border-[var(--gold)]/30 px-4 py-1.5 text-[10px] uppercase tracking-[0.28em] font-bold"
-                style={{ color: "var(--gold)" }}
-              >
-                <Quote className="size-3.5 rtl-flip" />
-                {isAr ? "بدون مبالغة… تأثير قابل للقياس" : "Measured impact, no overclaiming"}
-              </div>
-              <p className="mt-6 text-base sm:text-lg leading-[2] text-foreground/85 max-w-3xl">
-                {t("about_intro")}
-              </p>
-            </div>
-
-            <div className="grid sm:grid-cols-2 gap-3">
-              {strengths.map((s, i) => (
-                <motion.div
-                  key={s.t.en}
-                  {...fadeUp}
-                  transition={{ duration: 0.55, delay: i * 0.06 }}
-                  className="relative overflow-hidden rounded-2xl border border-foreground/10 bg-foreground/[0.035] p-4 md:transition md:hover:-translate-y-1"
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="size-10 rounded-xl bg-[var(--gold)]/10 border border-[var(--gold)]/25 grid place-items-center text-[var(--gold)] shrink-0">
-                      <s.icon className="size-4.5" />
-                    </div>
-                    <div className="min-w-0">
-                      <h4 className="font-semibold text-sm leading-tight">{s.t[lang]}</h4>
-                      <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">
-                        {s.d[lang]}
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
+      <div className="mx-auto max-w-4xl relative">
+        <div className="text-center">
+          <Quote className="size-8 text-gold/60 mx-auto mb-8 rtl-flip" />
+          <p className="text-xl sm:text-2xl lg:text-[1.75rem] font-medium leading-[2.2] text-foreground/90 tracking-wide">
+            {t("about_intro")}
+          </p>
         </div>
-      </motion.div>
-
-      <motion.div {...fadeUp} className="mt-12">
-        <h3 className="text-sm uppercase tracking-wider text-gold mb-5 flex items-center gap-2 font-semibold">
-          <GraduationCap className="size-4" /> {t("about_credentials")}
-        </h3>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {CREDENTIALS.map((c, i) => (
-            <motion.div
-              key={c.name.en}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.05 }}
-              className="glass-panel rounded-3xl p-4 group md:hover:-translate-y-1 md:transition relative overflow-hidden"
-            >
-              <div className="absolute -top-10 -end-10 size-24 rounded-full bg-[var(--lavender)]/20 blur-2xl opacity-0 md:group-hover:opacity-100 md:transition" />
-              <div className="relative flex items-start gap-3">
-                <div className="size-11 rounded-xl bg-gradient-to-br from-[var(--lavender)]/30 via-[var(--lavender-deep)]/20 to-[var(--gold)]/20 grid place-items-center text-lavender shrink-0 border border-foreground/10">
-                  <c.icon className="size-5" />
-                </div>
-                <div className="min-w-0">
-                  <div className="font-semibold text-sm leading-tight">{c.name[lang]}</div>
-                  <div className="text-[11px] text-muted-foreground mt-1 uppercase tracking-wider">
-                    {c.issuer[lang]}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
-    </Section>
-  );
-}
-
-function BigStat({ n, l }: { n: string; l: string }) {
-  return (
-    <div className="rounded-2xl bg-foreground/[0.04] border border-foreground/10 p-3.5 text-center min-w-0">
-      <div
-        className="font-display text-2xl sm:text-[26px] font-extrabold leading-none"
-        style={{ color: "var(--accent)" }}
-      >
-        {n}
       </div>
-      <div className="mt-1.5 text-[9px] uppercase tracking-[0.16em] text-muted-foreground leading-tight">
-        {l}
-      </div>
-    </div>
+    </section>
   );
 }
 
