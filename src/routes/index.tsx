@@ -1348,16 +1348,36 @@ function About() {
   const { t } = useI18n();
 
   return (
-    <section id="about" className="px-4 sm:px-6 py-14 lg:py-20 relative">
-      <div className="mx-auto max-w-3xl">
-        <div className="relative rounded-2xl border border-foreground/10 bg-card/40 backdrop-blur-sm px-6 sm:px-10 py-8 sm:py-10">
-          <span className="absolute -top-3 start-6 px-3 py-1 rounded-full text-[11px] tracking-[0.2em] uppercase bg-background border border-foreground/10 text-muted-foreground">
-            {t("about_eyebrow") || "About"}
-          </span>
-          <Quote className="size-5 text-gold/70 mb-4 rtl-flip" />
-          <p className="text-base sm:text-lg leading-[1.9] text-foreground/85">
-            {t("about_intro")}
-          </p>
+    <section id="about" className="px-4 sm:px-6 py-16 lg:py-24 relative">
+      <div className="mx-auto max-w-4xl">
+        <div className="grid grid-cols-[auto_1fr] gap-5 sm:gap-8 items-start">
+          {/* Left rail: eyebrow + gold rule + oversized quote glyph */}
+          <div className="flex flex-col items-center pt-1 shrink-0">
+            <span
+              className="font-display text-[3.5rem] sm:text-[5rem] leading-none text-[var(--gold)]/85 select-none"
+              style={{ fontFamily: "Georgia, serif" }}
+              aria-hidden
+            >
+              &ldquo;
+            </span>
+            <div className="mt-2 w-px flex-1 min-h-[60px] bg-gradient-to-b from-[var(--gold)]/60 via-[var(--gold)]/20 to-transparent" />
+          </div>
+
+          {/* Content */}
+          <div className="pt-3">
+            <div className="text-[10px] sm:text-[11px] tracking-[0.32em] uppercase text-[var(--gold)]/90 font-bold mb-3">
+              {t("about_eyebrow") || "About"}
+            </div>
+            <p className="text-[15px] sm:text-lg lg:text-[1.2rem] leading-[1.95] text-foreground/90 font-medium">
+              {t("about_intro")}
+            </p>
+            <div className="mt-6 flex items-center gap-3">
+              <span className="h-px w-10 bg-[var(--gold)]/60" />
+              <span className="text-xs tracking-[0.25em] uppercase text-muted-foreground font-semibold">
+                Eslam Selmi
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
