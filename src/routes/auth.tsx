@@ -123,253 +123,185 @@ function AuthPage() {
   return (
     <div
       dir="rtl"
-      className={`min-h-screen relative overflow-hidden px-4 py-8 sm:py-12 font-[var(--font-body-ar)] ${isAdminView ? "bg-[#0f0f12]" : "bg-[#071026]"}`}
+      className="min-h-screen relative overflow-hidden px-4 py-10 sm:py-16 font-[var(--font-body-ar)] bg-[#0a1224] text-white"
     >
+      {/* Calm background: deep navy with one soft ambient glow */}
       <div
-        className="absolute inset-0"
+        aria-hidden
+        className="absolute inset-0 pointer-events-none"
         style={{
-          background: isAdminView
-            ? "radial-gradient(circle at 80% 10%, rgba(245,158,11,0.18), transparent 34%), linear-gradient(135deg, #0f0f12, #18181b)"
-            : "radial-gradient(circle at 85% 8%, color-mix(in oklab, var(--gold) 22%, transparent), transparent 34%), radial-gradient(circle at 8% 92%, color-mix(in oklab, var(--lavender-deep) 28%, transparent), transparent 38%), linear-gradient(135deg, #071026, #0b1736 48%, #071326)",
+          background:
+            "radial-gradient(900px 500px at 50% -10%, rgba(212,175,108,0.10), transparent 60%), linear-gradient(180deg, #0a1224 0%, #0a1224 100%)",
         }}
       />
-      <div className="absolute inset-0 grain opacity-35" />
+      <div aria-hidden className="absolute inset-0 pointer-events-none opacity-[0.05] grain" />
 
-      <div className="relative mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-6xl items-center justify-center">
-        <div
-          className={`grid w-full overflow-hidden rounded-[2rem] border shadow-2xl ${isAdminView ? "border-amber-500/20 bg-zinc-950/80" : "border-[var(--gold)]/25 bg-white/[0.04]"} backdrop-blur-2xl lg:grid-cols-[1.05fr_0.95fr]`}
+      <div className="relative mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-md flex-col">
+        {/* Back to site */}
+        <Link
+          to="/"
+          className="self-start inline-flex items-center gap-1.5 text-[12px] text-white/55 hover:text-white/90 transition"
         >
-          <section className="relative hidden lg:flex min-h-[640px] flex-col justify-between overflow-hidden p-10 text-white">
-            <div
-              className="absolute inset-0"
-              style={{
-                background: isAdminView
-                  ? "linear-gradient(145deg, rgba(245,158,11,0.12), rgba(255,255,255,0.02))"
-                  : "linear-gradient(145deg, color-mix(in oklab, var(--gold) 18%, transparent), color-mix(in oklab, var(--accent) 18%, transparent))",
-              }}
-            />
-            <div className="relative">
-              <Link
-                to="/"
-                className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-bold text-white/80 hover:text-white md:transition"
-              >
-                ← العودة للموقع
-              </Link>
-            </div>
-            <div className="relative space-y-6">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.26em] text-white/75">
-                <GraduationCap className="h-3.5 w-3.5" />{" "}
-                {isAdminView ? "Admin access" : "Trainee portal"}
+          <ArrowLeft className="h-3.5 w-3.5 rtl-flip" />
+          العودة للموقع
+        </Link>
+
+        <div className="flex-1 flex items-center justify-center py-8">
+          <div className="w-full">
+            {/* Brand */}
+            <div className="flex flex-col items-center text-center mb-8">
+              <div className="h-14 w-14 rounded-2xl border border-white/12 bg-white/[0.03] flex items-center justify-center mb-5">
+                <img src={brandLogo} alt="" className="h-9 w-auto opacity-90" />
               </div>
-              <h1 className="max-w-md text-5xl font-black leading-tight">
+              <h1 className="text-[22px] sm:text-[24px] font-semibold tracking-tight text-white">
                 {isAdminView
-                  ? "لوحة إدارة آمنة وهادئة."
-                  : "بوابة متدرب مصممة لتجربة تعليمية راقية."}
+                  ? "تسجيل دخول الإدارة"
+                  : mode === "login"
+                    ? "تسجيل الدخول"
+                    : "إنشاء حساب"}
               </h1>
-              <p className="max-w-md text-sm leading-8 text-white/70">
+              <p className="mt-1.5 text-[13px] text-white/50">
                 {isAdminView
-                  ? "دخول مخصص لإدارة المنصة ومراجعة الطلبات والمحتوى."
-                  : "ادخل إلى كورساتك، تابع تقدمك، واطلب الشهادات من مكان واحد بتجربة واضحة وسريعة."}
+                  ? "الوصول لإدارة المنصة."
+                  : mode === "login"
+                    ? "ادخل إلى حسابك للمتابعة."
+                    : "أنشئ حساباً جديداً للتقديم على الكورسات."}
               </p>
             </div>
-            <div className="relative grid grid-cols-3 gap-3">
-              {["كورسات", "شهادات", "تقدم"].map((x) => (
-                <div
-                  key={x}
-                  className="rounded-2xl border border-white/15 bg-white/10 p-4 text-center backdrop-blur"
-                >
-                  <div className="text-lg font-black text-[var(--gold)]">✓</div>
-                  <div className="mt-1 text-xs font-bold text-white/75">{x}</div>
-                </div>
-              ))}
-            </div>
-          </section>
 
-          <section className="relative p-5 sm:p-8 lg:p-10">
-            <Link
-              to="/"
-              className="mb-6 inline-flex lg:hidden items-center gap-2 text-xs tracking-widest text-white/60 hover:text-white md:transition"
-            >
-              ← العودة للموقع
-            </Link>
-
-            <div className="mx-auto w-full max-w-md">
-              <div className="mb-7 flex flex-col items-center text-center">
-                <div
-                  className={`mb-4 flex h-20 w-20 items-center justify-center rounded-[1.5rem] border ${isAdminView ? "border-amber-500/35 bg-amber-500/10" : "border-[var(--gold)]/40 bg-[var(--gold)]/10"}`}
-                >
-                  <img src={brandLogo} alt="Logo" className="h-12 w-auto" />
-                </div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[var(--gold)]">
-                  {isAdminView ? "Admin gate" : "Eslam Selmi Academy"}
-                </p>
-                <h1 className="mt-2 text-2xl sm:text-3xl font-black text-white">
-                  {isAdminView
-                    ? "تسجيل دخول الإدارة"
-                    : mode === "login"
-                      ? "دخول المتدربين"
-                      : "إنشاء حساب متدرب"}
-                </h1>
-                <p className="mt-2 text-sm leading-6 text-white/60">
-                  {isAdminView
-                    ? "لوحة تحكم المسؤولين"
-                    : mode === "login"
-                      ? "ادخل إلى لوحتك للوصول إلى الكورسات والشهادات."
-                      : "سجّل بياناتك لتقديم طلب الالتحاق بأحد الكورسات."}
-                </p>
-              </div>
-
-              <form
-                onSubmit={handleSubmit}
-                className="space-y-3 rounded-[1.5rem] border border-white/10 bg-black/15 p-4 sm:p-5"
-              >
-                {!isAdminView && mode === "signup" && (
-                  <>
-                    <Field
-                      label="الاسم الكامل"
-                      value={fullName}
-                      onChange={setFullName}
-                      placeholder="اكتب اسمك الثلاثي"
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="space-y-3.5">
+              {!isAdminView && mode === "signup" && (
+                <>
+                  <Field
+                    label="الاسم الكامل"
+                    value={fullName}
+                    onChange={setFullName}
+                    placeholder="الاسم الثلاثي"
+                    required
+                  />
+                  <label className="block">
+                    <span className="block text-[12px] text-white/60 mb-1.5">الدولة</span>
+                    <select
+                      value={countryCode}
+                      onChange={(e) => setCountryCode(e.target.value)}
                       required
-                    />
-                    <label className="block">
-                      <span className="block text-xs text-white/70 mb-1.5 font-medium">الدولة</span>
-                      <select
-                        value={countryCode}
-                        onChange={(e) => setCountryCode(e.target.value)}
-                        required
-                        className="w-full h-11 px-4 rounded-xl bg-white/5 border border-white/15 text-white focus:outline-none focus:border-[var(--gold)]/60 focus:bg-white/10 md:transition"
-                      >
-                        {COUNTRIES.map((c) => (
-                          <option key={c.code} value={c.code} className="bg-[#0b1736]">
-                            {c.flag} {c.name_ar} ({c.dial})
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                    <label className="block">
-                      <span className="block text-xs text-white/70 mb-1.5 font-medium">
-                        رقم الهاتف
+                      className="w-full h-11 px-3.5 rounded-lg bg-white/[0.04] border border-white/10 text-white text-sm focus:outline-none focus:border-white/30 focus:bg-white/[0.06] transition"
+                    >
+                      {COUNTRIES.map((c) => (
+                        <option key={c.code} value={c.code} className="bg-[#0a1224]">
+                          {c.flag} {c.name_ar} ({c.dial})
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="block">
+                    <span className="block text-[12px] text-white/60 mb-1.5">رقم الهاتف</span>
+                    <div className="flex gap-2" dir="ltr">
+                      <span className="h-11 px-3 rounded-lg bg-white/[0.04] border border-white/10 text-white/70 inline-flex items-center text-sm font-mono">
+                        {findCountry(countryCode)?.dial}
                       </span>
-                      <div className="flex gap-2" dir="ltr">
-                        <span className="h-11 px-3 rounded-xl bg-white/10 border border-white/15 text-white/80 inline-flex items-center text-sm font-mono">
-                          {findCountry(countryCode)?.dial}
-                        </span>
-                        <input
-                          type="tel"
-                          inputMode="numeric"
-                          value={phone}
-                          onChange={(e) => {
-                            const c = findCountry(countryCode);
-                            const cleaned = c
-                              ? sanitizeNationalNumber(e.target.value, c)
-                              : e.target.value.replace(/\D/g, "");
-                            setPhone(cleaned);
-                            setPhoneError(null);
-                          }}
-                          placeholder={
-                            findCountry(countryCode)?.nsnLengths[0]
-                              ? "5".padEnd(findCountry(countryCode)!.nsnLengths[0], "x")
-                              : "1xxxxxxxxx"
-                          }
-                          required
-                          dir="ltr"
-                          className={`flex-1 h-11 px-4 rounded-xl bg-white/5 border text-white placeholder:text-white/30 focus:outline-none focus:bg-white/10 md:transition ${phoneError ? "border-rose-400/60 focus:border-rose-400" : "border-white/15 focus:border-[var(--gold)]/60"}`}
-                        />
-                      </div>
-                      {phoneError && (
-                        <p className="text-[11px] text-rose-300 mt-1.5 leading-relaxed">
-                          {phoneError}
-                        </p>
-                      )}
-                    </label>
-                  </>
-                )}
-                <Field
-                  type="email"
-                  label="البريد الإلكتروني"
-                  value={email}
-                  onChange={setEmail}
-                  placeholder="name@example.com"
-                  required
-                />
-                <Field
-                  type="password"
-                  label="كلمة المرور"
-                  value={password}
-                  onChange={setPassword}
-                  placeholder="••••••••"
-                  required
-                />
-
-                <button
-                  type="submit"
-                  disabled={busy}
-                  className="w-full mt-2 h-12 rounded-xl font-bold flex items-center justify-center gap-2 disabled:opacity-60 md:transition md:hover:-translate-y-0.5"
-                  style={
-                    isAdminView
-                      ? { background: "linear-gradient(135deg, #f59e0b, #d97706)", color: "#000" }
-                      : {
-                          background: "linear-gradient(135deg, var(--gold), #b8923f)",
-                          color: "#0b1736",
-                          boxShadow: "0 16px 35px -20px var(--gold)",
+                      <input
+                        type="tel"
+                        inputMode="numeric"
+                        value={phone}
+                        onChange={(e) => {
+                          const c = findCountry(countryCode);
+                          const cleaned = c
+                            ? sanitizeNationalNumber(e.target.value, c)
+                            : e.target.value.replace(/\D/g, "");
+                          setPhone(cleaned);
+                          setPhoneError(null);
+                        }}
+                        placeholder={
+                          findCountry(countryCode)?.nsnLengths[0]
+                            ? "5".padEnd(findCountry(countryCode)!.nsnLengths[0], "x")
+                            : "1xxxxxxxxx"
                         }
-                  }
-                >
-                  {busy ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <>
-                      {isAdminView || mode === "login" ? "دخول" : "إنشاء الحساب"}
-                      <ArrowRight className="w-4 h-4 rtl-flip" />
-                    </>
-                  )}
-                </button>
-              </form>
-
-              {!isAdminView && (
-                <div className="mt-6 text-center text-sm text-white/70">
-                  {mode === "login" ? "ليس لديك حساب؟ " : "لديك حساب بالفعل؟ "}
-                  <button
-                    type="button"
-                    onClick={() => setMode(mode === "login" ? "signup" : "login")}
-                    className="text-[var(--gold)] hover:underline font-semibold"
-                  >
-                    {mode === "login" ? "إنشاء حساب جديد" : "تسجيل الدخول"}
-                  </button>
-                </div>
+                        required
+                        dir="ltr"
+                        className={`flex-1 h-11 px-3.5 rounded-lg bg-white/[0.04] border text-white text-sm placeholder:text-white/25 focus:outline-none focus:bg-white/[0.06] transition ${phoneError ? "border-rose-400/60 focus:border-rose-400" : "border-white/10 focus:border-white/30"}`}
+                      />
+                    </div>
+                    {phoneError && (
+                      <p className="text-[11px] text-rose-300/90 mt-1.5 leading-relaxed">
+                        {phoneError}
+                      </p>
+                    )}
+                  </label>
+                </>
               )}
+              <Field
+                type="email"
+                label="البريد الإلكتروني"
+                value={email}
+                onChange={setEmail}
+                placeholder="name@example.com"
+                required
+              />
+              <Field
+                type="password"
+                label="كلمة المرور"
+                value={password}
+                onChange={setPassword}
+                placeholder="••••••••"
+                required
+              />
 
-              <div className="mt-6 flex justify-center border-t border-white/10 pt-4 text-center text-xs text-white/50">
-                {isAdminView ? (
-                  <button
-                    type="button"
-                    onClick={() => setAuthRole("trainee")}
-                    className="hover:text-white underline md:transition"
-                  >
-                    التبديل إلى بوابة دخول المتدربين
-                  </button>
+              <button
+                type="submit"
+                disabled={busy}
+                className="w-full mt-2 h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-60 transition bg-white text-[#0a1224] hover:bg-white/90"
+              >
+                {busy ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setAuthRole("admin");
-                      setMode("login");
-                    }}
-                    className="hover:text-white underline md:transition"
-                  >
-                    بوابة دخول الإدارة
-                  </button>
+                  <>{isAdminView || mode === "login" ? "دخول" : "إنشاء الحساب"}</>
                 )}
-              </div>
+              </button>
+            </form>
 
-              <p className="text-center text-xs text-white/40 mt-6 leading-relaxed">
-                {isAdminView
-                  ? "دخول المسؤولين محمي ومشفر بالكامل."
-                  : "تجربة دخول آمنة ومهيّأة للمتدربين فقط."}
-              </p>
+            {!isAdminView && (
+              <div className="mt-5 text-center text-[13px] text-white/55">
+                {mode === "login" ? "ليس لديك حساب؟ " : "لديك حساب بالفعل؟ "}
+                <button
+                  type="button"
+                  onClick={() => setMode(mode === "login" ? "signup" : "login")}
+                  className="text-white hover:underline font-medium"
+                >
+                  {mode === "login" ? "إنشاء حساب" : "تسجيل الدخول"}
+                </button>
+              </div>
+            )}
+
+            <div className="mt-8 flex justify-center">
+              {isAdminView ? (
+                <button
+                  type="button"
+                  onClick={() => setAuthRole("trainee")}
+                  className="text-[12px] text-white/45 hover:text-white/80 transition"
+                >
+                  دخول المتدربين
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAuthRole("admin");
+                    setMode("login");
+                  }}
+                  className="text-[12px] text-white/45 hover:text-white/80 transition"
+                >
+                  دخول الإدارة
+                </button>
+              )}
             </div>
-          </section>
+
+            <div className="mt-10 flex items-center justify-center gap-1.5 text-[11px] text-white/35">
+              <ShieldCheck className="h-3.5 w-3.5" />
+              <span>اتصال مشفّر</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
