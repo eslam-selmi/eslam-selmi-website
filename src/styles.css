@@ -376,3 +376,16 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
     transition-delay: 0s !important;
   }
 }
+
+/* Mobile: neutralize framer-motion inline opacity/transform so nothing fades in or slides in on phones */
+@media (max-width: 767px) {
+  main [style*="opacity:0"],
+  main [style*="opacity: 0"] {
+    opacity: 1 !important;
+  }
+  main [style*="translateY"],
+  main [style*="translateX"],
+  main [style*="scale("] {
+    transform: none !important;
+  }
+}
