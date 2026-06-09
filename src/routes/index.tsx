@@ -1343,39 +1343,53 @@ function CompactStat({ n, l }: { n: string; l: string }) {
   );
 }
 
-/* ---------- ABOUT (Minimal Premium Edition) ---------- */
+/* ---------- ABOUT (Glassmorphism Premium Edition) ---------- */
 function About() {
   const { t } = useI18n();
 
   return (
     <section id="about" className="px-4 sm:px-6 py-16 lg:py-24 relative">
-      <div className="mx-auto max-w-4xl">
-        <div className="grid grid-cols-[auto_1fr] gap-5 sm:gap-8 items-start">
-          {/* Left rail: eyebrow + gold rule + oversized quote glyph */}
-          <div className="flex flex-col items-center pt-1 shrink-0">
-            <span
-              className="font-display text-[3.5rem] sm:text-[5rem] leading-none text-[var(--gold)]/85 select-none"
-              style={{ fontFamily: "Georgia, serif" }}
-              aria-hidden
-            >
-              &ldquo;
-            </span>
-            <div className="mt-2 w-px flex-1 min-h-[60px] bg-gradient-to-b from-[var(--gold)]/60 via-[var(--gold)]/20 to-transparent" />
-          </div>
-
-          {/* Content */}
-          <div className="pt-3">
-            <div className="text-[10px] sm:text-[11px] tracking-[0.32em] uppercase text-[var(--gold)]/90 font-bold mb-3">
-              {t("about_eyebrow") || "About"}
-            </div>
-            <p className="text-[15px] sm:text-lg lg:text-[1.2rem] leading-[1.95] text-foreground/90 font-medium">
-              {t("about_intro")}
-            </p>
-            <div className="mt-6 flex items-center gap-3">
-              <span className="h-px w-10 bg-[var(--gold)]/60" />
-              <span className="text-xs tracking-[0.25em] uppercase text-muted-foreground font-semibold">
-                Eslam Selmi
+      {/* Ambient glow */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-60"
+        style={{
+          background:
+            "radial-gradient(60% 50% at 20% 30%, color-mix(in oklab, var(--gold) 18%, transparent), transparent 60%), radial-gradient(50% 40% at 85% 70%, color-mix(in oklab, var(--accent) 16%, transparent), transparent 65%)",
+        }}
+      />
+      <div className="relative mx-auto max-w-5xl">
+        <div className="relative rounded-3xl border border-white/15 bg-white/[0.06] backdrop-blur-xl shadow-[0_30px_80px_-30px_rgba(0,0,0,0.45)] overflow-hidden">
+          {/* Top gold accent */}
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/70 to-transparent" />
+          <div className="grid md:grid-cols-[auto_1fr] gap-6 md:gap-10 items-center p-6 sm:p-10 lg:p-12">
+            {/* Left rail */}
+            <div className="flex md:flex-col items-center md:items-start gap-4 md:gap-3 shrink-0">
+              <span
+                className="font-display text-[4rem] sm:text-[5rem] leading-none text-[var(--gold)] select-none"
+                style={{ fontFamily: "Georgia, serif" }}
+                aria-hidden
+              >
+                &ldquo;
               </span>
+              <div className="hidden md:block w-px h-24 bg-gradient-to-b from-[var(--gold)]/70 via-[var(--gold)]/20 to-transparent" />
+              <div className="md:hidden h-px w-16 bg-gradient-to-r from-[var(--gold)]/70 to-transparent" />
+            </div>
+
+            {/* Content */}
+            <div>
+              <div className="text-[10px] sm:text-[11px] tracking-[0.32em] uppercase text-[var(--gold)] font-bold mb-4">
+                {t("about_eyebrow") || "About"}
+              </div>
+              <p className="text-[16px] sm:text-lg lg:text-[1.25rem] leading-[2] text-foreground font-medium">
+                {t("about_intro")}
+              </p>
+              <div className="mt-7 flex items-center gap-3">
+                <span className="h-px w-12 bg-[var(--gold)]/70" />
+                <span className="text-xs tracking-[0.25em] uppercase text-foreground/70 font-semibold">
+                  Eslam Selmi
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -2097,7 +2111,7 @@ function CurrentCourses() {
     <Section
       id="current-courses"
       eyebrow={tt("الكورسات", "Courses")}
-      title={tt("دورات مباشرة واهتمامات قادمة", "Live courses and upcoming interests")}
+      title={tt("مسارات التعلم: البرامج الحالية والمستقبلية", "Learning paths: current and upcoming programs")}
     >
       {loading ? (
         <div className="text-center py-10 text-muted-foreground text-sm">
@@ -2132,7 +2146,7 @@ function CurrentCourses() {
                 style={{ color: "var(--accent)" }}
               >
                 <Calendar className="size-3.5" />
-                {tt("كورسات قد تهمك قريباً", "Courses you may be interested in")}
+                {tt("برامج قيد التجهيز: استثمر في تطوير مهاراتك", "Programs in preparation: invest in your skills")}
               </h3>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {upcoming.map((c) => (
@@ -2192,23 +2206,23 @@ function CourseCard({
     <button
       type="button"
       onClick={onOpen}
-      className="group relative text-start rounded-[2rem] border border-foreground/10 bg-card p-0 overflow-hidden md:transition-all md:hover:-translate-y-1.5 md:hover:shadow-[0_36px_80px_-44px_color-mix(in_oklab,var(--accent)_65%,transparent)]"
+      className="group relative text-start rounded-[2rem] border border-white/15 bg-white/[0.06] backdrop-blur-xl p-0 overflow-hidden shadow-[0_20px_60px_-30px_rgba(0,0,0,0.45)] md:transition-all md:duration-300 md:hover:-translate-y-1.5 md:hover:scale-[1.02] md:hover:border-white/25 md:hover:shadow-[0_36px_80px_-30px_color-mix(in_oklab,var(--accent)_55%,transparent)]"
     >
       <div
         className={`absolute inset-x-0 top-0 h-1.5 ${upcoming ? "bg-gradient-to-r from-[var(--accent)] via-[var(--lavender)] to-[var(--gold)]" : "bg-gradient-to-r from-[var(--gold)] via-[var(--accent)] to-[var(--gold)]"}`}
       />
-      <div className="absolute -end-20 -top-20 size-44 rounded-full bg-[var(--gold)]/10 blur-3xl md:opacity-0 md:group-hover:opacity-100 md:transition" />
+      <div className="absolute -end-20 -top-20 size-44 rounded-full bg-[var(--gold)]/15 blur-3xl md:opacity-0 md:group-hover:opacity-100 md:transition" />
       <div className="relative p-5 sm:p-6">
         <div className="flex items-start justify-between gap-4">
-          <div className="relative size-16 rounded-2xl border border-foreground/10 bg-foreground/[0.04] grid place-items-center text-4xl shrink-0">
+          <div className="relative size-16 rounded-2xl border border-white/20 bg-white/10 backdrop-blur grid place-items-center text-4xl shrink-0">
             <span>{c.cover_emoji || "🎓"}</span>
             <span className="absolute -bottom-1 -end-1 size-5 rounded-full border border-card bg-[var(--gold)]" />
           </div>
           <span
-            className={`inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] font-bold rounded-full px-2.5 py-1 border ${upcoming ? "bg-[var(--accent)]/15 text-[var(--accent)] border-[var(--accent)]/30" : "bg-[var(--gold)]/15 text-[var(--gold)] border-[var(--gold)]/30"}`}
+            className={`inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] font-bold rounded-full px-2.5 py-1 border backdrop-blur ${upcoming ? "bg-[var(--accent)]/15 text-[var(--accent)] border-[var(--accent)]/40" : "bg-[var(--gold)]/15 text-[var(--gold)] border-[var(--gold)]/40"}`}
           >
             {upcoming ? <Calendar className="size-3" /> : <Sparkles className="size-3" />}
-            {upcoming ? tt("اهتمام", "Interest") : tt("مباشر", "Live")}
+            {upcoming ? tt("قريباً", "Soon") : tt("مباشر", "Live")}
           </span>
         </div>
 
@@ -2237,19 +2251,21 @@ function CourseCard({
           {date && <CourseMiniMeta icon={Calendar} label={tt("البداية", "Starts")} value={date} />}
         </div>
 
-        <div className="mt-5 flex items-center justify-between gap-3 border-t border-foreground/10 pt-4">
+        <div className="mt-5 flex items-center justify-between gap-3 border-t border-white/10 pt-4">
           <div className="min-w-0">
             {!upcoming && c.price != null && c.price > 0 ? (
               <div className="font-display font-extrabold text-lg" style={{ color: "var(--gold)" }}>
                 {c.price} {c.currency}
               </div>
-            ) : (
+            ) : !upcoming ? (
               <div className="text-xs font-bold text-muted-foreground">
-                {upcoming ? tt("بدون حساب متدرب", "No trainee account") : tt("مجاني", "Free")}
+                {tt("مجاني", "Free")}
               </div>
+            ) : (
+              <span />
             )}
           </div>
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-4 py-2 text-xs font-bold">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-4 py-2 text-xs font-bold md:transition-all md:duration-300 md:group-hover:px-5">
             {upcoming ? tt("سجّل اهتمامك", "Register interest") : tt("التفاصيل", "Details")}
             <ArrowRight className="size-3 rtl-flip md:group-hover:translate-x-1 md:transition" />
           </div>
@@ -2626,10 +2642,10 @@ function InterestFormModal({
               {busy ? <Loader2 className="size-4 animate-spin" /> : <Sparkles className="size-4" />}
               {tt("إرسال اهتمامي", "Submit interest")}
             </button>
-            <p className="text-[11px] text-muted-foreground text-center pt-1">
+            <p className="text-[11px] text-muted-foreground text-center pt-1 leading-relaxed">
               {tt(
-                "لن يتم إنشاء حساب لك. سنتواصل معك يدوياً.",
-                "No account will be created. We'll reach out manually.",
+                "تم تسجيل اهتمامك بنجاح. سيتم إرسال إشعار على هاتفك وبريدك الإلكتروني المسجل فور فتح باب التسجيل في البرنامج.",
+                "Your interest has been registered. You'll receive a notification on your phone and registered email as soon as enrollment opens.",
               )}
             </p>
           </form>

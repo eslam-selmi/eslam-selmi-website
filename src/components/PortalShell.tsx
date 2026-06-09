@@ -1,10 +1,10 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { ForcePasswordResetGate } from "@/components/ForcePasswordResetGate";
 import { useAuth, signOut } from "@/lib/portal-auth";
-import { LogOut, Home, ShieldCheck, GraduationCap, Languages, Sparkles, KeyRound } from "lucide-react";
+import { LogOut, Home, ShieldCheck, GraduationCap, Languages, KeyRound } from "lucide-react";
 import { NotificationsBell } from "@/lib/notifications";
 import { useI18n } from "@/lib/i18n";
-import { useLatestAdditionsBadge } from "@/components/LatestAdditions";
+
 import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
 const brandLogo = brandLogoAsset.url;
 import { useEffect, useState } from "react";
@@ -21,7 +21,7 @@ type Props = {
 export function PortalShell({ userId, role, userLabel, children }: Props) {
   const nav = useNavigate();
   const { lang, setLang, dir } = useI18n();
-  const { hasNew, markSeen } = useLatestAdditionsBadge();
+  
   const isAr = lang === "ar";
   const { forcePasswordReset, session } = useAuth();
   const [showChangePassword, setShowChangePassword] = useState(false);
@@ -154,20 +154,9 @@ export function PortalShell({ userId, role, userLabel, children }: Props) {
                   <GraduationCap className="w-3.5 h-3.5" /> {L.trainer}
                 </Link>
               ) : (
-                <>
-                  <Link to="/portal" className="flex items-center gap-1.5 text-xs text-white/70 hover:text-white px-3 h-9 rounded-lg hover:bg-white/5 transition">
-                    <GraduationCap className="w-3.5 h-3.5" /> {L.courses}
-                  </Link>
-                  <a href="/portal#latest-additions" onClick={() => markSeen()} className="relative flex items-center gap-1.5 text-xs text-white/70 hover:text-white px-3 h-9 rounded-lg hover:bg-white/5 transition">
-                    <Sparkles className="w-3.5 h-3.5" /> {isAr ? "أحدث الإضافات" : "Latest"}
-                    {hasNew && (
-                      <span className="absolute -top-0.5 -end-0.5 flex h-2.5 w-2.5">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-500 opacity-75" />
-                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500" />
-                      </span>
-                    )}
-                  </a>
-                </>
+                <Link to="/portal" className="flex items-center gap-1.5 text-xs text-white/70 hover:text-white px-3 h-9 rounded-lg hover:bg-white/5 transition">
+                  <GraduationCap className="w-3.5 h-3.5" /> {L.courses}
+                </Link>
               )}
             </nav>
           </div>
