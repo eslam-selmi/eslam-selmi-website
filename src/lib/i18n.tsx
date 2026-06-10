@@ -38,7 +38,7 @@ const en: Dict = {
   about_eyebrow: "Who I am",
   about_title: "Driving human capital excellence",
   about_intro:
-    "Head of Education & Development and a hands-on practitioner in talent and performance management, with 9+ years across Egypt, Saudi Arabia and many other countries. Experience spans education, retail, FMCG and logistics, partnering with organizations like KnowledgeCity, G4S, Aramex and Imtenan.",
+    "Strategic Learning & Development Lead and Talent Management professional with over 9 years of proven expertise in driving organizational growth, building employee capabilities, and executing quality retention strategies across the Retail, FMCG, and Education sectors in the MENA region. Currently serving as L&D Lead at Knowledge City for Education in Saudi Arabia, where he spearheads comprehensive training initiatives and strategic talent development programs.\n\nEslam successfully bridges the gap between strategic business objectives and human capital development. He is highly adept at integrating modern learning methodologies with emerging technologies and AI-driven platforms to optimize training experiences and maximize ROI.\n\nPassionate about cultivating high-performing teams, fostering a culture of continuous learning, and driving operational excellence through structured project management.",
   about_credentials: "Educational credentials",
 
   // pillars
