@@ -1340,53 +1340,61 @@ function CompactStat({ n, l }: { n: string; l: string }) {
   );
 }
 
-/* ---------- ABOUT (Glassmorphism Premium Edition) ---------- */
+/* ---------- ABOUT (Meet Eslam — editorial) ---------- */
 function About() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
+  const intro = t("about_intro");
+  const paragraphs = intro.split(/\n\s*\n/).filter(Boolean);
 
   return (
-    <section id="about" className="px-4 sm:px-6 py-16 lg:py-24 relative">
-      {/* Ambient glow */}
+    <section id="about" className="px-4 sm:px-6 py-20 lg:py-28 relative">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-60"
+        className="pointer-events-none absolute inset-0 opacity-50"
         style={{
           background:
-            "radial-gradient(60% 50% at 20% 30%, color-mix(in oklab, var(--gold) 18%, transparent), transparent 60%), radial-gradient(50% 40% at 85% 70%, color-mix(in oklab, var(--accent) 16%, transparent), transparent 65%)",
+            "radial-gradient(55% 45% at 12% 18%, color-mix(in oklab, var(--gold) 16%, transparent), transparent 65%), radial-gradient(45% 40% at 90% 80%, color-mix(in oklab, var(--accent) 14%, transparent), transparent 70%)",
         }}
       />
       <div className="relative mx-auto max-w-5xl">
-        <div className="relative rounded-3xl border border-white/15 bg-white/[0.06] backdrop-blur-xl shadow-[0_30px_80px_-30px_rgba(0,0,0,0.45)] overflow-hidden">
-          {/* Top gold accent */}
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/70 to-transparent" />
-          <div className="grid md:grid-cols-[auto_1fr] gap-6 md:gap-10 items-center p-6 sm:p-10 lg:p-12">
-            {/* Left rail */}
-            <div className="flex md:flex-col items-center md:items-start gap-4 md:gap-3 shrink-0">
-              <span
-                className="font-display text-[4rem] sm:text-[5rem] leading-none text-[var(--gold)] select-none"
-                style={{ fontFamily: "Georgia, serif" }}
-                aria-hidden
-              >
-                &ldquo;
-              </span>
-              <div className="hidden md:block w-px h-24 bg-gradient-to-b from-[var(--gold)]/70 via-[var(--gold)]/20 to-transparent" />
-              <div className="md:hidden h-px w-16 bg-gradient-to-r from-[var(--gold)]/70 to-transparent" />
-            </div>
+        {/* Heading row */}
+        <div className="flex flex-col items-center text-center mb-10 sm:mb-14">
+          <span className="inline-flex items-center gap-2 text-[10px] sm:text-[11px] tracking-[0.32em] uppercase text-[var(--gold)] font-bold">
+            <span className="h-px w-8 bg-[var(--gold)]/70" />
+            {lang === "ar" ? "تعرّف إلى إسلام" : "Meet Eslam"}
+            <span className="h-px w-8 bg-[var(--gold)]/70" />
+          </span>
+          <h2 className="mt-4 font-display font-extrabold text-[clamp(2rem,4.4vw,3.25rem)] leading-[1.1] text-foreground">
+            {lang === "ar" ? "تعرّف إلى" : "Meet"}{" "}
+            <span style={{ color: "var(--accent)" }}>
+              {lang === "ar" ? "إسلام" : "Eslam"}
+            </span>
+          </h2>
+        </div>
 
-            {/* Content */}
-            <div>
-              <div className="text-[10px] sm:text-[11px] tracking-[0.32em] uppercase text-[var(--gold)] font-bold mb-4">
-                {t("about_eyebrow") || "About"}
-              </div>
-              <p className="text-[16px] sm:text-lg lg:text-[1.25rem] leading-[2] text-foreground font-medium">
-                {t("about_intro")}
-              </p>
-              <div className="mt-7 flex items-center gap-3">
-                <span className="h-px w-12 bg-[var(--gold)]/70" />
-                <span className="text-xs tracking-[0.25em] uppercase text-foreground/70 font-semibold">
-                  Eslam Selmi
-                </span>
-              </div>
+        {/* Editorial card */}
+        <div className="relative rounded-[2rem] border border-foreground/10 bg-card/70 backdrop-blur-xl shadow-[0_30px_80px_-30px_rgba(0,0,0,0.35)] overflow-hidden">
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/70 to-transparent" />
+          <div className="absolute -top-16 -end-16 size-48 rounded-full bg-[var(--gold)]/10 blur-3xl" />
+
+          <div className="p-6 sm:p-10 lg:p-14">
+            <span
+              className="block font-display text-[3rem] sm:text-[3.75rem] leading-none text-[var(--gold)] select-none"
+              style={{ fontFamily: "Georgia, serif" }}
+              aria-hidden
+            >
+              &ldquo;
+            </span>
+            <div className="mt-3 space-y-5 text-[15px] sm:text-base lg:text-[1.05rem] leading-[1.95] text-foreground/90">
+              {paragraphs.map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
+            </div>
+            <div className="mt-8 flex items-center gap-3">
+              <span className="h-px w-12 bg-[var(--gold)]/70" />
+              <span className="text-xs tracking-[0.25em] uppercase text-foreground/70 font-semibold">
+                Eslam Selmi
+              </span>
             </div>
           </div>
         </div>
