@@ -374,6 +374,8 @@ function AdminPage() {
           <CouponsPanel courses={courses} />
         ) : tab === "additions" ? (
           <LatestAdditionsPanel />
+        ) : tab === "testimonials" ? (
+          <TestimonialsPanel />
         ) : tab === "site" ? (
           <SiteManagementPanel />
         ) : tab === "leads" ? (
