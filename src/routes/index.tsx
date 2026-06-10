@@ -610,6 +610,7 @@ function Portfolio() {
       {isVisible("home.podcast") && <Podcast />}
       {isVisible("home.clients") && <Clients />}
       {isVisible("home.snapshots") && <Snapshots />}
+      {isVisible("home.testimonials") && <Testimonials />}
       {isVisible("home.cta") && <BookCTA />}
       {isVisible("home.contact") && <Contact />}
       {isVisible("home.footer") && <Footer />}
