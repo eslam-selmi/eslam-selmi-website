@@ -1967,6 +1967,89 @@ function Snapshots() {
   );
 }
 
+/* ---------- TESTIMONIALS (admin-managed) ---------- */
+type TestimonialRow = {
+  id: string;
+  name: string;
+  role: string | null;
+  company: string | null;
+  quote: string;
+  avatar_url: string | null;
+  rating: number | null;
+};
+
+function Testimonials() {
+  const { lang } = useI18n();
+  const isAr = lang === "ar";
+  const tt = (a: string, b: string) => (isAr ? a : b);
+  const [items, setItems] = useState<TestimonialRow[]>([]);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from("testimonials" as any)
+        .select("id,name,role,company,quote,avatar_url,rating")
+        .eq("is_visible", true)
+        .order("display_order", { ascending: true })
+        .order("created_at", { ascending: false });
+      setItems(((data as TestimonialRow[]) ?? []));
+      setLoaded(true);
+    })();
+  }, []);
+
+  if (loaded && items.length === 0) return null;
+
+  return (
+    <Section
+      id="testimonials"
+      eyebrow={tt("شهادات", "Testimonials")}
+      title={tt("ماذا يقول العملاء", "What Clients Say")}
+    >
+      {!loaded ? (
+        <div className="text-center py-10 text-muted-foreground text-sm">
+          {tt("جارٍ التحميل…", "Loading…")}
+        </div>
+      ) : (
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {items.map((it) => (
+            <div
+              key={it.id}
+              className="relative rounded-3xl border border-foreground/10 bg-card/70 backdrop-blur-xl p-6 shadow-[0_20px_50px_-25px_rgba(0,0,0,0.35)] overflow-hidden md:hover:-translate-y-1 transition"
+            >
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/70 to-transparent" />
+              <Quote className="size-7 text-[var(--gold)] mb-3" />
+              <p className="text-sm leading-[1.95] text-foreground/90 whitespace-pre-line">
+                {it.quote}
+              </p>
+              <div className="mt-5 flex items-center gap-3">
+                {it.avatar_url ? (
+                  <img
+                    src={it.avatar_url}
+                    alt={it.name}
+                    loading="lazy"
+                    className="size-10 rounded-full object-cover border border-foreground/15"
+                  />
+                ) : (
+                  <div className="size-10 rounded-full bg-foreground/10 grid place-items-center font-display font-bold text-sm">
+                    {it.name.charAt(0)}
+                  </div>
+                )}
+                <div className="min-w-0">
+                  <div className="font-bold text-sm truncate">{it.name}</div>
+                  <div className="text-[11px] text-muted-foreground truncate">
+                    {[it.role, it.company].filter(Boolean).join(" · ")}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </Section>
+  );
+}
+
 /* ---------- BOOK CTA ---------- */
 function BookCTA() {
   const { t } = useI18n();
