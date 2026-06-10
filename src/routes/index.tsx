@@ -2018,12 +2018,6 @@ function BookCTA() {
               >
                 <MessageCircle className="size-4" /> {t("book_btn_whatsapp")}
               </a>
-              <a
-                href="tel:+966555376228"
-                className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 text-white px-6 py-3.5 text-sm font-bold hover:bg-white/20 transition"
-              >
-                <Phone className="size-4" /> +966 555 376 228
-              </a>
             </div>
           </div>
           <div className="grid gap-3">
