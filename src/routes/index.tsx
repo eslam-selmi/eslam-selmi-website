@@ -1993,7 +1993,7 @@ function Testimonials() {
         .eq("is_visible", true)
         .order("display_order", { ascending: true })
         .order("created_at", { ascending: false });
-      setItems(((data as TestimonialRow[]) ?? []));
+      setItems(((data as unknown) as TestimonialRow[]) ?? []);
       setLoaded(true);
     })();
   }, []);
