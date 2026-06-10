@@ -145,6 +145,7 @@ function AdminPage() {
     | "tickets"
     | "site"
     | "leads"
+    | "testimonials"
   >(search.tab || "enrollments");
   const tab = tabState;
   const setTab = setTabState;
