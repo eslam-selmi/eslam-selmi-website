@@ -328,6 +328,7 @@ function AdminPage() {
             { id: "courses", label: `${t("الكورسات", "Courses")} (${courses.length})` },
             { id: "coupons", label: t("كوبونات الخصم", "Discount coupons") },
             { id: "additions", label: t("أحدث الإضافات", "Latest additions") },
+            { id: "testimonials", label: t("شهادات العملاء", "Testimonials") },
             { id: "site", label: t("إدارة الموقع", "Site management") },
             { id: "leads", label: t("اهتمامات الكورسات", "Course leads") },
             { id: "tickets", label: t("تذاكر الدعم", "Support tickets") },
