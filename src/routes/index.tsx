@@ -280,12 +280,9 @@ const waServiceLink = (serviceEn: string, lang: "en" | "ar") => {
 // Primary nav — kept short and focused. The full set lives in the mobile menu.
 const NAV: { id: string; key: string; to?: string }[] = [
   { id: "about", key: "nav_about" },
-  { id: "journey", key: "nav_journey" },
   { id: "services", key: "nav_services" },
-  { id: "programs", key: "nav_programs" },
   { id: "current-courses", key: "nav_courses" },
   { id: "library", key: "nav_library", to: "/library" },
-  { id: "podcast", key: "nav_podcast" },
   { id: "contact", key: "nav_contact" },
 ];
 const NAV_FULL: { id: string; key: string; to?: string }[] = [
@@ -349,7 +346,7 @@ const JOURNEY = [
   },
   {
     year: { en: "2025", ar: "2025" },
-    role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" },
+    role: { en: "Head of L&D & Talent Management", ar: "رئيس قسم التعلم والتطوير وإدارة المواهب" },
     company: { en: "Imtenan", ar: "إمتنان" },
     industry: { en: "FMCG", ar: "قطاع السلع الاستهلاكية (FMCG)" },
     country: "EG",
@@ -357,7 +354,7 @@ const JOURNEY = [
   },
   {
     year: { en: "NOW", ar: "حاليًا" },
-    role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" },
+    role: { en: "Head of L&D", ar: "رئيس قسم التعلم والتطوير" },
     company: { en: "KnowledgeCity", ar: "مدينة المعرفة" },
     industry: { en: "Schools & Training", ar: "قطاع التعليم والتدريب" },
     country: "SA",
@@ -613,6 +610,7 @@ function Portfolio() {
       {isVisible("home.podcast") && <Podcast />}
       {isVisible("home.clients") && <Clients />}
       {isVisible("home.snapshots") && <Snapshots />}
+      {isVisible("home.testimonials") && <Testimonials />}
       {isVisible("home.cta") && <BookCTA />}
       {isVisible("home.contact") && <Contact />}
       {isVisible("home.footer") && <Footer />}
@@ -1186,7 +1184,7 @@ function Hero() {
           transition={{ duration: 0.8 }}
           className="lg:col-span-5 order-1 lg:order-2 relative"
         >
-          <div className="relative w-full max-w-[360px] sm:max-w-[400px] mx-auto aspect-[4/5]">
+          <div className="relative w-full max-w-[440px] sm:max-w-[500px] lg:max-w-[560px] mx-auto aspect-[4/5]">
             {/* Aurora backdrop */}
             <div
               className="absolute -inset-8 blur-3xl opacity-70"
@@ -1343,53 +1341,61 @@ function CompactStat({ n, l }: { n: string; l: string }) {
   );
 }
 
-/* ---------- ABOUT (Glassmorphism Premium Edition) ---------- */
+/* ---------- ABOUT (Meet Eslam — editorial) ---------- */
 function About() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
+  const intro = t("about_intro");
+  const paragraphs = intro.split(/\n\s*\n/).filter(Boolean);
 
   return (
-    <section id="about" className="px-4 sm:px-6 py-16 lg:py-24 relative">
-      {/* Ambient glow */}
+    <section id="about" className="px-4 sm:px-6 py-20 lg:py-28 relative">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-60"
+        className="pointer-events-none absolute inset-0 opacity-50"
         style={{
           background:
-            "radial-gradient(60% 50% at 20% 30%, color-mix(in oklab, var(--gold) 18%, transparent), transparent 60%), radial-gradient(50% 40% at 85% 70%, color-mix(in oklab, var(--accent) 16%, transparent), transparent 65%)",
+            "radial-gradient(55% 45% at 12% 18%, color-mix(in oklab, var(--gold) 16%, transparent), transparent 65%), radial-gradient(45% 40% at 90% 80%, color-mix(in oklab, var(--accent) 14%, transparent), transparent 70%)",
         }}
       />
       <div className="relative mx-auto max-w-5xl">
-        <div className="relative rounded-3xl border border-white/15 bg-white/[0.06] backdrop-blur-xl shadow-[0_30px_80px_-30px_rgba(0,0,0,0.45)] overflow-hidden">
-          {/* Top gold accent */}
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/70 to-transparent" />
-          <div className="grid md:grid-cols-[auto_1fr] gap-6 md:gap-10 items-center p-6 sm:p-10 lg:p-12">
-            {/* Left rail */}
-            <div className="flex md:flex-col items-center md:items-start gap-4 md:gap-3 shrink-0">
-              <span
-                className="font-display text-[4rem] sm:text-[5rem] leading-none text-[var(--gold)] select-none"
-                style={{ fontFamily: "Georgia, serif" }}
-                aria-hidden
-              >
-                &ldquo;
-              </span>
-              <div className="hidden md:block w-px h-24 bg-gradient-to-b from-[var(--gold)]/70 via-[var(--gold)]/20 to-transparent" />
-              <div className="md:hidden h-px w-16 bg-gradient-to-r from-[var(--gold)]/70 to-transparent" />
-            </div>
+        {/* Heading row */}
+        <div className="flex flex-col items-center text-center mb-10 sm:mb-14">
+          <span className="inline-flex items-center gap-2 text-[10px] sm:text-[11px] tracking-[0.32em] uppercase text-[var(--gold)] font-bold">
+            <span className="h-px w-8 bg-[var(--gold)]/70" />
+            {lang === "ar" ? "تعرّف إلى إسلام" : "Meet Eslam"}
+            <span className="h-px w-8 bg-[var(--gold)]/70" />
+          </span>
+          <h2 className="mt-4 font-display font-extrabold text-[clamp(2rem,4.4vw,3.25rem)] leading-[1.1] text-foreground">
+            {lang === "ar" ? "تعرّف إلى" : "Meet"}{" "}
+            <span style={{ color: "var(--accent)" }}>
+              {lang === "ar" ? "إسلام" : "Eslam"}
+            </span>
+          </h2>
+        </div>
 
-            {/* Content */}
-            <div>
-              <div className="text-[10px] sm:text-[11px] tracking-[0.32em] uppercase text-[var(--gold)] font-bold mb-4">
-                {t("about_eyebrow") || "About"}
-              </div>
-              <p className="text-[16px] sm:text-lg lg:text-[1.25rem] leading-[2] text-foreground font-medium">
-                {t("about_intro")}
-              </p>
-              <div className="mt-7 flex items-center gap-3">
-                <span className="h-px w-12 bg-[var(--gold)]/70" />
-                <span className="text-xs tracking-[0.25em] uppercase text-foreground/70 font-semibold">
-                  Eslam Selmi
-                </span>
-              </div>
+        {/* Editorial card */}
+        <div className="relative rounded-[2rem] border border-foreground/10 bg-card/70 backdrop-blur-xl shadow-[0_30px_80px_-30px_rgba(0,0,0,0.35)] overflow-hidden">
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/70 to-transparent" />
+          <div className="absolute -top-16 -end-16 size-48 rounded-full bg-[var(--gold)]/10 blur-3xl" />
+
+          <div className="p-6 sm:p-10 lg:p-14">
+            <span
+              className="block font-display text-[3rem] sm:text-[3.75rem] leading-none text-[var(--gold)] select-none"
+              style={{ fontFamily: "Georgia, serif" }}
+              aria-hidden
+            >
+              &ldquo;
+            </span>
+            <div className="mt-3 space-y-5 text-[15px] sm:text-base lg:text-[1.05rem] leading-[1.95] text-foreground/90">
+              {paragraphs.map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
+            </div>
+            <div className="mt-8 flex items-center gap-3">
+              <span className="h-px w-12 bg-[var(--gold)]/70" />
+              <span className="text-xs tracking-[0.25em] uppercase text-foreground/70 font-semibold">
+                Eslam Selmi
+              </span>
             </div>
           </div>
         </div>
@@ -1962,6 +1968,89 @@ function Snapshots() {
   );
 }
 
+/* ---------- TESTIMONIALS (admin-managed) ---------- */
+type TestimonialRow = {
+  id: string;
+  name: string;
+  role: string | null;
+  company: string | null;
+  quote: string;
+  avatar_url: string | null;
+  rating: number | null;
+};
+
+function Testimonials() {
+  const { lang } = useI18n();
+  const isAr = lang === "ar";
+  const tt = (a: string, b: string) => (isAr ? a : b);
+  const [items, setItems] = useState<TestimonialRow[]>([]);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from("testimonials" as any)
+        .select("id,name,role,company,quote,avatar_url,rating")
+        .eq("is_visible", true)
+        .order("display_order", { ascending: true })
+        .order("created_at", { ascending: false });
+      setItems(((data as unknown) as TestimonialRow[]) ?? []);
+      setLoaded(true);
+    })();
+  }, []);
+
+  if (loaded && items.length === 0) return null;
+
+  return (
+    <Section
+      id="testimonials"
+      eyebrow={tt("شهادات", "Testimonials")}
+      title={tt("ماذا يقول العملاء", "What Clients Say")}
+    >
+      {!loaded ? (
+        <div className="text-center py-10 text-muted-foreground text-sm">
+          {tt("جارٍ التحميل…", "Loading…")}
+        </div>
+      ) : (
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {items.map((it) => (
+            <div
+              key={it.id}
+              className="relative rounded-3xl border border-foreground/10 bg-card/70 backdrop-blur-xl p-6 shadow-[0_20px_50px_-25px_rgba(0,0,0,0.35)] overflow-hidden md:hover:-translate-y-1 transition"
+            >
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/70 to-transparent" />
+              <Quote className="size-7 text-[var(--gold)] mb-3" />
+              <p className="text-sm leading-[1.95] text-foreground/90 whitespace-pre-line">
+                {it.quote}
+              </p>
+              <div className="mt-5 flex items-center gap-3">
+                {it.avatar_url ? (
+                  <img
+                    src={it.avatar_url}
+                    alt={it.name}
+                    loading="lazy"
+                    className="size-10 rounded-full object-cover border border-foreground/15"
+                  />
+                ) : (
+                  <div className="size-10 rounded-full bg-foreground/10 grid place-items-center font-display font-bold text-sm">
+                    {it.name.charAt(0)}
+                  </div>
+                )}
+                <div className="min-w-0">
+                  <div className="font-bold text-sm truncate">{it.name}</div>
+                  <div className="text-[11px] text-muted-foreground truncate">
+                    {[it.role, it.company].filter(Boolean).join(" · ")}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </Section>
+  );
+}
+
 /* ---------- BOOK CTA ---------- */
 function BookCTA() {
   const { t } = useI18n();
@@ -2012,12 +2101,6 @@ function BookCTA() {
                 className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 text-white px-6 py-3.5 text-sm font-bold hover:bg-white/20 transition"
               >
                 <MessageCircle className="size-4" /> {t("book_btn_whatsapp")}
-              </a>
-              <a
-                href="tel:+966555376228"
-                className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 text-white px-6 py-3.5 text-sm font-bold hover:bg-white/20 transition"
-              >
-                <Phone className="size-4" /> +966 555 376 228
               </a>
             </div>
           </div>
@@ -2111,7 +2194,7 @@ function CurrentCourses() {
     <Section
       id="current-courses"
       eyebrow={tt("الكورسات", "Courses")}
-      title={tt("مسارات التعلم: البرامج الحالية والمستقبلية", "Learning paths: current and upcoming programs")}
+      title={tt("الكورسات والبرامج", "Courses & Programs")}
     >
       {loading ? (
         <div className="text-center py-10 text-muted-foreground text-sm">

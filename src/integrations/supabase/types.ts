@@ -1084,6 +1084,48 @@ export type Database = {
           },
         ]
       }
+      testimonials: {
+        Row: {
+          avatar_url: string | null
+          company: string | null
+          created_at: string
+          display_order: number
+          id: string
+          is_visible: boolean
+          name: string
+          quote: string
+          rating: number | null
+          role: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          company?: string | null
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_visible?: boolean
+          name: string
+          quote: string
+          rating?: number | null
+          role?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          company?: string | null
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_visible?: boolean
+          name?: string
+          quote?: string
+          rating?: number | null
+          role?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       trainer_permissions: {
         Row: {
           can_approve_enrollments: boolean

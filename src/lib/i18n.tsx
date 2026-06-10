@@ -35,10 +35,10 @@ const en: Dict = {
   status_role: "Head of L&D · KSA",
 
   // about
-  about_eyebrow: "Who I am",
-  about_title: "Driving human capital excellence",
+  about_eyebrow: "Meet Eslam",
+  about_title: "Meet Eslam",
   about_intro:
-    "Head of Education & Development and a hands-on practitioner in talent and performance management, with 9+ years across Egypt, Saudi Arabia and many other countries. Experience spans education, retail, FMCG and logistics, partnering with organizations like KnowledgeCity, G4S, Aramex and Imtenan.",
+    "Strategic Learning & Development Lead and Talent Management professional with over 9 years of proven expertise in driving organizational growth, building employee capabilities, and executing quality retention strategies across the Retail, FMCG, and Education sectors in the MENA region. Currently serving as L&D Lead at Knowledge City for Education in Saudi Arabia, where he spearheads comprehensive training initiatives and strategic talent development programs.\n\nEslam successfully bridges the gap between strategic business objectives and human capital development. He is highly adept at integrating modern learning methodologies with emerging technologies and AI-driven platforms to optimize training experiences and maximize ROI.\n\nPassionate about cultivating high-performing teams, fostering a culture of continuous learning, and driving operational excellence through structured project management.",
   about_credentials: "Educational credentials",
 
   // pillars
@@ -112,7 +112,7 @@ const en: Dict = {
     "Tell me about your L&D challenge or coaching goal. I'll reply on WhatsApp and we'll schedule a call that fits your timezone.",
   book_btn_whatsapp: "Chat on WhatsApp",
   book_step_1_t: "Clarify your goal",
-  book_step_1_d: "We define the outcome in the first 10 minutes.",
+  book_step_1_d: "We map your priorities and frame a clear focus together.",
   book_step_2_t: "Get a tailored plan",
   book_step_2_d: "Walk away with concrete next steps.",
   book_step_3_t: "No strings attached",
@@ -217,8 +217,8 @@ const ar: Dict = {
   status_current: "حاليًا",
   status_role: "رئيس التعلم والتطوير · السعودية",
 
-  about_eyebrow: "من أنا",
-  about_title: "نقود التميّز في رأس المال البشري",
+  about_eyebrow: "تعرّف إلى إسلام",
+  about_title: "تعرّف إلى إسلام",
   about_intro:
     "رئيس قسم التعليم والتطوير. أمتلك خبرة تتجاوز ٩ سنوات في إدارة المواهب والأداء، وتطوير رأس المال البشري عبر العديد من الدول.",
   about_credentials: "المؤهلات والشهادات",
@@ -284,7 +284,7 @@ const ar: Dict = {
     "أخبرني عن تحدّيك في التعلم والتطوير أو هدفك من جلسة الكوتشينج، وسأرد عليك عبر واتساب لتحديد موعد يناسب توقيتك.",
   book_btn_whatsapp: "تواصل عبر واتساب",
   book_step_1_t: "نحدّد الهدف",
-  book_step_1_d: "نتفق على النتيجة المطلوبة خلال أول ١٠ دقائق.",
+  book_step_1_d: "نتعرّف على أولوياتك ونضع تصورًا مشتركًا لمحور الجلسة.",
   book_step_2_t: "خطة مخصّصة",
   book_step_2_d: "تخرج بخطوات عملية واضحة قابلة للتنفيذ.",
   book_step_3_t: "دون أي التزامات",
