@@ -346,7 +346,7 @@ const JOURNEY = [
   },
   {
     year: { en: "2025", ar: "2025" },
-    role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" },
+    role: { en: "Head of L&D & Talent Management", ar: "رئيس قسم التعلم والتطوير وإدارة المواهب" },
     company: { en: "Imtenan", ar: "إمتنان" },
     industry: { en: "FMCG", ar: "قطاع السلع الاستهلاكية (FMCG)" },
     country: "EG",
@@ -354,7 +354,7 @@ const JOURNEY = [
   },
   {
     year: { en: "NOW", ar: "حاليًا" },
-    role: { en: "Head of L&D", ar: "رئيس التعلم والتطوير" },
+    role: { en: "Head of L&D", ar: "رئيس قسم التعلم والتطوير" },
     company: { en: "KnowledgeCity", ar: "مدينة المعرفة" },
     industry: { en: "Schools & Training", ar: "قطاع التعليم والتدريب" },
     country: "SA",
