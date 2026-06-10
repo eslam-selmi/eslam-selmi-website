@@ -53,7 +53,8 @@ type AdminSearch = {
     | "methods"
     | "tickets"
     | "site"
-    | "leads";
+    | "leads"
+    | "testimonials";
   drawer?: string;
   editCourse?: string;
 };
