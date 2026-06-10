@@ -1183,7 +1183,7 @@ function Hero() {
           transition={{ duration: 0.8 }}
           className="lg:col-span-5 order-1 lg:order-2 relative"
         >
-          <div className="relative w-full max-w-[360px] sm:max-w-[400px] mx-auto aspect-[4/5]">
+          <div className="relative w-full max-w-[440px] sm:max-w-[500px] lg:max-w-[560px] mx-auto aspect-[4/5]">
             {/* Aurora backdrop */}
             <div
               className="absolute -inset-8 blur-3xl opacity-70"
