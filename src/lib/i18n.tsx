@@ -112,7 +112,7 @@ const en: Dict = {
     "Tell me about your L&D challenge or coaching goal. I'll reply on WhatsApp and we'll schedule a call that fits your timezone.",
   book_btn_whatsapp: "Chat on WhatsApp",
   book_step_1_t: "Clarify your goal",
-  book_step_1_d: "We define the outcome in the first 10 minutes.",
+  book_step_1_d: "We map your priorities and frame a clear focus together.",
   book_step_2_t: "Get a tailored plan",
   book_step_2_d: "Walk away with concrete next steps.",
   book_step_3_t: "No strings attached",
