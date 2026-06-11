@@ -2148,6 +2148,13 @@ type PublicCourse = {
   is_upcoming: boolean;
 };
 
+function isEmpowermentCourse(title: string | null | undefined): boolean {
+  if (!title) return false;
+  const t = title.trim().toLowerCase();
+  return t.includes("أدوات التمكين") || t.includes("empowerment tools");
+}
+
+
 function CurrentCourses() {
   const { lang, dir } = useI18n();
   const isAr = lang === "ar";
