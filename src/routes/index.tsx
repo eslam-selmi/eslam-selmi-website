@@ -2015,9 +2015,9 @@ function Testimonials() {
         </div>
       ) : (
         <div className="space-y-5 -mx-4 sm:-mx-6 overflow-hidden">
-          <TestimonialRow items={row1} duration={48} direction="left" />
+          <TestimonialMarqueeRow items={row1} duration={48} direction="left" />
           {row2.length > 0 && (
-            <TestimonialRow items={row2} duration={56} direction="right" />
+            <TestimonialMarqueeRow items={row2} duration={56} direction="right" />
           )}
         </div>
       )}
@@ -2025,7 +2025,7 @@ function Testimonials() {
   );
 }
 
-function TestimonialRow({
+function TestimonialMarqueeRow({
   items,
   duration,
   direction,
