@@ -2191,7 +2191,7 @@ function CurrentCourses() {
     <Section
       id="current-courses"
       eyebrow={tt("الكورسات", "Courses")}
-      title={tt("الكورسات والبرامج", "Courses & Programs")}
+      title={tt("الكورسات الحالية والقادمة", "Current & Upcoming Courses")}
     >
       {loading ? (
         <div className="text-center py-10 text-muted-foreground text-sm">
