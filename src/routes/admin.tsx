@@ -384,8 +384,11 @@ function AdminPage() {
           <LatestAdditionsPanel />
         ) : tab === "testimonials" ? (
           <TestimonialsPanel />
+        ) : tab === "success_cases" ? (
+          <SuccessCasesPanel />
         ) : tab === "site" ? (
           <SiteManagementPanel />
+
         ) : tab === "leads" ? (
           <CourseLeadsPanel />
         ) : tab === "tickets" ? (
