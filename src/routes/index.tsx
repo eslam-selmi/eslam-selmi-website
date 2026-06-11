@@ -282,6 +282,7 @@ const NAV: { id: string; key: string; to?: string }[] = [
   { id: "about", key: "nav_about" },
   { id: "services", key: "nav_services" },
   { id: "current-courses", key: "nav_courses" },
+  { id: "success-cases", key: "nav_success_cases", to: "/success-cases" },
   { id: "library", key: "nav_library", to: "/library" },
   { id: "contact", key: "nav_contact" },
 ];
@@ -294,12 +295,13 @@ const NAV_FULL: { id: string; key: string; to?: string }[] = [
   { id: "programs", key: "nav_programs" },
   { id: "empowerment", key: "nav_empowerment", to: "/graduates" },
   { id: "current-courses", key: "nav_courses" },
+  { id: "success-cases", key: "nav_success_cases", to: "/success-cases" },
   { id: "library", key: "nav_library", to: "/library" },
-  { id: "podcast", key: "nav_podcast" },
   { id: "clients", key: "nav_clients" },
   { id: "snapshots", key: "nav_snapshots" },
   { id: "contact", key: "nav_contact" },
 ];
+
 
 const COUNTRIES = [
   { code: "eg", name: { en: "Egypt", ar: "مصر" } },
