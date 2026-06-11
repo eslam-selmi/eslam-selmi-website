@@ -335,6 +335,8 @@ function AdminPage() {
             { id: "coupons", label: t("كوبونات الخصم", "Discount coupons") },
             { id: "additions", label: t("أحدث الإضافات", "Latest additions") },
             { id: "testimonials", label: t("شهادات العملاء", "Testimonials") },
+            { id: "success_cases", label: t("حالات النجاح", "Success Cases") },
+
             { id: "site", label: t("إدارة الموقع", "Site management") },
             { id: "leads", label: t("اهتمامات الكورسات", "Course leads") },
             { id: "tickets", label: t("تذاكر الدعم", "Support tickets") },
