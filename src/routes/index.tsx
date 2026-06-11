@@ -1357,28 +1357,24 @@ function About() {
             "radial-gradient(55% 45% at 12% 18%, color-mix(in oklab, var(--gold) 16%, transparent), transparent 65%), radial-gradient(45% 40% at 90% 80%, color-mix(in oklab, var(--accent) 14%, transparent), transparent 70%)",
         }}
       />
-      <div className="relative mx-auto max-w-5xl">
-        {/* Heading row */}
-        <div className="flex flex-col items-center text-center mb-10 sm:mb-14">
+      <div className="relative mx-auto max-w-7xl">
+        {/* Heading row — aligned to the start (right in RTL) like other sections */}
+        <div className="mb-10 sm:mb-14 text-start">
           <span className="inline-flex items-center gap-2 text-[10px] sm:text-[11px] tracking-[0.32em] uppercase text-[var(--gold)] font-bold">
             <span className="h-px w-8 bg-[var(--gold)]/70" />
-            {lang === "ar" ? "تعرّف إلى إسلام" : "Meet Eslam"}
-            <span className="h-px w-8 bg-[var(--gold)]/70" />
+            {t("about_eyebrow")}
           </span>
           <h2 className="mt-4 font-display font-extrabold text-[clamp(2rem,4.4vw,3.25rem)] leading-[1.1] text-foreground">
-            {lang === "ar" ? "تعرّف إلى" : "Meet"}{" "}
-            <span style={{ color: "var(--accent)" }}>
-              {lang === "ar" ? "إسلام" : "Eslam"}
-            </span>
+            {t("about_title")}
           </h2>
         </div>
 
-        {/* Editorial card */}
+        {/* Editorial card — wider, premium */}
         <div className="relative rounded-[2rem] border border-foreground/10 bg-card/70 backdrop-blur-xl shadow-[0_30px_80px_-30px_rgba(0,0,0,0.35)] overflow-hidden">
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/70 to-transparent" />
           <div className="absolute -top-16 -end-16 size-48 rounded-full bg-[var(--gold)]/10 blur-3xl" />
 
-          <div className="p-6 sm:p-10 lg:p-14">
+          <div className="p-6 sm:p-10 lg:p-16">
             <span
               className="block font-display text-[3rem] sm:text-[3.75rem] leading-none text-[var(--gold)] select-none"
               style={{ fontFamily: "Georgia, serif" }}
@@ -1386,7 +1382,7 @@ function About() {
             >
               &ldquo;
             </span>
-            <div className="mt-3 space-y-5 text-[15px] sm:text-base lg:text-[1.05rem] leading-[1.95] text-foreground/90">
+            <div className="mt-3 space-y-5 text-[15px] sm:text-base lg:text-[1.15rem] leading-[1.95] text-foreground/90 max-w-5xl">
               {paragraphs.map((p, i) => (
                 <p key={i}>{p}</p>
               ))}
@@ -1403,6 +1399,7 @@ function About() {
     </section>
   );
 }
+
 
 /* ---------- PILLARS ---------- */
 function Pillars() {
