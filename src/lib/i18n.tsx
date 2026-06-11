@@ -314,6 +314,8 @@ const ar: Dict = {
   library_open_drive: "افتح في Google Drive",
   nav_courses: "الدورات",
   nav_library: "المصادر",
+  nav_success_cases: "حالات النجاح",
+
   nav_empowerment: "خريج جديد؟",
 
   emp_eyebrow: "للخريجين الجدد",
