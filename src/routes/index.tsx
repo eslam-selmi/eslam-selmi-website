@@ -3517,16 +3517,48 @@ export function LanguageHint() {
 
 /* ---------- EMPOWERMENT TOOLS (for new graduates) ---------- */
 export function EmpowermentTools() {
-  const { t, dir } = useI18n();
+  const { t, lang, dir } = useI18n();
+  const isAr = lang === "ar";
+  const tt = (a: string, b: string) => (isAr ? a : b);
+  const [course, setCourse] = useState<PublicCourse | null>(null);
   const [open, setOpen] = useState(false);
+  const [loadingCourse, setLoadingCourse] = useState(false);
+
   useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open]);
+    (async () => {
+      const { data } = await supabase
+        .from("courses")
+        .select(
+          "id,title,description,cover_emoji,price,currency,starts_at,ends_at,total_hours,online_url,brand_name,brand_tagline_ar,brand_tagline_en,course_goals,target_audience,is_upcoming",
+        )
+        .eq("active", true)
+        .eq("is_archived", false);
+      const list = (data as PublicCourse[]) ?? [];
+      const match = list.find((c) => isEmpowermentCourse(c.title)) ?? null;
+      setCourse(match);
+    })();
+  }, []);
+
+  async function handleRegister() {
+    if (course) {
+      setOpen(true);
+      return;
+    }
+    // Fallback: try to refetch on click
+    setLoadingCourse(true);
+    const { data } = await supabase
+      .from("courses")
+      .select(
+        "id,title,description,cover_emoji,price,currency,starts_at,ends_at,total_hours,online_url,brand_name,brand_tagline_ar,brand_tagline_en,course_goals,target_audience,is_upcoming",
+      )
+      .eq("active", true)
+      .eq("is_archived", false);
+    const list = (data as PublicCourse[]) ?? [];
+    const match = list.find((c) => isEmpowermentCourse(c.title)) ?? null;
+    setCourse(match);
+    setLoadingCourse(false);
+    if (match) setOpen(true);
+  }
 
   const tools = [
     { icon: Bot, key: "emp_tool_ai" },
@@ -3563,10 +3595,11 @@ export function EmpowermentTools() {
             <p className="mt-5 text-white/85 leading-relaxed max-w-xl">{t("emp_desc")}</p>
             <div className="mt-7 flex flex-wrap gap-3">
               <button
-                onClick={() => setOpen(true)}
-                className="group inline-flex items-center gap-2.5 rounded-full bg-white text-[#0b1736] px-6 py-3.5 text-sm font-bold hover:bg-white/95 transition shadow-lg cursor-pointer"
+                onClick={handleRegister}
+                disabled={loadingCourse}
+                className="group inline-flex items-center gap-2.5 rounded-full bg-white text-[#0b1736] px-6 py-3.5 text-sm font-bold hover:bg-white/95 transition shadow-lg cursor-pointer disabled:opacity-70"
               >
-                <Rocket className="size-4" />
+                {loadingCourse ? <Loader2 className="size-4 animate-spin" /> : <Rocket className="size-4" />}
                 {t("emp_btn")}
                 <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
               </button>
@@ -3601,40 +3634,16 @@ export function EmpowermentTools() {
         </div>
       </motion.div>
 
-      {open && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-sm"
-          onClick={() => setOpen(false)}
+      {open && course && (
+        <CourseDetailsModal
+          course={course}
+          isAr={isAr}
           dir={dir}
-        >
-          <div
-            className="relative w-full max-w-2xl h-[90vh] rounded-2xl overflow-hidden bg-card shadow-2xl border border-foreground/10 flex flex-col"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between px-5 py-3 border-b border-foreground/10 bg-card shrink-0">
-              <div className="min-w-0">
-                <div className="font-display font-bold text-sm sm:text-base truncate">
-                  {t("emp_title")}
-                </div>
-                <div className="text-xs text-muted-foreground truncate">{t("emp_tagline")}</div>
-              </div>
-              <button
-                onClick={() => setOpen(false)}
-                aria-label="Close"
-                className="size-9 grid place-items-center rounded-full hover:bg-foreground/10 transition shrink-0"
-              >
-                <X className="size-4" />
-              </button>
-            </div>
-            <iframe
-              src={COURSES_FORM_URL}
-              title="Empowerment Tools enrollment"
-              className="w-full flex-1 border-0 bg-white"
-              loading="lazy"
-            />
-          </div>
-        </div>
+          onClose={() => setOpen(false)}
+          onInterest={() => setOpen(false)}
+        />
       )}
     </Section>
   );
 }
+
