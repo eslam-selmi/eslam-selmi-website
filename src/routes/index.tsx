@@ -1998,6 +1998,11 @@ function Testimonials() {
 
   if (loaded && items.length === 0) return null;
 
+  // Split items into max two rows for marquee
+  const half = Math.ceil(items.length / 2);
+  const row1 = items.slice(0, half);
+  const row2 = items.slice(half);
+
   return (
     <Section
       id="testimonials"
@@ -2009,44 +2014,85 @@ function Testimonials() {
           {tt("جارٍ التحميل…", "Loading…")}
         </div>
       ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {items.map((it) => (
-            <div
-              key={it.id}
-              className="relative rounded-3xl border border-foreground/10 bg-card/70 backdrop-blur-xl p-6 shadow-[0_20px_50px_-25px_rgba(0,0,0,0.35)] overflow-hidden md:hover:-translate-y-1 transition"
-            >
-              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/70 to-transparent" />
-              <Quote className="size-7 text-[var(--gold)] mb-3" />
-              <p className="text-sm leading-[1.95] text-foreground/90 whitespace-pre-line">
+        <div className="space-y-5 -mx-4 sm:-mx-6 overflow-hidden">
+          <TestimonialRow items={row1} duration={48} direction="left" />
+          {row2.length > 0 && (
+            <TestimonialRow items={row2} duration={56} direction="right" />
+          )}
+        </div>
+      )}
+    </Section>
+  );
+}
+
+function TestimonialRow({
+  items,
+  duration,
+  direction,
+}: {
+  items: TestimonialRow[];
+  duration: number;
+  direction: "left" | "right";
+}) {
+  if (items.length === 0) return null;
+  // Duplicate the list so the marquee loops seamlessly
+  const loop = [...items, ...items];
+  return (
+    <div
+      className="group relative overflow-hidden"
+      style={{
+        maskImage:
+          "linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%)",
+        WebkitMaskImage:
+          "linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%)",
+      }}
+    >
+      <div
+        className="flex gap-5 w-max"
+        style={{
+          animation: `${direction === "left" ? "marquee-left" : "marquee-right"} ${duration}s linear infinite`,
+        }}
+      >
+        {loop.map((it, idx) => (
+          <article
+            key={`${it.id}-${idx}`}
+            className="relative w-[320px] sm:w-[360px] shrink-0 flex flex-col rounded-[2.25rem] overflow-hidden border border-[#CD853F]/55 bg-gradient-to-br from-[#CD853F]/[0.14] via-[#8B4513]/[0.05] to-background shadow-[0_24px_70px_-30px_rgba(205,133,63,0.55)] transition-all duration-500 md:hover:-translate-y-1.5"
+          >
+            <div className="h-1.5 w-full bg-gradient-to-r from-[#CD853F] via-[#E8A87C] to-[#8B4513]" />
+            <div className="pointer-events-none absolute -top-24 -right-24 size-64 rounded-full blur-3xl bg-[#CD853F]/20 opacity-0 group-hover:opacity-100 transition duration-700" />
+            <div className="relative p-6 lg:p-7 flex flex-col flex-1">
+              <Quote className="size-7 mb-3" style={{ color: "#E8A87C" }} />
+              <p className="text-sm leading-[1.95] text-foreground/90 whitespace-pre-line flex-1 line-clamp-6">
                 {it.quote}
               </p>
-              <div className="mt-5 flex items-center gap-3">
+              <div className="mt-5 pt-4 border-t border-foreground/10 flex items-center gap-3">
                 {it.avatar_url ? (
                   <img
                     src={it.avatar_url}
                     alt={it.name}
                     loading="lazy"
-                    className="size-10 rounded-full object-cover border border-foreground/15"
+                    className="size-11 rounded-full object-cover border border-foreground/15"
                   />
                 ) : (
-                  <div className="size-10 rounded-full bg-foreground/10 grid place-items-center font-display font-bold text-sm">
+                  <div className="size-11 rounded-full bg-gradient-to-br from-[#CD853F]/40 to-[#8B4513]/30 grid place-items-center font-display font-bold text-base text-foreground">
                     {it.name.charAt(0)}
                   </div>
                 )}
                 <div className="min-w-0">
-                  <div className="font-bold text-sm truncate">{it.name}</div>
+                  <div className="font-display font-bold text-sm truncate">{it.name}</div>
                   <div className="text-[11px] text-muted-foreground truncate">
                     {[it.role, it.company].filter(Boolean).join(" · ")}
                   </div>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
-      )}
-    </Section>
+          </article>
+        ))}
+      </div>
+    </div>
   );
 }
+
 
 /* ---------- BOOK CTA ---------- */
 function BookCTA() {
