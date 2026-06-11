@@ -2480,7 +2480,17 @@ function CourseDetailsModal({
           <div className="rule" />
 
           <div className="flex flex-wrap items-center gap-3">
-            {course.is_upcoming ? (
+            {isEmpowermentCourse(course.title) ? (
+              <Link
+                to="/auth"
+                search={{ role: "trainee" }}
+                className="group inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-6 py-3.5 text-sm font-bold hover:opacity-90 transition shadow-lg cursor-pointer"
+              >
+                <Sparkles className="size-4" />
+                {tt("حابب أستثمر في الكورس", "I want to invest in this course")}
+                <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
+              </Link>
+            ) : course.is_upcoming ? (
               <button
                 onClick={onInterest}
                 className="group inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-6 py-3.5 text-sm font-bold hover:opacity-90 transition shadow-lg cursor-pointer"
@@ -2507,6 +2517,7 @@ function CourseDetailsModal({
               {tt("إغلاق", "Close")}
             </button>
           </div>
+
         </div>
       </div>
     </div>
