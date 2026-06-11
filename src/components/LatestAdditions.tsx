@@ -103,12 +103,10 @@ export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
     >
       <div className="flex items-start justify-between gap-4 mb-5 flex-wrap">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--gold)]/15 border border-[var(--gold)]/30 text-[10px] text-[var(--gold)] tracking-widest uppercase mb-2">
-            <Sparkles className="w-3 h-3" /> NEW
-          </div>
           <h2 className="text-2xl sm:text-3xl font-bold">{title}</h2>
           {subtitle && <p className="text-sm text-white/60 mt-1.5 max-w-xl">{subtitle}</p>}
         </div>
+
       </div>
 
       {items.length === 0 ? (

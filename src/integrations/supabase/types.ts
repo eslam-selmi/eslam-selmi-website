@@ -1002,6 +1002,75 @@ export type Database = {
         }
         Relationships: []
       }
+      success_cases: {
+        Row: {
+          challenges_ar: string | null
+          challenges_en: string | null
+          cover_image_url: string | null
+          created_at: string
+          description_ar: string | null
+          description_en: string | null
+          display_order: number
+          external_url: string | null
+          gallery_urls: string[] | null
+          id: string
+          is_visible: boolean
+          name_ar: string
+          name_en: string | null
+          results_ar: string | null
+          results_en: string | null
+          slug: string | null
+          solutions_ar: string | null
+          solutions_en: string | null
+          tools: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          challenges_ar?: string | null
+          challenges_en?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          description_ar?: string | null
+          description_en?: string | null
+          display_order?: number
+          external_url?: string | null
+          gallery_urls?: string[] | null
+          id?: string
+          is_visible?: boolean
+          name_ar: string
+          name_en?: string | null
+          results_ar?: string | null
+          results_en?: string | null
+          slug?: string | null
+          solutions_ar?: string | null
+          solutions_en?: string | null
+          tools?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          challenges_ar?: string | null
+          challenges_en?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          description_ar?: string | null
+          description_en?: string | null
+          display_order?: number
+          external_url?: string | null
+          gallery_urls?: string[] | null
+          id?: string
+          is_visible?: boolean
+          name_ar?: string
+          name_en?: string | null
+          results_ar?: string | null
+          results_en?: string | null
+          slug?: string | null
+          solutions_ar?: string | null
+          solutions_en?: string | null
+          tools?: string[] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       support_ticket_messages: {
         Row: {
           body: string

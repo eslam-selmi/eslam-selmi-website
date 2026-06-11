@@ -35,11 +35,12 @@ const en: Dict = {
   status_role: "Head of L&D · KSA",
 
   // about
-  about_eyebrow: "Meet Eslam",
+  about_eyebrow: "About Me",
   about_title: "Meet Eslam",
   about_intro:
-    "Strategic Learning & Development Lead and Talent Management professional with over 9 years of proven expertise in driving organizational growth, building employee capabilities, and executing quality retention strategies across the Retail, FMCG, and Education sectors in the MENA region. Currently serving as L&D Lead at Knowledge City for Education in Saudi Arabia, where he spearheads comprehensive training initiatives and strategic talent development programs.\n\nEslam successfully bridges the gap between strategic business objectives and human capital development. He is highly adept at integrating modern learning methodologies with emerging technologies and AI-driven platforms to optimize training experiences and maximize ROI.\n\nPassionate about cultivating high-performing teams, fostering a culture of continuous learning, and driving operational excellence through structured project management.",
+    "Head of Learning & Development. I bring over 9 years of proven expertise in Talent and Performance Management, and in developing human capital across multiple countries.",
   about_credentials: "Educational credentials",
+
 
   // pillars
   pillars_eyebrow: "Three pillars",
@@ -140,6 +141,8 @@ const en: Dict = {
   library_open_drive: "Open in Google Drive",
   nav_courses: "Courses",
   nav_library: "Vault",
+  nav_success_cases: "Success Cases",
+
   nav_empowerment: "New Grad?",
 
   // empowerment tools
@@ -217,8 +220,9 @@ const ar: Dict = {
   status_current: "حاليًا",
   status_role: "رئيس التعلم والتطوير · السعودية",
 
-  about_eyebrow: "تعرّف إلى إسلام",
+  about_eyebrow: "من أنا",
   about_title: "تعرّف إلى إسلام",
+
   about_intro:
     "رئيس قسم التعليم والتطوير. أمتلك خبرة تتجاوز ٩ سنوات في إدارة المواهب والأداء، وتطوير رأس المال البشري عبر العديد من الدول.",
   about_credentials: "المؤهلات والشهادات",
@@ -310,6 +314,8 @@ const ar: Dict = {
   library_open_drive: "افتح في Google Drive",
   nav_courses: "الدورات",
   nav_library: "المصادر",
+  nav_success_cases: "حالات النجاح",
+
   nav_empowerment: "خريج جديد؟",
 
   emp_eyebrow: "للخريجين الجدد",

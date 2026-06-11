@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrainerRouteImport } from './routes/trainer'
+import { Route as SuccessCasesRouteImport } from './routes/success-cases'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PortalRouteImport } from './routes/portal'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
@@ -24,6 +25,11 @@ import { Route as CSlugRouteImport } from './routes/c.$slug'
 const TrainerRoute = TrainerRouteImport.update({
   id: '/trainer',
   path: '/trainer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SuccessCasesRoute = SuccessCasesRouteImport.update({
+  id: '/success-cases',
+  path: '/success-cases',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -86,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/portal': typeof PortalRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/success-cases': typeof SuccessCasesRoute
   '/trainer': typeof TrainerRoute
   '/c/$slug': typeof CSlugRoute
   '/verify/$id': typeof VerifyIdRoute
@@ -99,6 +106,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/portal': typeof PortalRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/success-cases': typeof SuccessCasesRoute
   '/trainer': typeof TrainerRoute
   '/c/$slug': typeof CSlugRoute
   '/verify/$id': typeof VerifyIdRoute
@@ -113,6 +121,7 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/portal': typeof PortalRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/success-cases': typeof SuccessCasesRoute
   '/trainer': typeof TrainerRoute
   '/c/$slug': typeof CSlugRoute
   '/verify/$id': typeof VerifyIdRoute
@@ -128,6 +137,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/portal'
     | '/sitemap.xml'
+    | '/success-cases'
     | '/trainer'
     | '/c/$slug'
     | '/verify/$id'
@@ -141,6 +151,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/portal'
     | '/sitemap.xml'
+    | '/success-cases'
     | '/trainer'
     | '/c/$slug'
     | '/verify/$id'
@@ -154,6 +165,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/portal'
     | '/sitemap.xml'
+    | '/success-cases'
     | '/trainer'
     | '/c/$slug'
     | '/verify/$id'
@@ -168,6 +180,7 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRoute
   PortalRoute: typeof PortalRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SuccessCasesRoute: typeof SuccessCasesRoute
   TrainerRoute: typeof TrainerRoute
   CSlugRoute: typeof CSlugRoute
   VerifyIdRoute: typeof VerifyIdRoute
@@ -180,6 +193,13 @@ declare module '@tanstack/react-router' {
       path: '/trainer'
       fullPath: '/trainer'
       preLoaderRoute: typeof TrainerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/success-cases': {
+      id: '/success-cases'
+      path: '/success-cases'
+      fullPath: '/success-cases'
+      preLoaderRoute: typeof SuccessCasesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -264,6 +284,7 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRoute,
   PortalRoute: PortalRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SuccessCasesRoute: SuccessCasesRoute,
   TrainerRoute: TrainerRoute,
   CSlugRoute: CSlugRoute,
   VerifyIdRoute: VerifyIdRoute,

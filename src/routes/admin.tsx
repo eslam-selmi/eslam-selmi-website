@@ -40,6 +40,8 @@ import { safeHref } from "@/lib/safe-url";
 import { AdminSupportPanel } from "@/components/SupportTickets";
 import { assertAdmin } from "@/lib/admin-guard.functions";
 import { SiteManagementPanel } from "@/components/admin/SiteManagementPanel";
+import { SuccessCasesPanel } from "@/components/admin/SuccessCasesPanel";
+
 
 type AdminSearch = {
   tab?:
@@ -54,7 +56,9 @@ type AdminSearch = {
     | "tickets"
     | "site"
     | "leads"
-    | "testimonials";
+    | "testimonials"
+    | "success_cases";
+
   drawer?: string;
   editCourse?: string;
 };
@@ -146,7 +150,9 @@ function AdminPage() {
     | "site"
     | "leads"
     | "testimonials"
+    | "success_cases"
   >(search.tab || "enrollments");
+
   const tab = tabState;
   const setTab = setTabState;
 
@@ -329,6 +335,8 @@ function AdminPage() {
             { id: "coupons", label: t("كوبونات الخصم", "Discount coupons") },
             { id: "additions", label: t("أحدث الإضافات", "Latest additions") },
             { id: "testimonials", label: t("شهادات العملاء", "Testimonials") },
+            { id: "success_cases", label: t("حالات النجاح", "Success Cases") },
+
             { id: "site", label: t("إدارة الموقع", "Site management") },
             { id: "leads", label: t("اهتمامات الكورسات", "Course leads") },
             { id: "tickets", label: t("تذاكر الدعم", "Support tickets") },
@@ -376,8 +384,11 @@ function AdminPage() {
           <LatestAdditionsPanel />
         ) : tab === "testimonials" ? (
           <TestimonialsPanel />
+        ) : tab === "success_cases" ? (
+          <SuccessCasesPanel />
         ) : tab === "site" ? (
           <SiteManagementPanel />
+
         ) : tab === "leads" ? (
           <CourseLeadsPanel />
         ) : tab === "tickets" ? (

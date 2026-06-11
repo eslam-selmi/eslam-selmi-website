@@ -282,6 +282,7 @@ const NAV: { id: string; key: string; to?: string }[] = [
   { id: "about", key: "nav_about" },
   { id: "services", key: "nav_services" },
   { id: "current-courses", key: "nav_courses" },
+  { id: "success-cases", key: "nav_success_cases", to: "/success-cases" },
   { id: "library", key: "nav_library", to: "/library" },
   { id: "contact", key: "nav_contact" },
 ];
@@ -294,12 +295,13 @@ const NAV_FULL: { id: string; key: string; to?: string }[] = [
   { id: "programs", key: "nav_programs" },
   { id: "empowerment", key: "nav_empowerment", to: "/graduates" },
   { id: "current-courses", key: "nav_courses" },
+  { id: "success-cases", key: "nav_success_cases", to: "/success-cases" },
   { id: "library", key: "nav_library", to: "/library" },
-  { id: "podcast", key: "nav_podcast" },
   { id: "clients", key: "nav_clients" },
   { id: "snapshots", key: "nav_snapshots" },
   { id: "contact", key: "nav_contact" },
 ];
+
 
 const COUNTRIES = [
   { code: "eg", name: { en: "Egypt", ar: "مصر" } },
@@ -1357,28 +1359,24 @@ function About() {
             "radial-gradient(55% 45% at 12% 18%, color-mix(in oklab, var(--gold) 16%, transparent), transparent 65%), radial-gradient(45% 40% at 90% 80%, color-mix(in oklab, var(--accent) 14%, transparent), transparent 70%)",
         }}
       />
-      <div className="relative mx-auto max-w-5xl">
-        {/* Heading row */}
-        <div className="flex flex-col items-center text-center mb-10 sm:mb-14">
+      <div className="relative mx-auto max-w-7xl">
+        {/* Heading row — aligned to the start (right in RTL) like other sections */}
+        <div className="mb-10 sm:mb-14 text-start">
           <span className="inline-flex items-center gap-2 text-[10px] sm:text-[11px] tracking-[0.32em] uppercase text-[var(--gold)] font-bold">
             <span className="h-px w-8 bg-[var(--gold)]/70" />
-            {lang === "ar" ? "تعرّف إلى إسلام" : "Meet Eslam"}
-            <span className="h-px w-8 bg-[var(--gold)]/70" />
+            {t("about_eyebrow")}
           </span>
           <h2 className="mt-4 font-display font-extrabold text-[clamp(2rem,4.4vw,3.25rem)] leading-[1.1] text-foreground">
-            {lang === "ar" ? "تعرّف إلى" : "Meet"}{" "}
-            <span style={{ color: "var(--accent)" }}>
-              {lang === "ar" ? "إسلام" : "Eslam"}
-            </span>
+            {t("about_title")}
           </h2>
         </div>
 
-        {/* Editorial card */}
+        {/* Editorial card — wider, premium */}
         <div className="relative rounded-[2rem] border border-foreground/10 bg-card/70 backdrop-blur-xl shadow-[0_30px_80px_-30px_rgba(0,0,0,0.35)] overflow-hidden">
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/70 to-transparent" />
           <div className="absolute -top-16 -end-16 size-48 rounded-full bg-[var(--gold)]/10 blur-3xl" />
 
-          <div className="p-6 sm:p-10 lg:p-14">
+          <div className="p-6 sm:p-10 lg:p-16">
             <span
               className="block font-display text-[3rem] sm:text-[3.75rem] leading-none text-[var(--gold)] select-none"
               style={{ fontFamily: "Georgia, serif" }}
@@ -1386,7 +1384,7 @@ function About() {
             >
               &ldquo;
             </span>
-            <div className="mt-3 space-y-5 text-[15px] sm:text-base lg:text-[1.05rem] leading-[1.95] text-foreground/90">
+            <div className="mt-3 space-y-5 text-[15px] sm:text-base lg:text-[1.15rem] leading-[1.95] text-foreground/90 max-w-5xl">
               {paragraphs.map((p, i) => (
                 <p key={i}>{p}</p>
               ))}
@@ -1403,6 +1401,7 @@ function About() {
     </section>
   );
 }
+
 
 /* ---------- PILLARS ---------- */
 function Pillars() {
@@ -2001,6 +2000,11 @@ function Testimonials() {
 
   if (loaded && items.length === 0) return null;
 
+  // Split items into max two rows for marquee
+  const half = Math.ceil(items.length / 2);
+  const row1 = items.slice(0, half);
+  const row2 = items.slice(half);
+
   return (
     <Section
       id="testimonials"
@@ -2012,44 +2016,85 @@ function Testimonials() {
           {tt("جارٍ التحميل…", "Loading…")}
         </div>
       ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {items.map((it) => (
-            <div
-              key={it.id}
-              className="relative rounded-3xl border border-foreground/10 bg-card/70 backdrop-blur-xl p-6 shadow-[0_20px_50px_-25px_rgba(0,0,0,0.35)] overflow-hidden md:hover:-translate-y-1 transition"
-            >
-              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/70 to-transparent" />
-              <Quote className="size-7 text-[var(--gold)] mb-3" />
-              <p className="text-sm leading-[1.95] text-foreground/90 whitespace-pre-line">
+        <div className="space-y-5 -mx-4 sm:-mx-6 overflow-hidden">
+          <TestimonialMarqueeRow items={row1} duration={48} direction="left" />
+          {row2.length > 0 && (
+            <TestimonialMarqueeRow items={row2} duration={56} direction="right" />
+          )}
+        </div>
+      )}
+    </Section>
+  );
+}
+
+function TestimonialMarqueeRow({
+  items,
+  duration,
+  direction,
+}: {
+  items: TestimonialRow[];
+  duration: number;
+  direction: "left" | "right";
+}) {
+  if (items.length === 0) return null;
+  // Duplicate the list so the marquee loops seamlessly
+  const loop = [...items, ...items];
+  return (
+    <div
+      className="group relative overflow-hidden"
+      style={{
+        maskImage:
+          "linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%)",
+        WebkitMaskImage:
+          "linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%)",
+      }}
+    >
+      <div
+        className="flex gap-5 w-max"
+        style={{
+          animation: `${direction === "left" ? "marquee-left" : "marquee-right"} ${duration}s linear infinite`,
+        }}
+      >
+        {loop.map((it, idx) => (
+          <article
+            key={`${it.id}-${idx}`}
+            className="relative w-[320px] sm:w-[360px] shrink-0 flex flex-col rounded-[2.25rem] overflow-hidden border border-[#CD853F]/55 bg-gradient-to-br from-[#CD853F]/[0.14] via-[#8B4513]/[0.05] to-background shadow-[0_24px_70px_-30px_rgba(205,133,63,0.55)] transition-all duration-500 md:hover:-translate-y-1.5"
+          >
+            <div className="h-1.5 w-full bg-gradient-to-r from-[#CD853F] via-[#E8A87C] to-[#8B4513]" />
+            <div className="pointer-events-none absolute -top-24 -right-24 size-64 rounded-full blur-3xl bg-[#CD853F]/20 opacity-0 group-hover:opacity-100 transition duration-700" />
+            <div className="relative p-6 lg:p-7 flex flex-col flex-1">
+              <Quote className="size-7 mb-3" style={{ color: "#E8A87C" }} />
+              <p className="text-sm leading-[1.95] text-foreground/90 whitespace-pre-line flex-1 line-clamp-6">
                 {it.quote}
               </p>
-              <div className="mt-5 flex items-center gap-3">
+              <div className="mt-5 pt-4 border-t border-foreground/10 flex items-center gap-3">
                 {it.avatar_url ? (
                   <img
                     src={it.avatar_url}
                     alt={it.name}
                     loading="lazy"
-                    className="size-10 rounded-full object-cover border border-foreground/15"
+                    className="size-11 rounded-full object-cover border border-foreground/15"
                   />
                 ) : (
-                  <div className="size-10 rounded-full bg-foreground/10 grid place-items-center font-display font-bold text-sm">
+                  <div className="size-11 rounded-full bg-gradient-to-br from-[#CD853F]/40 to-[#8B4513]/30 grid place-items-center font-display font-bold text-base text-foreground">
                     {it.name.charAt(0)}
                   </div>
                 )}
                 <div className="min-w-0">
-                  <div className="font-bold text-sm truncate">{it.name}</div>
+                  <div className="font-display font-bold text-sm truncate">{it.name}</div>
                   <div className="text-[11px] text-muted-foreground truncate">
                     {[it.role, it.company].filter(Boolean).join(" · ")}
                   </div>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
-      )}
-    </Section>
+          </article>
+        ))}
+      </div>
+    </div>
   );
 }
+
 
 /* ---------- BOOK CTA ---------- */
 function BookCTA() {
@@ -2151,6 +2196,13 @@ type PublicCourse = {
   is_upcoming: boolean;
 };
 
+function isEmpowermentCourse(title: string | null | undefined): boolean {
+  if (!title) return false;
+  const t = title.trim().toLowerCase();
+  return t.includes("أدوات التمكين") || t.includes("empowerment tools");
+}
+
+
 function CurrentCourses() {
   const { lang, dir } = useI18n();
   const isAr = lang === "ar";
@@ -2194,7 +2246,7 @@ function CurrentCourses() {
     <Section
       id="current-courses"
       eyebrow={tt("الكورسات", "Courses")}
-      title={tt("الكورسات والبرامج", "Courses & Programs")}
+      title={tt("الكورسات الحالية والقادمة", "Current & Upcoming Courses")}
     >
       {loading ? (
         <div className="text-center py-10 text-muted-foreground text-sm">
@@ -2483,7 +2535,17 @@ function CourseDetailsModal({
           <div className="rule" />
 
           <div className="flex flex-wrap items-center gap-3">
-            {course.is_upcoming ? (
+            {isEmpowermentCourse(course.title) ? (
+              <Link
+                to="/auth"
+                search={{ role: "trainee" }}
+                className="group inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-6 py-3.5 text-sm font-bold hover:opacity-90 transition shadow-lg cursor-pointer"
+              >
+                <Sparkles className="size-4" />
+                {tt("حابب أستثمر في الكورس", "I want to invest in this course")}
+                <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
+              </Link>
+            ) : course.is_upcoming ? (
               <button
                 onClick={onInterest}
                 className="group inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-6 py-3.5 text-sm font-bold hover:opacity-90 transition shadow-lg cursor-pointer"
@@ -2510,6 +2572,7 @@ function CourseDetailsModal({
               {tt("إغلاق", "Close")}
             </button>
           </div>
+
         </div>
       </div>
     </div>
@@ -3502,16 +3565,48 @@ export function LanguageHint() {
 
 /* ---------- EMPOWERMENT TOOLS (for new graduates) ---------- */
 export function EmpowermentTools() {
-  const { t, dir } = useI18n();
+  const { t, lang, dir } = useI18n();
+  const isAr = lang === "ar";
+  const tt = (a: string, b: string) => (isAr ? a : b);
+  const [course, setCourse] = useState<PublicCourse | null>(null);
   const [open, setOpen] = useState(false);
+  const [loadingCourse, setLoadingCourse] = useState(false);
+
   useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open]);
+    (async () => {
+      const { data } = await supabase
+        .from("courses")
+        .select(
+          "id,title,description,cover_emoji,price,currency,starts_at,ends_at,total_hours,online_url,brand_name,brand_tagline_ar,brand_tagline_en,course_goals,target_audience,is_upcoming",
+        )
+        .eq("active", true)
+        .eq("is_archived", false);
+      const list = (data as PublicCourse[]) ?? [];
+      const match = list.find((c) => isEmpowermentCourse(c.title)) ?? null;
+      setCourse(match);
+    })();
+  }, []);
+
+  async function handleRegister() {
+    if (course) {
+      setOpen(true);
+      return;
+    }
+    // Fallback: try to refetch on click
+    setLoadingCourse(true);
+    const { data } = await supabase
+      .from("courses")
+      .select(
+        "id,title,description,cover_emoji,price,currency,starts_at,ends_at,total_hours,online_url,brand_name,brand_tagline_ar,brand_tagline_en,course_goals,target_audience,is_upcoming",
+      )
+      .eq("active", true)
+      .eq("is_archived", false);
+    const list = (data as PublicCourse[]) ?? [];
+    const match = list.find((c) => isEmpowermentCourse(c.title)) ?? null;
+    setCourse(match);
+    setLoadingCourse(false);
+    if (match) setOpen(true);
+  }
 
   const tools = [
     { icon: Bot, key: "emp_tool_ai" },
@@ -3548,10 +3643,11 @@ export function EmpowermentTools() {
             <p className="mt-5 text-white/85 leading-relaxed max-w-xl">{t("emp_desc")}</p>
             <div className="mt-7 flex flex-wrap gap-3">
               <button
-                onClick={() => setOpen(true)}
-                className="group inline-flex items-center gap-2.5 rounded-full bg-white text-[#0b1736] px-6 py-3.5 text-sm font-bold hover:bg-white/95 transition shadow-lg cursor-pointer"
+                onClick={handleRegister}
+                disabled={loadingCourse}
+                className="group inline-flex items-center gap-2.5 rounded-full bg-white text-[#0b1736] px-6 py-3.5 text-sm font-bold hover:bg-white/95 transition shadow-lg cursor-pointer disabled:opacity-70"
               >
-                <Rocket className="size-4" />
+                {loadingCourse ? <Loader2 className="size-4 animate-spin" /> : <Rocket className="size-4" />}
                 {t("emp_btn")}
                 <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
               </button>
@@ -3586,40 +3682,16 @@ export function EmpowermentTools() {
         </div>
       </motion.div>
 
-      {open && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-sm"
-          onClick={() => setOpen(false)}
+      {open && course && (
+        <CourseDetailsModal
+          course={course}
+          isAr={isAr}
           dir={dir}
-        >
-          <div
-            className="relative w-full max-w-2xl h-[90vh] rounded-2xl overflow-hidden bg-card shadow-2xl border border-foreground/10 flex flex-col"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between px-5 py-3 border-b border-foreground/10 bg-card shrink-0">
-              <div className="min-w-0">
-                <div className="font-display font-bold text-sm sm:text-base truncate">
-                  {t("emp_title")}
-                </div>
-                <div className="text-xs text-muted-foreground truncate">{t("emp_tagline")}</div>
-              </div>
-              <button
-                onClick={() => setOpen(false)}
-                aria-label="Close"
-                className="size-9 grid place-items-center rounded-full hover:bg-foreground/10 transition shrink-0"
-              >
-                <X className="size-4" />
-              </button>
-            </div>
-            <iframe
-              src={COURSES_FORM_URL}
-              title="Empowerment Tools enrollment"
-              className="w-full flex-1 border-0 bg-white"
-              loading="lazy"
-            />
-          </div>
-        </div>
+          onClose={() => setOpen(false)}
+          onInterest={() => setOpen(false)}
+        />
       )}
     </Section>
   );
 }
+

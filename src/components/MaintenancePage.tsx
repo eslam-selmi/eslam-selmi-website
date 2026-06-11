@@ -110,19 +110,6 @@ export function MaintenancePage({ message, until }: Props) {
             </div>
           </div>
 
-          {/* Brand name */}
-          <h1
-            className="text-2xl md:text-4xl font-extrabold mb-3"
-            style={{
-              fontFamily: lang === "ar" ? "var(--font-heading-ar)" : "var(--font-heading-en)",
-              background: "linear-gradient(110deg, #fff 0%, oklch(0.85 0.14 90) 55%, #fff 100%)",
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-              color: "transparent",
-            }}
-          >
-            {t("إسلام سلمي", "Eslam Selmi")}
-          </h1>
 
           {/* Headline */}
           <p className="text-lg md:text-xl font-semibold text-white/90 mb-2">
