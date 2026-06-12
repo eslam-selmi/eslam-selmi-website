@@ -38,7 +38,7 @@ const en: Dict = {
   about_eyebrow: "About Me",
   about_title: "Meet Eslam",
   about_intro:
-    "Head of Learning & Development. I bring over 9 years of proven expertise in Talent and Performance Management, and in developing human capital across multiple countries.",
+    "Learning & Development Lead and Talent Management professional with over 9 years of proven expertise in driving organizational growth, building employee capabilities, and executing quality retention strategies across the Retail, FMCG, and Education sectors in the MENA region. Currently serving as L&D Lead at Knowledge City for Education in Saudi Arabia, he spearheads comprehensive training initiatives and corporate talent programs.\n\nEslam successfully bridges the gap between business objectives and human capital development by integrating modern learning methodologies with AI-driven platforms to optimize training experiences and maximize ROI.\n\nHe is passionate about cultivating high-performing teams, fostering a culture of continuous learning, and driving operational excellence through structured project management.",
   about_credentials: "Educational credentials",
 
 
