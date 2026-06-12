@@ -3638,7 +3638,28 @@ export function EmpowermentTools() {
   const tt = (a: string, b: string) => (isAr ? a : b);
   const [course, setCourse] = useState<PublicCourse | null>(null);
   const [open, setOpen] = useState(false);
+  const [interestOpen, setInterestOpen] = useState(false);
   const [loadingCourse, setLoadingCourse] = useState(false);
+
+  // Stub used for the "Future Course Interest" form when no live course exists yet
+  const empowermentStub: PublicCourse = {
+    id: "",
+    title: t("emp_title"),
+    description: t("emp_desc"),
+    cover_emoji: "🚀",
+    price: null,
+    currency: "",
+    starts_at: null,
+    ends_at: null,
+    total_hours: 0,
+    online_url: null,
+    brand_name: null,
+    brand_tagline_ar: null,
+    brand_tagline_en: null,
+    course_goals: null,
+    target_audience: null,
+    is_upcoming: true,
+  };
 
   useEffect(() => {
     (async () => {
@@ -3673,7 +3694,12 @@ export function EmpowermentTools() {
     const match = list.find((c) => isEmpowermentCourse(c.title)) ?? null;
     setCourse(match);
     setLoadingCourse(false);
-    if (match) setOpen(true);
+    if (match) {
+      setOpen(true);
+    } else {
+      // Course not yet available — capture interest like an upcoming course
+      setInterestOpen(true);
+    }
   }
 
   const tools = [
