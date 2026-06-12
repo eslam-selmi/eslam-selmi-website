@@ -2708,7 +2708,7 @@ function InterestFormModal({
     setPhoneError(null);
     setBusy(true);
     const { error } = await supabase.from("course_interests").insert({
-      course_id: course.id,
+      course_id: course.id || null,
       course_title: course.title,
       full_name: full_name.trim(),
       email: email.trim().toLowerCase(),
