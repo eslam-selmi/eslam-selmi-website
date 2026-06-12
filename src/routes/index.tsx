@@ -616,7 +616,6 @@ function Portfolio() {
       {isVisible("home.cta") && <BookCTA />}
       {isVisible("home.contact") && <Contact />}
       {isVisible("home.footer") && <Footer />}
-      <WhatsAppFloat />
       <ScrollTop />
       <CalendlyDialog />
       <SitePopup />
@@ -2000,11 +1999,6 @@ function Testimonials() {
 
   if (loaded && items.length === 0) return null;
 
-  // Split items into max two rows for marquee
-  const half = Math.ceil(items.length / 2);
-  const row1 = items.slice(0, half);
-  const row2 = items.slice(half);
-
   return (
     <Section
       id="testimonials"
@@ -2016,73 +2010,140 @@ function Testimonials() {
           {tt("جارٍ التحميل…", "Loading…")}
         </div>
       ) : (
-        <div className="space-y-5 -mx-4 sm:-mx-6 overflow-hidden">
-          <TestimonialMarqueeRow items={row1} duration={48} direction="left" />
-          {row2.length > 0 && (
-            <TestimonialMarqueeRow items={row2} duration={56} direction="right" />
-          )}
-        </div>
+        <TestimonialsScroller items={items} isAr={isAr} />
       )}
     </Section>
   );
 }
 
-function TestimonialMarqueeRow({
-  items,
-  duration,
-  direction,
-}: {
-  items: TestimonialRow[];
-  duration: number;
-  direction: "left" | "right";
-}) {
-  if (items.length === 0) return null;
-  // Duplicate the list so the marquee loops seamlessly
-  const loop = [...items, ...items];
+function TestimonialsScroller({ items, isAr }: { items: TestimonialRow[]; isAr: boolean }) {
+  const tt = (a: string, b: string) => (isAr ? a : b);
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const dragState = useRef<{ down: boolean; startX: number; startScroll: number; moved: boolean }>(
+    { down: false, startX: 0, startScroll: 0, moved: false },
+  );
+
+  function onMouseDown(e: React.MouseEvent) {
+    const el = scrollerRef.current;
+    if (!el) return;
+    dragState.current = { down: true, startX: e.pageX, startScroll: el.scrollLeft, moved: false };
+    el.classList.add("cursor-grabbing");
+  }
+  function onMouseMove(e: React.MouseEvent) {
+    const el = scrollerRef.current;
+    const s = dragState.current;
+    if (!el || !s.down) return;
+    const dx = e.pageX - s.startX;
+    if (Math.abs(dx) > 4) s.moved = true;
+    el.scrollLeft = s.startScroll - dx;
+  }
+  function endDrag() {
+    const el = scrollerRef.current;
+    if (!el) return;
+    dragState.current.down = false;
+    el.classList.remove("cursor-grabbing");
+  }
+  function scrollByCards(dir: 1 | -1) {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const card = el.querySelector("article");
+    const step = card ? (card as HTMLElement).offsetWidth + 24 : 360;
+    el.scrollBy({ left: step * dir, behavior: "smooth" });
+  }
+
   return (
-    <div
-      className="group relative overflow-hidden"
-      style={{
-        maskImage:
-          "linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%)",
-        WebkitMaskImage:
-          "linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%)",
-      }}
-    >
+    <div className="relative -mx-4 sm:-mx-6">
+      {/* Arrow controls (desktop) */}
+      <div className="hidden md:flex absolute inset-y-0 start-2 z-10 items-center">
+        <button
+          type="button"
+          onClick={() => scrollByCards(isAr ? 1 : -1)}
+          aria-label={tt("السابق", "Previous")}
+          className="size-11 grid place-items-center rounded-full bg-background/80 backdrop-blur border border-foreground/15 shadow-lg hover:scale-105 hover:bg-background transition"
+        >
+          <ArrowRight className="size-4 rotate-180 rtl-flip" />
+        </button>
+      </div>
+      <div className="hidden md:flex absolute inset-y-0 end-2 z-10 items-center">
+        <button
+          type="button"
+          onClick={() => scrollByCards(isAr ? -1 : 1)}
+          aria-label={tt("التالي", "Next")}
+          className="size-11 grid place-items-center rounded-full bg-background/80 backdrop-blur border border-foreground/15 shadow-lg hover:scale-105 hover:bg-background transition"
+        >
+          <ArrowRight className="size-4 rtl-flip" />
+        </button>
+      </div>
+
       <div
-        className="flex gap-5 w-max"
+        ref={scrollerRef}
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseLeave={endDrag}
+        onMouseUp={endDrag}
+        className="flex gap-6 overflow-x-auto px-4 sm:px-12 pb-6 pt-2 snap-x snap-mandatory cursor-grab select-none scroll-smooth"
         style={{
-          animation: `${direction === "left" ? "marquee-left" : "marquee-right"} ${duration}s linear infinite`,
+          scrollbarWidth: "none",
+          WebkitOverflowScrolling: "touch",
+          maskImage:
+            "linear-gradient(90deg, transparent 0, #000 4%, #000 96%, transparent 100%)",
+          WebkitMaskImage:
+            "linear-gradient(90deg, transparent 0, #000 4%, #000 96%, transparent 100%)",
         }}
       >
-        {loop.map((it, idx) => (
+        <style>{`.cursor-grab::-webkit-scrollbar{display:none}`}</style>
+        {items.map((it) => (
           <article
-            key={`${it.id}-${idx}`}
-            className="relative w-[320px] sm:w-[360px] shrink-0 flex flex-col rounded-[2.25rem] overflow-hidden border border-[#CD853F]/55 bg-gradient-to-br from-[#CD853F]/[0.14] via-[#8B4513]/[0.05] to-background shadow-[0_24px_70px_-30px_rgba(205,133,63,0.55)] transition-all duration-500 md:hover:-translate-y-1.5"
+            key={it.id}
+            onDragStart={(e) => e.preventDefault()}
+            className="group relative w-[300px] sm:w-[360px] lg:w-[400px] shrink-0 snap-center flex flex-col rounded-[2rem] overflow-hidden border border-foreground/10 bg-gradient-to-br from-card via-card to-card/80 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.55)] transition-all duration-500 md:hover:-translate-y-2 md:hover:border-[var(--gold)]/45 md:hover:shadow-[0_40px_100px_-40px_color-mix(in_oklab,var(--gold)_45%,transparent)]"
           >
-            <div className="h-1.5 w-full bg-gradient-to-r from-[#CD853F] via-[#E8A87C] to-[#8B4513]" />
-            <div className="pointer-events-none absolute -top-24 -right-24 size-64 rounded-full blur-3xl bg-[#CD853F]/20 opacity-0 group-hover:opacity-100 transition duration-700" />
-            <div className="relative p-6 lg:p-7 flex flex-col flex-1">
-              <Quote className="size-7 mb-3" style={{ color: "#E8A87C" }} />
-              <p className="text-sm leading-[1.95] text-foreground/90 whitespace-pre-line flex-1 line-clamp-6">
+            <div className="h-[3px] w-full bg-gradient-to-r from-[var(--gold)] via-[#E8C77C] to-[var(--gold)]" />
+            <div className="pointer-events-none absolute -top-24 -end-24 size-64 rounded-full blur-3xl bg-[var(--gold)]/12 opacity-0 md:group-hover:opacity-100 transition duration-700" />
+
+            <div className="relative p-7 lg:p-8 flex flex-col flex-1">
+              <div className="flex items-center justify-between">
+                <div
+                  className="size-12 grid place-items-center rounded-2xl border border-[var(--gold)]/30 bg-[var(--gold)]/10"
+                  aria-hidden
+                >
+                  <Quote className="size-5" style={{ color: "var(--gold)" }} />
+                </div>
+                {it.rating != null && it.rating > 0 && (
+                  <div className="flex items-center gap-0.5" aria-label={`${it.rating}/5`}>
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <span
+                        key={i}
+                        className={`text-xs ${i < (it.rating ?? 0) ? "text-[var(--gold)]" : "text-foreground/15"}`}
+                      >
+                        ★
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <p className="mt-5 text-[15px] leading-[2] text-foreground/90 whitespace-pre-line flex-1 line-clamp-7">
                 {it.quote}
               </p>
-              <div className="mt-5 pt-4 border-t border-foreground/10 flex items-center gap-3">
+
+              <div className="mt-7 pt-5 border-t border-foreground/10 flex items-center gap-3.5">
                 {it.avatar_url ? (
                   <img
                     src={it.avatar_url}
                     alt={it.name}
                     loading="lazy"
-                    className="size-11 rounded-full object-cover border border-foreground/15"
+                    draggable={false}
+                    className="size-12 rounded-full object-cover border border-[var(--gold)]/30 shadow"
                   />
                 ) : (
-                  <div className="size-11 rounded-full bg-gradient-to-br from-[#CD853F]/40 to-[#8B4513]/30 grid place-items-center font-display font-bold text-base text-foreground">
+                  <div className="size-12 rounded-full bg-gradient-to-br from-[var(--gold)]/40 to-[var(--accent)]/30 grid place-items-center font-display font-bold text-base text-foreground border border-[var(--gold)]/30">
                     {it.name.charAt(0)}
                   </div>
                 )}
                 <div className="min-w-0">
-                  <div className="font-display font-bold text-sm truncate">{it.name}</div>
-                  <div className="text-[11px] text-muted-foreground truncate">
+                  <div className="font-display font-bold text-[15px] truncate text-foreground">{it.name}</div>
+                  <div className="text-[11px] text-muted-foreground truncate mt-0.5">
                     {[it.role, it.company].filter(Boolean).join(" · ")}
                   </div>
                 </div>
@@ -2239,8 +2300,10 @@ function CurrentCourses() {
     return () => window.removeEventListener("keydown", onKey);
   }, [selected, interest]);
 
-  const current = courses.filter((c) => !c.is_upcoming);
-  const upcoming = courses.filter((c) => c.is_upcoming);
+  // Hide the Empowerment Tools course from the general public courses list — it lives on /graduates
+  const visibleCourses = courses.filter((c) => !isEmpowermentCourse(c.title));
+  const current = visibleCourses.filter((c) => !c.is_upcoming);
+  const upcoming = visibleCourses.filter((c) => c.is_upcoming);
 
   return (
     <Section
@@ -2389,8 +2452,13 @@ function CourseCard({
         <div className="mt-5 flex items-center justify-between gap-3 border-t border-white/10 pt-4">
           <div className="min-w-0">
             {!upcoming && c.price != null && c.price > 0 ? (
-              <div className="font-display font-extrabold text-lg" style={{ color: "var(--gold)" }}>
-                {c.price} {c.currency}
+              <div>
+                <div className="text-[10px] uppercase tracking-[0.18em] font-bold text-muted-foreground">
+                  {tt("قيمة الاستثمار", "Investment value")}
+                </div>
+                <div className="font-display font-extrabold text-lg mt-0.5" style={{ color: "var(--gold)" }}>
+                  {c.price} {c.currency}
+                </div>
               </div>
             ) : !upcoming ? (
               <div className="text-xs font-bold text-muted-foreground">
@@ -2526,7 +2594,7 @@ function CourseDetailsModal({
             {!course.is_upcoming && course.price != null && course.price > 0 && (
               <DetailStat
                 icon={BadgeCheck}
-                label={tt("السعر", "Price")}
+                label={tt("قيمة الاستثمار", "Investment value")}
                 value={`${course.price} ${course.currency}`}
               />
             )}
@@ -2640,7 +2708,7 @@ function InterestFormModal({
     setPhoneError(null);
     setBusy(true);
     const { error } = await supabase.from("course_interests").insert({
-      course_id: course.id,
+      course_id: course.id || null,
       course_title: course.title,
       full_name: full_name.trim(),
       email: email.trim().toLowerCase(),
@@ -3570,7 +3638,28 @@ export function EmpowermentTools() {
   const tt = (a: string, b: string) => (isAr ? a : b);
   const [course, setCourse] = useState<PublicCourse | null>(null);
   const [open, setOpen] = useState(false);
+  const [interestOpen, setInterestOpen] = useState(false);
   const [loadingCourse, setLoadingCourse] = useState(false);
+
+  // Stub used for the "Future Course Interest" form when no live course exists yet
+  const empowermentStub: PublicCourse = {
+    id: "",
+    title: t("emp_title"),
+    description: t("emp_desc"),
+    cover_emoji: "🚀",
+    price: null,
+    currency: "",
+    starts_at: null,
+    ends_at: null,
+    total_hours: 0,
+    online_url: null,
+    brand_name: null,
+    brand_tagline_ar: null,
+    brand_tagline_en: null,
+    course_goals: null,
+    target_audience: null,
+    is_upcoming: true,
+  };
 
   useEffect(() => {
     (async () => {
@@ -3605,7 +3694,12 @@ export function EmpowermentTools() {
     const match = list.find((c) => isEmpowermentCourse(c.title)) ?? null;
     setCourse(match);
     setLoadingCourse(false);
-    if (match) setOpen(true);
+    if (match) {
+      setOpen(true);
+    } else {
+      // Course not yet available — capture interest like an upcoming course
+      setInterestOpen(true);
+    }
   }
 
   const tools = [
@@ -3689,6 +3783,15 @@ export function EmpowermentTools() {
           dir={dir}
           onClose={() => setOpen(false)}
           onInterest={() => setOpen(false)}
+        />
+      )}
+
+      {interestOpen && (
+        <InterestFormModal
+          course={empowermentStub}
+          isAr={isAr}
+          dir={dir}
+          onClose={() => setInterestOpen(false)}
         />
       )}
     </Section>

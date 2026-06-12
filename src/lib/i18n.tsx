@@ -38,7 +38,7 @@ const en: Dict = {
   about_eyebrow: "About Me",
   about_title: "Meet Eslam",
   about_intro:
-    "Head of Learning & Development. I bring over 9 years of proven expertise in Talent and Performance Management, and in developing human capital across multiple countries.",
+    "Learning & Development Lead and Talent Management professional with over 9 years of proven expertise in driving organizational growth, building employee capabilities, and executing quality retention strategies across the Retail, FMCG, and Education sectors in the MENA region. Currently serving as L&D Lead at Knowledge City for Education in Saudi Arabia, he spearheads comprehensive training initiatives and corporate talent programs.\n\nEslam successfully bridges the gap between business objectives and human capital development by integrating modern learning methodologies with AI-driven platforms to optimize training experiences and maximize ROI.\n\nHe is passionate about cultivating high-performing teams, fostering a culture of continuous learning, and driving operational excellence through structured project management.",
   about_credentials: "Educational credentials",
 
 
@@ -211,7 +211,7 @@ const ar: Dict = {
   hero_hello: "مرحبًا،",
   hero_meet: "تعرّف إلى",
   hero_intro:
-    "رئيس قسم التعليم و التطوير، وممارس في إدارة المواهب والأداء بخبرة تتجاوز ٩ سنوات في تطوير رأس المال البشري عبر العديد من الدول.",
+    "رئيس قسم التعليم والتطوير. أمتلك خبرة تتجاوز ٩ سنوات في إدارة المواهب والأداء، وتطوير رأس المال البشري عبر العديد من الدول.",
   hero_btn_book: "احجز جلسة فردية مجانية",
   hero_btn_programs: "استكشف البرامج",
   stat_trainees: "متدرب",
@@ -224,7 +224,7 @@ const ar: Dict = {
   about_title: "تعرّف إلى إسلام",
 
   about_intro:
-    "رئيس قسم التعليم والتطوير. أمتلك خبرة تتجاوز ٩ سنوات في إدارة المواهب والأداء، وتطوير رأس المال البشري عبر العديد من الدول.",
+    "قائد متخصص في التعلم والتطوير وإدارة المواهب، بخبرة تتجاوز ٩ سنوات أُثبتت في دفع النمو المؤسسي، وبناء قدرات الموظفين، وتنفيذ استراتيجيات الاحتفاظ بالكفاءات عبر قطاعات التجزئة والسلع الاستهلاكية والتعليم في منطقة الشرق الأوسط وشمال إفريقيا. يشغل حالياً منصب رئيس قسم التعلم والتطوير في Knowledge City للتعليم بالمملكة العربية السعودية، حيث يقود مبادرات تدريبية شاملة وبرامج تطوير المواهب المؤسسية.\n\nيُجيد إسلام سدّ الفجوة بين الأهداف المؤسسية وتطوير رأس المال البشري من خلال دمج منهجيات التعلم الحديثة مع منصات مدعومة بالذكاء الاصطناعي، لتحسين تجربة التدريب وتعظيم العائد على الاستثمار.\n\nشغوف ببناء فرق عالية الأداء، وترسيخ ثقافة التعلم المستمر، وتحقيق التميز التشغيلي من خلال إدارة منهجية للمشاريع.",
   about_credentials: "المؤهلات والشهادات",
 
   pillars_eyebrow: "ثلاث ركائز",
@@ -312,7 +312,7 @@ const ar: Dict = {
   library_modal_title: "المصادر",
   library_modal_desc: "تصفّح وحمّل أحدث المصادر.",
   library_open_drive: "افتح في Google Drive",
-  nav_courses: "الدورات",
+  nav_courses: "الكورسات",
   nav_library: "المصادر",
   nav_success_cases: "حالات النجاح",
 
