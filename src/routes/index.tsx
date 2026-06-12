@@ -2452,8 +2452,13 @@ function CourseCard({
         <div className="mt-5 flex items-center justify-between gap-3 border-t border-white/10 pt-4">
           <div className="min-w-0">
             {!upcoming && c.price != null && c.price > 0 ? (
-              <div className="font-display font-extrabold text-lg" style={{ color: "var(--gold)" }}>
-                {c.price} {c.currency}
+              <div>
+                <div className="text-[10px] uppercase tracking-[0.18em] font-bold text-muted-foreground">
+                  {tt("قيمة الاستثمار", "Investment value")}
+                </div>
+                <div className="font-display font-extrabold text-lg mt-0.5" style={{ color: "var(--gold)" }}>
+                  {c.price} {c.currency}
+                </div>
               </div>
             ) : !upcoming ? (
               <div className="text-xs font-bold text-muted-foreground">
