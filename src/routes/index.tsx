@@ -3785,6 +3785,15 @@ export function EmpowermentTools() {
           onInterest={() => setOpen(false)}
         />
       )}
+
+      {interestOpen && (
+        <InterestFormModal
+          course={empowermentStub}
+          isAr={isAr}
+          dir={dir}
+          onClose={() => setInterestOpen(false)}
+        />
+      )}
     </Section>
   );
 }
