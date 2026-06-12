@@ -312,7 +312,7 @@ const ar: Dict = {
   library_modal_title: "المصادر",
   library_modal_desc: "تصفّح وحمّل أحدث المصادر.",
   library_open_drive: "افتح في Google Drive",
-  nav_courses: "الدورات",
+  nav_courses: "الكورسات",
   nav_library: "المصادر",
   nav_success_cases: "حالات النجاح",
 
