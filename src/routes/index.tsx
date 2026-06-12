@@ -2300,8 +2300,10 @@ function CurrentCourses() {
     return () => window.removeEventListener("keydown", onKey);
   }, [selected, interest]);
 
-  const current = courses.filter((c) => !c.is_upcoming);
-  const upcoming = courses.filter((c) => c.is_upcoming);
+  // Hide the Empowerment Tools course from the general public courses list — it lives on /graduates
+  const visibleCourses = courses.filter((c) => !isEmpowermentCourse(c.title));
+  const current = visibleCourses.filter((c) => !c.is_upcoming);
+  const upcoming = visibleCourses.filter((c) => c.is_upcoming);
 
   return (
     <Section
