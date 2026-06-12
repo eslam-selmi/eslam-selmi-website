@@ -2594,7 +2594,7 @@ function CourseDetailsModal({
             {!course.is_upcoming && course.price != null && course.price > 0 && (
               <DetailStat
                 icon={BadgeCheck}
-                label={tt("السعر", "Price")}
+                label={tt("قيمة الاستثمار", "Investment value")}
                 value={`${course.price} ${course.currency}`}
               />
             )}
