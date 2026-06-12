@@ -616,7 +616,6 @@ function Portfolio() {
       {isVisible("home.cta") && <BookCTA />}
       {isVisible("home.contact") && <Contact />}
       {isVisible("home.footer") && <Footer />}
-      <WhatsAppFloat />
       <ScrollTop />
       <CalendlyDialog />
       <SitePopup />
