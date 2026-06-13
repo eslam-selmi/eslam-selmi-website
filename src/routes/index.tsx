@@ -1342,59 +1342,205 @@ function CompactStat({ n, l }: { n: string; l: string }) {
   );
 }
 
-/* ---------- ABOUT (Meet Eslam — editorial) ---------- */
+/* ---------- ABOUT (Meet Eslam — executive presence) ---------- */
 function About() {
-  const { t, lang } = useI18n();
+  const { t } = useI18n();
   const intro = t("about_intro");
   const paragraphs = intro.split(/\n\s*\n/).filter(Boolean);
 
+  const kpis = [
+    { value: "9+", label: t("about_kpi_years") },
+    { value: "12", label: t("about_kpi_countries") },
+    { value: "2.5K+", label: t("about_kpi_leaders") },
+    { value: "80+", label: t("about_kpi_programs") },
+  ];
+
+  const pillars = [
+    { icon: TrendingUp, title: t("about_pillar_strategy"), desc: t("about_pillar_strategy_d") },
+    { icon: Users, title: t("about_pillar_capability"), desc: t("about_pillar_capability_d") },
+    { icon: BadgeCheck, title: t("about_pillar_culture"), desc: t("about_pillar_culture_d") },
+  ];
+
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
-    <section id="about" className="px-4 sm:px-6 py-20 lg:py-28 relative">
+    <section id="about" className="px-4 sm:px-6 py-20 lg:py-32 relative overflow-hidden">
+      {/* Ambient atmosphere */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-50"
+        className="pointer-events-none absolute inset-0 opacity-60"
         style={{
           background:
-            "radial-gradient(55% 45% at 12% 18%, color-mix(in oklab, var(--gold) 16%, transparent), transparent 65%), radial-gradient(45% 40% at 90% 80%, color-mix(in oklab, var(--accent) 14%, transparent), transparent 70%)",
+            "radial-gradient(60% 50% at 10% 15%, color-mix(in oklab, var(--gold) 14%, transparent), transparent 65%), radial-gradient(45% 45% at 92% 85%, color-mix(in oklab, var(--accent) 12%, transparent), transparent 70%)",
         }}
       />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-px"
+        style={{ background: "linear-gradient(90deg, transparent, color-mix(in oklab, var(--gold) 50%, transparent), transparent)" }}
+      />
+
       <div className="relative mx-auto max-w-7xl">
-        {/* Heading row — aligned to the start (right in RTL) like other sections */}
-        <div className="mb-10 sm:mb-14 text-start">
+        {/* Eyebrow + headline */}
+        <div className="mb-12 sm:mb-16 text-start max-w-3xl">
           <span className="inline-flex items-center gap-2 text-[10px] sm:text-[11px] tracking-[0.32em] uppercase text-[var(--gold)] font-bold">
             <span className="h-px w-8 bg-[var(--gold)]/70" />
             {t("about_eyebrow")}
           </span>
-          <h2 className="mt-4 font-display font-extrabold text-[clamp(2rem,4.4vw,3.25rem)] leading-[1.1] text-foreground">
+          <h2 className="mt-4 font-display font-extrabold text-[clamp(2.25rem,5vw,3.75rem)] leading-[1.05] text-foreground">
             {t("about_title")}
           </h2>
         </div>
 
-        {/* Editorial card — wider, premium */}
-        <div className="relative rounded-[2rem] border border-foreground/10 bg-card/70 backdrop-blur-xl shadow-[0_30px_80px_-30px_rgba(0,0,0,0.35)] overflow-hidden">
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/70 to-transparent" />
-          <div className="absolute -top-16 -end-16 size-48 rounded-full bg-[var(--gold)]/10 blur-3xl" />
+        {/* Executive grid */}
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+          {/* Portrait column */}
+          <div className="lg:col-span-5">
+            <div className="relative group">
+              {/* Gold frame accent */}
+              <div
+                aria-hidden
+                className="absolute -inset-3 rounded-[2.25rem] opacity-70 blur-2xl transition-opacity group-hover:opacity-100"
+                style={{
+                  background:
+                    "linear-gradient(135deg, color-mix(in oklab, var(--gold) 35%, transparent), transparent 55%, color-mix(in oklab, var(--accent) 25%, transparent))",
+                }}
+              />
+              <div className="relative rounded-[2rem] overflow-hidden border border-[var(--gold)]/25 bg-card shadow-[0_40px_100px_-30px_rgba(0,0,0,0.55)]">
+                <img
+                  src={headshot}
+                  alt="Eslam Selmi"
+                  className="block w-full h-auto object-cover aspect-[4/5] transition-transform duration-700 group-hover:scale-[1.03]"
+                  loading="lazy"
+                  decoding="async"
+                />
+                {/* Bottom credential bar over image */}
+                <div
+                  className="absolute inset-x-0 bottom-0 p-5 sm:p-6"
+                  style={{
+                    background:
+                      "linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.35) 60%, transparent 100%)",
+                  }}
+                >
+                  <div className="flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase text-[var(--gold)] font-bold">
+                    <span className="size-1.5 rounded-full bg-[var(--gold)] animate-pulse" />
+                    {t("status_current")}
+                  </div>
+                  <div className="mt-2 font-display text-lg sm:text-xl font-bold text-white leading-tight">
+                    {t("about_role")}
+                  </div>
+                  <div className="mt-1 text-xs sm:text-sm text-white/75">
+                    {t("about_location")}
+                  </div>
+                </div>
+              </div>
 
-          <div className="p-6 sm:p-10 lg:p-16">
-            <span
-              className="block font-display text-[3rem] sm:text-[3.75rem] leading-none text-[var(--gold)] select-none"
-              style={{ fontFamily: "Georgia, serif" }}
-              aria-hidden
-            >
-              &ldquo;
-            </span>
-            <div className="mt-3 space-y-5 text-[15px] sm:text-base lg:text-[1.15rem] leading-[1.95] text-foreground/90 max-w-5xl">
-              {paragraphs.map((p, i) => (
-                <p key={i}>{p}</p>
-              ))}
-            </div>
-            <div className="mt-8 flex items-center gap-3">
-              <span className="h-px w-12 bg-[var(--gold)]/70" />
-              <span className="text-xs tracking-[0.25em] uppercase text-foreground/70 font-semibold">
-                Eslam Selmi
-              </span>
+              {/* Floating credential badge */}
+              <div className="absolute -top-4 -end-4 sm:-top-5 sm:-end-5 rounded-2xl border border-[var(--gold)]/40 bg-card/90 backdrop-blur-xl px-4 py-3 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.5)]">
+                <div className="flex items-center gap-2">
+                  <div className="size-9 rounded-xl grid place-items-center bg-gradient-to-br from-[var(--gold)] to-[var(--gold-soft)] text-accent-foreground">
+                    <Award className="size-5" />
+                  </div>
+                  <div className="leading-tight">
+                    <div className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground font-semibold">
+                      Executive
+                    </div>
+                    <div className="text-sm font-display font-bold text-foreground">
+                      L&D Advisor
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+
+          {/* Narrative column */}
+          <div className="lg:col-span-7">
+            <div className="relative rounded-[2rem] border border-foreground/10 bg-card/70 backdrop-blur-xl shadow-[0_30px_80px_-30px_rgba(0,0,0,0.35)] overflow-hidden">
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/70 to-transparent" />
+              <div className="absolute -top-16 -end-16 size-48 rounded-full bg-[var(--gold)]/10 blur-3xl" />
+
+              <div className="relative p-6 sm:p-9 lg:p-10">
+                <div className="space-y-5 text-[15px] sm:text-base lg:text-[1.08rem] leading-[1.95] text-foreground/90">
+                  {paragraphs.map((p, i) => (
+                    <p key={i}>{p}</p>
+                  ))}
+                </div>
+
+                {/* CTAs */}
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    onClick={() => scrollTo("book")}
+                    className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[var(--gold)] to-[var(--gold-soft)] text-accent-foreground font-semibold px-6 py-3 text-sm shadow-[0_15px_40px_-15px_color-mix(in_oklab,var(--gold)_70%,transparent)] hover:shadow-[0_20px_50px_-15px_color-mix(in_oklab,var(--gold)_85%,transparent)] hover:-translate-y-0.5 transition-all duration-300"
+                  >
+                    <Compass className="size-4" />
+                    {t("about_cta_book")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => scrollTo("current-courses")}
+                    className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-background/40 backdrop-blur text-foreground font-semibold px-6 py-3 text-sm hover:border-[var(--gold)]/50 hover:bg-background/70 transition-all duration-300"
+                  >
+                    <Briefcase className="size-4" />
+                    {t("about_cta_programs")}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* KPI strip */}
+            <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {kpis.map((k) => (
+                <div
+                  key={k.label}
+                  className="rounded-2xl border border-foreground/10 bg-card/60 backdrop-blur-xl p-4 text-center hover:border-[var(--gold)]/40 hover:-translate-y-0.5 transition-all duration-300"
+                >
+                  <div
+                    className="font-display text-2xl sm:text-[1.65rem] font-extrabold leading-none"
+                    style={{ color: "var(--gold)" }}
+                  >
+                    {k.value}
+                  </div>
+                  <div className="mt-2 text-[10px] sm:text-[11px] tracking-[0.18em] uppercase text-muted-foreground font-semibold">
+                    {k.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Pillars row — what I do */}
+        <div className="mt-10 lg:mt-14 grid sm:grid-cols-3 gap-4 lg:gap-5">
+          {pillars.map((p) => {
+            const Icon = p.icon;
+            return (
+              <div
+                key={p.title}
+                className="relative rounded-2xl border border-foreground/10 bg-card/60 backdrop-blur-xl p-6 overflow-hidden group hover:-translate-y-1 hover:border-[var(--gold)]/40 transition-all duration-300"
+              >
+                <div
+                  aria-hidden
+                  className="absolute -top-16 -end-16 size-32 rounded-full bg-[var(--gold)]/10 blur-3xl opacity-60 group-hover:opacity-100 transition-opacity"
+                />
+                <div className="relative">
+                  <div className="size-11 rounded-xl grid place-items-center bg-gradient-to-br from-[var(--gold)] to-[var(--gold-soft)] text-accent-foreground shadow-md">
+                    <Icon className="size-5" />
+                  </div>
+                  <h3 className="mt-4 font-display text-lg font-bold text-foreground">
+                    {p.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    {p.desc}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
