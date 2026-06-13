@@ -1307,7 +1307,6 @@ function About() {
     { value: "9+", label: t("about_kpi_years") },
     { value: "12", label: t("about_kpi_countries") },
     { value: "2.5K+", label: t("about_kpi_leaders") },
-    { value: "80+", label: t("about_kpi_programs") },
   ];
 
   const pillars = [
