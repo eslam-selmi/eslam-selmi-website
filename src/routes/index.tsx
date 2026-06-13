@@ -1350,69 +1350,9 @@ function About() {
         </div>
 
         {/* Executive grid */}
-        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-          {/* Portrait column */}
-          <div className="lg:col-span-5">
-            <div className="relative group">
-              {/* Gold frame accent */}
-              <div
-                aria-hidden
-                className="absolute -inset-3 rounded-[2.25rem] opacity-70 blur-2xl transition-opacity group-hover:opacity-100"
-                style={{
-                  background:
-                    "linear-gradient(135deg, color-mix(in oklab, var(--gold) 35%, transparent), transparent 55%, color-mix(in oklab, var(--accent) 25%, transparent))",
-                }}
-              />
-              <div className="relative rounded-[2rem] overflow-hidden border border-[var(--gold)]/25 bg-card shadow-[0_40px_100px_-30px_rgba(0,0,0,0.55)]">
-                <img
-                  src={headshot}
-                  alt="Eslam Selmi"
-                  className="block w-full h-auto object-cover aspect-[4/5] transition-transform duration-700 group-hover:scale-[1.03]"
-                  loading="lazy"
-                  decoding="async"
-                />
-                {/* Bottom credential bar over image */}
-                <div
-                  className="absolute inset-x-0 bottom-0 p-5 sm:p-6"
-                  style={{
-                    background:
-                      "linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.35) 60%, transparent 100%)",
-                  }}
-                >
-                  <div className="flex items-center gap-2 text-[10px] tracking-[0.28em] uppercase text-[var(--gold)] font-bold">
-                    <span className="size-1.5 rounded-full bg-[var(--gold)] animate-pulse" />
-                    {t("status_current")}
-                  </div>
-                  <div className="mt-2 font-display text-lg sm:text-xl font-bold text-white leading-tight">
-                    {t("about_role")}
-                  </div>
-                  <div className="mt-1 text-xs sm:text-sm text-white/75">
-                    {t("about_location")}
-                  </div>
-                </div>
-              </div>
-
-              {/* Floating credential badge */}
-              <div className="absolute -top-4 -end-4 sm:-top-5 sm:-end-5 rounded-2xl border border-[var(--gold)]/40 bg-card/90 backdrop-blur-xl px-4 py-3 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.5)]">
-                <div className="flex items-center gap-2">
-                  <div className="size-9 rounded-xl grid place-items-center bg-gradient-to-br from-[var(--gold)] to-[var(--gold-soft)] text-accent-foreground">
-                    <Award className="size-5" />
-                  </div>
-                  <div className="leading-tight">
-                    <div className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground font-semibold">
-                      Executive
-                    </div>
-                    <div className="text-sm font-display font-bold text-foreground">
-                      L&D Advisor
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
+        <div className="grid gap-8 lg:gap-12 items-start">
           {/* Narrative column */}
-          <div className="lg:col-span-7">
+          <div>
             <div className="relative rounded-[2rem] border border-foreground/10 bg-card/70 backdrop-blur-xl shadow-[0_30px_80px_-30px_rgba(0,0,0,0.35)] overflow-hidden">
               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/70 to-transparent" />
               <div className="absolute -top-16 -end-16 size-48 rounded-full bg-[var(--gold)]/10 blur-3xl" />
@@ -1428,14 +1368,6 @@ function About() {
                 <div className="mt-8 flex flex-wrap gap-3">
                   <button
                     type="button"
-                    onClick={() => scrollTo("book")}
-                    className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[var(--gold)] to-[var(--gold-soft)] text-accent-foreground font-semibold px-6 py-3 text-sm shadow-[0_15px_40px_-15px_color-mix(in_oklab,var(--gold)_70%,transparent)] hover:shadow-[0_20px_50px_-15px_color-mix(in_oklab,var(--gold)_85%,transparent)] hover:-translate-y-0.5 transition-all duration-300"
-                  >
-                    <Compass className="size-4" />
-                    {t("about_cta_book")}
-                  </button>
-                  <button
-                    type="button"
                     onClick={() => scrollTo("current-courses")}
                     className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-background/40 backdrop-blur text-foreground font-semibold px-6 py-3 text-sm hover:border-[var(--gold)]/50 hover:bg-background/70 transition-all duration-300"
                   >
@@ -1447,7 +1379,7 @@ function About() {
             </div>
 
             {/* KPI strip */}
-            <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="mt-6 grid grid-cols-3 gap-3">
               {kpis.map((k) => (
                 <div
                   key={k.label}
@@ -1466,35 +1398,6 @@ function About() {
               ))}
             </div>
           </div>
-        </div>
-
-        {/* Pillars row — what I do */}
-        <div className="mt-10 lg:mt-14 grid sm:grid-cols-3 gap-4 lg:gap-5">
-          {pillars.map((p) => {
-            const Icon = p.icon;
-            return (
-              <div
-                key={p.title}
-                className="relative rounded-2xl border border-foreground/10 bg-card/60 backdrop-blur-xl p-6 overflow-hidden group hover:-translate-y-1 hover:border-[var(--gold)]/40 transition-all duration-300"
-              >
-                <div
-                  aria-hidden
-                  className="absolute -top-16 -end-16 size-32 rounded-full bg-[var(--gold)]/10 blur-3xl opacity-60 group-hover:opacity-100 transition-opacity"
-                />
-                <div className="relative">
-                  <div className="size-11 rounded-xl grid place-items-center bg-gradient-to-br from-[var(--gold)] to-[var(--gold-soft)] text-accent-foreground shadow-md">
-                    <Icon className="size-5" />
-                  </div>
-                  <h3 className="mt-4 font-display text-lg font-bold text-foreground">
-                    {p.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                    {p.desc}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
         </div>
       </div>
     </section>
