@@ -244,7 +244,7 @@ const ar: Dict = {
   about_location: "الرياض، السعودية",
   about_kpi_years: "سنوات من الأثر",
   about_kpi_countries: "دولة",
-  about_kpi_leaders: "قائد تم تطويرهم",
+  about_kpi_leaders: "فرد تم تطويرهم",
   about_kpi_programs: "برنامج تم تنفيذه",
   about_pillar_strategy: "من الاستراتيجية إلى النتائج",
   about_pillar_strategy_d: "تحويل أهداف الأعمال إلى أنظمة أداء ومؤشرات قياس قابلة للتنفيذ.",

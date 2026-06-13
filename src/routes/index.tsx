@@ -1265,51 +1265,6 @@ function Hero() {
               </div>
             </div>
 
-            {/* Floating chip — Years */}
-            <motion.div
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -right-1 sm:-right-4 top-4 rounded-2xl px-4 py-2.5 bg-card/95 backdrop-blur border border-foreground/10 shadow-lg"
-            >
-              <div
-                className="text-xl sm:text-2xl font-extrabold font-display leading-none"
-                style={{ color: "var(--accent)" }}
-              >
-                9+
-              </div>
-              <div className="text-[10px] text-muted-foreground mt-1 font-medium tracking-wide">
-                {lang === "ar" ? "سنوات خبرة" : "Years"}
-              </div>
-            </motion.div>
-
-            {/* Floating chip — Countries */}
-            <motion.div
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -left-1 sm:-left-4 bottom-10 rounded-2xl px-4 py-2.5 bg-card/95 backdrop-blur border border-foreground/10 shadow-lg"
-            >
-              <div
-                className="text-xl sm:text-2xl font-extrabold font-display leading-none"
-                style={{ color: "var(--accent)" }}
-              >
-                12+
-              </div>
-              <div className="text-[10px] text-muted-foreground mt-1 font-medium tracking-wide">
-                {lang === "ar" ? "دولة" : "Countries"}
-              </div>
-            </motion.div>
-
-            {/* Side pill — Sectors */}
-            <motion.div
-              animate={{ x: [0, -4, 0] }}
-              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -left-2 sm:-left-6 top-[18%] rounded-full px-3.5 py-2 bg-primary text-primary-foreground shadow-lg flex items-center gap-2"
-            >
-              <span className="text-lg font-extrabold font-display leading-none">4</span>
-              <span className="text-[10px] uppercase tracking-wider opacity-85 font-semibold">
-                {lang === "ar" ? "قطاعات" : "Sectors"}
-              </span>
-            </motion.div>
           </div>
         </motion.div>
       </div>
