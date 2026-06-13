@@ -38,7 +38,21 @@ const en: Dict = {
   about_eyebrow: "About Me",
   about_title: "Meet Eslam",
   about_intro:
-    "Learning & Development Lead and Talent Management professional with over 9 years of proven expertise in driving organizational growth, building employee capabilities, and executing quality retention strategies across the Retail, FMCG, and Education sectors in the MENA region. Currently serving as L&D Lead at Knowledge City for Education in Saudi Arabia, he spearheads comprehensive training initiatives and corporate talent programs.\n\nEslam successfully bridges the gap between business objectives and human capital development by integrating modern learning methodologies with AI-driven platforms to optimize training experiences and maximize ROI.\n\nHe is passionate about cultivating high-performing teams, fostering a culture of continuous learning, and driving operational excellence through structured project management.",
+    "Performance & capability-building specialist. I help organizations turn strategy into measurable results through performance systems, KPIs, and modern learning & development programs.\n\nOver 9+ years, I have partnered with diverse organizations to elevate individual effectiveness, develop leaders, and build sustainable performance cultures that create real, lasting business impact.",
+  about_role: "Head of Learning & Development",
+  about_location: "Riyadh, KSA",
+  about_kpi_years: "Years of impact",
+  about_kpi_countries: "Countries",
+  about_kpi_leaders: "Leaders developed",
+  about_kpi_programs: "Programs delivered",
+  about_pillar_strategy: "Strategy to results",
+  about_pillar_strategy_d: "Translating business goals into performance systems and measurable KPIs.",
+  about_pillar_capability: "Capability building",
+  about_pillar_capability_d: "Modern L&D programs that develop leaders and elevate team effectiveness.",
+  about_pillar_culture: "Performance culture",
+  about_pillar_culture_d: "Sustainable, data-driven cultures that create real business impact.",
+  about_cta_book: "Book a 1:1 with me",
+  about_cta_programs: "Explore programs",
   about_credentials: "Educational credentials",
 
 
