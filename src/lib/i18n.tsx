@@ -43,7 +43,7 @@ const en: Dict = {
   about_location: "Riyadh, KSA",
   about_kpi_years: "Years of impact",
   about_kpi_countries: "Countries",
-  about_kpi_leaders: "Leaders developed",
+  about_kpi_leaders: "Individuals developed",
   about_kpi_programs: "Programs delivered",
   about_pillar_strategy: "Strategy to results",
   about_pillar_strategy_d: "Translating business goals into performance systems and measurable KPIs.",
