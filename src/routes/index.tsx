@@ -1324,19 +1324,30 @@ function About() {
 
   return (
     <section id="about" className="px-4 sm:px-6 py-20 lg:py-32 relative overflow-hidden">
-      {/* Ambient atmosphere */}
+      {/* Ambient glass atmosphere */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-60"
+        className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(60% 50% at 10% 15%, color-mix(in oklab, var(--gold) 14%, transparent), transparent 65%), radial-gradient(45% 45% at 92% 85%, color-mix(in oklab, var(--accent) 12%, transparent), transparent 70%)",
+            "radial-gradient(55% 45% at 12% 18%, color-mix(in oklab, var(--gold) 22%, transparent), transparent 65%), radial-gradient(45% 45% at 90% 85%, color-mix(in oklab, var(--accent) 18%, transparent), transparent 70%), radial-gradient(35% 30% at 50% 50%, color-mix(in oklab, var(--primary) 10%, transparent), transparent 70%)",
         }}
+      />
+      {/* Floating orbs */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-20 start-1/4 size-[24rem] rounded-full blur-3xl opacity-30"
+        style={{ background: "var(--gold)" }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -bottom-24 end-10 size-[20rem] rounded-full blur-3xl opacity-25"
+        style={{ background: "var(--accent)" }}
       />
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 h-px"
-        style={{ background: "linear-gradient(90deg, transparent, color-mix(in oklab, var(--gold) 50%, transparent), transparent)" }}
+        style={{ background: "linear-gradient(90deg, transparent, color-mix(in oklab, var(--gold) 55%, transparent), transparent)" }}
       />
 
       <div className="relative mx-auto max-w-7xl">
@@ -1351,15 +1362,26 @@ function About() {
           </h2>
         </div>
 
-        {/* Executive grid */}
         <div className="grid gap-8 lg:gap-12 items-start">
-          {/* Narrative column */}
+          {/* Narrative — frosted glass card */}
           <div>
-            <div className="relative rounded-[2rem] border border-foreground/10 bg-card/70 backdrop-blur-xl shadow-[0_30px_80px_-30px_rgba(0,0,0,0.35)] overflow-hidden">
-              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/70 to-transparent" />
-              <div className="absolute -top-16 -end-16 size-48 rounded-full bg-[var(--gold)]/10 blur-3xl" />
+            <div className="glass-panel relative rounded-[2.25rem] overflow-hidden">
+              {/* gold gradient hairline */}
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/80 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/30 to-transparent" />
+              {/* inner highlight orbs */}
+              <div
+                aria-hidden
+                className="absolute -top-24 -end-20 size-64 rounded-full blur-3xl opacity-40"
+                style={{ background: "var(--gold)" }}
+              />
+              <div
+                aria-hidden
+                className="absolute -bottom-28 -start-16 size-56 rounded-full blur-3xl opacity-25"
+                style={{ background: "var(--accent)" }}
+              />
 
-              <div className="relative p-6 sm:p-9 lg:p-10">
+              <div className="relative p-6 sm:p-9 lg:p-12">
                 <div className="space-y-5 text-[15px] sm:text-base lg:text-[1.08rem] leading-[1.95] text-foreground/90">
                   {paragraphs.map((p, i) => (
                     <p key={i}>{p}</p>
@@ -1371,7 +1393,7 @@ function About() {
                   <button
                     type="button"
                     onClick={() => scrollTo("current-courses")}
-                    className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-background/40 backdrop-blur text-foreground font-semibold px-6 py-3 text-sm hover:border-[var(--gold)]/50 hover:bg-background/70 transition-all duration-300"
+                    className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-background/40 backdrop-blur-xl text-foreground font-semibold px-6 py-3 text-sm hover:border-[var(--gold)]/60 hover:bg-background/70 transition-all duration-300"
                   >
                     <Briefcase className="size-4" />
                     {t("about_cta_programs")}
@@ -1380,21 +1402,28 @@ function About() {
               </div>
             </div>
 
-            {/* KPI strip */}
-            <div className="mt-6 grid grid-cols-3 gap-3">
+            {/* KPI strip — glass tiles */}
+            <div className="mt-6 grid grid-cols-3 gap-3 sm:gap-4">
               {kpis.map((k) => (
                 <div
                   key={k.label}
-                  className="rounded-2xl border border-foreground/10 bg-card/60 backdrop-blur-xl p-4 text-center hover:border-[var(--gold)]/40 hover:-translate-y-0.5 transition-all duration-300"
+                  className="glass-panel relative rounded-2xl p-4 sm:p-5 text-center overflow-hidden hover:-translate-y-0.5 transition-all duration-300"
                 >
                   <div
-                    className="font-display text-2xl sm:text-[1.65rem] font-extrabold leading-none"
-                    style={{ color: "var(--gold)" }}
-                  >
-                    {k.value}
-                  </div>
-                  <div className="mt-2 text-[10px] sm:text-[11px] tracking-[0.18em] uppercase text-muted-foreground font-semibold">
-                    {k.label}
+                    aria-hidden
+                    className="absolute -top-10 -end-10 size-24 rounded-full blur-2xl opacity-40"
+                    style={{ background: "var(--gold)" }}
+                  />
+                  <div className="relative">
+                    <div
+                      className="font-display text-2xl sm:text-[1.7rem] font-extrabold leading-none"
+                      style={{ color: "var(--gold)" }}
+                    >
+                      {k.value}
+                    </div>
+                    <div className="mt-2 text-[10px] sm:text-[11px] tracking-[0.18em] uppercase text-muted-foreground font-semibold">
+                      {k.label}
+                    </div>
                   </div>
                 </div>
               ))}
