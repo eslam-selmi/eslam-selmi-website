@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { ArrowLeft, Send, MessageSquare, Loader2, RefreshCw, Sparkles } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { askSelmi } from "@/lib/ask-selmi.functions";
