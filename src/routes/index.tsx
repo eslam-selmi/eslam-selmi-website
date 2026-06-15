@@ -1323,117 +1323,184 @@ function About() {
   };
 
   return (
-    <section id="about" className="px-4 sm:px-6 py-20 lg:py-32 relative overflow-hidden">
-      {/* Ambient glass atmosphere */}
+    <section id="about" className="px-4 sm:px-6 py-24 lg:py-36 relative overflow-hidden">
+      {/* Ambient gradient field */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(55% 45% at 12% 18%, color-mix(in oklab, var(--gold) 22%, transparent), transparent 65%), radial-gradient(45% 45% at 90% 85%, color-mix(in oklab, var(--accent) 18%, transparent), transparent 70%), radial-gradient(35% 30% at 50% 50%, color-mix(in oklab, var(--primary) 10%, transparent), transparent 70%)",
+            "radial-gradient(60% 50% at 10% 10%, color-mix(in oklab, var(--gold) 18%, transparent), transparent 70%), radial-gradient(50% 50% at 95% 95%, color-mix(in oklab, var(--accent) 18%, transparent), transparent 70%)",
         }}
-      />
-      {/* Floating orbs */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-20 start-1/4 size-[24rem] rounded-full blur-3xl opacity-30"
-        style={{ background: "var(--gold)" }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-24 end-10 size-[20rem] rounded-full blur-3xl opacity-25"
-        style={{ background: "var(--accent)" }}
       />
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 h-px"
-        style={{ background: "linear-gradient(90deg, transparent, color-mix(in oklab, var(--gold) 55%, transparent), transparent)" }}
+        style={{ background: "linear-gradient(90deg, transparent, color-mix(in oklab, var(--gold) 60%, transparent), transparent)" }}
       />
 
       <div className="relative mx-auto max-w-7xl">
-        {/* Eyebrow + headline */}
-        <div className="mb-12 sm:mb-16 text-start max-w-3xl">
-          <span className="inline-flex items-center gap-2 text-[10px] sm:text-[11px] tracking-[0.32em] uppercase text-[var(--gold)] font-bold">
-            <span className="h-px w-8 bg-[var(--gold)]/70" />
-            {t("about_eyebrow")}
-          </span>
-          <h2 className="mt-4 font-display font-extrabold text-[clamp(2.25rem,5vw,3.75rem)] leading-[1.05] text-foreground">
-            {t("about_title")}
-          </h2>
+        {/* Editorial header — asymmetric */}
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end mb-12 lg:mb-16">
+          <div className="lg:col-span-7">
+            <span className="inline-flex items-center gap-3 text-[10px] sm:text-[11px] tracking-[0.42em] uppercase text-[var(--gold)] font-bold">
+              <span className="h-px w-10 bg-[var(--gold)]/70" />
+              {t("about_eyebrow")}
+              <span className="h-px w-10 bg-[var(--gold)]/70" />
+            </span>
+            <h2 className="mt-5 font-display font-black tracking-tight text-[clamp(2.5rem,6.5vw,4.75rem)] leading-[0.95] text-foreground">
+              {t("about_title")}
+              <span className="inline-block ms-3 align-baseline text-[var(--gold)]">.</span>
+            </h2>
+          </div>
+          {/* Monogram mark — replaces the photo */}
+          <div className="lg:col-span-5 flex lg:justify-end">
+            <div className="relative">
+              <div
+                aria-hidden
+                className="absolute -inset-8 rounded-full blur-3xl opacity-40"
+                style={{ background: "radial-gradient(circle, var(--gold), transparent 60%)" }}
+              />
+              <div
+                className="relative size-28 sm:size-32 rounded-2xl grid place-items-center shadow-2xl rotate-[-4deg]"
+                style={{
+                  background:
+                    "linear-gradient(135deg, color-mix(in oklab, var(--gold) 90%, white 10%), color-mix(in oklab, var(--gold) 55%, var(--accent)))",
+                  border: "1px solid color-mix(in oklab, var(--gold) 40%, transparent)",
+                }}
+              >
+                <span
+                  className="font-display font-black text-4xl sm:text-5xl select-none"
+                  style={{ color: "var(--accent-foreground)", letterSpacing: "-0.04em" }}
+                >
+                  ES
+                </span>
+                <span
+                  aria-hidden
+                  className="absolute -top-2 -end-2 text-[10px] tracking-[0.3em] font-bold px-2 py-1 rounded-full"
+                  style={{
+                    background: "var(--background)",
+                    color: "var(--gold)",
+                    border: "1px solid color-mix(in oklab, var(--gold) 50%, transparent)",
+                  }}
+                >
+                  EST · 2016
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="grid gap-8 lg:gap-12 items-start">
-          {/* Narrative — frosted glass card */}
-          <div>
-            <div className="glass-panel relative rounded-[2.25rem] overflow-hidden">
-              {/* gold gradient hairline */}
-              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/80 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/30 to-transparent" />
-              {/* inner highlight orbs */}
-              <div
-                aria-hidden
-                className="absolute -top-24 -end-20 size-64 rounded-full blur-3xl opacity-40"
-                style={{ background: "var(--gold)" }}
-              />
-              <div
-                aria-hidden
-                className="absolute -bottom-28 -start-16 size-56 rounded-full blur-3xl opacity-25"
-                style={{ background: "var(--accent)" }}
-              />
+        {/* Editorial body — magazine column with sidebar KPIs */}
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-14">
+          {/* Narrative column */}
+          <div className="lg:col-span-8 relative">
+            {/* Side gold rule */}
+            <div
+              aria-hidden
+              className="hidden lg:block absolute -start-6 top-2 bottom-2 w-px"
+              style={{ background: "linear-gradient(180deg, transparent, var(--gold), transparent)" }}
+            />
+            {/* Oversized opening quote glyph */}
+            <div
+              aria-hidden
+              className="font-display text-[8rem] sm:text-[10rem] leading-[0.7] -mb-6 -ms-2 opacity-25 select-none"
+              style={{ color: "var(--gold)" }}
+            >
+              &ldquo;
+            </div>
 
-              <div className="relative p-6 sm:p-9 lg:p-12">
-                <div className="space-y-5 text-[15px] sm:text-base lg:text-[1.08rem] leading-[1.95] text-foreground/90">
-                  {paragraphs.map((p, i) => (
-                    <p key={i}>{p}</p>
-                  ))}
+            <div className="space-y-6 text-[16px] sm:text-[17px] lg:text-[1.18rem] leading-[2] text-foreground/90 font-light">
+              {paragraphs.map((p, i) => (
+                <p key={i} className={i === 0 ? "first-letter:font-display first-letter:font-black first-letter:text-[3.75rem] first-letter:leading-[0.85] first-letter:me-2 first-letter:float-start first-letter:text-[var(--gold)]" : ""}>
+                  {p}
+                </p>
+              ))}
+            </div>
+
+            {/* Signature row */}
+            <div className="mt-10 flex items-center gap-5">
+              <div className="h-px flex-1 bg-gradient-to-r from-[var(--gold)]/60 to-transparent" />
+              <div className="text-end">
+                <div
+                  className="font-display italic text-2xl sm:text-3xl"
+                  style={{ color: "var(--gold)" }}
+                >
+                  Eslam Selmi
                 </div>
-
-                {/* CTAs */}
-                <div className="mt-8 flex flex-wrap gap-3">
-                  <button
-                    type="button"
-                    onClick={() => scrollTo("current-courses")}
-                    className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-background/40 backdrop-blur-xl text-foreground font-semibold px-6 py-3 text-sm hover:border-[var(--gold)]/60 hover:bg-background/70 transition-all duration-300"
-                  >
-                    <Briefcase className="size-4" />
-                    {t("about_cta_programs")}
-                  </button>
+                <div className="text-[10px] tracking-[0.32em] uppercase text-muted-foreground mt-1">
+                  {t("about_role")}
                 </div>
               </div>
             </div>
 
-            {/* KPI strip — glass tiles */}
-            <div className="mt-6 grid grid-cols-3 gap-3 sm:gap-4">
-              {kpis.map((k) => (
+            {/* CTA */}
+            <div className="mt-10">
+              <button
+                type="button"
+                onClick={() => scrollTo("current-courses")}
+                className="group inline-flex items-center gap-3 rounded-full border border-foreground/15 bg-background/40 backdrop-blur-xl text-foreground font-semibold px-7 py-3.5 text-sm hover:border-[var(--gold)]/70 hover:bg-background/80 transition-all duration-300"
+              >
+                <Briefcase className="size-4" />
+                {t("about_cta_programs")}
+                <span
+                  aria-hidden
+                  className="size-1.5 rounded-full transition-all group-hover:w-6"
+                  style={{ background: "var(--gold)" }}
+                />
+              </button>
+            </div>
+          </div>
+
+          {/* KPI rail — vertical, editorial */}
+          <aside className="lg:col-span-4">
+            <div className="lg:sticky lg:top-24 space-y-4">
+              {kpis.map((k, i) => (
                 <div
                   key={k.label}
-                  className="glass-panel relative rounded-2xl p-4 sm:p-5 text-center overflow-hidden hover:-translate-y-0.5 transition-all duration-300"
+                  className="group relative overflow-hidden rounded-2xl p-6 transition-all duration-500 hover:-translate-y-0.5"
+                  style={{
+                    background: "color-mix(in oklab, var(--card) 60%, transparent)",
+                    backdropFilter: "blur(20px) saturate(140%)",
+                    border: "1px solid color-mix(in oklab, var(--foreground) 8%, transparent)",
+                  }}
                 >
                   <div
                     aria-hidden
-                    className="absolute -top-10 -end-10 size-24 rounded-full blur-2xl opacity-40"
-                    style={{ background: "var(--gold)" }}
+                    className="absolute top-0 start-0 h-full w-1 transition-all group-hover:w-1.5"
+                    style={{ background: "linear-gradient(180deg, var(--gold), transparent)" }}
                   />
-                  <div className="relative">
+                  <div className="flex items-baseline justify-between gap-4">
                     <div
-                      className="font-display text-2xl sm:text-[1.7rem] font-extrabold leading-none"
-                      style={{ color: "var(--gold)" }}
+                      className="font-display font-black leading-none"
+                      style={{
+                        color: "var(--gold)",
+                        fontSize: "clamp(2.5rem, 5vw, 3.5rem)",
+                        letterSpacing: "-0.04em",
+                      }}
                     >
                       {k.value}
                     </div>
-                    <div className="mt-2 text-[10px] sm:text-[11px] tracking-[0.18em] uppercase text-muted-foreground font-semibold">
-                      {k.label}
+                    <div
+                      className="font-display font-bold text-xs opacity-30"
+                      style={{ color: "var(--gold)" }}
+                    >
+                      {String(i + 1).padStart(2, "0")}
                     </div>
+                  </div>
+                  <div className="mt-3 text-[11px] sm:text-xs tracking-[0.22em] uppercase text-muted-foreground font-semibold">
+                    {k.label}
                   </div>
                 </div>
               ))}
             </div>
-          </div>
+          </aside>
         </div>
       </div>
     </section>
   );
 }
+
 
 
 /* ---------- PILLARS ---------- */
