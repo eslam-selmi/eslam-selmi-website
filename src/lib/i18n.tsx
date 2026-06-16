@@ -38,6 +38,8 @@ const en: Dict = {
   // about
   about_eyebrow: "About Me",
   about_title: "Meet Eslam",
+  about_hook:
+    "I lead human-capital transformation by bridging business objectives with talent performance development.",
   about_intro:
     "Performance & capability-building specialist. I help organizations turn strategy into measurable results through performance systems, KPIs, and modern learning & development programs.\n\nOver 9+ years, I have partnered with diverse organizations to elevate individual effectiveness, develop leaders, and build sustainable performance cultures that create real, lasting business impact.",
   about_role: "Head of Learning & Development",
@@ -46,12 +48,15 @@ const en: Dict = {
   about_kpi_countries: "Countries",
   about_kpi_leaders: "Talents empowered",
   about_kpi_programs: "Programs delivered",
-  about_pillar_strategy: "Strategy to results",
-  about_pillar_strategy_d: "Translating business goals into performance systems and measurable KPIs.",
-  about_pillar_capability: "Capability building",
-  about_pillar_capability_d: "Modern L&D programs that develop leaders and elevate team effectiveness.",
-  about_pillar_culture: "Performance culture",
-  about_pillar_culture_d: "Sustainable, data-driven cultures that create real business impact.",
+  about_pillar_philosophy: "My Professional Philosophy",
+  about_pillar_philosophy_d:
+    "I don't believe in training for training's sake — I design L&D strategies that drive measurable ROI and fuel organizational growth.",
+  about_pillar_journey: "My Career Journey",
+  about_pillar_journey_d:
+    "9+ years building and leading learning & talent ecosystems across dynamic sectors — Retail, FMCG, Logistics, and Education.",
+  about_pillar_digital: "Digital Enablement",
+  about_pillar_digital_d:
+    "An advanced blend of professional project management tools and AI to automate and evolve LMS / PMS platforms — a smarter, seamless growth experience.",
   about_cta_book: "Book a 1:1 with me",
   about_cta_programs: "Explore programs",
   about_credentials: "Educational credentials",
