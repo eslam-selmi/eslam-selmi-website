@@ -38,6 +38,8 @@ const en: Dict = {
   // about
   about_eyebrow: "About Me",
   about_title: "Meet Eslam",
+  about_hook:
+    "I lead human-capital transformation by bridging business objectives with talent performance development.",
   about_intro:
     "Performance & capability-building specialist. I help organizations turn strategy into measurable results through performance systems, KPIs, and modern learning & development programs.\n\nOver 9+ years, I have partnered with diverse organizations to elevate individual effectiveness, develop leaders, and build sustainable performance cultures that create real, lasting business impact.",
   about_role: "Head of Learning & Development",
@@ -46,12 +48,15 @@ const en: Dict = {
   about_kpi_countries: "Countries",
   about_kpi_leaders: "Talents empowered",
   about_kpi_programs: "Programs delivered",
-  about_pillar_strategy: "Strategy to results",
-  about_pillar_strategy_d: "Translating business goals into performance systems and measurable KPIs.",
-  about_pillar_capability: "Capability building",
-  about_pillar_capability_d: "Modern L&D programs that develop leaders and elevate team effectiveness.",
-  about_pillar_culture: "Performance culture",
-  about_pillar_culture_d: "Sustainable, data-driven cultures that create real business impact.",
+  about_pillar_philosophy: "My Professional Philosophy",
+  about_pillar_philosophy_d:
+    "I don't believe in training for training's sake — I design L&D strategies that drive measurable ROI and fuel organizational growth.",
+  about_pillar_journey: "My Career Journey",
+  about_pillar_journey_d:
+    "9+ years building and leading learning & talent ecosystems across dynamic sectors — Retail, FMCG, Logistics, and Education.",
+  about_pillar_digital: "Digital Enablement",
+  about_pillar_digital_d:
+    "An advanced blend of professional project management tools and AI to automate and evolve LMS / PMS platforms — a smarter, seamless growth experience.",
   about_cta_book: "Book a 1:1 with me",
   about_cta_programs: "Explore programs",
   about_credentials: "Educational credentials",
@@ -111,7 +116,7 @@ const en: Dict = {
   podcast_play: "Play episode",
   podcast_more_soon: "More episodes coming soon. Stay tuned.",
   podcast_ep1_title: "Episode 01: Inside Learning & Development",
-  podcast_ep1_desc: "Real stories from the field on building talent, performance and culture.",
+  podcast_ep1_desc: "Real-world experiences and practices from the professional field, on building talent, performance and culture.",
   podcast_ep2_title: "Episode 02: Building Learning Culture",
   podcast_ep2_desc: "How to embed a learning mindset across teams and leaders.",
   podcast_ep3_title: "Episode 03: Talent in Action",
@@ -238,7 +243,8 @@ const ar: Dict = {
 
   about_eyebrow: "من أنا",
   about_title: "تعرّف إلى إسلام",
-
+  about_hook:
+    "أقود تحول رأس المال البشري من خلال سد الفجوة بين أهداف البيزنس وتطوير أداء المواهب.",
   about_intro:
     "متخصص في تطوير الأداء وبناء القدرات، أساعد المؤسسات على تحويل استراتيجياتها إلى نتائج ملموسة من خلال أنظمة الأداء، ومؤشرات القياس، وبرامج التعلم والتطوير الحديثة.\n\nعلى مدار أكثر من ٩ سنوات، عملت مع مؤسسات متنوعة لرفع كفاءة الأفراد، وتطوير القيادات، وبناء ثقافة أداء مستدامة تحقق أثراً حقيقياً على مستوى الأعمال.",
   about_credentials: "المؤهلات والشهادات",
@@ -248,12 +254,15 @@ const ar: Dict = {
   about_kpi_countries: "دولة",
   about_kpi_leaders: "موهبة تم تمكينها",
   about_kpi_programs: "برنامج تم تنفيذه",
-  about_pillar_strategy: "من الاستراتيجية إلى النتائج",
-  about_pillar_strategy_d: "تحويل أهداف الأعمال إلى أنظمة أداء ومؤشرات قياس قابلة للتنفيذ.",
-  about_pillar_capability: "بناء القدرات",
-  about_pillar_capability_d: "برامج تعلم وتطوير حديثة تطوّر القيادات وترفع كفاءة الفرق.",
-  about_pillar_culture: "ثقافة الأداء",
-  about_pillar_culture_d: "ثقافة مستدامة قائمة على البيانات تُحدث أثراً حقيقياً على الأعمال.",
+  about_pillar_philosophy: "فلسفتي المهنية",
+  about_pillar_philosophy_d:
+    "لا أؤمن بالتدريب لمجرد التدريب؛ بل بتصميم استراتيجيات تعلم وتطوير (L&D) تقود إلى عائد ملموس على الاستثمار (ROI) وتدعم نمو المؤسسات.",
+  about_pillar_journey: "رحلتي المهنية",
+  about_pillar_journey_d:
+    "خبرة تمتد لأكثر من 9 سنوات في بناء وإدارة منظومات التعلم والمواهب عبر قطاعات ديناميكية تشمل التجزئة، السلع الاستهلاكية (FMCG)، اللوجستيات، والتعليم.",
+  about_pillar_digital: "التمكين الرقمي",
+  about_pillar_digital_d:
+    "دمج متطور بين أدوات إدارة المشاريع الاحترافية وتقنيات الذكاء الاصطناعي لأتمتة وتطوير منصات التعلم وإدارة الأداء (LMS/PMS) لتوفير تجربة نمو ذكية وسلسة.",
   about_cta_book: "احجز جلسة فردية معي",
   about_cta_programs: "استكشف البرامج",
 
@@ -302,7 +311,7 @@ const ar: Dict = {
   podcast_play: "تشغيل الحلقة",
   podcast_more_soon: "حلقات جديدة قريبًا. تابعنا.",
   podcast_ep1_title: "الحلقة الأولى: داخل عالم التعلم والتطوير",
-  podcast_ep1_desc: "قصص حقيقية من الميدان عن بناء المواهب والأداء والثقافة.",
+  podcast_ep1_desc: "تجارب وممارسات من الواقع المهني في بناء المواهب والأداء والثقافة.",
   podcast_ep2_title: "الحلقة الثانية: بناء ثقافة التعلم",
   podcast_ep2_desc: "كيف نُرسّخ عقلية التعلم لدى الفرق والقيادات.",
   podcast_ep3_title: "الحلقة الثالثة: المواهب في الميدان",

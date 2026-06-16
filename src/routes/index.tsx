@@ -1299,11 +1299,9 @@ function CompactStat({ n, l }: { n: string; l: string }) {
   );
 }
 
-/* ---------- ABOUT (Meet Eslam — executive presence) ---------- */
+/* ---------- ABOUT (Meet Eslam — glassmorphic editorial) ---------- */
 function About() {
-  const { t } = useI18n();
-  const intro = t("about_intro");
-  const paragraphs = intro.split(/\n\s*\n/).filter(Boolean);
+  const { t, dir } = useI18n();
 
   const kpis = [
     { value: "9+", label: t("about_kpi_years") },
@@ -1312,9 +1310,24 @@ function About() {
   ];
 
   const pillars = [
-    { icon: TrendingUp, title: t("about_pillar_strategy"), desc: t("about_pillar_strategy_d") },
-    { icon: Users, title: t("about_pillar_capability"), desc: t("about_pillar_capability_d") },
-    { icon: BadgeCheck, title: t("about_pillar_culture"), desc: t("about_pillar_culture_d") },
+    {
+      icon: Lightbulb,
+      title: t("about_pillar_philosophy"),
+      desc: t("about_pillar_philosophy_d"),
+      tag: "01",
+    },
+    {
+      icon: Compass,
+      title: t("about_pillar_journey"),
+      desc: t("about_pillar_journey_d"),
+      tag: "02",
+    },
+    {
+      icon: Bot,
+      title: t("about_pillar_digital"),
+      desc: t("about_pillar_digital_d"),
+      tag: "03",
+    },
   ];
 
   const scrollTo = (id: string) => {
@@ -1323,15 +1336,20 @@ function About() {
   };
 
   return (
-    <section id="about" className="px-4 sm:px-6 py-24 lg:py-36 relative overflow-hidden">
-      {/* Ambient gradient field */}
+    <section id="about" className="px-4 sm:px-6 py-24 lg:py-32 relative overflow-hidden">
+      {/* Ambient atmosphere */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(60% 50% at 10% 10%, color-mix(in oklab, var(--gold) 18%, transparent), transparent 70%), radial-gradient(50% 50% at 95% 95%, color-mix(in oklab, var(--accent) 18%, transparent), transparent 70%)",
+            "radial-gradient(60% 50% at 12% 8%, color-mix(in oklab, var(--gold) 22%, transparent), transparent 65%), radial-gradient(50% 50% at 92% 90%, color-mix(in oklab, var(--accent) 22%, transparent), transparent 70%), radial-gradient(55% 45% at 50% 50%, color-mix(in oklab, var(--primary) 9%, transparent), transparent 75%)",
         }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-32 start-1/3 size-[26rem] rounded-full blur-3xl opacity-25"
+        style={{ background: "var(--gold)" }}
       />
       <div
         aria-hidden
@@ -1339,162 +1357,166 @@ function About() {
         style={{ background: "linear-gradient(90deg, transparent, color-mix(in oklab, var(--gold) 60%, transparent), transparent)" }}
       />
 
-      <div className="relative mx-auto max-w-7xl">
-        {/* Editorial header — asymmetric */}
-        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end mb-12 lg:mb-16">
-          <div className="lg:col-span-7">
-            <span className="inline-flex items-center gap-3 text-[10px] sm:text-[11px] tracking-[0.42em] uppercase text-[var(--gold)] font-bold">
-              <span className="h-px w-10 bg-[var(--gold)]/70" />
-              {t("about_eyebrow")}
-              <span className="h-px w-10 bg-[var(--gold)]/70" />
-            </span>
-            <h2 className="mt-5 font-display font-black tracking-tight text-[clamp(2.5rem,6.5vw,4.75rem)] leading-[0.95] text-foreground">
-              {t("about_title")}
-              <span className="inline-block ms-3 align-baseline text-[var(--gold)]">.</span>
-            </h2>
+      <div className="relative mx-auto max-w-6xl">
+        {/* Eyebrow + title */}
+        <div className="text-center mb-8 lg:mb-10">
+          <span className="inline-flex items-center gap-3 text-[10px] sm:text-[11px] tracking-[0.42em] uppercase text-[var(--gold)] font-bold">
+            <span className="h-px w-10 bg-[var(--gold)]/70" />
+            {t("about_eyebrow")}
+            <span className="h-px w-10 bg-[var(--gold)]/70" />
+          </span>
+          <h2 className="mt-5 font-display font-black tracking-tight text-[clamp(2.25rem,6vw,4.25rem)] leading-[0.98] text-foreground">
+            {t("about_title")}
+            <span className="inline-block ms-2 align-baseline text-[var(--gold)]">.</span>
+          </h2>
+        </div>
+
+        {/* The Hook — bold one-liner inside a wide glass panel */}
+        <div
+          className="relative mx-auto max-w-4xl rounded-3xl px-6 sm:px-10 py-8 sm:py-10 overflow-hidden"
+          style={{
+            background: "color-mix(in oklab, var(--card) 55%, transparent)",
+            backdropFilter: "blur(24px) saturate(160%)",
+            border: "1px solid color-mix(in oklab, var(--foreground) 9%, transparent)",
+            boxShadow: "0 30px 80px -40px color-mix(in oklab, var(--gold) 35%, transparent)",
+          }}
+        >
+          <div
+            aria-hidden
+            className="absolute inset-x-0 top-0 h-px"
+            style={{ background: "linear-gradient(90deg, transparent, var(--gold), transparent)" }}
+          />
+          <div
+            aria-hidden
+            className="absolute -top-16 -end-12 size-44 rounded-full blur-3xl opacity-40"
+            style={{ background: "var(--gold)" }}
+          />
+          <div className="relative flex items-start gap-4 sm:gap-6">
+            <Quote
+              className="size-9 sm:size-12 shrink-0 opacity-70"
+              style={{ color: "var(--gold)", transform: dir === "rtl" ? "scaleX(-1)" : undefined }}
+            />
+            <p className="font-display font-extrabold text-[clamp(1.15rem,2.4vw,1.75rem)] leading-[1.45] tracking-tight text-foreground">
+              {t("about_hook")}
+            </p>
           </div>
-          {/* Monogram mark — replaces the photo */}
-          <div className="lg:col-span-5 flex lg:justify-end">
-            <div className="relative">
+          {/* Signature row */}
+          <div className="relative mt-7 flex items-center gap-4">
+            <div className="h-px flex-1 bg-gradient-to-r from-[var(--gold)]/60 to-transparent" />
+            <div className="text-end">
               <div
-                aria-hidden
-                className="absolute -inset-8 rounded-full blur-3xl opacity-40"
-                style={{ background: "radial-gradient(circle, var(--gold), transparent 60%)" }}
-              />
-              <div
-                className="relative size-28 sm:size-32 rounded-2xl grid place-items-center shadow-2xl rotate-[-4deg]"
-                style={{
-                  background:
-                    "linear-gradient(135deg, color-mix(in oklab, var(--gold) 90%, white 10%), color-mix(in oklab, var(--gold) 55%, var(--accent)))",
-                  border: "1px solid color-mix(in oklab, var(--gold) 40%, transparent)",
-                }}
+                className="font-display italic text-xl sm:text-2xl"
+                style={{ color: "var(--gold)" }}
               >
-                <span
-                  className="font-display font-black text-4xl sm:text-5xl select-none"
-                  style={{ color: "var(--accent-foreground)", letterSpacing: "-0.04em" }}
-                >
-                  ES
-                </span>
-                <span
-                  aria-hidden
-                  className="absolute -top-2 -end-2 text-[10px] tracking-[0.3em] font-bold px-2 py-1 rounded-full"
-                  style={{
-                    background: "var(--background)",
-                    color: "var(--gold)",
-                    border: "1px solid color-mix(in oklab, var(--gold) 50%, transparent)",
-                  }}
-                >
-                  EST · 2016
-                </span>
+                Eslam Selmi
+              </div>
+              <div className="text-[10px] tracking-[0.32em] uppercase text-muted-foreground mt-1">
+                {t("about_role")}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Editorial body — magazine column with sidebar KPIs */}
-        <div className="grid lg:grid-cols-12 gap-8 lg:gap-14">
-          {/* Narrative column */}
-          <div className="lg:col-span-8 relative">
-            {/* Side gold rule */}
-            <div
-              aria-hidden
-              className="hidden lg:block absolute -start-6 top-2 bottom-2 w-px"
-              style={{ background: "linear-gradient(180deg, transparent, var(--gold), transparent)" }}
-            />
-            {/* Oversized opening quote glyph */}
-            <div
-              aria-hidden
-              className="font-display text-[8rem] sm:text-[10rem] leading-[0.7] -mb-6 -ms-2 opacity-25 select-none"
-              style={{ color: "var(--gold)" }}
-            >
-              &ldquo;
-            </div>
-
-            <div className="space-y-6 text-[16px] sm:text-[17px] lg:text-[1.18rem] leading-[2] text-foreground/90 font-light">
-              {paragraphs.map((p, i) => (
-                <p key={i} className={i === 0 ? "first-letter:font-display first-letter:font-black first-letter:text-[3.75rem] first-letter:leading-[0.85] first-letter:me-2 first-letter:float-start first-letter:text-[var(--gold)]" : ""}>
-                  {p}
-                </p>
-              ))}
-            </div>
-
-            {/* Signature row */}
-            <div className="mt-10 flex items-center gap-5">
-              <div className="h-px flex-1 bg-gradient-to-r from-[var(--gold)]/60 to-transparent" />
-              <div className="text-end">
-                <div
-                  className="font-display italic text-2xl sm:text-3xl"
-                  style={{ color: "var(--gold)" }}
-                >
-                  Eslam Selmi
-                </div>
-                <div className="text-[10px] tracking-[0.32em] uppercase text-muted-foreground mt-1">
-                  {t("about_role")}
-                </div>
-              </div>
-            </div>
-
-            {/* CTA */}
-            <div className="mt-10">
-              <button
-                type="button"
-                onClick={() => scrollTo("current-courses")}
-                className="group inline-flex items-center gap-3 rounded-full border border-foreground/15 bg-background/40 backdrop-blur-xl text-foreground font-semibold px-7 py-3.5 text-sm hover:border-[var(--gold)]/70 hover:bg-background/80 transition-all duration-300"
+        {/* The Three Glass Pillars */}
+        <div className="mt-10 lg:mt-14 grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6">
+          {pillars.map((p, i) => {
+            const Icon = p.icon;
+            return (
+              <article
+                key={p.title}
+                className="group relative overflow-hidden rounded-3xl p-7 lg:p-8 transition-all duration-500 hover:-translate-y-1.5"
+                style={{
+                  background: "color-mix(in oklab, var(--card) 55%, transparent)",
+                  backdropFilter: "blur(22px) saturate(160%)",
+                  border: "1px solid color-mix(in oklab, var(--foreground) 9%, transparent)",
+                  boxShadow: "0 20px 60px -30px color-mix(in oklab, var(--foreground) 22%, transparent)",
+                }}
               >
-                <Briefcase className="size-4" />
-                {t("about_cta_programs")}
-                <span
+                {/* gold hairline top */}
+                <div
                   aria-hidden
-                  className="size-1.5 rounded-full transition-all group-hover:w-6"
+                  className="absolute inset-x-0 top-0 h-px opacity-70 transition-opacity group-hover:opacity-100"
+                  style={{ background: "linear-gradient(90deg, transparent, var(--gold), transparent)" }}
+                />
+                {/* ambient orb */}
+                <div
+                  aria-hidden
+                  className="absolute -top-12 -end-12 size-36 rounded-full blur-3xl opacity-0 group-hover:opacity-50 transition-opacity duration-500"
                   style={{ background: "var(--gold)" }}
                 />
-              </button>
-            </div>
-          </div>
-
-          {/* KPI rail — vertical, editorial */}
-          <aside className="lg:col-span-4">
-            <div className="lg:sticky lg:top-24 space-y-4">
-              {kpis.map((k, i) => (
-                <div
-                  key={k.label}
-                  className="group relative overflow-hidden rounded-2xl p-6 transition-all duration-500 hover:-translate-y-0.5"
-                  style={{
-                    background: "color-mix(in oklab, var(--card) 60%, transparent)",
-                    backdropFilter: "blur(20px) saturate(140%)",
-                    border: "1px solid color-mix(in oklab, var(--foreground) 8%, transparent)",
-                  }}
-                >
+                <div className="relative flex items-start justify-between gap-3 mb-5">
                   <div
-                    aria-hidden
-                    className="absolute top-0 start-0 h-full w-1 transition-all group-hover:w-1.5"
-                    style={{ background: "linear-gradient(180deg, var(--gold), transparent)" }}
-                  />
-                  <div className="flex items-baseline justify-between gap-4">
-                    <div
-                      className="font-display font-black leading-none"
-                      style={{
-                        color: "var(--gold)",
-                        fontSize: "clamp(2.5rem, 5vw, 3.5rem)",
-                        letterSpacing: "-0.04em",
-                      }}
-                    >
-                      {k.value}
-                    </div>
-                    <div
-                      className="font-display font-bold text-xs opacity-30"
-                      style={{ color: "var(--gold)" }}
-                    >
-                      {String(i + 1).padStart(2, "0")}
-                    </div>
+                    className="size-12 lg:size-14 rounded-2xl grid place-items-center shadow-md"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, color-mix(in oklab, var(--gold) 22%, transparent), color-mix(in oklab, var(--gold) 6%, transparent))",
+                      border: "1px solid color-mix(in oklab, var(--gold) 45%, transparent)",
+                    }}
+                  >
+                    <Icon className="size-6" style={{ color: "var(--gold)" }} />
                   </div>
-                  <div className="mt-3 text-[11px] sm:text-xs tracking-[0.22em] uppercase text-muted-foreground font-semibold">
-                    {k.label}
-                  </div>
+                  <span
+                    className="font-display font-black text-3xl opacity-25"
+                    style={{ color: "var(--gold)" }}
+                  >
+                    {p.tag}
+                  </span>
                 </div>
-              ))}
+                <h3 className="relative font-display font-extrabold text-lg lg:text-xl leading-tight text-foreground mb-3">
+                  {p.title}
+                </h3>
+                <p className="relative text-[14.5px] lg:text-[15px] leading-[1.85] text-foreground/80 font-light">
+                  {p.desc}
+                </p>
+              </article>
+            );
+          })}
+        </div>
+
+        {/* KPI strip — subtle, beneath the pillars */}
+        <div className="mt-10 lg:mt-12 grid grid-cols-3 gap-3 sm:gap-4 max-w-3xl mx-auto">
+          {kpis.map((k) => (
+            <div
+              key={k.label}
+              className="relative overflow-hidden rounded-2xl px-3 sm:px-5 py-4 sm:py-5 text-center"
+              style={{
+                background: "color-mix(in oklab, var(--card) 45%, transparent)",
+                backdropFilter: "blur(18px) saturate(140%)",
+                border: "1px solid color-mix(in oklab, var(--foreground) 7%, transparent)",
+              }}
+            >
+              <div
+                className="font-display font-black leading-none"
+                style={{
+                  color: "var(--gold)",
+                  fontSize: "clamp(1.5rem, 4vw, 2.25rem)",
+                  letterSpacing: "-0.04em",
+                }}
+              >
+                {k.value}
+              </div>
+              <div className="mt-2 text-[9px] sm:text-[10px] tracking-[0.22em] uppercase text-muted-foreground font-semibold">
+                {k.label}
+              </div>
             </div>
-          </aside>
+          ))}
+        </div>
+
+        {/* CTA */}
+        <div className="mt-10 flex justify-center">
+          <button
+            type="button"
+            onClick={() => scrollTo("current-courses")}
+            className="group inline-flex items-center gap-3 rounded-full border border-foreground/15 bg-background/40 backdrop-blur-xl text-foreground font-semibold px-7 py-3.5 text-sm hover:border-[var(--gold)]/70 hover:bg-background/80 transition-all duration-300"
+          >
+            <Briefcase className="size-4" />
+            {t("about_cta_programs")}
+            <span
+              aria-hidden
+              className="size-1.5 rounded-full transition-all group-hover:w-6"
+              style={{ background: "var(--gold)" }}
+            />
+          </button>
         </div>
       </div>
     </section>
@@ -3569,28 +3591,53 @@ export function WhatsAppFloat() {
   );
 }
 
-/* ---------- SCROLL TOP ---------- */
+/* ---------- SCROLL TOP + ASK SELMI shortcut ---------- */
 function ScrollTop() {
-  const { dir } = useI18n();
+  const { dir, lang } = useI18n();
   const [show, setShow] = useState(false);
   useEffect(() => {
     const onScroll = () => setShow(window.scrollY > 300);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+  const side = dir === "rtl" ? "left-5" : "right-5";
   return (
     <AnimatePresence>
       {show && (
-        <motion.button
+        <motion.div
+          key="scroll-stack"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 10 }}
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          aria-label="Scroll to top"
-          className={`fixed bottom-20 ${dir === "rtl" ? "left-5" : "right-5"} z-40 size-11 grid place-items-center rounded-full bg-gradient-to-br from-[var(--lavender)] to-[var(--gold)] text-primary-foreground shadow-lg hover:scale-110 transition`}
+          className={`fixed bottom-20 ${side} z-40 flex flex-col items-center gap-3`}
         >
-          <ArrowUp className="size-5" />
-        </motion.button>
+          <Link
+            to="/ask-selmi"
+            aria-label={lang === "ar" ? "اسأل سلمي" : "Ask Selmi"}
+            title={lang === "ar" ? "اسأل سلمي" : "Ask Selmi"}
+            className="relative size-11 grid place-items-center rounded-full shadow-lg hover:scale-110 transition overflow-hidden"
+            style={{
+              background:
+                "linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 55%, var(--accent)))",
+              color: "var(--accent-foreground)",
+            }}
+          >
+            <span
+              aria-hidden
+              className="absolute -inset-1 rounded-full blur opacity-50"
+              style={{ background: "var(--gold)" }}
+            />
+            <Sparkles className="relative size-5" />
+          </Link>
+          <button
+            type="button"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            aria-label="Scroll to top"
+            className="size-11 grid place-items-center rounded-full bg-gradient-to-br from-[var(--lavender)] to-[var(--gold)] text-primary-foreground shadow-lg hover:scale-110 transition"
+          >
+            <ArrowUp className="size-5" />
+          </button>
+        </motion.div>
       )}
     </AnimatePresence>
   );

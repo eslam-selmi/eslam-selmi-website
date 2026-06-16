@@ -78,7 +78,7 @@ function SuccessCasesPage() {
               {tt("حالات نجاح", "Success Cases")}
             </span>
             <h1 className="mt-4 font-display font-extrabold text-[clamp(2rem,4.4vw,3.25rem)] leading-[1.1]">
-              {tt("قصص واقعية من الميدان", "Real stories from the field")}
+              {tt("تجارب وممارسات من الواقع المهني", "Real-world experiences and practices")}
             </h1>
             <p className="mt-4 text-muted-foreground max-w-2xl leading-relaxed">
               {tt(
