@@ -3591,28 +3591,53 @@ export function WhatsAppFloat() {
   );
 }
 
-/* ---------- SCROLL TOP ---------- */
+/* ---------- SCROLL TOP + ASK SELMI shortcut ---------- */
 function ScrollTop() {
-  const { dir } = useI18n();
+  const { dir, lang } = useI18n();
   const [show, setShow] = useState(false);
   useEffect(() => {
     const onScroll = () => setShow(window.scrollY > 300);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+  const side = dir === "rtl" ? "left-5" : "right-5";
   return (
     <AnimatePresence>
       {show && (
-        <motion.button
+        <motion.div
+          key="scroll-stack"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 10 }}
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          aria-label="Scroll to top"
-          className={`fixed bottom-20 ${dir === "rtl" ? "left-5" : "right-5"} z-40 size-11 grid place-items-center rounded-full bg-gradient-to-br from-[var(--lavender)] to-[var(--gold)] text-primary-foreground shadow-lg hover:scale-110 transition`}
+          className={`fixed bottom-20 ${side} z-40 flex flex-col items-center gap-3`}
         >
-          <ArrowUp className="size-5" />
-        </motion.button>
+          <Link
+            to="/ask-selmi"
+            aria-label={lang === "ar" ? "اسأل سلمي" : "Ask Selmi"}
+            title={lang === "ar" ? "اسأل سلمي" : "Ask Selmi"}
+            className="relative size-11 grid place-items-center rounded-full shadow-lg hover:scale-110 transition overflow-hidden"
+            style={{
+              background:
+                "linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 55%, var(--accent)))",
+              color: "var(--accent-foreground)",
+            }}
+          >
+            <span
+              aria-hidden
+              className="absolute -inset-1 rounded-full blur opacity-50"
+              style={{ background: "var(--gold)" }}
+            />
+            <Sparkles className="relative size-5" />
+          </Link>
+          <button
+            type="button"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            aria-label="Scroll to top"
+            className="size-11 grid place-items-center rounded-full bg-gradient-to-br from-[var(--lavender)] to-[var(--gold)] text-primary-foreground shadow-lg hover:scale-110 transition"
+          >
+            <ArrowUp className="size-5" />
+          </button>
+        </motion.div>
       )}
     </AnimatePresence>
   );
