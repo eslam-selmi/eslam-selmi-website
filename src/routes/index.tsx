@@ -1298,7 +1298,7 @@ function CompactStat({ n, l }: { n: string; l: string }) {
   );
 }
 
-/* ---------- ABOUT (Meet Eslam — glassmorphic editorial) ---------- */
+/* ---------- PILLARS ---------- */
 function Pillars() {
   const { t } = useI18n();
   return (
