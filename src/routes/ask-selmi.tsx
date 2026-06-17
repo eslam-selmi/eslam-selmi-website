@@ -530,13 +530,29 @@ function AskSelmiPage() {
             </span>
             <button
               type="button"
+              onClick={() => setHistoryOpen(true)}
+              title={isAr ? "سجل المحادثات" : "Chat history"}
+              aria-label={isAr ? "سجل المحادثات" : "Chat history"}
+              className="relative size-9 grid place-items-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition"
+            >
+              <HistoryIcon className="size-4" />
+              {chats.length > 1 && (
+                <span
+                  className="absolute -top-0.5 -end-0.5 min-w-[16px] h-[16px] px-1 rounded-full text-[9px] font-bold grid place-items-center"
+                  style={{ background: "var(--gold)", color: "var(--accent-foreground)" }}
+                >
+                  {chats.length}
+                </span>
+              )}
+            </button>
+            <button
+              type="button"
               onClick={reset}
-              disabled={messages.length === 0 && !loading}
               title={isAr ? "محادثة جديدة" : "New chat"}
               aria-label={isAr ? "محادثة جديدة" : "New chat"}
-              className="size-9 grid place-items-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition disabled:opacity-40 disabled:cursor-not-allowed"
+              className="size-9 grid place-items-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition"
             >
-              <RefreshCw className="size-4" />
+              <Plus className="size-4" />
             </button>
             <Link
               to="/"
