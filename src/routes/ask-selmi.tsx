@@ -1070,7 +1070,7 @@ function NameDialog({
                 color: "var(--accent-foreground)",
               }}
             >
-              {mode === "first" ? (isAr ? "تشرفنا" : "Nice to meet you") : isAr ? "تأكيد" : "Confirm"}
+              {mode === "first" ? (isAr ? "ابدأ المحادثة" : "Start chatting") : isAr ? "تأكيد" : "Confirm"}
             </button>
           </div>
         </form>
