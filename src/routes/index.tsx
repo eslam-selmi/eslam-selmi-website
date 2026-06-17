@@ -28,7 +28,7 @@ import {
   Loader2,
   Briefcase,
   BadgeCheck,
-  Compass,
+  
   Presentation,
   Moon,
   Sun,
