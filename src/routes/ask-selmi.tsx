@@ -733,6 +733,22 @@ function AskSelmiPage() {
           }}
         />
       )}
+
+      {/* History drawer */}
+      {historyOpen && (
+        <HistoryDrawer
+          isAr={isAr}
+          chats={chats}
+          activeId={activeId}
+          onClose={() => setHistoryOpen(false)}
+          onSelect={switchChat}
+          onDelete={deleteChat}
+          onNew={() => {
+            reset();
+            setHistoryOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 }
