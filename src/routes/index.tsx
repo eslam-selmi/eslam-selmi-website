@@ -279,7 +279,6 @@ const waServiceLink = (serviceEn: string, lang: "en" | "ar") => {
 
 // Primary nav — kept short and focused. The full set lives in the mobile menu.
 const NAV: { id: string; key: string; to?: string }[] = [
-  { id: "about", key: "nav_about" },
   { id: "services", key: "nav_services" },
   { id: "current-courses", key: "nav_courses" },
   { id: "success-cases", key: "nav_success_cases", to: "/success-cases" },
@@ -289,7 +288,7 @@ const NAV: { id: string; key: string; to?: string }[] = [
 ];
 const NAV_FULL: { id: string; key: string; to?: string }[] = [
   { id: "home", key: "nav_home" },
-  { id: "about", key: "nav_about" },
+  
   { id: "pillars", key: "nav_pillars" },
   { id: "journey", key: "nav_journey" },
   { id: "services", key: "nav_services" },
@@ -596,7 +595,7 @@ function Portfolio() {
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-accent/25">
       <Nav theme={theme as ThemeMode} onThemeToggle={toggle} />
       {isVisible("home.hero") && <Hero />}
-      {isVisible("home.about") && <About />}
+      
       {isVisible("home.pillars") && <Pillars />}
       {isVisible("home.journey") && <Journey />}
       {isVisible("home.brands") && <Brands />}
