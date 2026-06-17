@@ -1,11 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import {
-  ArrowLeft,
   Send,
-  MessageSquare,
   Loader2,
-  RefreshCw,
   Sparkles,
   Copy,
   Check,
