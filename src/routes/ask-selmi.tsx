@@ -1,17 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import {
-  ArrowLeft,
   Send,
-  MessageSquare,
   Loader2,
-  RefreshCw,
   Sparkles,
   Copy,
   Check,
   Paperclip,
   X as XIcon,
   Home,
+  History as HistoryIcon,
+  Trash2,
+  Plus,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -46,6 +46,46 @@ type Msg = { role: "user" | "assistant"; content: Content };
 type CourseCtx = { title: string; description?: string | null; goals?: string | null; audience?: string | null };
 
 const NAME_KEY = "ask-selmi:userName";
+const CHATS_KEY = "ask-selmi:chats:v1";
+const ACTIVE_KEY = "ask-selmi:activeChatId:v1";
+
+type StoredChat = {
+  id: string;
+  title: string;
+  updatedAt: number;
+  messages: Msg[];
+};
+
+function newChatId() {
+  return `c_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function deriveTitle(messages: Msg[], fallback: string): string {
+  const firstUser = messages.find((m) => m.role === "user");
+  if (!firstUser) return fallback;
+  const txt = textOf(firstUser.content).trim().replace(/\s+/g, " ");
+  if (!txt) return fallback;
+  return txt.length > 48 ? txt.slice(0, 46) + "…" : txt;
+}
+
+function loadChats(): StoredChat[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(CHATS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter((c) => c && typeof c.id === "string" && Array.isArray(c.messages));
+  } catch {
+    return [];
+  }
+}
+
+function saveChats(chats: StoredChat[]) {
+  try {
+    window.localStorage.setItem(CHATS_KEY, JSON.stringify(chats));
+  } catch {}
+}
 
 // rough rename-intent detection — bilingual
 function detectRenameIntent(text: string): string | null {
@@ -101,7 +141,9 @@ function AskSelmiPage() {
   ];
   const suggestions = isAr ? suggestionsAr : suggestionsEn;
 
-  const [messages, setMessages] = useState<Msg[]>([]);
+  const [chats, setChats] = useState<StoredChat[]>([]);
+  const [activeId, setActiveId] = useState<string>("");
+  const [historyOpen, setHistoryOpen] = useState(false);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -118,15 +160,50 @@ function AskSelmiPage() {
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
+  const stickToBottomRef = useRef(true);
 
-  // hydrate name
+  // derived: active chat & its messages
+  const activeChat = useMemo(
+    () => chats.find((c) => c.id === activeId) ?? null,
+    [chats, activeId],
+  );
+  const messages: Msg[] = activeChat?.messages ?? [];
+
+  // hydrate name + chats (idempotent bootstrap, StrictMode safe)
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
       const n = window.localStorage.getItem(NAME_KEY);
       if (n) setUserName(n);
     } catch {}
+
+    const existing = loadChats();
+    let storedActive: string | null = null;
+    try {
+      storedActive = window.localStorage.getItem(ACTIVE_KEY);
+    } catch {}
+
+    if (existing.length === 0) {
+      const fresh: StoredChat = {
+        id: newChatId(),
+        title: isAr ? "محادثة جديدة" : "New chat",
+        updatedAt: Date.now(),
+        messages: [],
+      };
+      setChats([fresh]);
+      setActiveId(fresh.id);
+      saveChats([fresh]);
+      try { window.localStorage.setItem(ACTIVE_KEY, fresh.id); } catch {}
+    } else {
+      setChats(existing);
+      const valid = storedActive && existing.some((c) => c.id === storedActive)
+        ? storedActive
+        : existing[0].id;
+      setActiveId(valid);
+      try { window.localStorage.setItem(ACTIVE_KEY, valid); } catch {}
+    }
     inputRef.current?.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -147,12 +224,40 @@ function AskSelmiPage() {
     })();
   }, []);
 
+  // Track whether the user is pinned to the bottom — only autoscroll then
   useEffect(() => {
-    scrollerRef.current?.scrollTo({
-      top: scrollerRef.current.scrollHeight,
-      behavior: "smooth",
-    });
+    const el = scrollerRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const dist = el.scrollHeight - el.scrollTop - el.clientHeight;
+      stickToBottomRef.current = dist < 80;
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, [activeId]);
+
+  // Auto-scroll only if user is at/near bottom — no smooth animation (prevents lag)
+  useEffect(() => {
+    if (!stickToBottomRef.current) return;
+    const el = scrollerRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
   }, [messages, loading]);
+
+  // Persist active chat whenever its messages or chats list change
+  useEffect(() => {
+    if (chats.length > 0) saveChats(chats);
+  }, [chats]);
+
+  useEffect(() => {
+    if (!activeId) return;
+    try { window.localStorage.setItem(ACTIVE_KEY, activeId); } catch {}
+    stickToBottomRef.current = true;
+    requestAnimationFrame(() => {
+      const el = scrollerRef.current;
+      if (el) el.scrollTop = el.scrollHeight;
+    });
+  }, [activeId]);
 
   const persistName = (n: string) => {
     const v = n.trim().slice(0, 60);
@@ -169,6 +274,27 @@ function AskSelmiPage() {
     if (text) parts.push({ type: "text", text });
     parts.push({ type: "image_url", image_url: { url: image.url } });
     return parts;
+  };
+
+  // Update active chat's messages immutably, refresh title + updatedAt
+  const setMessages = (updater: Msg[] | ((prev: Msg[]) => Msg[])) => {
+    setChats((prev) => {
+      const idx = prev.findIndex((c) => c.id === activeId);
+      if (idx === -1) return prev;
+      const current = prev[idx];
+      const nextMsgs = typeof updater === "function" ? (updater as (p: Msg[]) => Msg[])(current.messages) : updater;
+      const updated: StoredChat = {
+        ...current,
+        messages: nextMsgs,
+        updatedAt: Date.now(),
+        title: deriveTitle(nextMsgs, isAr ? "محادثة جديدة" : "New chat"),
+      };
+      const copy = [...prev];
+      copy[idx] = updated;
+      // bubble active chat to top
+      copy.sort((a, b) => b.updatedAt - a.updatedAt);
+      return copy;
+    });
   };
 
   const doSend = async (text: string, image: { url: string; name: string } | null, nameForCall: string | null) => {
@@ -215,14 +341,12 @@ function AskSelmiPage() {
     const text = rawText.trim();
     if (!text && !pendingImage) return;
 
-    // detect rename intent first
     const renameTo = detectRenameIntent(text);
     if (renameTo && userName) {
       setAskName({ kind: "rename", suggested: renameTo });
       return;
     }
 
-    // first send w/o name → ask
     if (!userName) {
       setAskName({
         kind: "first",
@@ -241,13 +365,49 @@ function AskSelmiPage() {
     void send(input);
   };
 
+  // Start a fresh chat (preserves history)
   const reset = () => {
-    setMessages([]);
+    const fresh: StoredChat = {
+      id: newChatId(),
+      title: isAr ? "محادثة جديدة" : "New chat",
+      updatedAt: Date.now(),
+      messages: [],
+    };
+    setChats((prev) => [fresh, ...prev]);
+    setActiveId(fresh.id);
     setError(null);
     setInput("");
     setPendingImage(null);
     inputRef.current?.focus();
   };
+
+  const switchChat = (id: string) => {
+    setActiveId(id);
+    setError(null);
+    setInput("");
+    setPendingImage(null);
+    setHistoryOpen(false);
+    requestAnimationFrame(() => inputRef.current?.focus());
+  };
+
+  const deleteChat = (id: string) => {
+    setChats((prev) => {
+      const remaining = prev.filter((c) => c.id !== id);
+      if (remaining.length === 0) {
+        const fresh: StoredChat = {
+          id: newChatId(),
+          title: isAr ? "محادثة جديدة" : "New chat",
+          updatedAt: Date.now(),
+          messages: [],
+        };
+        setActiveId(fresh.id);
+        return [fresh];
+      }
+      if (id === activeId) setActiveId(remaining[0].id);
+      return remaining;
+    });
+  };
+
 
   const onPickFile = (file: File | null) => {
     if (!file) return;
@@ -367,13 +527,29 @@ function AskSelmiPage() {
             </span>
             <button
               type="button"
+              onClick={() => setHistoryOpen(true)}
+              title={isAr ? "سجل المحادثات" : "Chat history"}
+              aria-label={isAr ? "سجل المحادثات" : "Chat history"}
+              className="relative size-9 grid place-items-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition"
+            >
+              <HistoryIcon className="size-4" />
+              {chats.length > 1 && (
+                <span
+                  className="absolute -top-0.5 -end-0.5 min-w-[16px] h-[16px] px-1 rounded-full text-[9px] font-bold grid place-items-center"
+                  style={{ background: "var(--gold)", color: "var(--accent-foreground)" }}
+                >
+                  {chats.length}
+                </span>
+              )}
+            </button>
+            <button
+              type="button"
               onClick={reset}
-              disabled={messages.length === 0 && !loading}
               title={isAr ? "محادثة جديدة" : "New chat"}
               aria-label={isAr ? "محادثة جديدة" : "New chat"}
-              className="size-9 grid place-items-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition disabled:opacity-40 disabled:cursor-not-allowed"
+              className="size-9 grid place-items-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition"
             >
-              <RefreshCw className="size-4" />
+              <Plus className="size-4" />
             </button>
             <Link
               to="/"
@@ -551,6 +727,22 @@ function AskSelmiPage() {
                 : `Got it, ${name} — I'll call you that from now on.`;
               setMessages((m) => [...m, { role: "assistant", content: ack }]);
             }
+          }}
+        />
+      )}
+
+      {/* History drawer */}
+      {historyOpen && (
+        <HistoryDrawer
+          isAr={isAr}
+          chats={chats}
+          activeId={activeId}
+          onClose={() => setHistoryOpen(false)}
+          onSelect={switchChat}
+          onDelete={deleteChat}
+          onNew={() => {
+            reset();
+            setHistoryOpen(false);
           }}
         />
       )}
@@ -891,11 +1083,146 @@ function NameDialog({
                 color: "var(--accent-foreground)",
               }}
             >
-              {mode === "first" ? (isAr ? "تشرفنا" : "Nice to meet you") : isAr ? "تأكيد" : "Confirm"}
+              {mode === "first" ? (isAr ? "ابدأ المحادثة" : "Start chatting") : isAr ? "تأكيد" : "Confirm"}
             </button>
           </div>
         </form>
       </div>
+    </div>
+  );
+}
+
+function HistoryDrawer({
+  isAr,
+  chats,
+  activeId,
+  onClose,
+  onSelect,
+  onDelete,
+  onNew,
+}: {
+  isAr: boolean;
+  chats: StoredChat[];
+  activeId: string;
+  onClose: () => void;
+  onSelect: (id: string) => void;
+  onDelete: (id: string) => void;
+  onNew: () => void;
+}) {
+  const sorted = [...chats].sort((a, b) => b.updatedAt - a.updatedAt);
+  const fmt = (ts: number) => {
+    const d = new Date(ts);
+    const now = new Date();
+    const sameDay = d.toDateString() === now.toDateString();
+    if (sameDay) return d.toLocaleTimeString(isAr ? "ar-EG" : "en-US", { hour: "2-digit", minute: "2-digit" });
+    return d.toLocaleDateString(isAr ? "ar-EG" : "en-US", { month: "short", day: "numeric" });
+  };
+  return (
+    <div
+      dir={isAr ? "rtl" : "ltr"}
+      className="fixed inset-0 z-50 flex"
+      style={{ background: "color-mix(in oklab, var(--background) 55%, transparent)", backdropFilter: "blur(6px)" }}
+      onClick={onClose}
+    >
+      <aside
+        onClick={(e) => e.stopPropagation()}
+        className={`${isAr ? "ms-auto" : "me-auto"} h-full w-[88vw] max-w-sm flex flex-col shadow-2xl`}
+        style={{
+          background: "color-mix(in oklab, var(--card) 92%, transparent)",
+          backdropFilter: "blur(24px) saturate(160%)",
+          borderInlineStart: isAr ? "none" : "1px solid color-mix(in oklab, var(--gold) 30%, transparent)",
+          borderInlineEnd: isAr ? "1px solid color-mix(in oklab, var(--gold) 30%, transparent)" : "none",
+        }}
+      >
+        <div className="flex items-center justify-between gap-2 px-4 py-3.5 border-b border-foreground/10">
+          <div className="flex items-center gap-2 min-w-0">
+            <HistoryIcon className="size-4" style={{ color: "var(--gold)" }} />
+            <h3 className="font-display font-extrabold text-sm tracking-tight">
+              {isAr ? "محادثاتي" : "My chats"}
+            </h3>
+            <span className="text-[11px] text-muted-foreground">({chats.length})</span>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={isAr ? "إغلاق" : "Close"}
+            className="size-8 grid place-items-center rounded-lg hover:bg-foreground/5 transition"
+          >
+            <XIcon className="size-4" />
+          </button>
+        </div>
+        <div className="px-3 pt-3 pb-2">
+          <button
+            type="button"
+            onClick={onNew}
+            className="w-full inline-flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold shadow-lg hover:scale-[1.01] active:scale-[0.99] transition"
+            style={{
+              background: "linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 55%, var(--accent)))",
+              color: "var(--accent-foreground)",
+            }}
+          >
+            <Plus className="size-4" />
+            {isAr ? "محادثة جديدة" : "New chat"}
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto px-2 pb-3 space-y-1">
+          {sorted.length === 0 && (
+            <p className="px-3 py-6 text-sm text-muted-foreground text-center">
+              {isAr ? "لا توجد محادثات بعد" : "No chats yet"}
+            </p>
+          )}
+          {sorted.map((c) => {
+            const active = c.id === activeId;
+            return (
+              <div
+                key={c.id}
+                className="group relative rounded-xl transition"
+                style={{
+                  background: active
+                    ? "color-mix(in oklab, var(--gold) 14%, transparent)"
+                    : "transparent",
+                  border: active
+                    ? "1px solid color-mix(in oklab, var(--gold) 45%, transparent)"
+                    : "1px solid transparent",
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => onSelect(c.id)}
+                  className="w-full text-start px-3 py-2.5 rounded-xl hover:bg-foreground/5 transition"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[13.5px] font-semibold text-foreground truncate">
+                        {c.title || (isAr ? "محادثة" : "Chat")}
+                      </div>
+                      <div className="text-[11px] text-muted-foreground mt-0.5">
+                        {c.messages.length} {isAr ? "رسالة" : "msgs"} · {fmt(c.updatedAt)}
+                      </div>
+                    </div>
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (window.confirm(isAr ? "حذف هذه المحادثة؟" : "Delete this chat?")) {
+                      onDelete(c.id);
+                    }
+                  }}
+                  aria-label={isAr ? "حذف" : "Delete"}
+                  className={`absolute top-2 ${isAr ? "start-2" : "end-2"} size-7 grid place-items-center rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition`}
+                >
+                  <Trash2 className="size-3.5" />
+                </button>
+              </div>
+            );
+          })}
+        </div>
+        <div className="px-4 py-2.5 border-t border-foreground/10 text-[10px] text-muted-foreground text-center">
+          {isAr ? "المحادثات محفوظة محلياً على جهازك" : "Chats are stored locally on your device"}
+        </div>
+      </aside>
     </div>
   );
 }
