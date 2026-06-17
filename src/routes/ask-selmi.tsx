@@ -279,6 +279,27 @@ function AskSelmiPage() {
     return parts;
   };
 
+  // Update active chat's messages immutably, refresh title + updatedAt
+  const setMessages = (updater: Msg[] | ((prev: Msg[]) => Msg[])) => {
+    setChats((prev) => {
+      const idx = prev.findIndex((c) => c.id === activeId);
+      if (idx === -1) return prev;
+      const current = prev[idx];
+      const nextMsgs = typeof updater === "function" ? (updater as (p: Msg[]) => Msg[])(current.messages) : updater;
+      const updated: StoredChat = {
+        ...current,
+        messages: nextMsgs,
+        updatedAt: Date.now(),
+        title: deriveTitle(nextMsgs, isAr ? "محادثة جديدة" : "New chat"),
+      };
+      const copy = [...prev];
+      copy[idx] = updated;
+      // bubble active chat to top
+      copy.sort((a, b) => b.updatedAt - a.updatedAt);
+      return copy;
+    });
+  };
+
   const doSend = async (text: string, image: { url: string; name: string } | null, nameForCall: string | null) => {
     const trimmed = text.trim();
     if (!trimmed && !image) return;
@@ -323,14 +344,12 @@ function AskSelmiPage() {
     const text = rawText.trim();
     if (!text && !pendingImage) return;
 
-    // detect rename intent first
     const renameTo = detectRenameIntent(text);
     if (renameTo && userName) {
       setAskName({ kind: "rename", suggested: renameTo });
       return;
     }
 
-    // first send w/o name → ask
     if (!userName) {
       setAskName({
         kind: "first",
@@ -349,13 +368,49 @@ function AskSelmiPage() {
     void send(input);
   };
 
+  // Start a fresh chat (preserves history)
   const reset = () => {
-    setMessages([]);
+    const fresh: StoredChat = {
+      id: newChatId(),
+      title: isAr ? "محادثة جديدة" : "New chat",
+      updatedAt: Date.now(),
+      messages: [],
+    };
+    setChats((prev) => [fresh, ...prev]);
+    setActiveId(fresh.id);
     setError(null);
     setInput("");
     setPendingImage(null);
     inputRef.current?.focus();
   };
+
+  const switchChat = (id: string) => {
+    setActiveId(id);
+    setError(null);
+    setInput("");
+    setPendingImage(null);
+    setHistoryOpen(false);
+    requestAnimationFrame(() => inputRef.current?.focus());
+  };
+
+  const deleteChat = (id: string) => {
+    setChats((prev) => {
+      const remaining = prev.filter((c) => c.id !== id);
+      if (remaining.length === 0) {
+        const fresh: StoredChat = {
+          id: newChatId(),
+          title: isAr ? "محادثة جديدة" : "New chat",
+          updatedAt: Date.now(),
+          messages: [],
+        };
+        setActiveId(fresh.id);
+        return [fresh];
+      }
+      if (id === activeId) setActiveId(remaining[0].id);
+      return remaining;
+    });
+  };
+
 
   const onPickFile = (file: File | null) => {
     if (!file) return;
