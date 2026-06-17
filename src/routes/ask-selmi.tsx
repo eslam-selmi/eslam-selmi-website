@@ -1094,3 +1094,138 @@ function NameDialog({
     </div>
   );
 }
+
+function HistoryDrawer({
+  isAr,
+  chats,
+  activeId,
+  onClose,
+  onSelect,
+  onDelete,
+  onNew,
+}: {
+  isAr: boolean;
+  chats: StoredChat[];
+  activeId: string;
+  onClose: () => void;
+  onSelect: (id: string) => void;
+  onDelete: (id: string) => void;
+  onNew: () => void;
+}) {
+  const sorted = [...chats].sort((a, b) => b.updatedAt - a.updatedAt);
+  const fmt = (ts: number) => {
+    const d = new Date(ts);
+    const now = new Date();
+    const sameDay = d.toDateString() === now.toDateString();
+    if (sameDay) return d.toLocaleTimeString(isAr ? "ar-EG" : "en-US", { hour: "2-digit", minute: "2-digit" });
+    return d.toLocaleDateString(isAr ? "ar-EG" : "en-US", { month: "short", day: "numeric" });
+  };
+  return (
+    <div
+      dir={isAr ? "rtl" : "ltr"}
+      className="fixed inset-0 z-50 flex"
+      style={{ background: "color-mix(in oklab, var(--background) 55%, transparent)", backdropFilter: "blur(6px)" }}
+      onClick={onClose}
+    >
+      <aside
+        onClick={(e) => e.stopPropagation()}
+        className={`${isAr ? "ms-auto" : "me-auto"} h-full w-[88vw] max-w-sm flex flex-col shadow-2xl`}
+        style={{
+          background: "color-mix(in oklab, var(--card) 92%, transparent)",
+          backdropFilter: "blur(24px) saturate(160%)",
+          borderInlineStart: isAr ? "none" : "1px solid color-mix(in oklab, var(--gold) 30%, transparent)",
+          borderInlineEnd: isAr ? "1px solid color-mix(in oklab, var(--gold) 30%, transparent)" : "none",
+        }}
+      >
+        <div className="flex items-center justify-between gap-2 px-4 py-3.5 border-b border-foreground/10">
+          <div className="flex items-center gap-2 min-w-0">
+            <HistoryIcon className="size-4" style={{ color: "var(--gold)" }} />
+            <h3 className="font-display font-extrabold text-sm tracking-tight">
+              {isAr ? "محادثاتي" : "My chats"}
+            </h3>
+            <span className="text-[11px] text-muted-foreground">({chats.length})</span>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={isAr ? "إغلاق" : "Close"}
+            className="size-8 grid place-items-center rounded-lg hover:bg-foreground/5 transition"
+          >
+            <XIcon className="size-4" />
+          </button>
+        </div>
+        <div className="px-3 pt-3 pb-2">
+          <button
+            type="button"
+            onClick={onNew}
+            className="w-full inline-flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold shadow-lg hover:scale-[1.01] active:scale-[0.99] transition"
+            style={{
+              background: "linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 55%, var(--accent)))",
+              color: "var(--accent-foreground)",
+            }}
+          >
+            <Plus className="size-4" />
+            {isAr ? "محادثة جديدة" : "New chat"}
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto px-2 pb-3 space-y-1">
+          {sorted.length === 0 && (
+            <p className="px-3 py-6 text-sm text-muted-foreground text-center">
+              {isAr ? "لا توجد محادثات بعد" : "No chats yet"}
+            </p>
+          )}
+          {sorted.map((c) => {
+            const active = c.id === activeId;
+            return (
+              <div
+                key={c.id}
+                className="group relative rounded-xl transition"
+                style={{
+                  background: active
+                    ? "color-mix(in oklab, var(--gold) 14%, transparent)"
+                    : "transparent",
+                  border: active
+                    ? "1px solid color-mix(in oklab, var(--gold) 45%, transparent)"
+                    : "1px solid transparent",
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => onSelect(c.id)}
+                  className="w-full text-start px-3 py-2.5 rounded-xl hover:bg-foreground/5 transition"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[13.5px] font-semibold text-foreground truncate">
+                        {c.title || (isAr ? "محادثة" : "Chat")}
+                      </div>
+                      <div className="text-[11px] text-muted-foreground mt-0.5">
+                        {c.messages.length} {isAr ? "رسالة" : "msgs"} · {fmt(c.updatedAt)}
+                      </div>
+                    </div>
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (window.confirm(isAr ? "حذف هذه المحادثة؟" : "Delete this chat?")) {
+                      onDelete(c.id);
+                    }
+                  }}
+                  aria-label={isAr ? "حذف" : "Delete"}
+                  className={`absolute top-2 ${isAr ? "start-2" : "end-2"} size-7 grid place-items-center rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition`}
+                >
+                  <Trash2 className="size-3.5" />
+                </button>
+              </div>
+            );
+          })}
+        </div>
+        <div className="px-4 py-2.5 border-t border-foreground/10 text-[10px] text-muted-foreground text-center">
+          {isAr ? "المحادثات محفوظة محلياً على جهازك" : "Chats are stored locally on your device"}
+        </div>
+      </aside>
+    </div>
+  );
+}
