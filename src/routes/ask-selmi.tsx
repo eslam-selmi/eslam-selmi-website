@@ -12,6 +12,9 @@ import {
   Paperclip,
   X as XIcon,
   Home,
+  History as HistoryIcon,
+  Trash2,
+  Plus,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -46,6 +49,46 @@ type Msg = { role: "user" | "assistant"; content: Content };
 type CourseCtx = { title: string; description?: string | null; goals?: string | null; audience?: string | null };
 
 const NAME_KEY = "ask-selmi:userName";
+const CHATS_KEY = "ask-selmi:chats:v1";
+const ACTIVE_KEY = "ask-selmi:activeChatId:v1";
+
+type StoredChat = {
+  id: string;
+  title: string;
+  updatedAt: number;
+  messages: Msg[];
+};
+
+function newChatId() {
+  return `c_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function deriveTitle(messages: Msg[], fallback: string): string {
+  const firstUser = messages.find((m) => m.role === "user");
+  if (!firstUser) return fallback;
+  const txt = textOf(firstUser.content).trim().replace(/\s+/g, " ");
+  if (!txt) return fallback;
+  return txt.length > 48 ? txt.slice(0, 46) + "…" : txt;
+}
+
+function loadChats(): StoredChat[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(CHATS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter((c) => c && typeof c.id === "string" && Array.isArray(c.messages));
+  } catch {
+    return [];
+  }
+}
+
+function saveChats(chats: StoredChat[]) {
+  try {
+    window.localStorage.setItem(CHATS_KEY, JSON.stringify(chats));
+  } catch {}
+}
 
 // rough rename-intent detection — bilingual
 function detectRenameIntent(text: string): string | null {
