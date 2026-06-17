@@ -144,7 +144,9 @@ function AskSelmiPage() {
   ];
   const suggestions = isAr ? suggestionsAr : suggestionsEn;
 
-  const [messages, setMessages] = useState<Msg[]>([]);
+  const [chats, setChats] = useState<StoredChat[]>([]);
+  const [activeId, setActiveId] = useState<string>("");
+  const [historyOpen, setHistoryOpen] = useState(false);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -161,15 +163,50 @@ function AskSelmiPage() {
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
+  const stickToBottomRef = useRef(true);
 
-  // hydrate name
+  // derived: active chat & its messages
+  const activeChat = useMemo(
+    () => chats.find((c) => c.id === activeId) ?? null,
+    [chats, activeId],
+  );
+  const messages: Msg[] = activeChat?.messages ?? [];
+
+  // hydrate name + chats (idempotent bootstrap, StrictMode safe)
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
       const n = window.localStorage.getItem(NAME_KEY);
       if (n) setUserName(n);
     } catch {}
+
+    const existing = loadChats();
+    let storedActive: string | null = null;
+    try {
+      storedActive = window.localStorage.getItem(ACTIVE_KEY);
+    } catch {}
+
+    if (existing.length === 0) {
+      const fresh: StoredChat = {
+        id: newChatId(),
+        title: isAr ? "محادثة جديدة" : "New chat",
+        updatedAt: Date.now(),
+        messages: [],
+      };
+      setChats([fresh]);
+      setActiveId(fresh.id);
+      saveChats([fresh]);
+      try { window.localStorage.setItem(ACTIVE_KEY, fresh.id); } catch {}
+    } else {
+      setChats(existing);
+      const valid = storedActive && existing.some((c) => c.id === storedActive)
+        ? storedActive
+        : existing[0].id;
+      setActiveId(valid);
+      try { window.localStorage.setItem(ACTIVE_KEY, valid); } catch {}
+    }
     inputRef.current?.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -190,12 +227,40 @@ function AskSelmiPage() {
     })();
   }, []);
 
+  // Track whether the user is pinned to the bottom — only autoscroll then
   useEffect(() => {
-    scrollerRef.current?.scrollTo({
-      top: scrollerRef.current.scrollHeight,
-      behavior: "smooth",
-    });
+    const el = scrollerRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const dist = el.scrollHeight - el.scrollTop - el.clientHeight;
+      stickToBottomRef.current = dist < 80;
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, [activeId]);
+
+  // Auto-scroll only if user is at/near bottom — no smooth animation (prevents lag)
+  useEffect(() => {
+    if (!stickToBottomRef.current) return;
+    const el = scrollerRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
   }, [messages, loading]);
+
+  // Persist active chat whenever its messages or chats list change
+  useEffect(() => {
+    if (chats.length > 0) saveChats(chats);
+  }, [chats]);
+
+  useEffect(() => {
+    if (!activeId) return;
+    try { window.localStorage.setItem(ACTIVE_KEY, activeId); } catch {}
+    stickToBottomRef.current = true;
+    requestAnimationFrame(() => {
+      const el = scrollerRef.current;
+      if (el) el.scrollTop = el.scrollHeight;
+    });
+  }, [activeId]);
 
   const persistName = (n: string) => {
     const v = n.trim().slice(0, 60);
