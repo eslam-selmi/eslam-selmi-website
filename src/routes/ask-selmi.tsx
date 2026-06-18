@@ -12,6 +12,8 @@ import {
   History as HistoryIcon,
   Trash2,
   Plus,
+  Search,
+  MessageSquare,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -60,6 +62,20 @@ function newChatId() {
   return `c_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
 }
 
+function textOf(c: Content): string {
+  if (typeof c === "string") return c;
+  return c.filter((p): p is TextPart => p.type === "text").map((p) => p.text).join("\n");
+}
+
+// Detect if text is predominantly Arabic — used for per-message RTL/LTR
+function isArabicText(s: string): boolean {
+  if (!s) return false;
+  const arabic = (s.match(/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/g) ?? []).length;
+  const latin = (s.match(/[A-Za-z]/g) ?? []).length;
+  if (arabic === 0) return false;
+  return arabic >= latin;
+}
+
 function deriveTitle(messages: Msg[], fallback: string): string {
   const firstUser = messages.find((m) => m.role === "user");
   if (!firstUser) return fallback;
@@ -87,11 +103,9 @@ function saveChats(chats: StoredChat[]) {
   } catch {}
 }
 
-// rough rename-intent detection — bilingual
 function detectRenameIntent(text: string): string | null {
   const t = text.trim();
   if (!t) return null;
-  // Arabic: نادني بـ X | غيّر اسمي إلى X | اسمي X | اسمي هو X
   const arPatterns = [
     /نادني\s+(?:بـ|ب)\s*([^\n.،,!?]{2,40})/i,
     /غي(?:ي|ّ)?ر\s+اسمي\s+(?:إلى|الى|ل)\s*([^\n.،,!?]{2,40})/i,
@@ -102,7 +116,6 @@ function detectRenameIntent(text: string): string | null {
     const m = t.match(re);
     if (m?.[1]) return m[1].trim();
   }
-  // English
   const enPatterns = [
     /\bcall me\s+([A-Za-z][\w' -]{1,38})/i,
     /\bmy name is\s+([A-Za-z][\w' -]{1,38})/i,
@@ -115,11 +128,6 @@ function detectRenameIntent(text: string): string | null {
   return null;
 }
 
-function textOf(c: Content): string {
-  if (typeof c === "string") return c;
-  return c.filter((p): p is TextPart => p.type === "text").map((p) => p.text).join("\n");
-}
-
 function AskSelmiPage() {
   const { lang } = useI18n();
   const isAr = lang === "ar";
@@ -129,14 +137,14 @@ function AskSelmiPage() {
     "How do I design a high-impact L&D strategy from scratch?",
     "What's the best way to identify high-potential talent (HiPos)?",
     "How do I make performance reviews actually drive performance?",
-    "Build a competency framework for a mid-size company — where do I start?",
+    "Build a competency framework — where do I start?",
     "How do I measure training ROI beyond happy-sheets?",
   ];
   const suggestionsAr = [
     "إزاي أصمم استراتيجية تعلم وتطوير قوية من الصفر؟",
     "إيه أحسن طريقة أحدد بيها المواهب الواعدة (HiPos)؟",
     "إزاي أخلي تقييمات الأداء فعلاً تفرق؟",
-    "عايز أبني إطار كفاءات لشركة متوسطة — أبدأ منين؟",
+    "عايز أبني إطار كفاءات — أبدأ منين؟",
     "إزاي أقيس عائد التدريب بشكل احترافي؟",
   ];
   const suggestions = isAr ? suggestionsAr : suggestionsEn;
@@ -149,6 +157,7 @@ function AskSelmiPage() {
   const [error, setError] = useState<string | null>(null);
   const [courses, setCourses] = useState<CourseCtx[]>([]);
   const [pendingImage, setPendingImage] = useState<{ url: string; name: string } | null>(null);
+  const [search, setSearch] = useState("");
 
   const [userName, setUserName] = useState<string | null>(null);
   const [askName, setAskName] = useState<
@@ -157,19 +166,17 @@ function AskSelmiPage() {
     | { kind: "rename"; suggested: string }
   >(null);
 
-  const scrollerRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
-  const stickToBottomRef = useRef(true);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
 
-  // derived: active chat & its messages
   const activeChat = useMemo(
     () => chats.find((c) => c.id === activeId) ?? null,
     [chats, activeId],
   );
   const messages: Msg[] = activeChat?.messages ?? [];
 
-  // hydrate name + chats (idempotent bootstrap, StrictMode safe)
+  // Hydrate
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
@@ -224,27 +231,6 @@ function AskSelmiPage() {
     })();
   }, []);
 
-  // Track whether the user is pinned to the bottom — only autoscroll then
-  useEffect(() => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    const onScroll = () => {
-      const dist = el.scrollHeight - el.scrollTop - el.clientHeight;
-      stickToBottomRef.current = dist < 80;
-    };
-    el.addEventListener("scroll", onScroll, { passive: true });
-    return () => el.removeEventListener("scroll", onScroll);
-  }, [activeId]);
-
-  // Auto-scroll only if user is at/near bottom — no smooth animation (prevents lag)
-  useEffect(() => {
-    if (!stickToBottomRef.current) return;
-    const el = scrollerRef.current;
-    if (!el) return;
-    el.scrollTop = el.scrollHeight;
-  }, [messages, loading]);
-
-  // Persist active chat whenever its messages or chats list change
   useEffect(() => {
     if (chats.length > 0) saveChats(chats);
   }, [chats]);
@@ -252,20 +238,23 @@ function AskSelmiPage() {
   useEffect(() => {
     if (!activeId) return;
     try { window.localStorage.setItem(ACTIVE_KEY, activeId); } catch {}
-    stickToBottomRef.current = true;
-    requestAnimationFrame(() => {
-      const el = scrollerRef.current;
-      if (el) el.scrollTop = el.scrollHeight;
-    });
   }, [activeId]);
+
+  // After a new message arrives, scroll the page (not an internal container) to the latest message
+  useEffect(() => {
+    if (!bottomRef.current) return;
+    // Only auto-scroll when user already near bottom of the page
+    const dist = document.documentElement.scrollHeight - window.scrollY - window.innerHeight;
+    if (dist < 240) {
+      bottomRef.current.scrollIntoView({ block: "end" });
+    }
+  }, [messages.length, loading]);
 
   const persistName = (n: string) => {
     const v = n.trim().slice(0, 60);
     if (!v) return;
     setUserName(v);
-    try {
-      window.localStorage.setItem(NAME_KEY, v);
-    } catch {}
+    try { window.localStorage.setItem(NAME_KEY, v); } catch {}
   };
 
   const buildUserContent = (text: string, image: { url: string; name: string } | null): Content => {
@@ -276,7 +265,6 @@ function AskSelmiPage() {
     return parts;
   };
 
-  // Update active chat's messages immutably, refresh title + updatedAt
   const setMessages = (updater: Msg[] | ((prev: Msg[]) => Msg[])) => {
     setChats((prev) => {
       const idx = prev.findIndex((c) => c.id === activeId);
@@ -291,7 +279,6 @@ function AskSelmiPage() {
       };
       const copy = [...prev];
       copy[idx] = updated;
-      // bubble active chat to top
       copy.sort((a, b) => b.updatedAt - a.updatedAt);
       return copy;
     });
@@ -314,16 +301,10 @@ function AskSelmiPage() {
       if (res.error) {
         const msg =
           res.error === "rate_limit"
-            ? isAr
-              ? "في زحمة شوية على الخدمة، جرب تاني بعد دقيقة."
-              : "Rate limit reached. Please try again shortly."
+            ? isAr ? "في زحمة شوية على الخدمة، جرب تاني بعد دقيقة." : "Rate limit reached. Please try again shortly."
             : res.error === "credits"
-              ? isAr
-                ? "نفدت أرصدة الذكاء الاصطناعي. يرجى التواصل مع المدير."
-                : "AI credits exhausted. Please contact the administrator."
-              : isAr
-                ? "حصل خطأ، حاول تاني."
-                : "Something went wrong. Please try again.";
+              ? isAr ? "نفدت أرصدة الذكاء الاصطناعي. يرجى التواصل مع المدير." : "AI credits exhausted. Please contact the administrator."
+              : isAr ? "حصل خطأ، حاول تاني." : "Something went wrong. Please try again.";
         setError(msg);
       } else {
         setMessages([...next, { role: "assistant", content: res.reply || "…" }]);
@@ -346,7 +327,6 @@ function AskSelmiPage() {
       setAskName({ kind: "rename", suggested: renameTo });
       return;
     }
-
     if (!userName) {
       setAskName({
         kind: "first",
@@ -356,7 +336,6 @@ function AskSelmiPage() {
       });
       return;
     }
-
     await doSend(text, pendingImage, userName);
   };
 
@@ -365,7 +344,6 @@ function AskSelmiPage() {
     void send(input);
   };
 
-  // Start a fresh chat (preserves history)
   const reset = () => {
     const fresh: StoredChat = {
       id: newChatId(),
@@ -378,6 +356,7 @@ function AskSelmiPage() {
     setError(null);
     setInput("");
     setPendingImage(null);
+    window.scrollTo({ top: 0 });
     inputRef.current?.focus();
   };
 
@@ -387,6 +366,7 @@ function AskSelmiPage() {
     setInput("");
     setPendingImage(null);
     setHistoryOpen(false);
+    window.scrollTo({ top: 0 });
     requestAnimationFrame(() => inputRef.current?.focus());
   };
 
@@ -408,7 +388,6 @@ function AskSelmiPage() {
     });
   };
 
-
   const onPickFile = (file: File | null) => {
     if (!file) return;
     if (!file.type.startsWith("image/")) {
@@ -429,283 +408,361 @@ function AskSelmiPage() {
 
   const hasChat = messages.length > 0;
 
+  const sortedChats = useMemo(
+    () => [...chats].sort((a, b) => b.updatedAt - a.updatedAt),
+    [chats],
+  );
+  const filteredChats = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return sortedChats;
+    return sortedChats.filter((c) => c.title.toLowerCase().includes(q));
+  }, [sortedChats, search]);
+
   return (
     <div
       dir={isAr ? "rtl" : "ltr"}
-      className="relative min-h-[100dvh] w-full max-w-[100vw] overflow-x-hidden bg-background text-foreground"
+      className="relative min-h-screen w-full bg-background text-foreground"
     >
-      {/* Premium ambient atmosphere */}
+      {/* Soft ambient backdrop */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none fixed inset-0 -z-10"
         style={{
           background:
-            "radial-gradient(55% 45% at 12% 8%, color-mix(in oklab, var(--gold) 22%, transparent), transparent 65%), radial-gradient(45% 45% at 88% 92%, color-mix(in oklab, var(--accent) 20%, transparent), transparent 70%), radial-gradient(60% 50% at 50% 50%, color-mix(in oklab, var(--primary) 8%, transparent), transparent 75%)",
+            "radial-gradient(60% 50% at 10% 0%, color-mix(in oklab, var(--gold) 12%, transparent), transparent 60%), radial-gradient(50% 40% at 90% 100%, color-mix(in oklab, var(--accent) 10%, transparent), transparent 70%)",
         }}
       />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-px"
-        style={{ background: "linear-gradient(90deg, transparent, color-mix(in oklab, var(--gold) 60%, transparent), transparent)" }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-40 start-1/4 size-[28rem] rounded-full blur-3xl opacity-25 animate-pulse"
-        style={{ background: "var(--gold)", animationDuration: "8s" }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-20 end-1/4 size-[22rem] rounded-full blur-3xl opacity-20"
-        style={{ background: "var(--accent)" }}
-      />
 
-      <div className="relative mx-auto w-full max-w-4xl px-3 sm:px-6 py-3 sm:py-6 flex flex-col min-h-[100dvh]">
-        {/* Premium compact header */}
-        <header
-          className="rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 flex items-center gap-2 sm:gap-3 shadow-lg"
-          style={{
-            background: "color-mix(in oklab, var(--card) 65%, transparent)",
-            backdropFilter: "blur(22px) saturate(160%)",
-            border: "1px solid color-mix(in oklab, var(--foreground) 9%, transparent)",
-          }}
-        >
-          {/* Brand identity (compact) */}
-          <div className="flex items-center gap-2.5 min-w-0 flex-1">
-            <div className="relative shrink-0">
-              <div
-                aria-hidden
-                className="absolute -inset-1 rounded-xl blur opacity-60"
-                style={{ background: "var(--gold)" }}
-              />
-              <div
-                className="relative size-9 sm:size-10 rounded-xl grid place-items-center overflow-hidden shadow-md"
+      <div className="mx-auto w-full max-w-7xl px-3 sm:px-6 pt-4 pb-40">
+        <div className="lg:grid lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-6">
+          {/* Sidebar (desktop) */}
+          <aside className="hidden lg:flex sticky top-4 self-start h-[calc(100vh-2rem)] flex-col rounded-3xl overflow-hidden shadow-sm"
+            style={{
+              background: "color-mix(in oklab, var(--card) 92%, transparent)",
+              border: "1px solid color-mix(in oklab, var(--foreground) 8%, transparent)",
+            }}
+          >
+            <div className="px-4 pt-4 pb-3 flex items-center gap-2.5">
+              <div className="size-9 rounded-xl grid place-items-center overflow-hidden shrink-0"
                 style={{
-                  background:
-                    "linear-gradient(135deg, color-mix(in oklab, var(--gold) 30%, var(--background)), var(--background))",
-                  border: "1px solid color-mix(in oklab, var(--gold) 55%, transparent)",
-                }}
-              >
-                <img src={brandLogo} alt="Selmi" className="size-full object-contain p-1" />
+                  background: "linear-gradient(135deg, color-mix(in oklab, var(--gold) 28%, var(--background)), var(--background))",
+                  border: "1px solid color-mix(in oklab, var(--gold) 50%, transparent)",
+                }}>
+                <img src={brandLogo} alt="" className="size-full object-contain p-1" />
+              </div>
+              <div className="min-w-0">
+                <div className="font-display font-extrabold text-sm truncate">{isAr ? "اسأل سلمي" : "Ask Selmi"}</div>
+                <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                  {isAr ? "مستشار رقمي" : "AI Advisor"}
+                </div>
               </div>
             </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="font-display font-extrabold text-sm sm:text-base tracking-tight truncate">
-                  {isAr ? "اسأل سلمي" : "Ask Selmi"}
-                </span>
-                <span
-                  className="hidden sm:inline-flex items-center gap-1 text-[9px] tracking-[0.28em] uppercase font-bold px-1.5 py-0.5 rounded-full"
+
+            <div className="px-3 pb-3">
+              <button
+                type="button"
+                onClick={reset}
+                className="w-full inline-flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold shadow-md hover:scale-[1.01] active:scale-[0.99] transition"
+                style={{
+                  background: "linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 55%, var(--accent)))",
+                  color: "var(--accent-foreground)",
+                }}
+              >
+                <Plus className="size-4" />
+                {isAr ? "محادثة جديدة" : "Create New"}
+              </button>
+            </div>
+
+            <div className="px-4 pb-2 flex items-center justify-between">
+              <h3 className="font-display font-extrabold text-sm">{isAr ? "محادثاتي" : "Chats"}</h3>
+              <span className="text-[11px] text-muted-foreground">{chats.length}</span>
+            </div>
+
+            <div className="px-3 pb-2">
+              <div className="relative">
+                <Search className={`absolute top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground ${isAr ? "end-3" : "start-3"}`} />
+                <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder={isAr ? "ابحث..." : "Search"}
+                  className={`w-full rounded-xl text-sm py-2 outline-none focus:ring-2 focus:ring-[var(--gold)]/40 ${isAr ? "pe-9 ps-3" : "ps-9 pe-3"}`}
                   style={{
-                    color: "var(--gold)",
-                    background: "color-mix(in oklab, var(--gold) 12%, transparent)",
+                    background: "color-mix(in oklab, var(--background) 70%, transparent)",
+                    border: "1px solid color-mix(in oklab, var(--foreground) 10%, transparent)",
+                  }}
+                />
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-2 pb-3 space-y-1">
+              {filteredChats.length === 0 && (
+                <p className="px-3 py-6 text-xs text-muted-foreground text-center">
+                  {isAr ? "لا توجد محادثات" : "No chats"}
+                </p>
+              )}
+              {filteredChats.map((c) => {
+                const active = c.id === activeId;
+                const titleIsAr = isArabicText(c.title);
+                return (
+                  <div
+                    key={c.id}
+                    className="group relative rounded-xl transition"
+                    style={{
+                      background: active ? "color-mix(in oklab, var(--gold) 12%, transparent)" : "transparent",
+                      border: active
+                        ? "1px solid color-mix(in oklab, var(--gold) 40%, transparent)"
+                        : "1px solid transparent",
+                    }}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => switchChat(c.id)}
+                      className="w-full text-start px-3 py-2.5 rounded-xl hover:bg-foreground/5 transition flex items-start gap-2.5"
+                    >
+                      <MessageSquare className="size-4 mt-0.5 shrink-0 text-muted-foreground" />
+                      <div className="min-w-0 flex-1" dir={titleIsAr ? "rtl" : "ltr"}>
+                        <div className="text-[13px] font-semibold text-foreground truncate text-start">
+                          {c.title || (isAr ? "محادثة" : "Chat")}
+                        </div>
+                        <div className="text-[11px] text-muted-foreground mt-0.5 text-start" dir={isAr ? "rtl" : "ltr"}>
+                          {c.messages.length} {isAr ? "رسالة" : "msgs"}
+                        </div>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (window.confirm(isAr ? "حذف هذه المحادثة؟" : "Delete this chat?")) deleteChat(c.id);
+                      }}
+                      aria-label={isAr ? "حذف" : "Delete"}
+                      className={`absolute top-2 ${isAr ? "start-2" : "end-2"} size-7 grid place-items-center rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition`}
+                    >
+                      <Trash2 className="size-3.5" />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="px-4 py-2.5 border-t border-foreground/10 text-[10px] text-muted-foreground text-center">
+              {isAr ? "محفوظة محلياً على جهازك" : "Saved locally on this device"}
+            </div>
+          </aside>
+
+          {/* Main column */}
+          <main className="flex flex-col">
+            {/* Header — compact, sticky on top */}
+            <header
+              className="sticky top-2 z-30 rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 flex items-center gap-2 sm:gap-3 shadow-sm"
+              style={{
+                background: "color-mix(in oklab, var(--card) 80%, transparent)",
+                backdropFilter: "blur(18px) saturate(140%)",
+                border: "1px solid color-mix(in oklab, var(--foreground) 8%, transparent)",
+              }}
+            >
+              <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                <div className="relative shrink-0 lg:hidden">
+                  <div
+                    className="size-9 rounded-xl grid place-items-center overflow-hidden"
+                    style={{
+                      background: "linear-gradient(135deg, color-mix(in oklab, var(--gold) 28%, var(--background)), var(--background))",
+                      border: "1px solid color-mix(in oklab, var(--gold) 50%, transparent)",
+                    }}
+                  >
+                    <img src={brandLogo} alt="" className="size-full object-contain p-1" />
+                  </div>
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="font-display font-extrabold text-sm sm:text-base tracking-tight truncate">
+                      {activeChat?.title && messages.length > 0
+                        ? activeChat.title
+                        : isAr ? "اسأل سلمي" : "Ask Selmi"}
+                    </span>
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-semibold mt-0.5">
+                    <span className="size-1.5 rounded-full animate-pulse" style={{ background: "var(--gold)" }} />
+                    {isAr ? "متصل" : "Online"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setHistoryOpen(true)}
+                  title={isAr ? "سجل المحادثات" : "Chat history"}
+                  aria-label={isAr ? "سجل المحادثات" : "Chat history"}
+                  className="lg:hidden size-9 grid place-items-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition"
+                >
+                  <HistoryIcon className="size-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={reset}
+                  title={isAr ? "محادثة جديدة" : "New chat"}
+                  aria-label={isAr ? "محادثة جديدة" : "New chat"}
+                  className="lg:hidden size-9 grid place-items-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition"
+                >
+                  <Plus className="size-4" />
+                </button>
+                <Link
+                  to="/"
+                  title={isAr ? "الرئيسية" : "Home"}
+                  aria-label={isAr ? "الرئيسية" : "Home"}
+                  className="size-9 grid place-items-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition"
+                >
+                  <Home className="size-4" />
+                </Link>
+              </div>
+            </header>
+
+            {/* Conversation — flows naturally, no internal scroll */}
+            <section className="mt-4 space-y-5">
+              {!hasChat && (
+                <EmptyState
+                  isAr={isAr}
+                  suggestions={suggestions}
+                  onPick={(s) => void send(s)}
+                  userName={userName}
+                  brandLogo={brandLogo}
+                />
+              )}
+
+              {messages.map((m, i) => (
+                <MessageBubble key={i} message={m} isAr={isAr} logoUrl={brandLogo} />
+              ))}
+
+              {loading && (
+                <div className={`flex items-center gap-3 text-sm text-muted-foreground ${isAr ? "justify-end pe-1" : "ps-1"}`}>
+                  <div className="flex gap-1">
+                    <span className="size-2 rounded-full animate-bounce" style={{ background: "var(--gold)", animationDelay: "0ms" }} />
+                    <span className="size-2 rounded-full animate-bounce" style={{ background: "var(--gold)", animationDelay: "150ms" }} />
+                    <span className="size-2 rounded-full animate-bounce" style={{ background: "var(--gold)", animationDelay: "300ms" }} />
+                  </div>
+                  <span className="font-medium">{isAr ? "سلمي بيفكر..." : "Selmi is thinking..."}</span>
+                </div>
+              )}
+
+              {error && (
+                <div className="rounded-xl border border-destructive/40 bg-destructive/10 text-destructive text-sm px-4 py-3">
+                  {error}
+                </div>
+              )}
+              <div ref={bottomRef} />
+            </section>
+          </main>
+        </div>
+      </div>
+
+      {/* Sticky composer pinned to viewport bottom */}
+      <div className="fixed inset-x-0 bottom-0 z-40 pointer-events-none">
+        <div
+          aria-hidden
+          className="absolute inset-0"
+          style={{
+            background: "linear-gradient(to top, var(--background) 35%, color-mix(in oklab, var(--background) 70%, transparent) 75%, transparent)",
+          }}
+        />
+        <div className="relative mx-auto w-full max-w-7xl px-3 sm:px-6 pb-4 pt-6 pointer-events-none">
+          <div className="lg:grid lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-6">
+            <div className="hidden lg:block" />
+            <form onSubmit={onSubmit} className="pointer-events-auto">
+              {pendingImage && (
+                <div
+                  className="mb-2 inline-flex items-center gap-2 rounded-xl px-2.5 py-1.5 text-xs font-medium"
+                  style={{
+                    background: "color-mix(in oklab, var(--card) 90%, transparent)",
                     border: "1px solid color-mix(in oklab, var(--gold) 45%, transparent)",
                   }}
                 >
-                  <span className="size-1 rounded-full animate-pulse" style={{ background: "var(--gold)" }} />
-                  {isAr ? "متصل" : "Online"}
-                </span>
-              </div>
-              <span className="hidden sm:block text-[10px] uppercase tracking-[0.22em] text-muted-foreground font-semibold mt-0.5">
-                {isAr ? "مستشار HR رقمي" : "AI HR Advisor"}
-              </span>
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
-            {/* Online chip on mobile */}
-            <span
-              className="sm:hidden inline-flex items-center gap-1 text-[9px] tracking-[0.22em] uppercase font-bold px-1.5 py-0.5 rounded-full"
-              style={{
-                color: "var(--gold)",
-                background: "color-mix(in oklab, var(--gold) 12%, transparent)",
-                border: "1px solid color-mix(in oklab, var(--gold) 45%, transparent)",
-              }}
-            >
-              <span className="size-1 rounded-full animate-pulse" style={{ background: "var(--gold)" }} />
-              {isAr ? "متصل" : "On"}
-            </span>
-            <button
-              type="button"
-              onClick={() => setHistoryOpen(true)}
-              title={isAr ? "سجل المحادثات" : "Chat history"}
-              aria-label={isAr ? "سجل المحادثات" : "Chat history"}
-              className="relative size-9 grid place-items-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition"
-            >
-              <HistoryIcon className="size-4" />
-              {chats.length > 1 && (
-                <span
-                  className="absolute -top-0.5 -end-0.5 min-w-[16px] h-[16px] px-1 rounded-full text-[9px] font-bold grid place-items-center"
-                  style={{ background: "var(--gold)", color: "var(--accent-foreground)" }}
-                >
-                  {chats.length}
-                </span>
+                  <img src={pendingImage.url} alt="" className="size-7 rounded-md object-cover" />
+                  <span className="max-w-[160px] truncate">{pendingImage.name}</span>
+                  <button
+                    type="button"
+                    onClick={() => setPendingImage(null)}
+                    className="size-5 grid place-items-center rounded-md hover:bg-foreground/10 transition"
+                    aria-label={isAr ? "إزالة" : "Remove"}
+                  >
+                    <XIcon className="size-3.5" />
+                  </button>
+                </div>
               )}
-            </button>
-            <button
-              type="button"
-              onClick={reset}
-              title={isAr ? "محادثة جديدة" : "New chat"}
-              aria-label={isAr ? "محادثة جديدة" : "New chat"}
-              className="size-9 grid place-items-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition"
-            >
-              <Plus className="size-4" />
-            </button>
-            <Link
-              to="/"
-              title={isAr ? "الرئيسية" : "Home"}
-              aria-label={isAr ? "الرئيسية" : "Home"}
-              className="size-9 grid place-items-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition"
-            >
-              <Home className="size-4" />
-            </Link>
-          </div>
-        </header>
-
-        {/* Conversation surface */}
-        <div
-          ref={scrollerRef}
-          className="mt-4 flex-1 min-h-[42vh] rounded-3xl p-3 sm:p-6 overflow-y-auto overflow-x-hidden space-y-5"
-          style={{
-            scrollbarGutter: "stable",
-            background: "color-mix(in oklab, var(--card) 45%, transparent)",
-            backdropFilter: "blur(24px) saturate(150%)",
-            border: "1px solid color-mix(in oklab, var(--foreground) 7%, transparent)",
-          }}
-        >
-          {!hasChat && (
-            <EmptyState
-              isAr={isAr}
-              suggestions={suggestions}
-              onPick={(s) => void send(s)}
-              userName={userName}
-              brandLogo={brandLogo}
-            />
-          )}
-
-          {messages.map((m, i) => (
-            <MessageBubble key={i} message={m} isAr={isAr} logoUrl={brandLogo} />
-          ))}
-
-          {loading && (
-            <div className="flex items-center gap-3 text-sm text-muted-foreground ps-1">
-              <div className="flex gap-1">
-                <span className="size-2 rounded-full animate-bounce" style={{ background: "var(--gold)", animationDelay: "0ms" }} />
-                <span className="size-2 rounded-full animate-bounce" style={{ background: "var(--gold)", animationDelay: "150ms" }} />
-                <span className="size-2 rounded-full animate-bounce" style={{ background: "var(--gold)", animationDelay: "300ms" }} />
-              </div>
-              <span className="font-medium">{isAr ? "سلمي بيفكر..." : "Selmi is thinking..."}</span>
-            </div>
-          )}
-
-          {error && (
-            <div className="rounded-xl border border-destructive/40 bg-destructive/10 text-destructive text-sm px-4 py-3">
-              {error}
-            </div>
-          )}
-        </div>
-
-        {/* Composer */}
-        <form onSubmit={onSubmit} className="mt-3 sm:mt-4">
-          {pendingImage && (
-            <div
-              className="mb-2 inline-flex items-center gap-2 rounded-xl px-2.5 py-1.5 text-xs font-medium"
-              style={{
-                background: "color-mix(in oklab, var(--card) 70%, transparent)",
-                border: "1px solid color-mix(in oklab, var(--gold) 45%, transparent)",
-                backdropFilter: "blur(16px)",
-              }}
-            >
-              <img
-                src={pendingImage.url}
-                alt=""
-                className="size-7 rounded-md object-cover"
-              />
-              <span className="max-w-[160px] truncate">{pendingImage.name}</span>
-              <button
-                type="button"
-                onClick={() => setPendingImage(null)}
-                className="size-5 grid place-items-center rounded-md hover:bg-foreground/10 transition"
-                aria-label={isAr ? "إزالة" : "Remove"}
+              <div
+                className="rounded-2xl p-1.5 sm:p-2 flex items-end gap-1.5 sm:gap-2 focus-within:ring-2 focus-within:ring-[var(--gold)]/40 transition shadow-xl"
+                style={{
+                  background: "color-mix(in oklab, var(--card) 96%, transparent)",
+                  backdropFilter: "blur(18px) saturate(140%)",
+                  border: "1px solid color-mix(in oklab, var(--foreground) 10%, transparent)",
+                }}
               >
-                <XIcon className="size-3.5" />
-              </button>
-            </div>
-          )}
-          <div
-            className="rounded-2xl p-1.5 sm:p-2 flex items-end gap-1.5 sm:gap-2 focus-within:ring-2 focus-within:ring-[var(--gold)]/50 transition shadow-2xl"
-            style={{
-              background: "color-mix(in oklab, var(--card) 70%, transparent)",
-              backdropFilter: "blur(24px) saturate(160%)",
-              border: "1px solid color-mix(in oklab, var(--foreground) 10%, transparent)",
-            }}
-          >
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => {
-                onPickFile(e.target.files?.[0] ?? null);
-                e.target.value = "";
-              }}
-            />
-            <button
-              type="button"
-              onClick={() => fileRef.current?.click()}
-              disabled={loading}
-              className="shrink-0 size-10 grid place-items-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition disabled:opacity-40"
-              aria-label={isAr ? "إرفاق ملف" : "Attach file"}
-              title={isAr ? "إرفاق صورة" : "Attach image"}
-            >
-              <Paperclip className="size-5" />
-            </button>
-            <textarea
-              ref={inputRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  void send(input);
-                }
-              }}
-              rows={1}
-              placeholder={
-                isAr
-                  ? "اكتب سؤالك في HR، إدارة المواهب أو L&D..."
-                  : "Ask about HR, Talent Management, L&D..."
-              }
-              className="flex-1 min-w-0 resize-none bg-transparent border-0 outline-none px-2 sm:px-3 py-2.5 sm:py-3 text-[15px] sm:text-base placeholder:text-muted-foreground/70 max-h-40"
-              disabled={loading}
-            />
-            <button
-              type="submit"
-              disabled={loading || (!input.trim() && !pendingImage)}
-              className="shrink-0 size-10 sm:size-11 rounded-xl grid place-items-center disabled:opacity-40 disabled:cursor-not-allowed shadow-lg hover:scale-105 active:scale-95 transition-transform"
-              style={{
-                background:
-                  "linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 55%, var(--accent)))",
-                color: "var(--accent-foreground)",
-              }}
-              aria-label={isAr ? "إرسال" : "Send"}
-            >
-              {loading ? (
-                <Loader2 className="size-5 animate-spin" />
-              ) : (
-                <Send className={`size-5 ${isAr ? "rotate-180" : ""}`} />
-              )}
-            </button>
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    onPickFile(e.target.files?.[0] ?? null);
+                    e.target.value = "";
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => fileRef.current?.click()}
+                  disabled={loading}
+                  className="shrink-0 size-10 grid place-items-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition disabled:opacity-40"
+                  aria-label={isAr ? "إرفاق ملف" : "Attach file"}
+                  title={isAr ? "إرفاق صورة" : "Attach image"}
+                >
+                  <Paperclip className="size-5" />
+                </button>
+                <textarea
+                  ref={inputRef}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      void send(input);
+                    }
+                  }}
+                  rows={1}
+                  dir="auto"
+                  placeholder={
+                    isAr
+                      ? "اكتب سؤالك في HR، إدارة المواهب أو L&D..."
+                      : "Type a message here..."
+                  }
+                  className="flex-1 min-w-0 resize-none bg-transparent border-0 outline-none px-2 sm:px-3 py-2.5 sm:py-3 text-[15px] sm:text-base placeholder:text-muted-foreground/70 max-h-40"
+                  disabled={loading}
+                />
+                <button
+                  type="submit"
+                  disabled={loading || (!input.trim() && !pendingImage)}
+                  className="shrink-0 size-10 sm:size-11 rounded-xl grid place-items-center disabled:opacity-40 disabled:cursor-not-allowed shadow-md hover:scale-105 active:scale-95 transition-transform"
+                  style={{
+                    background: "linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 55%, var(--accent)))",
+                    color: "var(--accent-foreground)",
+                  }}
+                  aria-label={isAr ? "إرسال" : "Send"}
+                >
+                  {loading ? (
+                    <Loader2 className="size-5 animate-spin" />
+                  ) : (
+                    <Send className={`size-5 ${isAr ? "rotate-180" : ""}`} />
+                  )}
+                </button>
+              </div>
+              <p className="mt-1.5 text-[10.5px] text-muted-foreground text-center px-2">
+                {isAr
+                  ? "Selmi AI متخصص في HR و Talent Management · ممكن يخطئ — راجع المعلومات المهمة"
+                  : "Selmi AI only answers HR & Talent Management · It can make mistakes — verify critical info"}
+              </p>
+            </form>
           </div>
-          <p className="mt-2.5 text-[11px] text-muted-foreground text-center px-2">
-            {isAr
-              ? "Selmi AI متخصص في HR و Talent Management فقط · ممكن يخطئ، راجع المعلومات المهمة"
-              : "Selmi AI only answers HR & Talent Management · It can make mistakes — verify critical info"}
-          </p>
-        </form>
+        </div>
       </div>
 
-      {/* Name dialog */}
       {askName && (
         <NameDialog
           isAr={isAr}
@@ -721,7 +778,6 @@ function AskSelmiPage() {
               void doSend(pendingText, img, name);
             } else {
               setAskName(null);
-              // Add a friendly assistant ack so the user sees the change took effect
               const ack = isAr
                 ? `تمام يا ${name}، هناديك كده من دلوقتي 🌿`
                 : `Got it, ${name} — I'll call you that from now on.`;
@@ -731,7 +787,6 @@ function AskSelmiPage() {
         />
       )}
 
-      {/* History drawer */}
       {historyOpen && (
         <HistoryDrawer
           isAr={isAr}
@@ -764,8 +819,8 @@ function EmptyState({
   brandLogo: string;
 }) {
   return (
-    <div className="h-full flex flex-col items-center justify-center text-center py-8 sm:py-12 px-2">
-      <div className="relative mb-5">
+    <div className="flex flex-col items-center justify-center text-center py-12 sm:py-20 px-2">
+      <div className="relative mb-6">
         <div
           aria-hidden
           className="absolute -inset-3 rounded-2xl blur-xl opacity-50"
@@ -774,29 +829,17 @@ function EmptyState({
         <div
           className="relative size-16 rounded-2xl grid place-items-center overflow-hidden shadow-xl"
           style={{
-            background:
-              "linear-gradient(135deg, color-mix(in oklab, var(--gold) 28%, var(--background)), var(--background))",
+            background: "linear-gradient(135deg, color-mix(in oklab, var(--gold) 28%, var(--background)), var(--background))",
             border: "1.5px solid color-mix(in oklab, var(--gold) 55%, transparent)",
           }}
         >
           <img src={brandLogo} alt="" className="size-full object-contain p-2" />
         </div>
-        <span
-          aria-hidden
-          className="absolute -bottom-1 -end-1 size-5 rounded-full grid place-items-center shadow-md"
-          style={{ background: "var(--gold)", color: "var(--accent-foreground)" }}
-        >
-          <Sparkles className="size-2.5" />
-        </span>
       </div>
       <h2 className="font-display font-black text-[clamp(1.5rem,4vw,2.25rem)] leading-tight tracking-tight">
         {userName
-          ? isAr
-            ? `أهلاً ${userName} 👋`
-            : `Welcome back, ${userName} 👋`
-          : isAr
-            ? "اسأل سلمي"
-            : "Ask Selmi"}
+          ? isAr ? `أهلاً ${userName} 👋` : `Welcome back, ${userName} 👋`
+          : isAr ? "اسأل سلمي" : "Ask Selmi"}
       </h2>
       <p className="mt-2 text-sm sm:text-[15px] text-muted-foreground leading-relaxed max-w-xl">
         {isAr
@@ -809,27 +852,24 @@ function EmptyState({
         <span className="h-px w-6 bg-foreground/20" />
       </div>
       <div className="mt-4 flex flex-wrap gap-2 justify-center max-w-2xl">
-        {suggestions.map((s) => (
-          <button
-            key={s}
-            type="button"
-            onClick={() => onPick(s)}
-            className="rounded-full px-3.5 py-2 text-xs sm:text-sm text-foreground/85 hover:text-foreground hover:-translate-y-0.5 transition-all"
-            style={{
-              background: "color-mix(in oklab, var(--card) 70%, transparent)",
-              backdropFilter: "blur(16px)",
-              border: "1px solid color-mix(in oklab, var(--foreground) 10%, transparent)",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "color-mix(in oklab, var(--gold) 60%, transparent)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = "color-mix(in oklab, var(--foreground) 10%, transparent)";
-            }}
-          >
-            {s}
-          </button>
-        ))}
+        {suggestions.map((s) => {
+          const ar = isArabicText(s);
+          return (
+            <button
+              key={s}
+              type="button"
+              dir={ar ? "rtl" : "ltr"}
+              onClick={() => onPick(s)}
+              className="rounded-full px-3.5 py-2 text-xs sm:text-sm text-foreground/85 hover:text-foreground hover:-translate-y-0.5 transition-all"
+              style={{
+                background: "color-mix(in oklab, var(--card) 80%, transparent)",
+                border: "1px solid color-mix(in oklab, var(--foreground) 10%, transparent)",
+              }}
+            >
+              {s}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
@@ -850,6 +890,16 @@ function MessageBubble({
     ? message.content.filter((p): p is ImagePart => p.type === "image_url").map((p) => p.image_url.url)
     : [];
 
+  // Per-message direction detection
+  const msgIsAr = isArabicText(text);
+  const msgDir: "rtl" | "ltr" = msgIsAr ? "rtl" : "ltr";
+
+  // User on the right (writer side) — flip if Arabic UI? We anchor user to the end (writing side) of UI direction.
+  // But per request, Arabic messages align right, English left — regardless of role.
+  // We'll use msgDir for alignment of the bubble.
+  const alignEnd = msgDir === "rtl"; // rtl bubbles align right (justify-end in ltr container)
+  // For user vs assistant, swap avatar position by role but text alignment follows msg direction.
+
   const [copied, setCopied] = useState(false);
   const copy = async () => {
     try {
@@ -859,17 +909,20 @@ function MessageBubble({
     } catch {}
   };
 
+  // Layout: user messages on right (UI side), assistant on left in LTR; mirror in RTL UI.
+  // But per the request — alignment driven by message language. We'll honor:
+  // role decides avatar side (user: end, assistant: start in the page direction),
+  // and msgDir decides text dir + internal alignment of the bubble content.
+
+  const justify = isUser ? (isAr ? "justify-start" : "justify-end") : (isAr ? "justify-end" : "justify-start");
+  const itemsAlign = isUser ? (isAr ? "items-start" : "items-end") : (isAr ? "items-end" : "items-start");
+
   return (
-    <div className={`flex gap-2 sm:gap-3 ${isUser ? "justify-end" : "justify-start"}`}>
+    <div className={`flex gap-2 sm:gap-3 ${justify}`}>
       {!isUser && (
-        <div className="relative shrink-0">
+        <div className="relative shrink-0 order-first">
           <div
-            aria-hidden
-            className="absolute -inset-0.5 rounded-xl blur opacity-50"
-            style={{ background: "var(--gold)" }}
-          />
-          <div
-            className="relative size-9 rounded-xl grid place-items-center overflow-hidden shadow-md"
+            className="relative size-9 rounded-xl grid place-items-center overflow-hidden shadow-sm"
             style={{
               background: "linear-gradient(135deg, color-mix(in oklab, var(--gold) 25%, var(--background)), var(--background))",
               border: "1px solid color-mix(in oklab, var(--gold) 50%, transparent)",
@@ -879,24 +932,20 @@ function MessageBubble({
           </div>
         </div>
       )}
-      <div className={`max-w-[82%] min-w-0 flex flex-col ${isUser ? "items-end" : "items-start"}`}>
+      <div className={`max-w-[82%] min-w-0 flex flex-col ${itemsAlign}`}>
         {images.length > 0 && (
           <div className="mb-1.5 flex flex-wrap gap-1.5">
             {images.map((src, idx) => (
-              <img
-                key={idx}
-                src={src}
-                alt=""
-                className="max-h-48 rounded-xl border border-foreground/10 shadow"
-              />
+              <img key={idx} src={src} alt="" className="max-h-48 rounded-xl border border-foreground/10 shadow" />
             ))}
           </div>
         )}
         {text && (
           <div
-            className={`rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 text-[14.5px] leading-[1.75] shadow-md break-words ${
+            dir={msgDir}
+            className={`rounded-2xl px-3.5 sm:px-4 py-2.5 sm:py-3 text-[14.5px] leading-[1.75] shadow-sm break-words ${
               isUser ? "text-[var(--accent-foreground)]" : "text-foreground/95"
-            }`}
+            } ${alignEnd ? "text-right" : "text-left"}`}
             style={
               isUser
                 ? {
@@ -904,8 +953,7 @@ function MessageBubble({
                       "linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 55%, var(--accent)))",
                   }
                 : {
-                    background: "color-mix(in oklab, var(--card) 75%, transparent)",
-                    backdropFilter: "blur(16px)",
+                    background: "color-mix(in oklab, var(--card) 92%, transparent)",
                     border: "1px solid color-mix(in oklab, var(--foreground) 8%, transparent)",
                   }
             }
@@ -940,10 +988,9 @@ function MessageBubble({
       </div>
       {isUser && (
         <div
-          className="size-9 rounded-xl grid place-items-center shrink-0 text-xs font-bold"
+          className="size-9 rounded-xl grid place-items-center shrink-0 text-xs font-bold order-last"
           style={{
-            background: "color-mix(in oklab, var(--card) 75%, transparent)",
-            backdropFilter: "blur(16px)",
+            background: "color-mix(in oklab, var(--card) 85%, transparent)",
             border: "1px solid color-mix(in oklab, var(--foreground) 12%, transparent)",
             color: "color-mix(in oklab, var(--foreground) 85%, transparent)",
           }}
@@ -986,23 +1033,15 @@ function NameDialog({
   }, []);
 
   const title = useMemo(() => {
-    if (mode === "first") {
-      return isAr ? "يسعدني تقديم العون لك" : "Glad to help you";
-    }
+    if (mode === "first") return isAr ? "يسعدني تقديم العون لك" : "Glad to help you";
     return isAr ? "تأكيد تغيير الاسم" : "Confirm new name";
   }, [mode, isAr]);
 
   const subtitle = useMemo(() => {
-    if (mode === "first") {
-      return isAr ? "كيف تحب أن أناديك؟" : "How would you like me to call you?";
-    }
+    if (mode === "first") return isAr ? "كيف تحب أن أناديك؟" : "How would you like me to call you?";
     return isAr
-      ? currentName
-        ? `هناديك ${currentName} حالياً. عاوز أغيره لإيه؟`
-        : "أكد الاسم الجديد"
-      : currentName
-        ? `I currently call you ${currentName}. What should I switch to?`
-        : "Confirm the new name";
+      ? currentName ? `هناديك ${currentName} حالياً. عاوز أغيره لإيه؟` : "أكد الاسم الجديد"
+      : currentName ? `I currently call you ${currentName}. What should I switch to?` : "Confirm the new name";
   }, [mode, isAr, currentName]);
 
   const submit = () => {
@@ -1022,16 +1061,10 @@ function NameDialog({
         onClick={(e) => e.stopPropagation()}
         className="relative w-full max-w-md rounded-3xl p-6 sm:p-7 shadow-2xl"
         style={{
-          background: "color-mix(in oklab, var(--card) 88%, transparent)",
-          backdropFilter: "blur(24px) saturate(160%)",
+          background: "color-mix(in oklab, var(--card) 95%, transparent)",
           border: "1px solid color-mix(in oklab, var(--gold) 35%, transparent)",
         }}
       >
-        <div
-          aria-hidden
-          className="absolute inset-x-0 top-0 h-px"
-          style={{ background: "linear-gradient(90deg, transparent, var(--gold), transparent)" }}
-        />
         <div className="flex items-center gap-3 mb-1">
           <div
             className="size-10 rounded-xl grid place-items-center shrink-0"
@@ -1078,8 +1111,7 @@ function NameDialog({
               disabled={!value.trim()}
               className="px-5 py-2.5 text-sm font-bold rounded-xl shadow-lg disabled:opacity-40 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-95 transition"
               style={{
-                background:
-                  "linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 55%, var(--accent)))",
+                background: "linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 55%, var(--accent)))",
                 color: "var(--accent-foreground)",
               }}
             >
@@ -1128,8 +1160,8 @@ function HistoryDrawer({
         onClick={(e) => e.stopPropagation()}
         className={`${isAr ? "ms-auto" : "me-auto"} h-full w-[88vw] max-w-sm flex flex-col shadow-2xl`}
         style={{
-          background: "color-mix(in oklab, var(--card) 92%, transparent)",
-          backdropFilter: "blur(24px) saturate(160%)",
+          background: "color-mix(in oklab, var(--card) 96%, transparent)",
+          backdropFilter: "blur(18px) saturate(140%)",
           borderInlineStart: isAr ? "none" : "1px solid color-mix(in oklab, var(--gold) 30%, transparent)",
           borderInlineEnd: isAr ? "1px solid color-mix(in oklab, var(--gold) 30%, transparent)" : "none",
         }}
@@ -1173,14 +1205,13 @@ function HistoryDrawer({
           )}
           {sorted.map((c) => {
             const active = c.id === activeId;
+            const titleIsAr = isArabicText(c.title);
             return (
               <div
                 key={c.id}
                 className="group relative rounded-xl transition"
                 style={{
-                  background: active
-                    ? "color-mix(in oklab, var(--gold) 14%, transparent)"
-                    : "transparent",
+                  background: active ? "color-mix(in oklab, var(--gold) 14%, transparent)" : "transparent",
                   border: active
                     ? "1px solid color-mix(in oklab, var(--gold) 45%, transparent)"
                     : "1px solid transparent",
@@ -1192,11 +1223,11 @@ function HistoryDrawer({
                   className="w-full text-start px-3 py-2.5 rounded-xl hover:bg-foreground/5 transition"
                 >
                   <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0 flex-1">
+                    <div className="min-w-0 flex-1" dir={titleIsAr ? "rtl" : "ltr"}>
                       <div className="text-[13.5px] font-semibold text-foreground truncate">
                         {c.title || (isAr ? "محادثة" : "Chat")}
                       </div>
-                      <div className="text-[11px] text-muted-foreground mt-0.5">
+                      <div className="text-[11px] text-muted-foreground mt-0.5" dir={isAr ? "rtl" : "ltr"}>
                         {c.messages.length} {isAr ? "رسالة" : "msgs"} · {fmt(c.updatedAt)}
                       </div>
                     </div>
