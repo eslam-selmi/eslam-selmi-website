@@ -53,6 +53,46 @@ export function SuccessCasesPanel() {
   const [editing, setEditing] = useState<SuccessCaseRow | null>(null);
   const [form, setForm] = useState<typeof empty>(empty);
   const [busy, setBusy] = useState(false);
+  const [translating, setTranslating] = useState(false);
+  const translate = useServerFn(translateTexts);
+
+  async function autoTranslateEmptyEn(f: typeof empty): Promise<typeof empty> {
+    const fields: Array<keyof typeof empty> = [
+      "name_ar", "description_ar", "challenges_ar", "solutions_ar", "results_ar",
+    ];
+    const enKeys: Array<keyof typeof empty> = [
+      "name_en", "description_en", "challenges_en", "solutions_en", "results_en",
+    ];
+    const pending: { idx: number; arText: string }[] = [];
+    fields.forEach((arKey, i) => {
+      const ar = String(f[arKey] || "").trim();
+      const en = String(f[enKeys[i]] || "").trim();
+      if (ar && !en) pending.push({ idx: i, arText: ar });
+    });
+    if (pending.length === 0) return f;
+    const res = await translate({
+      data: { texts: pending.map((p) => p.arText), target: "en" },
+    });
+    const next = { ...f };
+    pending.forEach((p, i) => {
+      const t = res.translations?.[i];
+      if (t && typeof t === "string") (next as any)[enKeys[p.idx]] = t;
+    });
+    return next;
+  }
+
+  async function manualTranslate() {
+    setTranslating(true);
+    try {
+      const next = await autoTranslateEmptyEn(form);
+      setForm(next);
+      toast.success(t("تمت الترجمة", "Translated"));
+    } catch (e: any) {
+      toast.error(e?.message || "Translation failed");
+    } finally {
+      setTranslating(false);
+    }
+  }
 
   async function load() {
     const { data } = await supabase
