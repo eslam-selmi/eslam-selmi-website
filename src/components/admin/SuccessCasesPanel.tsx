@@ -289,7 +289,16 @@ export function SuccessCasesPanel() {
                 <TextArea label={t("روابط صور إضافية (سطر لكل رابط)", "Gallery URLs (one per line)")} v={form.gallery_urls} on={(v) => setForm({ ...form, gallery_urls: v })} />
               </div>
             </div>
-            <div className="mt-5 flex gap-2 justify-end">
+            <div className="mt-5 flex gap-2 justify-end flex-wrap">
+              <button
+                onClick={manualTranslate}
+                disabled={translating || busy}
+                className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-sm font-semibold inline-flex items-center gap-2 disabled:opacity-50"
+                title={t("ترجمة الحقول الإنجليزية الفارغة", "Translate empty English fields")}
+              >
+                {translating ? <Loader2 className="size-4 animate-spin" /> : <Languages className="size-4" />}
+                {t("ترجمة للإنجليزية", "Translate to English")}
+              </button>
               <button onClick={() => setOpen(false)} className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-sm font-semibold">
                 {t("إلغاء", "Cancel")}
               </button>
@@ -297,6 +306,7 @@ export function SuccessCasesPanel() {
                 {busy ? t("جارٍ الحفظ…", "Saving…") : t("حفظ", "Save")}
               </button>
             </div>
+
           </div>
         </div>
       )}
