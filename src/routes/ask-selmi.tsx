@@ -135,9 +135,11 @@ function detectRenameIntent(text: string): string | null {
 }
 
 function AskSelmiPage() {
-  const { lang } = useI18n();
+  const { lang, setLang } = useI18n();
+  const { theme, toggle: toggleTheme } = useTheme();
   const isAr = lang === "ar";
   const brandLogo = brandLogoAsset.url;
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const suggestionsEn = [
     "How do I design a high-impact L&D strategy from scratch?",
