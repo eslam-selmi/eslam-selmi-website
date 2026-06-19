@@ -260,9 +260,16 @@ export function SuccessCasesPanel() {
             <button onClick={() => setOpen(false)} className="absolute top-3 end-3 size-8 grid place-items-center rounded-full bg-white/10 hover:bg-white/20">
               <X className="size-4" />
             </button>
-            <h3 className="font-display font-bold text-lg mb-4">
+            <h3 className="font-display font-bold text-lg mb-2">
               {editing ? t("تعديل الحالة", "Edit case") : t("حالة جديدة", "New case")}
             </h3>
+            <p className="text-xs text-white/60 mb-4 leading-relaxed">
+              {t(
+                "اكتب المحتوى بالعربية فقط — سيتم ترجمته للإنجليزية تلقائياً عند الحفظ بأسلوب احترافي. تقدر تعدل الإنجليزية يدوياً لو حبيت.",
+                "Write the content in Arabic only — it will be auto-translated to English professionally on save. You can still edit the English manually.",
+              )}
+            </p>
+
             <div className="grid sm:grid-cols-2 gap-3">
               <Field label={t("الاسم (عربي)*", "Name (Arabic)*")} v={form.name_ar} on={(v) => setForm({ ...form, name_ar: v })} />
               <Field label={t("الاسم (إنجليزي)", "Name (English)")} v={form.name_en} on={(v) => setForm({ ...form, name_en: v })} />
