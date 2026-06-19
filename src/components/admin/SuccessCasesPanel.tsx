@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { toast } from "sonner";
-import { Trash2, Eye, EyeOff, Plus, X } from "lucide-react";
+import { Trash2, Eye, EyeOff, Plus, X, Languages, Loader2 } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { translateTexts } from "@/lib/translate.functions";
 
 type SuccessCaseRow = {
   id: string;
