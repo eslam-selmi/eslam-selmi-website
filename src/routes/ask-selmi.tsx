@@ -597,6 +597,34 @@ function AskSelmiPage() {
               <div className="flex items-center gap-1 shrink-0">
                 <button
                   type="button"
+                  onClick={() => setSidebarOpen((v) => !v)}
+                  title={sidebarOpen ? (isAr ? "إخفاء الشريط" : "Hide sidebar") : (isAr ? "إظهار الشريط" : "Show sidebar")}
+                  aria-label={sidebarOpen ? "Hide sidebar" : "Show sidebar"}
+                  className="hidden lg:grid size-9 place-items-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition"
+                >
+                  {sidebarOpen ? <PanelLeftClose className="size-4" /> : <PanelLeftOpen className="size-4" />}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLang(isAr ? "en" : "ar")}
+                  title={isAr ? "English" : "العربية"}
+                  aria-label="Toggle language"
+                  className="h-9 inline-flex items-center gap-1.5 px-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition text-[11px] font-bold uppercase tracking-wider"
+                >
+                  <Languages className="size-4" />
+                  {isAr ? "EN" : "ع"}
+                </button>
+                <button
+                  type="button"
+                  onClick={toggleTheme}
+                  title={theme === "dark" ? (isAr ? "وضع فاتح" : "Light mode") : (isAr ? "وضع داكن" : "Dark mode")}
+                  aria-label="Toggle theme"
+                  className="size-9 grid place-items-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition"
+                >
+                  {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
+                </button>
+                <button
+                  type="button"
                   onClick={() => setHistoryOpen(true)}
                   title={isAr ? "سجل المحادثات" : "Chat history"}
                   aria-label={isAr ? "سجل المحادثات" : "Chat history"}
@@ -623,6 +651,7 @@ function AskSelmiPage() {
                 </Link>
               </div>
             </header>
+
 
             {/* Conversation — flows naturally, no internal scroll */}
             <section className="mt-4 space-y-5">
