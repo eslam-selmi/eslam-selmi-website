@@ -672,8 +672,8 @@ function AskSelmiPage() {
           }}
         />
         <div className="relative mx-auto w-full max-w-7xl px-3 sm:px-6 pb-4 pt-6 pointer-events-none">
-          <div className="lg:grid lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-6">
-            <div className="hidden lg:block" />
+          <div className={`lg:grid ${sidebarOpen ? "lg:grid-cols-[300px_minmax(0,1fr)]" : "lg:grid-cols-[0_minmax(0,1fr)]"} lg:gap-6`}>
+            <div className={`${sidebarOpen ? "hidden lg:block" : "hidden"}`} />
             <form onSubmit={onSubmit} className="pointer-events-auto">
               {pendingImage && (
                 <div
