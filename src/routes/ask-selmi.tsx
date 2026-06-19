@@ -14,10 +14,16 @@ import {
   Plus,
   Search,
   MessageSquare,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Languages,
+  Sun,
+  Moon,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useI18n } from "@/lib/i18n";
+import { useTheme } from "@/lib/theme";
 import { askSelmi } from "@/lib/ask-selmi.functions";
 import { supabase } from "@/integrations/supabase/client";
 import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
@@ -129,9 +135,11 @@ function detectRenameIntent(text: string): string | null {
 }
 
 function AskSelmiPage() {
-  const { lang } = useI18n();
+  const { lang, setLang } = useI18n();
+  const { theme, toggle: toggleTheme } = useTheme();
   const isAr = lang === "ar";
   const brandLogo = brandLogoAsset.url;
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const suggestionsEn = [
     "How do I design a high-impact L&D strategy from scratch?",
@@ -434,9 +442,8 @@ function AskSelmiPage() {
       />
 
       <div className="mx-auto w-full max-w-7xl px-3 sm:px-6 pt-4 pb-40">
-        <div className="lg:grid lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-6">
-          {/* Sidebar (desktop) */}
-          <aside className="hidden lg:flex sticky top-4 self-start h-[calc(100vh-2rem)] flex-col rounded-3xl overflow-hidden shadow-sm"
+        <div className={`lg:grid ${sidebarOpen ? "lg:grid-cols-[300px_minmax(0,1fr)]" : "lg:grid-cols-[0_minmax(0,1fr)]"} lg:gap-6 transition-[grid-template-columns] duration-300`}>
+          <aside className={`${sidebarOpen ? "hidden lg:flex" : "hidden"} sticky top-4 self-start h-[calc(100vh-2rem)] flex-col rounded-3xl overflow-hidden shadow-sm`}
             style={{
               background: "color-mix(in oklab, var(--card) 92%, transparent)",
               border: "1px solid color-mix(in oklab, var(--foreground) 8%, transparent)",
@@ -590,6 +597,34 @@ function AskSelmiPage() {
               <div className="flex items-center gap-1 shrink-0">
                 <button
                   type="button"
+                  onClick={() => setSidebarOpen((v) => !v)}
+                  title={sidebarOpen ? (isAr ? "إخفاء الشريط" : "Hide sidebar") : (isAr ? "إظهار الشريط" : "Show sidebar")}
+                  aria-label={sidebarOpen ? "Hide sidebar" : "Show sidebar"}
+                  className="hidden lg:grid size-9 place-items-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition"
+                >
+                  {sidebarOpen ? <PanelLeftClose className="size-4" /> : <PanelLeftOpen className="size-4" />}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLang(isAr ? "en" : "ar")}
+                  title={isAr ? "English" : "العربية"}
+                  aria-label="Toggle language"
+                  className="h-9 inline-flex items-center gap-1.5 px-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition text-[11px] font-bold uppercase tracking-wider"
+                >
+                  <Languages className="size-4" />
+                  {isAr ? "EN" : "ع"}
+                </button>
+                <button
+                  type="button"
+                  onClick={toggleTheme}
+                  title={theme === "dark" ? (isAr ? "وضع فاتح" : "Light mode") : (isAr ? "وضع داكن" : "Dark mode")}
+                  aria-label="Toggle theme"
+                  className="size-9 grid place-items-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition"
+                >
+                  {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
+                </button>
+                <button
+                  type="button"
                   onClick={() => setHistoryOpen(true)}
                   title={isAr ? "سجل المحادثات" : "Chat history"}
                   aria-label={isAr ? "سجل المحادثات" : "Chat history"}
@@ -616,6 +651,7 @@ function AskSelmiPage() {
                 </Link>
               </div>
             </header>
+
 
             {/* Conversation — flows naturally, no internal scroll */}
             <section className="mt-4 space-y-5">
@@ -665,8 +701,8 @@ function AskSelmiPage() {
           }}
         />
         <div className="relative mx-auto w-full max-w-7xl px-3 sm:px-6 pb-4 pt-6 pointer-events-none">
-          <div className="lg:grid lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-6">
-            <div className="hidden lg:block" />
+          <div className={`lg:grid ${sidebarOpen ? "lg:grid-cols-[300px_minmax(0,1fr)]" : "lg:grid-cols-[0_minmax(0,1fr)]"} lg:gap-6`}>
+            <div className={`${sidebarOpen ? "hidden lg:block" : "hidden"}`} />
             <form onSubmit={onSubmit} className="pointer-events-auto">
               {pendingImage && (
                 <div

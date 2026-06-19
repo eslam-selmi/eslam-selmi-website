@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { toast } from "sonner";
-import { Trash2, Eye, EyeOff, Plus, X } from "lucide-react";
+import { Trash2, Eye, EyeOff, Plus, X, Languages, Loader2 } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { translateTexts } from "@/lib/translate.functions";
 
 type SuccessCaseRow = {
   id: string;
@@ -51,6 +53,46 @@ export function SuccessCasesPanel() {
   const [editing, setEditing] = useState<SuccessCaseRow | null>(null);
   const [form, setForm] = useState<typeof empty>(empty);
   const [busy, setBusy] = useState(false);
+  const [translating, setTranslating] = useState(false);
+  const translate = useServerFn(translateTexts);
+
+  async function autoTranslateEmptyEn(f: typeof empty): Promise<typeof empty> {
+    const fields: Array<keyof typeof empty> = [
+      "name_ar", "description_ar", "challenges_ar", "solutions_ar", "results_ar",
+    ];
+    const enKeys: Array<keyof typeof empty> = [
+      "name_en", "description_en", "challenges_en", "solutions_en", "results_en",
+    ];
+    const pending: { idx: number; arText: string }[] = [];
+    fields.forEach((arKey, i) => {
+      const ar = String(f[arKey] || "").trim();
+      const en = String(f[enKeys[i]] || "").trim();
+      if (ar && !en) pending.push({ idx: i, arText: ar });
+    });
+    if (pending.length === 0) return f;
+    const res = await translate({
+      data: { texts: pending.map((p) => p.arText), target: "en" },
+    });
+    const next = { ...f };
+    pending.forEach((p, i) => {
+      const t = res.translations?.[i];
+      if (t && typeof t === "string") (next as any)[enKeys[p.idx]] = t;
+    });
+    return next;
+  }
+
+  async function manualTranslate() {
+    setTranslating(true);
+    try {
+      const next = await autoTranslateEmptyEn(form);
+      setForm(next);
+      toast.success(t("تمت الترجمة", "Translated"));
+    } catch (e: any) {
+      toast.error(e?.message || "Translation failed");
+    } finally {
+      setTranslating(false);
+    }
+  }
 
   async function load() {
     const { data } = await supabase
@@ -98,22 +140,29 @@ export function SuccessCasesPanel() {
       return;
     }
     setBusy(true);
+    let f = form;
+    try {
+      f = await autoTranslateEmptyEn(form);
+      if (f !== form) setForm(f);
+    } catch (e) {
+      console.error("auto-translate failed", e);
+    }
     const payload = {
-      name_ar: form.name_ar.trim(),
-      name_en: form.name_en.trim() || null,
-      description_ar: form.description_ar.trim() || null,
-      description_en: form.description_en.trim() || null,
-      challenges_ar: form.challenges_ar.trim() || null,
-      challenges_en: form.challenges_en.trim() || null,
-      solutions_ar: form.solutions_ar.trim() || null,
-      solutions_en: form.solutions_en.trim() || null,
-      results_ar: form.results_ar.trim() || null,
-      results_en: form.results_en.trim() || null,
-      tools: form.tools.split(",").map((s) => s.trim()).filter(Boolean),
-      cover_image_url: form.cover_image_url.trim() || null,
-      gallery_urls: form.gallery_urls.split("\n").map((s) => s.trim()).filter(Boolean),
-      external_url: form.external_url.trim() || null,
-      display_order: Number(form.display_order) || 0,
+      name_ar: f.name_ar.trim(),
+      name_en: f.name_en.trim() || null,
+      description_ar: f.description_ar.trim() || null,
+      description_en: f.description_en.trim() || null,
+      challenges_ar: f.challenges_ar.trim() || null,
+      challenges_en: f.challenges_en.trim() || null,
+      solutions_ar: f.solutions_ar.trim() || null,
+      solutions_en: f.solutions_en.trim() || null,
+      results_ar: f.results_ar.trim() || null,
+      results_en: f.results_en.trim() || null,
+      tools: f.tools.split(",").map((s) => s.trim()).filter(Boolean),
+      cover_image_url: f.cover_image_url.trim() || null,
+      gallery_urls: f.gallery_urls.split("\n").map((s) => s.trim()).filter(Boolean),
+      external_url: f.external_url.trim() || null,
+      display_order: Number(f.display_order) || 0,
     };
     const { error } = editing
       ? await supabase.from("success_cases" as any).update(payload).eq("id", editing.id)
@@ -211,9 +260,16 @@ export function SuccessCasesPanel() {
             <button onClick={() => setOpen(false)} className="absolute top-3 end-3 size-8 grid place-items-center rounded-full bg-white/10 hover:bg-white/20">
               <X className="size-4" />
             </button>
-            <h3 className="font-display font-bold text-lg mb-4">
+            <h3 className="font-display font-bold text-lg mb-2">
               {editing ? t("تعديل الحالة", "Edit case") : t("حالة جديدة", "New case")}
             </h3>
+            <p className="text-xs text-white/60 mb-4 leading-relaxed">
+              {t(
+                "اكتب المحتوى بالعربية فقط — سيتم ترجمته للإنجليزية تلقائياً عند الحفظ بأسلوب احترافي. تقدر تعدل الإنجليزية يدوياً لو حبيت.",
+                "Write the content in Arabic only — it will be auto-translated to English professionally on save. You can still edit the English manually.",
+              )}
+            </p>
+
             <div className="grid sm:grid-cols-2 gap-3">
               <Field label={t("الاسم (عربي)*", "Name (Arabic)*")} v={form.name_ar} on={(v) => setForm({ ...form, name_ar: v })} />
               <Field label={t("الاسم (إنجليزي)", "Name (English)")} v={form.name_en} on={(v) => setForm({ ...form, name_en: v })} />
@@ -233,7 +289,16 @@ export function SuccessCasesPanel() {
                 <TextArea label={t("روابط صور إضافية (سطر لكل رابط)", "Gallery URLs (one per line)")} v={form.gallery_urls} on={(v) => setForm({ ...form, gallery_urls: v })} />
               </div>
             </div>
-            <div className="mt-5 flex gap-2 justify-end">
+            <div className="mt-5 flex gap-2 justify-end flex-wrap">
+              <button
+                onClick={manualTranslate}
+                disabled={translating || busy}
+                className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-sm font-semibold inline-flex items-center gap-2 disabled:opacity-50"
+                title={t("ترجمة الحقول الإنجليزية الفارغة", "Translate empty English fields")}
+              >
+                {translating ? <Loader2 className="size-4 animate-spin" /> : <Languages className="size-4" />}
+                {t("ترجمة للإنجليزية", "Translate to English")}
+              </button>
               <button onClick={() => setOpen(false)} className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-sm font-semibold">
                 {t("إلغاء", "Cancel")}
               </button>
@@ -241,6 +306,7 @@ export function SuccessCasesPanel() {
                 {busy ? t("جارٍ الحفظ…", "Saving…") : t("حفظ", "Save")}
               </button>
             </div>
+
           </div>
         </div>
       )}
