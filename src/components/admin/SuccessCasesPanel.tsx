@@ -140,22 +140,29 @@ export function SuccessCasesPanel() {
       return;
     }
     setBusy(true);
+    let f = form;
+    try {
+      f = await autoTranslateEmptyEn(form);
+      if (f !== form) setForm(f);
+    } catch (e) {
+      console.error("auto-translate failed", e);
+    }
     const payload = {
-      name_ar: form.name_ar.trim(),
-      name_en: form.name_en.trim() || null,
-      description_ar: form.description_ar.trim() || null,
-      description_en: form.description_en.trim() || null,
-      challenges_ar: form.challenges_ar.trim() || null,
-      challenges_en: form.challenges_en.trim() || null,
-      solutions_ar: form.solutions_ar.trim() || null,
-      solutions_en: form.solutions_en.trim() || null,
-      results_ar: form.results_ar.trim() || null,
-      results_en: form.results_en.trim() || null,
-      tools: form.tools.split(",").map((s) => s.trim()).filter(Boolean),
-      cover_image_url: form.cover_image_url.trim() || null,
-      gallery_urls: form.gallery_urls.split("\n").map((s) => s.trim()).filter(Boolean),
-      external_url: form.external_url.trim() || null,
-      display_order: Number(form.display_order) || 0,
+      name_ar: f.name_ar.trim(),
+      name_en: f.name_en.trim() || null,
+      description_ar: f.description_ar.trim() || null,
+      description_en: f.description_en.trim() || null,
+      challenges_ar: f.challenges_ar.trim() || null,
+      challenges_en: f.challenges_en.trim() || null,
+      solutions_ar: f.solutions_ar.trim() || null,
+      solutions_en: f.solutions_en.trim() || null,
+      results_ar: f.results_ar.trim() || null,
+      results_en: f.results_en.trim() || null,
+      tools: f.tools.split(",").map((s) => s.trim()).filter(Boolean),
+      cover_image_url: f.cover_image_url.trim() || null,
+      gallery_urls: f.gallery_urls.split("\n").map((s) => s.trim()).filter(Boolean),
+      external_url: f.external_url.trim() || null,
+      display_order: Number(f.display_order) || 0,
     };
     const { error } = editing
       ? await supabase.from("success_cases" as any).update(payload).eq("id", editing.id)
