@@ -735,25 +735,36 @@ export function Nav({
             <BrandMark />
           </Link>
           <nav className="hidden xl:flex items-center gap-0.5">
-            {NAV.map((n) =>
-              n.to ? (
-                <Link
-                  key={n.id}
-                  to={n.to}
-                  className="px-2.5 py-1.5 text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-foreground/5"
-                >
-                  {t(n.key)}
-                </Link>
-              ) : (
-                <a
-                  key={n.id}
-                  href={hashHref(n.id)}
-                  className="px-2.5 py-1.5 text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-foreground/5"
-                >
+            {NAV.map((n) => {
+              const baseCls =
+                "px-2.5 py-1.5 text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-foreground/5";
+              const highlightCls =
+                "group relative inline-flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-extrabold rounded-full transition-all hover:-translate-y-0.5";
+              const highlightStyle = {
+                background:
+                  "linear-gradient(135deg, color-mix(in oklab, var(--gold) 22%, transparent), color-mix(in oklab, var(--gold) 8%, transparent))",
+                border: "1.5px solid color-mix(in oklab, var(--gold) 55%, transparent)",
+                color: "var(--accent)",
+                boxShadow: "0 0 0 3px color-mix(in oklab, var(--gold) 10%, transparent)",
+              } as const;
+              if (n.to) {
+                return n.highlight ? (
+                  <Link key={n.id} to={n.to} className={highlightCls} style={highlightStyle}>
+                    <Sparkles className="size-3.5" />
+                    {t(n.key)}
+                  </Link>
+                ) : (
+                  <Link key={n.id} to={n.to} className={baseCls}>
+                    {t(n.key)}
+                  </Link>
+                );
+              }
+              return (
+                <a key={n.id} href={hashHref(n.id)} className={baseCls}>
                   {t(n.key)}
                 </a>
-              ),
-            )}
+              );
+            })}
             <Link
               to="/graduates"
               className="ms-2 group inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-extrabold tracking-tight border-2 transition-all hover:-translate-y-0.5"
