@@ -3,7 +3,7 @@ import {
   Nav,
   EmpowermentTools,
   Footer,
-  WhatsAppFloat,
+  WhatsAppFloat, AskSelmiFloat,
   CalendlyDialog,
   
 } from "./index";
@@ -59,6 +59,7 @@ function GraduatesPage() {
       </div>
       <Footer />
       <WhatsAppFloat />
+      <AskSelmiFloat />
       <CalendlyDialog />
       
     </div>

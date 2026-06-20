@@ -4,7 +4,7 @@ import { ArrowRight, X, Sparkles, Target, Wrench, Trophy, AlertTriangle } from "
 import { motion } from "motion/react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
-import { Nav, Footer, WhatsAppFloat, CalendlyDialog } from "./index";
+import { Nav, Footer, WhatsAppFloat, AskSelmiFloat, CalendlyDialog } from "./index";
 
 type SuccessCase = {
   id: string;
@@ -151,6 +151,7 @@ function SuccessCasesPage() {
       </main>
       <Footer />
       <WhatsAppFloat />
+      <AskSelmiFloat />
       <CalendlyDialog />
 
       {selected && (
