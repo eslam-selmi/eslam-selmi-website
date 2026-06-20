@@ -308,14 +308,18 @@ function AskSelmiPage() {
         data: { messages: next, lang, courses, userName: nameForCall ?? null },
       });
       if (res.error) {
-        const msg =
-          res.error === "rate_limit"
-            ? isAr ? "في زحمة شوية على الخدمة، جرب تاني بعد دقيقة." : "Rate limit reached. Please try again shortly."
-            : res.error === "credits"
-              ? isAr ? "نفدت أرصدة الذكاء الاصطناعي. يرجى التواصل مع المدير." : "AI credits exhausted. Please contact the administrator."
+        if (res.error === "credits") {
+          setAiOffline(true);
+          setError(null);
+        } else {
+          const msg =
+            res.error === "rate_limit"
+              ? isAr ? "في زحمة شوية على الخدمة، جرب تاني بعد دقيقة." : "Rate limit reached. Please try again shortly."
               : isAr ? "حصل خطأ، حاول تاني." : "Something went wrong. Please try again.";
-        setError(msg);
+          setError(msg);
+        }
       } else {
+        setAiOffline(false);
         setMessages([...next, { role: "assistant", content: res.reply || "…" }]);
       }
     } catch {
