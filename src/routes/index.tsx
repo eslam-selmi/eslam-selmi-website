@@ -3404,9 +3404,69 @@ export function WhatsAppFloat() {
   );
 }
 
-/* ---------- SCROLL TOP + ASK SELMI shortcut ---------- */
-function ScrollTop() {
+/* ---------- ASK SELMI FLOATING (always visible, futuristic) ---------- */
+export function AskSelmiFloat() {
   const { dir, lang } = useI18n();
+  const side = dir === "rtl" ? "left-5" : "right-5";
+  const isAr = lang === "ar";
+  return (
+    <Link
+      to="/ask-selmi"
+      aria-label={isAr ? "اسأل سلمي" : "Ask Selmi"}
+      title={isAr ? "اسأل سلمي" : "Ask Selmi"}
+      className={`group fixed bottom-24 sm:bottom-28 ${side} z-40 inline-flex items-center gap-2.5 rounded-full ps-2 pe-3.5 py-2 transition-transform hover:-translate-y-0.5 active:scale-95`}
+      style={{
+        background:
+          "linear-gradient(135deg, color-mix(in oklab, var(--gold) 95%, var(--background)) 0%, color-mix(in oklab, var(--accent) 70%, var(--gold)) 100%)",
+        boxShadow:
+          "0 18px 50px -18px color-mix(in oklab, var(--gold) 80%, transparent), 0 0 0 1px color-mix(in oklab, var(--gold) 35%, transparent), inset 0 1px 0 color-mix(in oklab, white 35%, transparent)",
+        color: "var(--accent-foreground)",
+      }}
+    >
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -inset-1.5 rounded-full opacity-60 blur-xl"
+        style={{
+          background:
+            "radial-gradient(circle, color-mix(in oklab, var(--gold) 65%, transparent), transparent 70%)",
+        }}
+      />
+      <span
+        className="relative size-9 rounded-full grid place-items-center overflow-hidden"
+        style={{
+          background:
+            "radial-gradient(circle at 30% 25%, color-mix(in oklab, white 35%, transparent), transparent 60%), var(--accent)",
+          border: "1.5px solid color-mix(in oklab, white 40%, transparent)",
+        }}
+      >
+        <Sparkles className="size-4" style={{ color: "var(--gold)" }} />
+        <span
+          aria-hidden
+          className="absolute inset-0 rounded-full"
+          style={{
+            boxShadow:
+              "inset 0 0 12px color-mix(in oklab, var(--gold) 55%, transparent)",
+          }}
+        />
+      </span>
+      <span className="relative font-display font-extrabold text-[12.5px] tracking-tight">
+        {isAr ? "اسأل سلمي" : "Ask Selmi"}
+      </span>
+      <span
+        aria-hidden
+        className="relative size-1.5 rounded-full animate-pulse"
+        style={{
+          background: "color-mix(in oklab, white 90%, transparent)",
+          boxShadow: "0 0 8px white",
+        }}
+      />
+    </Link>
+  );
+}
+
+/* ---------- SCROLL TOP ---------- */
+function ScrollTop() {
+  const { dir } = useI18n();
   const [show, setShow] = useState(false);
   useEffect(() => {
     const onScroll = () => setShow(window.scrollY > 300);
@@ -3417,40 +3477,22 @@ function ScrollTop() {
   return (
     <AnimatePresence>
       {show && (
-        <motion.div
-          key="scroll-stack"
+        <motion.button
+          key="scroll-top"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 10 }}
-          className={`fixed bottom-20 ${side} z-40 flex flex-col items-center gap-3`}
+          type="button"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          aria-label="Scroll to top"
+          className={`fixed bottom-12 ${side} z-40 size-10 grid place-items-center rounded-full text-primary-foreground shadow-lg hover:scale-110 transition`}
+          style={{
+            background:
+              "linear-gradient(135deg, var(--lavender), var(--gold))",
+          }}
         >
-          <Link
-            to="/ask-selmi"
-            aria-label={lang === "ar" ? "اسأل سلمي" : "Ask Selmi"}
-            title={lang === "ar" ? "اسأل سلمي" : "Ask Selmi"}
-            className="relative size-11 grid place-items-center rounded-full shadow-lg hover:scale-110 transition overflow-hidden"
-            style={{
-              background:
-                "linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 55%, var(--accent)))",
-              color: "var(--accent-foreground)",
-            }}
-          >
-            <span
-              aria-hidden
-              className="absolute -inset-1 rounded-full blur opacity-50"
-              style={{ background: "var(--gold)" }}
-            />
-            <Sparkles className="relative size-5" />
-          </Link>
-          <button
-            type="button"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            aria-label="Scroll to top"
-            className="size-11 grid place-items-center rounded-full bg-gradient-to-br from-[var(--lavender)] to-[var(--gold)] text-primary-foreground shadow-lg hover:scale-110 transition"
-          >
-            <ArrowUp className="size-5" />
-          </button>
-        </motion.div>
+          <ArrowUp className="size-4" />
+        </motion.button>
       )}
     </AnimatePresence>
   );
