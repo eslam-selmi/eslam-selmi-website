@@ -278,17 +278,17 @@ const waServiceLink = (serviceEn: string, lang: "en" | "ar") => {
 };
 
 // Primary nav — kept short and focused. The full set lives in the mobile menu.
-const NAV: { id: string; key: string; to?: string }[] = [
+const NAV: { id: string; key: string; to?: string; highlight?: boolean }[] = [
   { id: "services", key: "nav_services" },
   { id: "current-courses", key: "nav_courses" },
   { id: "success-cases", key: "nav_success_cases", to: "/success-cases" },
-  { id: "ask-selmi", key: "nav_ask_selmi", to: "/ask-selmi" },
   { id: "library", key: "nav_library", to: "/library" },
+  { id: "ask-selmi", key: "nav_ask_selmi", to: "/ask-selmi", highlight: true },
   { id: "contact", key: "nav_contact" },
 ];
-const NAV_FULL: { id: string; key: string; to?: string }[] = [
+const NAV_FULL: { id: string; key: string; to?: string; highlight?: boolean }[] = [
   { id: "home", key: "nav_home" },
-  
+
   { id: "pillars", key: "nav_pillars" },
   { id: "journey", key: "nav_journey" },
   { id: "services", key: "nav_services" },
@@ -296,8 +296,8 @@ const NAV_FULL: { id: string; key: string; to?: string }[] = [
   { id: "empowerment", key: "nav_empowerment", to: "/graduates" },
   { id: "current-courses", key: "nav_courses" },
   { id: "success-cases", key: "nav_success_cases", to: "/success-cases" },
-  { id: "ask-selmi", key: "nav_ask_selmi", to: "/ask-selmi" },
   { id: "library", key: "nav_library", to: "/library" },
+  { id: "ask-selmi", key: "nav_ask_selmi", to: "/ask-selmi", highlight: true },
   { id: "clients", key: "nav_clients" },
   { id: "snapshots", key: "nav_snapshots" },
   { id: "contact", key: "nav_contact" },
