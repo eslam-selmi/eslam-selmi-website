@@ -3,7 +3,7 @@ import {
   Nav,
   Library,
   Footer,
-  WhatsAppFloat,
+  WhatsAppFloat, AskSelmiFloat,
   CalendlyDialog,
   
 } from "./index";
@@ -41,6 +41,7 @@ function LibraryPage() {
       </div>
       <Footer />
       <WhatsAppFloat />
+      <AskSelmiFloat />
       <CalendlyDialog />
       
     </div>
