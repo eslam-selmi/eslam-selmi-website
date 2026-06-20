@@ -163,6 +163,7 @@ function AskSelmiPage() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [aiOffline, setAiOffline] = useState(false);
   const [courses, setCourses] = useState<CourseCtx[]>([]);
   const [pendingImage, setPendingImage] = useState<{ url: string; name: string } | null>(null);
   const [search, setSearch] = useState("");
