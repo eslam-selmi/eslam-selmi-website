@@ -977,6 +977,35 @@ export function Nav({
                   </Link>
                 );
               }
+              if (n.highlight && n.to) {
+                return (
+                  <Link
+                    key={n.id}
+                    to={n.to}
+                    onClick={() => setOpen(false)}
+                    className="my-1 inline-flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-extrabold tracking-tight transition-all"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, color-mix(in oklab, var(--gold) 22%, transparent), color-mix(in oklab, var(--gold) 6%, transparent))",
+                      border: "1.5px solid color-mix(in oklab, var(--gold) 55%, transparent)",
+                      color: "var(--accent)",
+                      boxShadow: "0 0 0 3px color-mix(in oklab, var(--gold) 10%, transparent)",
+                    }}
+                  >
+                    <span
+                      className="size-7 grid place-items-center rounded-lg"
+                      style={{
+                        background: "color-mix(in oklab, var(--gold) 18%, transparent)",
+                        border: "1px solid color-mix(in oklab, var(--gold) 40%, transparent)",
+                      }}
+                    >
+                      <Sparkles className="size-3.5" />
+                    </span>
+                    <span className="flex-1">{t(n.key)}</span>
+                    <ArrowRight className="size-4 rtl-flip opacity-70" />
+                  </Link>
+                );
+              }
               return n.to ? (
                 <Link
                   key={n.id}
