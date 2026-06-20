@@ -736,6 +736,7 @@ function AskSelmiPage() {
       </div>
 
       {/* Sticky composer pinned to viewport bottom */}
+      {!aiOffline && (
       <div className="fixed inset-x-0 bottom-0 z-40 pointer-events-none">
         <div
           aria-hidden
