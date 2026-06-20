@@ -657,10 +657,49 @@ function AskSelmiPage() {
               </div>
             </header>
 
+            {aiOffline && (
+              <div
+                className="mt-3 rounded-2xl px-4 py-3 flex items-center gap-3 shadow-sm"
+                style={{
+                  background:
+                    "linear-gradient(135deg, color-mix(in oklab, var(--gold) 14%, transparent), color-mix(in oklab, var(--accent) 10%, transparent))",
+                  border: "1px solid color-mix(in oklab, var(--gold) 40%, transparent)",
+                  backdropFilter: "blur(14px) saturate(140%)",
+                }}
+              >
+                <span
+                  className="size-9 grid place-items-center rounded-xl shrink-0"
+                  style={{
+                    background: "color-mix(in oklab, var(--gold) 22%, transparent)",
+                    border: "1px solid color-mix(in oklab, var(--gold) 50%, transparent)",
+                  }}
+                >
+                  <Loader2 className="size-4" style={{ color: "var(--gold)" }} />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="font-display font-extrabold text-sm tracking-tight">
+                    {isAr ? "تحت الصيانة" : "Under maintenance"}
+                  </div>
+                  <div className="text-[12px] text-muted-foreground mt-0.5 leading-snug">
+                    {isAr
+                      ? "الخدمة متوقفة مؤقتاً للصيانة. تقدر تتصفّح محادثاتك السابقة، وهتقدر تكمل قريباً."
+                      : "The service is temporarily paused for maintenance. You can browse your previous chats — it will resume soon."}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setAiOffline(false)}
+                  className="shrink-0 text-[12px] font-bold px-3 py-1.5 rounded-lg hover:bg-foreground/5 transition"
+                  style={{ color: "var(--accent)" }}
+                >
+                  {isAr ? "إعادة المحاولة" : "Retry"}
+                </button>
+              </div>
+            )}
 
             {/* Conversation — flows naturally, no internal scroll */}
             <section className="mt-4 space-y-5">
-              {!hasChat && (
+              {!hasChat && !aiOffline && (
                 <EmptyState
                   isAr={isAr}
                   suggestions={suggestions}
