@@ -843,6 +843,9 @@ function AskSelmiPage() {
           </div>
         </div>
       </div>
+      )}
+
+
 
       {askName && (
         <NameDialog
