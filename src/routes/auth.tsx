@@ -151,7 +151,7 @@ function AuthPage() {
         if (!data.session) {
           const waNumber = await fetchAdminWhatsApp();
           const message = encodeURIComponent(
-            `مرحباً، أود تفعيل حسابي كمتدرب جديد.\nالاسم: ${fullName}\nالبريد: ${email}\nرقم الهاتف: ${v.e164}`,
+            `مرحباً، أود تفعيل حسابي كمتدرب جديد.\nالاسم: ${fullName}\nالبريد: ${email}\nرقم الهاتف: ${phoneE164}`,
           );
           const waUrl = `https://wa.me/${waNumber}?text=${message}`;
           toast.success("تم تسجيل بياناتك بنجاح. سيتم تحويلك لطلب التفعيل عبر واتساب...");
