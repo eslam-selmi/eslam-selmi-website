@@ -66,6 +66,14 @@ function AuthPage() {
     }
   }, [user, role, loading, activationStatus, nav]);
 
+  // Load admin-added countries
+  useEffect(() => {
+    supabase.from("custom_countries").select("id,name_ar,name_en,dial,flag").order("name_ar")
+      .then(({ data }) => setCustomCountries(((data as any) || [])));
+  }, []);
+
+  const normalizeCountry = (s: string) => s.trim().toLowerCase().replace(/\s+/g, " ");
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
