@@ -224,6 +224,7 @@ const ar: Dict = {
   nav_snapshots: "لقطات",
   nav_podcast: "البودكاست",
   nav_ask_selmi: "اسأل سلمي",
+  nav_book: "احجز",
   nav_contact: "تواصل",
   book_cta: "احجز جلسة مجانية",
   listen_podcast: "استمع · البودكاست",
