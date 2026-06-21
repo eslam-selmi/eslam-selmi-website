@@ -284,6 +284,7 @@ const NAV: { id: string; key: string; to?: string; highlight?: boolean }[] = [
   { id: "success-cases", key: "nav_success_cases", to: "/success-cases" },
   { id: "library", key: "nav_library", to: "/library" },
   { id: "ask-selmi", key: "nav_ask_selmi", to: "/ask-selmi", highlight: true },
+  { id: "book", key: "nav_book", to: "/book" },
   { id: "contact", key: "nav_contact" },
 ];
 const NAV_FULL: { id: string; key: string; to?: string; highlight?: boolean }[] = [
@@ -298,6 +299,7 @@ const NAV_FULL: { id: string; key: string; to?: string; highlight?: boolean }[] 
   { id: "success-cases", key: "nav_success_cases", to: "/success-cases" },
   { id: "library", key: "nav_library", to: "/library" },
   { id: "ask-selmi", key: "nav_ask_selmi", to: "/ask-selmi", highlight: true },
+  { id: "book", key: "nav_book", to: "/book" },
   { id: "clients", key: "nav_clients" },
   { id: "snapshots", key: "nav_snapshots" },
   { id: "contact", key: "nav_contact" },
