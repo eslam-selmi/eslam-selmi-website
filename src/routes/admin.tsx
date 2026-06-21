@@ -41,6 +41,7 @@ import { AdminSupportPanel } from "@/components/SupportTickets";
 import { assertAdmin } from "@/lib/admin-guard.functions";
 import { SiteManagementPanel } from "@/components/admin/SiteManagementPanel";
 import { SuccessCasesPanel } from "@/components/admin/SuccessCasesPanel";
+import { BookingsPanel } from "@/components/admin/BookingsPanel";
 
 
 type AdminSearch = {
