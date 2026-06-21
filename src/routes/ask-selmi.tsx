@@ -447,8 +447,8 @@ function AskSelmiPage() {
       />
 
       <div className="mx-auto w-full max-w-7xl px-3 sm:px-6 pt-4 pb-40">
-        <div className={`lg:grid ${sidebarOpen ? "lg:grid-cols-[300px_minmax(0,1fr)]" : "lg:grid-cols-[0_minmax(0,1fr)]"} lg:gap-6 transition-[grid-template-columns] duration-300`}>
-          <aside className={`${sidebarOpen ? "hidden lg:flex" : "hidden"} sticky top-4 self-start h-[calc(100vh-2rem)] flex-col rounded-3xl overflow-hidden shadow-sm`}
+        <div className="lg:grid lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-6">
+          <aside className="hidden lg:flex sticky top-4 self-start max-h-[calc(100vh-2rem)] flex-col rounded-3xl overflow-hidden shadow-sm"
             style={{
               background: "color-mix(in oklab, var(--card) 92%, transparent)",
               border: "1px solid color-mix(in oklab, var(--foreground) 8%, transparent)",
