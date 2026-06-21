@@ -16,6 +16,7 @@ const en: Dict = {
   nav_snapshots: "Snapshots",
   nav_podcast: "Podcast",
   nav_ask_selmi: "Ask Selmi",
+  nav_book: "Book",
   nav_contact: "Contact",
   book_cta: "Book free 1:1",
   listen_podcast: "Listen · Podcast",
