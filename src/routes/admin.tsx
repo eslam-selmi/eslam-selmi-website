@@ -391,6 +391,8 @@ function AdminPage() {
           <TestimonialsPanel />
         ) : tab === "success_cases" ? (
           <SuccessCasesPanel />
+        ) : tab === "bookings" ? (
+          <BookingsPanel />
         ) : tab === "site" ? (
           <SiteManagementPanel />
 
