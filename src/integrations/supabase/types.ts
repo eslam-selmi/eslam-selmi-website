@@ -121,6 +121,48 @@ export type Database = {
           },
         ]
       }
+      consultation_slots: {
+        Row: {
+          admin_notes: string | null
+          booked_at: string | null
+          booked_by: string | null
+          booker_name: string | null
+          booker_phone: string | null
+          created_at: string
+          duration_minutes: number
+          id: string
+          starts_at: string
+          topic: string | null
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          booked_at?: string | null
+          booked_by?: string | null
+          booker_name?: string | null
+          booker_phone?: string | null
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          starts_at: string
+          topic?: string | null
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          booked_at?: string | null
+          booked_by?: string | null
+          booker_name?: string | null
+          booker_phone?: string | null
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          starts_at?: string
+          topic?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       coupon_redemptions: {
         Row: {
           coupon_id: string
@@ -462,6 +504,39 @@ export type Database = {
           title?: string
           total_hours?: number
           track_key?: string | null
+        }
+        Relationships: []
+      }
+      custom_countries: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          dial: string | null
+          flag: string | null
+          id: string
+          name_ar: string
+          name_en: string
+          normalized: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          dial?: string | null
+          flag?: string | null
+          id?: string
+          name_ar: string
+          name_en: string
+          normalized: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          dial?: string | null
+          flag?: string | null
+          id?: string
+          name_ar?: string
+          name_en?: string
+          normalized?: string
         }
         Relationships: []
       }
