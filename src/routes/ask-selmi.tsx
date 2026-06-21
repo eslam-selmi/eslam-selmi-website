@@ -607,8 +607,8 @@ function AskSelmiPage() {
                 <button
                   type="button"
                   onClick={() => setSidebarOpen((v) => !v)}
-                  title={sidebarOpen ? (isAr ? "إخفاء الشريط" : "Hide sidebar") : (isAr ? "إظهار الشريط" : "Show sidebar")}
-                  aria-label={sidebarOpen ? "Hide sidebar" : "Show sidebar"}
+                  title={sidebarOpen ? (isAr ? "إخفاء المحادثات السابقة" : "Hide previous chats") : (isAr ? "إظهار المحادثات السابقة" : "Show previous chats")}
+                  aria-label={sidebarOpen ? "Hide previous chats" : "Show previous chats"}
                   className="hidden lg:grid size-9 place-items-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition"
                 >
                   {sidebarOpen ? <PanelLeftClose className="size-4" /> : <PanelLeftOpen className="size-4" />}
