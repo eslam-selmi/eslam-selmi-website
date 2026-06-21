@@ -249,36 +249,68 @@ function AuthPage() {
                           {c.flag} {c.name_ar} ({c.dial})
                         </option>
                       ))}
+                      {customCountries.length > 0 && (
+                        <optgroup label="— مضافة —" className="bg-[#0a1224]">
+                          {customCountries.map((c) => (
+                            <option key={c.id} value={`CUST:${c.id}`} className="bg-[#0a1224]">
+                              {c.flag ? c.flag + " " : ""}{c.name_ar}{c.dial ? ` (${c.dial})` : ""}
+                            </option>
+                          ))}
+                        </optgroup>
+                      )}
+                      <option value="OTHER" className="bg-[#0a1224]">
+                        🌍 دولة أخرى (اكتب اسمها)…
+                      </option>
                     </select>
                   </label>
+                  {countryCode === "OTHER" && (
+                    <label className="block">
+                      <span className="block text-[12px] text-white/60 mb-1.5">اسم الدولة</span>
+                      <input
+                        value={otherCountryName}
+                        onChange={(e) => setOtherCountryName(e.target.value)}
+                        placeholder="مثال: قبرص"
+                        maxLength={80}
+                        required
+                        className="w-full h-11 px-3.5 rounded-lg bg-white/[0.04] border border-white/10 text-white text-sm placeholder:text-white/25 focus:outline-none focus:border-white/30 focus:bg-white/[0.06] transition"
+                      />
+                    </label>
+                  )}
                   <label className="block">
                     <span className="block text-[12px] text-white/60 mb-1.5">رقم الهاتف</span>
                     <div className="flex gap-2" dir="ltr">
-                      <span className="h-11 px-3 rounded-lg bg-white/[0.04] border border-white/10 text-white/70 inline-flex items-center text-sm font-mono">
-                        {findCountry(countryCode)?.dial}
-                      </span>
+                      {countryCode !== "OTHER" && countryCode.startsWith("CUST:") === false && (
+                        <span className="h-11 px-3 rounded-lg bg-white/[0.04] border border-white/10 text-white/70 inline-flex items-center text-sm font-mono">
+                          {findCountry(countryCode)?.dial}
+                        </span>
+                      )}
                       <input
                         type="tel"
-                        inputMode="numeric"
+                        inputMode="tel"
                         value={phone}
                         onChange={(e) => {
                           const c = findCountry(countryCode);
                           const cleaned = c
                             ? sanitizeNationalNumber(e.target.value, c)
-                            : e.target.value.replace(/\D/g, "");
+                            : e.target.value.replace(/[^\d+]/g, "");
                           setPhone(cleaned);
                           setPhoneError(null);
                         }}
                         placeholder={
-                          findCountry(countryCode)?.nsnLengths[0]
-                            ? "5".padEnd(findCountry(countryCode)!.nsnLengths[0], "x")
-                            : "1xxxxxxxxx"
+                          countryCode === "OTHER" || countryCode.startsWith("CUST:")
+                            ? "+357xxxxxxxx"
+                            : findCountry(countryCode)?.nsnLengths[0]
+                              ? "5".padEnd(findCountry(countryCode)!.nsnLengths[0], "x")
+                              : "1xxxxxxxxx"
                         }
                         required
                         dir="ltr"
                         className={`flex-1 h-11 px-3.5 rounded-lg bg-white/[0.04] border text-white text-sm placeholder:text-white/25 focus:outline-none focus:bg-white/[0.06] transition ${phoneError ? "border-rose-400/60 focus:border-rose-400" : "border-white/10 focus:border-white/30"}`}
                       />
                     </div>
+                    {(countryCode === "OTHER" || countryCode.startsWith("CUST:")) && (
+                      <p className="text-[11px] text-white/40 mt-1.5">اكتب الرقم كاملاً مع كود الدولة (مثال: +357…)</p>
+                    )}
                     {phoneError && (
                       <p className="text-[11px] text-rose-300/90 mt-1.5 leading-relaxed">
                         {phoneError}
