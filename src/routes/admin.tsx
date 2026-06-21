@@ -339,6 +339,8 @@ function AdminPage() {
             { id: "additions", label: t("أحدث الإضافات", "Latest additions") },
             { id: "testimonials", label: t("شهادات العملاء", "Testimonials") },
             { id: "success_cases", label: t("حالات النجاح", "Success Cases") },
+            { id: "bookings", label: t("حجوزات الاستشارات", "Bookings") },
+
 
             { id: "site", label: t("إدارة الموقع", "Site management") },
             { id: "leads", label: t("اهتمامات الكورسات", "Course leads") },
