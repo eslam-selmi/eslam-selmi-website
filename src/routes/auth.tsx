@@ -79,13 +79,58 @@ function AuthPage() {
     setBusy(true);
     try {
       if (mode === "signup") {
-        const country = findCountry(countryCode);
-        if (!country) throw new Error("اختر الدولة");
-        const v = validatePhoneForCountry(phone, country);
-        if (!v.ok) {
-          const msg = `رقم الهاتف لدولة ${country.name_ar} يجب أن يتكون من ${country.nsnLengths.join(" أو ")} أرقام بدون الصفر. مثال: ${v.example}`;
-          setPhoneError(msg);
-          throw new Error(msg);
+        let countryCodeFinal = countryCode;
+        let countryNameAr = "";
+        let countryDial = "";
+        let phoneE164 = phone;
+
+        if (countryCode === "OTHER") {
+          const nm = otherCountryName.trim();
+          if (!nm) throw new Error("اكتب اسم الدولة");
+          const norm = normalizeCountry(nm);
+          // Anti-dup vs static list
+          const dupStatic = COUNTRIES.find(
+            (c) => normalizeCountry(c.name_ar) === norm || normalizeCountry(c.name_en) === norm,
+          );
+          // Anti-dup vs custom list
+          const dupCustom = customCountries.find(
+            (c) => normalizeCountry(c.name_ar) === norm || normalizeCountry(c.name_en) === norm,
+          );
+          if (dupStatic) {
+            setCountryCode(dupStatic.code);
+            throw new Error(`هذه الدولة موجودة بالفعل: ${dupStatic.name_ar} — اختارها من القائمة`);
+          }
+          let customId = dupCustom?.id;
+          if (!customId) {
+            const { data: inserted, error: insErr } = await supabase
+              .from("custom_countries")
+              .insert({ name_ar: nm, name_en: nm, normalized: norm })
+              .select("id")
+              .single();
+            if (insErr) throw new Error("تعذّر إضافة الدولة: " + insErr.message);
+            customId = inserted?.id;
+            // Refresh local list
+            setCustomCountries((prev) => [...prev, { id: customId!, name_ar: nm, name_en: nm, dial: null, flag: null }]);
+          }
+          countryCodeFinal = `CUST:${customId}`;
+          countryNameAr = nm;
+          if (!phone || phone.replace(/\D/g, "").length < 6) {
+            throw new Error("أدخل رقم هاتف صحيح يبدأ بكود الدولة");
+          }
+          phoneE164 = "+" + phone.replace(/\D/g, "");
+        } else {
+          const country = findCountry(countryCode);
+          if (!country) throw new Error("اختر الدولة");
+          const v = validatePhoneForCountry(phone, country);
+          if (!v.ok) {
+            const msg = `رقم الهاتف لدولة ${country.name_ar} يجب أن يتكون من ${country.nsnLengths.join(" أو ")} أرقام بدون الصفر. مثال: ${v.example}`;
+            setPhoneError(msg);
+            throw new Error(msg);
+          }
+          countryCodeFinal = country.code;
+          countryNameAr = country.name_ar;
+          countryDial = country.dial;
+          phoneE164 = v.e164;
         }
         setPhoneError(null);
         const { data, error } = await supabase.auth.signUp({
@@ -95,9 +140,10 @@ function AuthPage() {
             emailRedirectTo: `${window.location.origin}/portal`,
             data: {
               full_name: fullName,
-              phone: v.e164,
-              country: country.code,
-              country_code: country.dial,
+              phone: phoneE164,
+              country: countryCodeFinal,
+              country_code: countryDial,
+              country_name: countryNameAr,
             },
           },
         });
