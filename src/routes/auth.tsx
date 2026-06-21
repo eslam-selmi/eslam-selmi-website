@@ -39,6 +39,8 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [countryCode, setCountryCode] = useState("EG");
+  const [otherCountryName, setOtherCountryName] = useState("");
+  const [customCountries, setCustomCountries] = useState<Array<{ id: string; name_ar: string; name_en: string; dial: string | null; flag: string | null }>>([]);
   const [phone, setPhone] = useState("");
   const [phoneError, setPhoneError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
