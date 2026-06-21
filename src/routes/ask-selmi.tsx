@@ -447,8 +447,8 @@ function AskSelmiPage() {
       />
 
       <div className="mx-auto w-full max-w-7xl px-3 sm:px-6 pt-4 pb-40">
-        <div className={`lg:grid ${sidebarOpen ? "lg:grid-cols-[300px_minmax(0,1fr)]" : "lg:grid-cols-[0_minmax(0,1fr)]"} lg:gap-6 transition-[grid-template-columns] duration-300`}>
-          <aside className={`${sidebarOpen ? "hidden lg:flex" : "hidden"} sticky top-4 self-start h-[calc(100vh-2rem)] flex-col rounded-3xl overflow-hidden shadow-sm`}
+        <div className="lg:grid lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-6">
+          <aside className="hidden lg:flex sticky top-4 self-start max-h-[calc(100vh-2rem)] flex-col rounded-3xl overflow-hidden shadow-sm"
             style={{
               background: "color-mix(in oklab, var(--card) 92%, transparent)",
               border: "1px solid color-mix(in oklab, var(--foreground) 8%, transparent)",
@@ -485,80 +485,84 @@ function AskSelmiPage() {
               </button>
             </div>
 
-            <div className="px-4 pb-2 flex items-center justify-between">
-              <h3 className="font-display font-extrabold text-sm">{isAr ? "محادثاتي" : "Chats"}</h3>
-              <span className="text-[11px] text-muted-foreground">{chats.length}</span>
-            </div>
+            {sidebarOpen && (
+              <>
+                <div className="px-4 pb-2 flex items-center justify-between">
+                  <h3 className="font-display font-extrabold text-sm">{isAr ? "محادثاتي السابقة" : "Previous chats"}</h3>
+                  <span className="text-[11px] text-muted-foreground">{chats.length}</span>
+                </div>
 
-            <div className="px-3 pb-2">
-              <div className="relative">
-                <Search className={`absolute top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground ${isAr ? "end-3" : "start-3"}`} />
-                <input
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder={isAr ? "ابحث..." : "Search"}
-                  className={`w-full rounded-xl text-sm py-2 outline-none focus:ring-2 focus:ring-[var(--gold)]/40 ${isAr ? "pe-9 ps-3" : "ps-9 pe-3"}`}
-                  style={{
-                    background: "color-mix(in oklab, var(--background) 70%, transparent)",
-                    border: "1px solid color-mix(in oklab, var(--foreground) 10%, transparent)",
-                  }}
-                />
-              </div>
-            </div>
-
-            <div className="flex-1 overflow-y-auto px-2 pb-3 space-y-1">
-              {filteredChats.length === 0 && (
-                <p className="px-3 py-6 text-xs text-muted-foreground text-center">
-                  {isAr ? "لا توجد محادثات" : "No chats"}
-                </p>
-              )}
-              {filteredChats.map((c) => {
-                const active = c.id === activeId;
-                const titleIsAr = isArabicText(c.title);
-                return (
-                  <div
-                    key={c.id}
-                    className="group relative rounded-xl transition"
-                    style={{
-                      background: active ? "color-mix(in oklab, var(--gold) 12%, transparent)" : "transparent",
-                      border: active
-                        ? "1px solid color-mix(in oklab, var(--gold) 40%, transparent)"
-                        : "1px solid transparent",
-                    }}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => switchChat(c.id)}
-                      className="w-full text-start px-3 py-2.5 rounded-xl hover:bg-foreground/5 transition flex items-start gap-2.5"
-                    >
-                      <MessageSquare className="size-4 mt-0.5 shrink-0 text-muted-foreground" />
-                      <div className="min-w-0 flex-1" dir={titleIsAr ? "rtl" : "ltr"}>
-                        <div className="text-[13px] font-semibold text-foreground truncate text-start">
-                          {c.title || (isAr ? "محادثة" : "Chat")}
-                        </div>
-                        <div className="text-[11px] text-muted-foreground mt-0.5 text-start" dir={isAr ? "rtl" : "ltr"}>
-                          {c.messages.length} {isAr ? "رسالة" : "msgs"}
-                        </div>
-                      </div>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (window.confirm(isAr ? "حذف هذه المحادثة؟" : "Delete this chat?")) deleteChat(c.id);
+                <div className="px-3 pb-2">
+                  <div className="relative">
+                    <Search className={`absolute top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground ${isAr ? "end-3" : "start-3"}`} />
+                    <input
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      placeholder={isAr ? "ابحث..." : "Search"}
+                      className={`w-full rounded-xl text-sm py-2 outline-none focus:ring-2 focus:ring-[var(--gold)]/40 ${isAr ? "pe-9 ps-3" : "ps-9 pe-3"}`}
+                      style={{
+                        background: "color-mix(in oklab, var(--background) 70%, transparent)",
+                        border: "1px solid color-mix(in oklab, var(--foreground) 10%, transparent)",
                       }}
-                      aria-label={isAr ? "حذف" : "Delete"}
-                      className={`absolute top-2 ${isAr ? "start-2" : "end-2"} size-7 grid place-items-center rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition`}
-                    >
-                      <Trash2 className="size-3.5" />
-                    </button>
+                    />
                   </div>
-                );
-              })}
-            </div>
-            <div className="px-4 py-2.5 border-t border-foreground/10 text-[10px] text-muted-foreground text-center">
-              {isAr ? "محفوظة محلياً على جهازك" : "Saved locally on this device"}
-            </div>
+                </div>
+
+                <div className="flex-1 overflow-y-auto px-2 pb-3 space-y-1">
+                  {filteredChats.length === 0 && (
+                    <p className="px-3 py-6 text-xs text-muted-foreground text-center">
+                      {isAr ? "لا توجد محادثات" : "No chats"}
+                    </p>
+                  )}
+                  {filteredChats.map((c) => {
+                    const active = c.id === activeId;
+                    const titleIsAr = isArabicText(c.title);
+                    return (
+                      <div
+                        key={c.id}
+                        className="group relative rounded-xl transition"
+                        style={{
+                          background: active ? "color-mix(in oklab, var(--gold) 12%, transparent)" : "transparent",
+                          border: active
+                            ? "1px solid color-mix(in oklab, var(--gold) 40%, transparent)"
+                            : "1px solid transparent",
+                        }}
+                      >
+                        <button
+                          type="button"
+                          onClick={() => switchChat(c.id)}
+                          className="w-full text-start px-3 py-2.5 rounded-xl hover:bg-foreground/5 transition flex items-start gap-2.5"
+                        >
+                          <MessageSquare className="size-4 mt-0.5 shrink-0 text-muted-foreground" />
+                          <div className="min-w-0 flex-1" dir={titleIsAr ? "rtl" : "ltr"}>
+                            <div className="text-[13px] font-semibold text-foreground truncate text-start">
+                              {c.title || (isAr ? "محادثة" : "Chat")}
+                            </div>
+                            <div className="text-[11px] text-muted-foreground mt-0.5 text-start" dir={isAr ? "rtl" : "ltr"}>
+                              {c.messages.length} {isAr ? "رسالة" : "msgs"}
+                            </div>
+                          </div>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (window.confirm(isAr ? "حذف هذه المحادثة؟" : "Delete this chat?")) deleteChat(c.id);
+                          }}
+                          aria-label={isAr ? "حذف" : "Delete"}
+                          className={`absolute top-2 ${isAr ? "start-2" : "end-2"} size-7 grid place-items-center rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition`}
+                        >
+                          <Trash2 className="size-3.5" />
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="px-4 py-2.5 border-t border-foreground/10 text-[10px] text-muted-foreground text-center">
+                  {isAr ? "محفوظة محلياً على جهازك" : "Saved locally on this device"}
+                </div>
+              </>
+            )}
           </aside>
 
           {/* Main column */}
@@ -603,8 +607,8 @@ function AskSelmiPage() {
                 <button
                   type="button"
                   onClick={() => setSidebarOpen((v) => !v)}
-                  title={sidebarOpen ? (isAr ? "إخفاء الشريط" : "Hide sidebar") : (isAr ? "إظهار الشريط" : "Show sidebar")}
-                  aria-label={sidebarOpen ? "Hide sidebar" : "Show sidebar"}
+                  title={sidebarOpen ? (isAr ? "إخفاء المحادثات السابقة" : "Hide previous chats") : (isAr ? "إظهار المحادثات السابقة" : "Show previous chats")}
+                  aria-label={sidebarOpen ? "Hide previous chats" : "Show previous chats"}
                   className="hidden lg:grid size-9 place-items-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition"
                 >
                   {sidebarOpen ? <PanelLeftClose className="size-4" /> : <PanelLeftOpen className="size-4" />}
@@ -746,8 +750,8 @@ function AskSelmiPage() {
           }}
         />
         <div className="relative mx-auto w-full max-w-7xl px-3 sm:px-6 pb-4 pt-6 pointer-events-none">
-          <div className={`lg:grid ${sidebarOpen ? "lg:grid-cols-[300px_minmax(0,1fr)]" : "lg:grid-cols-[0_minmax(0,1fr)]"} lg:gap-6`}>
-            <div className={`${sidebarOpen ? "hidden lg:block" : "hidden"}`} />
+          <div className="lg:grid lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-6">
+            <div className="hidden lg:block" />
             <form onSubmit={onSubmit} className="pointer-events-auto">
               {pendingImage && (
                 <div
