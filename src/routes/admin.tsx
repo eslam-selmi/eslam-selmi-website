@@ -41,6 +41,7 @@ import { AdminSupportPanel } from "@/components/SupportTickets";
 import { assertAdmin } from "@/lib/admin-guard.functions";
 import { SiteManagementPanel } from "@/components/admin/SiteManagementPanel";
 import { SuccessCasesPanel } from "@/components/admin/SuccessCasesPanel";
+import { BookingsPanel } from "@/components/admin/BookingsPanel";
 
 
 type AdminSearch = {
@@ -57,7 +58,8 @@ type AdminSearch = {
     | "site"
     | "leads"
     | "testimonials"
-    | "success_cases";
+    | "success_cases"
+    | "bookings";
 
   drawer?: string;
   editCourse?: string;
@@ -151,6 +153,7 @@ function AdminPage() {
     | "leads"
     | "testimonials"
     | "success_cases"
+    | "bookings"
   >(search.tab || "enrollments");
 
   const tab = tabState;
@@ -336,6 +339,8 @@ function AdminPage() {
             { id: "additions", label: t("أحدث الإضافات", "Latest additions") },
             { id: "testimonials", label: t("شهادات العملاء", "Testimonials") },
             { id: "success_cases", label: t("حالات النجاح", "Success Cases") },
+            { id: "bookings", label: t("حجوزات الاستشارات", "Bookings") },
+
 
             { id: "site", label: t("إدارة الموقع", "Site management") },
             { id: "leads", label: t("اهتمامات الكورسات", "Course leads") },
@@ -386,6 +391,8 @@ function AdminPage() {
           <TestimonialsPanel />
         ) : tab === "success_cases" ? (
           <SuccessCasesPanel />
+        ) : tab === "bookings" ? (
+          <BookingsPanel />
         ) : tab === "site" ? (
           <SiteManagementPanel />
 

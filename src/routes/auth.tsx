@@ -39,6 +39,8 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [countryCode, setCountryCode] = useState("EG");
+  const [otherCountryName, setOtherCountryName] = useState("");
+  const [customCountries, setCustomCountries] = useState<Array<{ id: string; name_ar: string; name_en: string; dial: string | null; flag: string | null }>>([]);
   const [phone, setPhone] = useState("");
   const [phoneError, setPhoneError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -64,18 +66,71 @@ function AuthPage() {
     }
   }, [user, role, loading, activationStatus, nav]);
 
+  // Load admin-added countries
+  useEffect(() => {
+    supabase.from("custom_countries").select("id,name_ar,name_en,dial,flag").order("name_ar")
+      .then(({ data }) => setCustomCountries(((data as any) || [])));
+  }, []);
+
+  const normalizeCountry = (s: string) => s.trim().toLowerCase().replace(/\s+/g, " ");
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     try {
       if (mode === "signup") {
-        const country = findCountry(countryCode);
-        if (!country) throw new Error("اختر الدولة");
-        const v = validatePhoneForCountry(phone, country);
-        if (!v.ok) {
-          const msg = `رقم الهاتف لدولة ${country.name_ar} يجب أن يتكون من ${country.nsnLengths.join(" أو ")} أرقام بدون الصفر. مثال: ${v.example}`;
-          setPhoneError(msg);
-          throw new Error(msg);
+        let countryCodeFinal = countryCode;
+        let countryNameAr = "";
+        let countryDial = "";
+        let phoneE164 = phone;
+
+        if (countryCode === "OTHER") {
+          const nm = otherCountryName.trim();
+          if (!nm) throw new Error("اكتب اسم الدولة");
+          const norm = normalizeCountry(nm);
+          // Anti-dup vs static list
+          const dupStatic = COUNTRIES.find(
+            (c) => normalizeCountry(c.name_ar) === norm || normalizeCountry(c.name_en) === norm,
+          );
+          // Anti-dup vs custom list
+          const dupCustom = customCountries.find(
+            (c) => normalizeCountry(c.name_ar) === norm || normalizeCountry(c.name_en) === norm,
+          );
+          if (dupStatic) {
+            setCountryCode(dupStatic.code);
+            throw new Error(`هذه الدولة موجودة بالفعل: ${dupStatic.name_ar} — اختارها من القائمة`);
+          }
+          let customId = dupCustom?.id;
+          if (!customId) {
+            const { data: inserted, error: insErr } = await supabase
+              .from("custom_countries")
+              .insert({ name_ar: nm, name_en: nm, normalized: norm })
+              .select("id")
+              .single();
+            if (insErr) throw new Error("تعذّر إضافة الدولة: " + insErr.message);
+            customId = inserted?.id;
+            // Refresh local list
+            setCustomCountries((prev) => [...prev, { id: customId!, name_ar: nm, name_en: nm, dial: null, flag: null }]);
+          }
+          countryCodeFinal = `CUST:${customId}`;
+          countryNameAr = nm;
+          if (!phone || phone.replace(/\D/g, "").length < 6) {
+            throw new Error("أدخل رقم هاتف صحيح يبدأ بكود الدولة");
+          }
+          phoneE164 = "+" + phone.replace(/\D/g, "");
+        } else {
+          const country = findCountry(countryCode);
+          if (!country) throw new Error("اختر الدولة");
+          const v = validatePhoneForCountry(phone, country);
+          if (!v.ok) {
+            const msg = `رقم الهاتف لدولة ${country.name_ar} يجب أن يتكون من ${country.nsnLengths.join(" أو ")} أرقام بدون الصفر. مثال: ${v.example}`;
+            setPhoneError(msg);
+            throw new Error(msg);
+          }
+          countryCodeFinal = country.code;
+          countryNameAr = country.name_ar;
+          countryDial = country.dial;
+          phoneE164 = v.e164;
         }
         setPhoneError(null);
         const { data, error } = await supabase.auth.signUp({
@@ -85,9 +140,10 @@ function AuthPage() {
             emailRedirectTo: `${window.location.origin}/portal`,
             data: {
               full_name: fullName,
-              phone: v.e164,
-              country: country.code,
-              country_code: country.dial,
+              phone: phoneE164,
+              country: countryCodeFinal,
+              country_code: countryDial,
+              country_name: countryNameAr,
             },
           },
         });
@@ -95,7 +151,7 @@ function AuthPage() {
         if (!data.session) {
           const waNumber = await fetchAdminWhatsApp();
           const message = encodeURIComponent(
-            `مرحباً، أود تفعيل حسابي كمتدرب جديد.\nالاسم: ${fullName}\nالبريد: ${email}\nرقم الهاتف: ${v.e164}`,
+            `مرحباً، أود تفعيل حسابي كمتدرب جديد.\nالاسم: ${fullName}\nالبريد: ${email}\nرقم الهاتف: ${phoneE164}`,
           );
           const waUrl = `https://wa.me/${waNumber}?text=${message}`;
           toast.success("تم تسجيل بياناتك بنجاح. سيتم تحويلك لطلب التفعيل عبر واتساب...");
@@ -193,36 +249,68 @@ function AuthPage() {
                           {c.flag} {c.name_ar} ({c.dial})
                         </option>
                       ))}
+                      {customCountries.length > 0 && (
+                        <optgroup label="— مضافة —" className="bg-[#0a1224]">
+                          {customCountries.map((c) => (
+                            <option key={c.id} value={`CUST:${c.id}`} className="bg-[#0a1224]">
+                              {c.flag ? c.flag + " " : ""}{c.name_ar}{c.dial ? ` (${c.dial})` : ""}
+                            </option>
+                          ))}
+                        </optgroup>
+                      )}
+                      <option value="OTHER" className="bg-[#0a1224]">
+                        🌍 دولة أخرى (اكتب اسمها)…
+                      </option>
                     </select>
                   </label>
+                  {countryCode === "OTHER" && (
+                    <label className="block">
+                      <span className="block text-[12px] text-white/60 mb-1.5">اسم الدولة</span>
+                      <input
+                        value={otherCountryName}
+                        onChange={(e) => setOtherCountryName(e.target.value)}
+                        placeholder="مثال: قبرص"
+                        maxLength={80}
+                        required
+                        className="w-full h-11 px-3.5 rounded-lg bg-white/[0.04] border border-white/10 text-white text-sm placeholder:text-white/25 focus:outline-none focus:border-white/30 focus:bg-white/[0.06] transition"
+                      />
+                    </label>
+                  )}
                   <label className="block">
                     <span className="block text-[12px] text-white/60 mb-1.5">رقم الهاتف</span>
                     <div className="flex gap-2" dir="ltr">
-                      <span className="h-11 px-3 rounded-lg bg-white/[0.04] border border-white/10 text-white/70 inline-flex items-center text-sm font-mono">
-                        {findCountry(countryCode)?.dial}
-                      </span>
+                      {countryCode !== "OTHER" && countryCode.startsWith("CUST:") === false && (
+                        <span className="h-11 px-3 rounded-lg bg-white/[0.04] border border-white/10 text-white/70 inline-flex items-center text-sm font-mono">
+                          {findCountry(countryCode)?.dial}
+                        </span>
+                      )}
                       <input
                         type="tel"
-                        inputMode="numeric"
+                        inputMode="tel"
                         value={phone}
                         onChange={(e) => {
                           const c = findCountry(countryCode);
                           const cleaned = c
                             ? sanitizeNationalNumber(e.target.value, c)
-                            : e.target.value.replace(/\D/g, "");
+                            : e.target.value.replace(/[^\d+]/g, "");
                           setPhone(cleaned);
                           setPhoneError(null);
                         }}
                         placeholder={
-                          findCountry(countryCode)?.nsnLengths[0]
-                            ? "5".padEnd(findCountry(countryCode)!.nsnLengths[0], "x")
-                            : "1xxxxxxxxx"
+                          countryCode === "OTHER" || countryCode.startsWith("CUST:")
+                            ? "+357xxxxxxxx"
+                            : findCountry(countryCode)?.nsnLengths[0]
+                              ? "5".padEnd(findCountry(countryCode)!.nsnLengths[0], "x")
+                              : "1xxxxxxxxx"
                         }
                         required
                         dir="ltr"
                         className={`flex-1 h-11 px-3.5 rounded-lg bg-white/[0.04] border text-white text-sm placeholder:text-white/25 focus:outline-none focus:bg-white/[0.06] transition ${phoneError ? "border-rose-400/60 focus:border-rose-400" : "border-white/10 focus:border-white/30"}`}
                       />
                     </div>
+                    {(countryCode === "OTHER" || countryCode.startsWith("CUST:")) && (
+                      <p className="text-[11px] text-white/40 mt-1.5">اكتب الرقم كاملاً مع كود الدولة (مثال: +357…)</p>
+                    )}
                     {phoneError && (
                       <p className="text-[11px] text-rose-300/90 mt-1.5 leading-relaxed">
                         {phoneError}

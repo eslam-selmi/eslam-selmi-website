@@ -16,6 +16,7 @@ import { Route as PortalRouteImport } from './routes/portal'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as GraduatesRouteImport } from './routes/graduates'
+import { Route as BookRouteImport } from './routes/book'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AskSelmiRouteImport } from './routes/ask-selmi'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -58,6 +59,11 @@ const GraduatesRoute = GraduatesRouteImport.update({
   path: '/graduates',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BookRoute = BookRouteImport.update({
+  id: '/book',
+  path: '/book',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -94,6 +100,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/ask-selmi': typeof AskSelmiRoute
   '/auth': typeof AuthRoute
+  '/book': typeof BookRoute
   '/graduates': typeof GraduatesRoute
   '/library': typeof LibraryRoute
   '/onboarding': typeof OnboardingRoute
@@ -109,6 +116,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/ask-selmi': typeof AskSelmiRoute
   '/auth': typeof AuthRoute
+  '/book': typeof BookRoute
   '/graduates': typeof GraduatesRoute
   '/library': typeof LibraryRoute
   '/onboarding': typeof OnboardingRoute
@@ -125,6 +133,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/ask-selmi': typeof AskSelmiRoute
   '/auth': typeof AuthRoute
+  '/book': typeof BookRoute
   '/graduates': typeof GraduatesRoute
   '/library': typeof LibraryRoute
   '/onboarding': typeof OnboardingRoute
@@ -142,6 +151,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/ask-selmi'
     | '/auth'
+    | '/book'
     | '/graduates'
     | '/library'
     | '/onboarding'
@@ -157,6 +167,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/ask-selmi'
     | '/auth'
+    | '/book'
     | '/graduates'
     | '/library'
     | '/onboarding'
@@ -172,6 +183,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/ask-selmi'
     | '/auth'
+    | '/book'
     | '/graduates'
     | '/library'
     | '/onboarding'
@@ -188,6 +200,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   AskSelmiRoute: typeof AskSelmiRoute
   AuthRoute: typeof AuthRoute
+  BookRoute: typeof BookRoute
   GraduatesRoute: typeof GraduatesRoute
   LibraryRoute: typeof LibraryRoute
   OnboardingRoute: typeof OnboardingRoute
@@ -250,6 +263,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GraduatesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/book': {
+      id: '/book'
+      path: '/book'
+      fullPath: '/book'
+      preLoaderRoute: typeof BookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -300,6 +320,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   AskSelmiRoute: AskSelmiRoute,
   AuthRoute: AuthRoute,
+  BookRoute: BookRoute,
   GraduatesRoute: GraduatesRoute,
   LibraryRoute: LibraryRoute,
   OnboardingRoute: OnboardingRoute,
