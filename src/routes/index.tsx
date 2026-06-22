@@ -3408,11 +3408,13 @@ export function WhatsAppFloat() {
   );
 }
 
-/* ---------- ASK SELMI FLOATING (always visible, futuristic) ---------- */
+/* ---------- ASK SELMI FLOATING (toggleable) ---------- */
 export function AskSelmiFloat() {
   const { dir, lang } = useI18n();
+  const { isVisible } = useSiteContent();
   const side = dir === "rtl" ? "left-5" : "right-5";
   const isAr = lang === "ar";
+  if (!isVisible("ask_selmi")) return null;
   return (
     <Link
       to="/ask-selmi"
