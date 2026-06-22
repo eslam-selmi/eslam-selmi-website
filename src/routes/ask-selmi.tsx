@@ -137,6 +137,7 @@ function detectRenameIntent(text: string): string | null {
 function AskSelmiPage() {
   const { lang, setLang } = useI18n();
   const { theme, toggle: toggleTheme } = useTheme();
+  const { isVisible } = useSiteContent();
   const isAr = lang === "ar";
   const brandLogo = brandLogoAsset.url;
   const [sidebarOpen, setSidebarOpen] = useState(true);
