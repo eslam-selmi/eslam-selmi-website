@@ -957,7 +957,7 @@ export function Nav({
         </div>
         {open && (
           <div className="xl:hidden mt-2 glass-strong rounded-2xl p-3 grid gap-1">
-            {NAV_FULL.map((n) => {
+            {NAV_FULL.filter((n) => n.id !== "ask-selmi" || isVisible("ask_selmi")).map((n) => {
               if (n.id === "empowerment") {
                 return (
                   <Link
