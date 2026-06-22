@@ -707,6 +707,7 @@ export function Nav({
 }: { theme?: ThemeMode; onThemeToggle?: () => void } = {}) {
   const { t, lang, setLang } = useI18n();
   const { theme: ctxTheme, toggle: ctxToggle } = useTheme();
+  const { isVisible } = useSiteContent();
   const [open, setOpen] = useState(false);
   const [portalOpen, setPortalOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
