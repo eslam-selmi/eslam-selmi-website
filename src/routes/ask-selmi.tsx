@@ -24,6 +24,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useI18n } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
+import { useSiteContent } from "@/lib/site-content";
 import { askSelmi } from "@/lib/ask-selmi.functions";
 import { supabase } from "@/integrations/supabase/client";
 import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
