@@ -24,6 +24,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useI18n } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
+import { useSiteContent } from "@/lib/site-content";
 import { askSelmi } from "@/lib/ask-selmi.functions";
 import { supabase } from "@/integrations/supabase/client";
 import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
@@ -137,6 +138,7 @@ function detectRenameIntent(text: string): string | null {
 function AskSelmiPage() {
   const { lang, setLang } = useI18n();
   const { theme, toggle: toggleTheme } = useTheme();
+  const { isVisible } = useSiteContent();
   const isAr = lang === "ar";
   const brandLogo = brandLogoAsset.url;
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -430,6 +432,50 @@ function AskSelmiPage() {
     if (!q) return sortedChats;
     return sortedChats.filter((c) => c.title.toLowerCase().includes(q));
   }, [sortedChats, search]);
+
+  if (!isVisible("ask_selmi")) {
+    return (
+      <div dir={isAr ? "rtl" : "ltr"} className="min-h-screen flex items-center justify-center bg-background text-foreground px-4">
+        <div className="text-center max-w-md mx-auto">
+          <div className="size-16 rounded-2xl mx-auto mb-6 grid place-items-center"
+            style={{
+              background: "linear-gradient(135deg, color-mix(in oklab, var(--gold) 20%, transparent), color-mix(in oklab, var(--accent) 10%, transparent))",
+              border: "1.5px solid color-mix(in oklab, var(--gold) 40%, transparent)",
+            }}
+          >
+            <Sparkles className="size-7" style={{ color: "var(--gold)" }} />
+          </div>
+          <h1 className="font-display font-extrabold text-2xl mb-3">
+            {isAr ? "اسأل سلمي غير متاح حالياً" : "Ask Selmi is currently unavailable"}
+          </h1>
+          <p className="text-muted-foreground mb-6 leading-relaxed">
+            {isAr
+              ? "هذه الخدمة معطلة مؤقتاً. يمكنك التواصل معنا مباشرة من خلال صفحة الحجز أو التواصل."
+              : "This service is temporarily disabled. You can reach us directly through the booking or contact page."}
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Link
+              to="/book"
+              className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold"
+              style={{
+                background: "linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 55%, var(--accent)))",
+                color: "var(--accent-foreground)",
+              }}
+            >
+              {isAr ? "احجز استشارة" : "Book a consultation"}
+            </Link>
+            <Link
+              to="/"
+              className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold border border-foreground/15 hover:bg-foreground/5 transition"
+            >
+              <Home className="size-4" />
+              {isAr ? "الرئيسية" : "Home"}
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

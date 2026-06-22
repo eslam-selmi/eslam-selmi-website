@@ -707,6 +707,7 @@ export function Nav({
 }: { theme?: ThemeMode; onThemeToggle?: () => void } = {}) {
   const { t, lang, setLang } = useI18n();
   const { theme: ctxTheme, toggle: ctxToggle } = useTheme();
+  const { isVisible } = useSiteContent();
   const [open, setOpen] = useState(false);
   const [portalOpen, setPortalOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -738,7 +739,7 @@ export function Nav({
             <BrandMark />
           </Link>
           <nav className="hidden xl:flex items-center gap-0.5">
-            {NAV.map((n) => {
+            {NAV.filter((n) => n.id !== "ask-selmi" || isVisible("ask_selmi")).map((n) => {
               const baseCls =
                 "px-2.5 py-1.5 text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-foreground/5";
               const highlightCls =
@@ -956,7 +957,7 @@ export function Nav({
         </div>
         {open && (
           <div className="xl:hidden mt-2 glass-strong rounded-2xl p-3 grid gap-1">
-            {NAV_FULL.map((n) => {
+            {NAV_FULL.filter((n) => n.id !== "ask-selmi" || isVisible("ask_selmi")).map((n) => {
               if (n.id === "empowerment") {
                 return (
                   <Link
@@ -3407,11 +3408,13 @@ export function WhatsAppFloat() {
   );
 }
 
-/* ---------- ASK SELMI FLOATING (always visible, futuristic) ---------- */
+/* ---------- ASK SELMI FLOATING (toggleable) ---------- */
 export function AskSelmiFloat() {
   const { dir, lang } = useI18n();
+  const { isVisible } = useSiteContent();
   const side = dir === "rtl" ? "left-5" : "right-5";
   const isAr = lang === "ar";
+  if (!isVisible("ask_selmi")) return null;
   return (
     <Link
       to="/ask-selmi"
