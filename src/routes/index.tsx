@@ -628,14 +628,118 @@ function Portfolio() {
 }
 
 /* ---------- CALENDLY DIALOG ---------- */
+type BookingSlot = {
+  id: string;
+  starts_at: string;
+  duration_minutes: number;
+  booked_by: string | null;
+};
+
 export function CalendlyDialog() {
-  const { t, dir } = useI18n();
+  const { lang, dir } = useI18n();
+  const isAr = lang === "ar";
+  const tx = (a: string, b: string) => (isAr ? a : b);
   const [open, setOpen] = useState(false);
+  const [user, setUser] = useState<{ id: string } | null>(null);
+  const [slots, setSlots] = useState<BookingSlot[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [topic, setTopic] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [done, setDone] = useState<string | null>(null);
+
   useEffect(() => {
     const handler = () => setOpen(true);
     window.addEventListener("open-calendly", handler);
     return () => window.removeEventListener("open-calendly", handler);
   }, []);
+
+  async function refresh() {
+    setLoading(true);
+    const { data } = await supabase
+      .from("consultation_slots")
+      .select("id,starts_at,duration_minutes,booked_by")
+      .gte("starts_at", new Date().toISOString())
+      .is("booked_by", null)
+      .order("starts_at", { ascending: true });
+    setSlots((data as BookingSlot[]) || []);
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    if (!open) return;
+    setDone(null);
+    setSelectedId(null);
+    refresh();
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) {
+        setUser({ id: data.user.id });
+        supabase
+          .from("profiles")
+          .select("full_name, phone")
+          .eq("id", data.user.id)
+          .maybeSingle()
+          .then(({ data: p }) => {
+            if (p?.full_name && !name) setName(p.full_name);
+            if (p?.phone && !phone) setPhone(p.phone);
+          });
+      } else {
+        setUser(null);
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  const grouped = (() => {
+    const map = new Map<string, BookingSlot[]>();
+    for (const s of slots) {
+      const d = new Date(s.starts_at);
+      const key = d.toLocaleDateString(isAr ? "ar-EG" : "en-US", {
+        weekday: "long", year: "numeric", month: "long", day: "numeric",
+      });
+      const arr = map.get(key) || [];
+      arr.push(s);
+      map.set(key, arr);
+    }
+    return Array.from(map.entries());
+  })();
+
+  async function confirmBooking() {
+    if (!user) {
+      toast.error(tx("سجّل دخول أولاً للحجز", "Sign in to book"));
+      return;
+    }
+    if (!selectedId) return;
+    if (!name.trim()) { toast.error(tx("الاسم مطلوب", "Name is required")); return; }
+    if (!phone.trim() || phone.trim().length < 6) {
+      toast.error(tx("رقم تواصل صحيح مطلوب", "Valid phone is required")); return;
+    }
+    setBusy(true);
+    const { error } = await supabase
+      .from("consultation_slots")
+      .update({
+        booked_by: user.id,
+        booker_name: name.trim().slice(0, 120),
+        booker_phone: phone.trim().slice(0, 30),
+        topic: topic.trim().slice(0, 500) || null,
+      })
+      .eq("id", selectedId)
+      .is("booked_by", null);
+    setBusy(false);
+    if (error) {
+      toast.error(tx("تعذّر الحجز — قد يكون الموعد حُجز للتو", "Could not book — slot may be taken"));
+      refresh();
+      return;
+    }
+    const slot = slots.find((s) => s.id === selectedId);
+    setDone(slot ? slot.starts_at : "");
+    setSelectedId(null);
+    setTopic("");
+    refresh();
+  }
+
   if (!open) return null;
   return (
     <div
@@ -644,15 +748,20 @@ export function CalendlyDialog() {
       dir={dir}
     >
       <div
-        className="relative w-full max-w-3xl h-[85vh] rounded-2xl overflow-hidden bg-card shadow-2xl border border-foreground/10"
+        className="relative w-full max-w-2xl max-h-[88vh] flex flex-col rounded-2xl overflow-hidden bg-card shadow-2xl border border-foreground/10"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between px-5 py-3 border-b border-foreground/10 bg-card">
-          <div className="min-w-0">
-            <div className="font-display font-bold text-sm sm:text-base truncate">
-              {t("calendly_title")}
+        <div className="flex items-center justify-between px-5 py-3 border-b border-foreground/10 bg-card shrink-0">
+          <div className="min-w-0 flex items-center gap-2">
+            <Calendar className="size-4" style={{ color: "var(--accent)" }} />
+            <div>
+              <div className="font-display font-bold text-sm sm:text-base truncate">
+                {tx("احجز استشارة مجانية", "Book a Free Consultation")}
+              </div>
+              <div className="text-[11px] text-muted-foreground truncate">
+                {tx("جلسة شخصية مدتها ٣٠ دقيقة", "Personal 30-minute session")}
+              </div>
             </div>
-            <div className="text-xs text-muted-foreground truncate">{t("calendly_desc")}</div>
           </div>
           <button
             onClick={() => setOpen(false)}
@@ -662,12 +771,166 @@ export function CalendlyDialog() {
             <X className="size-4" />
           </button>
         </div>
-        <iframe
-          src={CALENDLY_URL}
-          title="Calendly booking"
-          className="w-full h-[calc(85vh-56px)] border-0"
-          loading="lazy"
-        />
+
+        <div className="flex-1 overflow-y-auto p-5 space-y-5">
+          {done !== null ? (
+            <div className="rounded-2xl p-6 text-center space-y-3"
+              style={{
+                background: "color-mix(in oklab, var(--gold) 12%, var(--card))",
+                border: "1px solid color-mix(in oklab, var(--gold) 40%, transparent)",
+              }}>
+              <div className="size-12 mx-auto rounded-full grid place-items-center"
+                style={{ background: "var(--gold)", color: "var(--accent-foreground)" }}>
+                <Calendar className="size-6" />
+              </div>
+              <div className="font-display font-extrabold text-lg">
+                {tx("تم تأكيد الحجز ✅", "Booking confirmed ✅")}
+              </div>
+              {done && (
+                <div className="text-sm text-muted-foreground">
+                  {new Date(done).toLocaleString(isAr ? "ar-EG" : "en-US", {
+                    weekday: "long", month: "long", day: "numeric",
+                    hour: "2-digit", minute: "2-digit",
+                  })}
+                </div>
+              )}
+              <button onClick={() => setOpen(false)}
+                className="mt-2 px-5 h-10 rounded-xl text-sm font-bold"
+                style={{
+                  background: "linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 55%, var(--accent)))",
+                  color: "var(--accent-foreground)",
+                }}>
+                {tx("تم", "Done")}
+              </button>
+            </div>
+          ) : (
+            <>
+              {!user && (
+                <div className="p-3 rounded-xl text-sm"
+                  style={{
+                    background: "color-mix(in oklab, var(--gold) 14%, transparent)",
+                    border: "1px solid color-mix(in oklab, var(--gold) 40%, transparent)",
+                  }}>
+                  {tx("لإكمال الحجز، ", "To complete booking, ")}
+                  <Link to="/auth" className="font-bold underline" onClick={() => setOpen(false)}>
+                    {tx("سجّل دخول هنا", "sign in here")}
+                  </Link>
+                  {tx(" أو أنشئ حساباً جديداً.", " or create a new account.")}
+                </div>
+              )}
+
+              <div>
+                <div className="font-display font-extrabold text-sm mb-2">
+                  {tx("المواعيد المتاحة", "Available slots")}
+                </div>
+                {loading ? (
+                  <div className="py-10 grid place-items-center text-muted-foreground text-sm">
+                    {tx("جارٍ التحميل…", "Loading…")}
+                  </div>
+                ) : grouped.length === 0 ? (
+                  <div className="rounded-xl p-6 text-center text-sm text-muted-foreground border border-dashed border-foreground/15">
+                    {tx(
+                      "لا توجد مواعيد متاحة حالياً. ابقَ على اطلاع — سيتم فتح مواعيد جديدة قريباً.",
+                      "No slots open right now. Check back soon — new slots open regularly.",
+                    )}
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {grouped.map(([day, items]) => (
+                      <div key={day}>
+                        <div className="text-[11px] uppercase tracking-[0.2em] font-bold text-muted-foreground mb-2">{day}</div>
+                        <div className="flex flex-wrap gap-2">
+                          {items.map((s) => {
+                            const time = new Date(s.starts_at).toLocaleTimeString(
+                              isAr ? "ar-EG" : "en-US",
+                              { hour: "2-digit", minute: "2-digit" },
+                            );
+                            const active = selectedId === s.id;
+                            return (
+                              <button key={s.id}
+                                onClick={() => setSelectedId(active ? null : s.id)}
+                                className="px-3.5 py-2 rounded-xl text-sm font-bold inline-flex items-center gap-1.5 transition shadow-sm hover:scale-[1.02] active:scale-[0.98]"
+                                style={{
+                                  background: active
+                                    ? "linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 55%, var(--accent)))"
+                                    : "color-mix(in oklab, var(--card) 92%, transparent)",
+                                  color: active ? "var(--accent-foreground)" : "var(--foreground)",
+                                  border: `1px solid ${active ? "transparent" : "color-mix(in oklab, var(--foreground) 12%, transparent)"}`,
+                                }}>
+                                {time}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {selectedId && (
+                <div className="rounded-2xl p-4 space-y-3"
+                  style={{
+                    background: "color-mix(in oklab, var(--card) 95%, transparent)",
+                    border: "1px solid color-mix(in oklab, var(--gold) 40%, transparent)",
+                  }}>
+                  <div className="font-display font-extrabold text-sm">{tx("بياناتك", "Your details")}</div>
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    <label className="block">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
+                        {tx("الاسم", "Name")} *
+                      </span>
+                      <input value={name} onChange={(e) => setName(e.target.value)} maxLength={120}
+                        className="w-full rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[var(--gold)]/40"
+                        style={{
+                          background: "color-mix(in oklab, var(--background) 70%, transparent)",
+                          border: "1px solid color-mix(in oklab, var(--foreground) 12%, transparent)",
+                        }} />
+                    </label>
+                    <label className="block">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
+                        {tx("رقم التواصل", "Phone")} *
+                      </span>
+                      <input value={phone} onChange={(e) => setPhone(e.target.value)} maxLength={30}
+                        dir="ltr" placeholder="+20…"
+                        className="w-full rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[var(--gold)]/40"
+                        style={{
+                          background: "color-mix(in oklab, var(--background) 70%, transparent)",
+                          border: "1px solid color-mix(in oklab, var(--foreground) 12%, transparent)",
+                        }} />
+                    </label>
+                  </div>
+                  <label className="block">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
+                      {tx("موضوع الجلسة (اختياري)", "Topic (optional)")}
+                    </span>
+                    <textarea value={topic} onChange={(e) => setTopic(e.target.value)} rows={2} maxLength={500}
+                      placeholder={tx("ما الذي تحب نتناقش فيه؟", "What would you like to discuss?")}
+                      className="w-full rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[var(--gold)]/40 resize-none"
+                      style={{
+                        background: "color-mix(in oklab, var(--background) 70%, transparent)",
+                        border: "1px solid color-mix(in oklab, var(--foreground) 12%, transparent)",
+                      }} />
+                  </label>
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    <button onClick={confirmBooking} disabled={busy || !user}
+                      className="px-5 h-10 rounded-xl font-bold text-sm inline-flex items-center gap-2 shadow-md disabled:opacity-50 hover:scale-[1.02] active:scale-[0.98] transition"
+                      style={{
+                        background: "linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 55%, var(--accent)))",
+                        color: "var(--accent-foreground)",
+                      }}>
+                      {tx("تأكيد الحجز", "Confirm booking")}
+                    </button>
+                    <button onClick={() => setSelectedId(null)}
+                      className="px-4 h-10 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground transition">
+                      {tx("إلغاء", "Cancel")}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
