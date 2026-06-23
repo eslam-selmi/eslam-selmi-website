@@ -52,6 +52,7 @@ import {
   Clock,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import { useI18n, type Lang } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
 import { LatestAdditionsSection } from "@/components/LatestAdditions";
