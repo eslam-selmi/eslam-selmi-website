@@ -963,7 +963,39 @@ export function Nav({
         </div>
         {open && (
           <div className="xl:hidden mt-2 glass-strong rounded-2xl p-3 grid gap-1">
-            {NAV_FULL.filter((n) => n.id !== "ask-selmi" || isVisible("ask_selmi")).map((n) => {
+            {NAV_FULL.map((n) => {
+              if (n.action === "book") {
+                return (
+                  <button
+                    key={n.id}
+                    type="button"
+                    onClick={(e) => {
+                      setOpen(false);
+                      openCalendly(e);
+                    }}
+                    className="my-1 inline-flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-extrabold tracking-tight transition-all"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, color-mix(in oklab, var(--gold) 22%, transparent), color-mix(in oklab, var(--gold) 6%, transparent))",
+                      border: "1.5px solid color-mix(in oklab, var(--gold) 55%, transparent)",
+                      color: "var(--accent)",
+                      boxShadow: "0 0 0 3px color-mix(in oklab, var(--gold) 10%, transparent)",
+                    }}
+                  >
+                    <span
+                      className="size-7 grid place-items-center rounded-lg"
+                      style={{
+                        background: "color-mix(in oklab, var(--gold) 18%, transparent)",
+                        border: "1px solid color-mix(in oklab, var(--gold) 40%, transparent)",
+                      }}
+                    >
+                      <Calendar className="size-3.5" />
+                    </span>
+                    <span className="flex-1 text-start">{t(n.key)}</span>
+                    <ArrowRight className="size-4 rtl-flip opacity-70" />
+                  </button>
+                );
+              }
               if (n.id === "empowerment") {
                 return (
                   <Link
