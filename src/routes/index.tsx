@@ -737,11 +737,11 @@ export function Nav({
             <BrandMark />
           </Link>
           <nav className="hidden xl:flex items-center gap-0.5">
-            {NAV.filter((n) => n.id !== "ask-selmi" || isVisible("ask_selmi")).map((n) => {
+            {NAV.map((n) => {
               const baseCls =
                 "px-2.5 py-1.5 text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-foreground/5";
               const highlightCls =
-                "group relative inline-flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-extrabold rounded-full transition-all hover:-translate-y-0.5";
+                "group relative inline-flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-extrabold rounded-full transition-all hover:-translate-y-0.5 cursor-pointer";
               const highlightStyle = {
                 background:
                   "linear-gradient(135deg, color-mix(in oklab, var(--gold) 22%, transparent), color-mix(in oklab, var(--gold) 8%, transparent))",
@@ -749,6 +749,14 @@ export function Nav({
                 color: "var(--accent)",
                 boxShadow: "0 0 0 3px color-mix(in oklab, var(--gold) 10%, transparent)",
               } as const;
+              if (n.action === "book") {
+                return (
+                  <button key={n.id} type="button" onClick={openCalendly} className={highlightCls} style={highlightStyle}>
+                    <Calendar className="size-3.5" />
+                    {t(n.key)}
+                  </button>
+                );
+              }
               if (n.to) {
                 return n.highlight ? (
                   <Link key={n.id} to={n.to} className={highlightCls} style={highlightStyle}>
