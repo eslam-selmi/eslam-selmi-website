@@ -16,9 +16,7 @@ import { Route as PortalRouteImport } from './routes/portal'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as GraduatesRouteImport } from './routes/graduates'
-import { Route as BookRouteImport } from './routes/book'
 import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AskSelmiRouteImport } from './routes/ask-selmi'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VerifyIdRouteImport } from './routes/verify.$id'
@@ -59,19 +57,9 @@ const GraduatesRoute = GraduatesRouteImport.update({
   path: '/graduates',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BookRoute = BookRouteImport.update({
-  id: '/book',
-  path: '/book',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AskSelmiRoute = AskSelmiRouteImport.update({
-  id: '/ask-selmi',
-  path: '/ask-selmi',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -98,9 +86,7 @@ const CSlugRoute = CSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/ask-selmi': typeof AskSelmiRoute
   '/auth': typeof AuthRoute
-  '/book': typeof BookRoute
   '/graduates': typeof GraduatesRoute
   '/library': typeof LibraryRoute
   '/onboarding': typeof OnboardingRoute
@@ -114,9 +100,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/ask-selmi': typeof AskSelmiRoute
   '/auth': typeof AuthRoute
-  '/book': typeof BookRoute
   '/graduates': typeof GraduatesRoute
   '/library': typeof LibraryRoute
   '/onboarding': typeof OnboardingRoute
@@ -131,9 +115,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/ask-selmi': typeof AskSelmiRoute
   '/auth': typeof AuthRoute
-  '/book': typeof BookRoute
   '/graduates': typeof GraduatesRoute
   '/library': typeof LibraryRoute
   '/onboarding': typeof OnboardingRoute
@@ -149,9 +131,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
-    | '/ask-selmi'
     | '/auth'
-    | '/book'
     | '/graduates'
     | '/library'
     | '/onboarding'
@@ -165,9 +145,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
-    | '/ask-selmi'
     | '/auth'
-    | '/book'
     | '/graduates'
     | '/library'
     | '/onboarding'
@@ -181,9 +159,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
-    | '/ask-selmi'
     | '/auth'
-    | '/book'
     | '/graduates'
     | '/library'
     | '/onboarding'
@@ -198,9 +174,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
-  AskSelmiRoute: typeof AskSelmiRoute
   AuthRoute: typeof AuthRoute
-  BookRoute: typeof BookRoute
   GraduatesRoute: typeof GraduatesRoute
   LibraryRoute: typeof LibraryRoute
   OnboardingRoute: typeof OnboardingRoute
@@ -263,25 +237,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GraduatesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/book': {
-      id: '/book'
-      path: '/book'
-      fullPath: '/book'
-      preLoaderRoute: typeof BookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth': {
       id: '/auth'
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ask-selmi': {
-      id: '/ask-selmi'
-      path: '/ask-selmi'
-      fullPath: '/ask-selmi'
-      preLoaderRoute: typeof AskSelmiRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -318,9 +278,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
-  AskSelmiRoute: AskSelmiRoute,
   AuthRoute: AuthRoute,
-  BookRoute: BookRoute,
   GraduatesRoute: GraduatesRoute,
   LibraryRoute: LibraryRoute,
   OnboardingRoute: OnboardingRoute,
