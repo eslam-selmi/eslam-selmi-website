@@ -50,6 +50,11 @@ import {
   KeyRound,
   LogIn,
   Clock,
+  User as UserIcon,
+  MessageSquare,
+  Check,
+  Video,
+  Globe,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
