@@ -973,7 +973,13 @@ export function Nav({
   const [open, setOpen] = useState(false);
   const [portalOpen, setPortalOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
   const portalRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setSignedIn(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSignedIn(!!s));
+    return () => sub.subscription.unsubscribe();
+  }, []);
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       if (portalRef.current && !portalRef.current.contains(e.target as Node)) setPortalOpen(false);
