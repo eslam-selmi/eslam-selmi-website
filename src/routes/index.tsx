@@ -50,6 +50,10 @@ import {
   KeyRound,
   LogIn,
   Clock,
+  User as UserIcon,
+  MessageSquare,
+  Check,
+  Video,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -743,102 +747,211 @@ export function CalendlyDialog() {
   if (!open) return null;
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-sm"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/75 backdrop-blur-md"
       onClick={() => setOpen(false)}
       dir={dir}
     >
       <div
-        className="relative w-full max-w-2xl max-h-[88vh] flex flex-col rounded-2xl overflow-hidden bg-card shadow-2xl border border-foreground/10"
+        className="relative w-full max-w-2xl max-h-[92vh] flex flex-col rounded-3xl overflow-hidden bg-card shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)] border border-foreground/10"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between px-5 py-3 border-b border-foreground/10 bg-card shrink-0">
-          <div className="min-w-0 flex items-center gap-2">
-            <Calendar className="size-4" style={{ color: "var(--accent)" }} />
-            <div>
-              <div className="font-display font-bold text-sm sm:text-base truncate">
-                {tx("احجز استشارة مجانية", "Book a Free Consultation")}
-              </div>
-              <div className="text-[11px] text-muted-foreground truncate">
-                {tx("جلسة شخصية مدتها ٣٠ دقيقة", "Personal 30-minute session")}
-              </div>
-            </div>
-          </div>
+        {/* Premium gradient header */}
+        <div
+          className="relative px-6 pt-6 pb-5 shrink-0 overflow-hidden"
+          style={{
+            background:
+              "linear-gradient(135deg, color-mix(in oklab, var(--gold) 22%, var(--card)) 0%, color-mix(in oklab, var(--gold) 6%, var(--card)) 100%)",
+            borderBottom: "1px solid color-mix(in oklab, var(--gold) 25%, transparent)",
+          }}
+        >
+          <div
+            aria-hidden
+            className="absolute -top-16 -end-16 size-56 rounded-full opacity-40 blur-3xl pointer-events-none"
+            style={{ background: "radial-gradient(circle, var(--gold), transparent 70%)" }}
+          />
           <button
             onClick={() => setOpen(false)}
             aria-label="Close"
-            className="size-9 grid place-items-center rounded-full hover:bg-foreground/10 transition shrink-0"
+            className="absolute top-3 end-3 size-9 grid place-items-center rounded-full bg-foreground/5 hover:bg-foreground/10 transition shrink-0 z-10"
           >
             <X className="size-4" />
           </button>
+          <div className="relative flex items-start gap-4">
+            <div
+              className="size-12 grid place-items-center rounded-2xl shrink-0 shadow-lg"
+              style={{
+                background: "linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 55%, var(--accent)))",
+                color: "var(--accent-foreground)",
+              }}
+            >
+              <Calendar className="size-6" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="font-display font-extrabold text-lg sm:text-xl leading-tight">
+                {tx("احجز استشارة مجانية ١:١", "Book a Free 1:1 Consultation")}
+              </div>
+              <div className="text-[12px] text-muted-foreground mt-1 leading-relaxed">
+                {tx(
+                  "جلسة شخصية مع إسلام سلمي — استراتيجية واضحة وخطوات عملية لمشروعك.",
+                  "A personal session with Eslam Selmi — clear strategy and actionable steps for your project.",
+                )}
+              </div>
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {[
+                  { i: Clock, t: tx("٣٠ دقيقة", "30 minutes") },
+                  { i: Video, t: tx("أونلاين", "Online") },
+                  { i: Sparkles, t: tx("مجاناً", "Free") },
+                ].map((b, i) => (
+                  <span
+                    key={i}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold"
+                    style={{
+                      background: "color-mix(in oklab, var(--gold) 14%, transparent)",
+                      border: "1px solid color-mix(in oklab, var(--gold) 35%, transparent)",
+                      color: "var(--accent)",
+                    }}
+                  >
+                    <b.i className="size-3" />
+                    {b.t}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-5 space-y-5">
+        <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-5">
           {done !== null ? (
-            <div className="rounded-2xl p-6 text-center space-y-3"
+            <div
+              className="rounded-3xl p-8 text-center space-y-4 relative overflow-hidden"
               style={{
                 background: "color-mix(in oklab, var(--gold) 12%, var(--card))",
-                border: "1px solid color-mix(in oklab, var(--gold) 40%, transparent)",
-              }}>
-              <div className="size-12 mx-auto rounded-full grid place-items-center"
-                style={{ background: "var(--gold)", color: "var(--accent-foreground)" }}>
-                <Calendar className="size-6" />
-              </div>
-              <div className="font-display font-extrabold text-lg">
-                {tx("تم تأكيد الحجز ✅", "Booking confirmed ✅")}
-              </div>
-              {done && (
-                <div className="text-sm text-muted-foreground">
-                  {new Date(done).toLocaleString(isAr ? "ar-EG" : "en-US", {
-                    weekday: "long", month: "long", day: "numeric",
-                    hour: "2-digit", minute: "2-digit",
-                  })}
-                </div>
-              )}
-              <button onClick={() => setOpen(false)}
-                className="mt-2 px-5 h-10 rounded-xl text-sm font-bold"
+                border: "1px solid color-mix(in oklab, var(--gold) 45%, transparent)",
+              }}
+            >
+              <div
+                aria-hidden
+                className="absolute inset-0 opacity-20 pointer-events-none"
+                style={{ background: "radial-gradient(circle at 50% 0%, var(--gold), transparent 60%)" }}
+              />
+              <div
+                className="relative size-16 mx-auto rounded-full grid place-items-center shadow-xl"
                 style={{
                   background: "linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 55%, var(--accent)))",
                   color: "var(--accent-foreground)",
-                }}>
+                }}
+              >
+                <Check className="size-8" strokeWidth={3} />
+              </div>
+              <div className="relative font-display font-extrabold text-xl">
+                {tx("تم تأكيد حجزك ✨", "Booking confirmed ✨")}
+              </div>
+              {done && (
+                <div className="relative text-sm font-semibold text-foreground/80">
+                  {new Date(done).toLocaleString(isAr ? "ar-EG" : "en-US", {
+                    weekday: "long",
+                    month: "long",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </div>
+              )}
+              <div className="relative text-xs text-muted-foreground max-w-sm mx-auto">
+                {tx(
+                  "هتوصلك تفاصيل الجلسة على رقمك قبل الموعد بوقت كافي.",
+                  "You'll receive session details on your phone shortly before the meeting.",
+                )}
+              </div>
+              <button
+                onClick={() => setOpen(false)}
+                className="relative mt-2 px-6 h-11 rounded-xl text-sm font-bold shadow-lg hover:scale-[1.02] active:scale-[0.98] transition"
+                style={{
+                  background: "linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 55%, var(--accent)))",
+                  color: "var(--accent-foreground)",
+                }}
+              >
                 {tx("تم", "Done")}
               </button>
             </div>
           ) : (
             <>
               {!user && (
-                <div className="p-3 rounded-xl text-sm"
+                <div
+                  className="p-4 rounded-2xl text-sm flex items-start gap-3"
                   style={{
-                    background: "color-mix(in oklab, var(--gold) 14%, transparent)",
+                    background: "color-mix(in oklab, var(--gold) 12%, transparent)",
                     border: "1px solid color-mix(in oklab, var(--gold) 40%, transparent)",
-                  }}>
-                  {tx("لإكمال الحجز، ", "To complete booking, ")}
-                  <Link to="/auth" className="font-bold underline" onClick={() => setOpen(false)}>
-                    {tx("سجّل دخول هنا", "sign in here")}
-                  </Link>
-                  {tx(" أو أنشئ حساباً جديداً.", " or create a new account.")}
+                  }}
+                >
+                  <div
+                    className="size-9 shrink-0 grid place-items-center rounded-xl"
+                    style={{
+                      background: "color-mix(in oklab, var(--gold) 25%, transparent)",
+                      color: "var(--accent)",
+                    }}
+                  >
+                    <LogIn className="size-4" />
+                  </div>
+                  <div className="leading-relaxed">
+                    {tx("لإكمال الحجز، ", "To complete booking, ")}
+                    <Link to="/auth" className="font-bold underline" onClick={() => setOpen(false)}>
+                      {tx("سجّل دخول هنا", "sign in here")}
+                    </Link>
+                    {tx(" أو أنشئ حساباً جديداً.", " or create a new account.")}
+                  </div>
                 </div>
               )}
 
               <div>
-                <div className="font-display font-extrabold text-sm mb-2">
-                  {tx("المواعيد المتاحة", "Available slots")}
+                <div className="flex items-center gap-2 mb-3">
+                  <div
+                    className="size-7 grid place-items-center rounded-lg"
+                    style={{
+                      background: "color-mix(in oklab, var(--gold) 18%, transparent)",
+                      color: "var(--accent)",
+                    }}
+                  >
+                    <Calendar className="size-4" />
+                  </div>
+                  <div className="font-display font-extrabold text-base">
+                    {tx("اختر الموعد المناسب", "Pick your time")}
+                  </div>
                 </div>
                 {loading ? (
-                  <div className="py-10 grid place-items-center text-muted-foreground text-sm">
+                  <div className="py-12 grid place-items-center text-muted-foreground text-sm gap-2">
+                    <Loader2 className="size-5 animate-spin" />
                     {tx("جارٍ التحميل…", "Loading…")}
                   </div>
                 ) : grouped.length === 0 ? (
-                  <div className="rounded-xl p-6 text-center text-sm text-muted-foreground border border-dashed border-foreground/15">
+                  <div
+                    className="rounded-2xl p-8 text-center text-sm text-muted-foreground"
+                    style={{
+                      background: "color-mix(in oklab, var(--background) 50%, transparent)",
+                      border: "1px dashed color-mix(in oklab, var(--foreground) 18%, transparent)",
+                    }}
+                  >
+                    <Clock className="size-8 mx-auto mb-3 opacity-50" />
                     {tx(
-                      "لا توجد مواعيد متاحة حالياً. ابقَ على اطلاع — سيتم فتح مواعيد جديدة قريباً.",
-                      "No slots open right now. Check back soon — new slots open regularly.",
+                      "لا توجد مواعيد متاحة حالياً. سيتم فتح مواعيد جديدة قريباً.",
+                      "No slots open right now. New slots open regularly — check back soon.",
                     )}
                   </div>
                 ) : (
                   <div className="space-y-4">
                     {grouped.map(([day, items]) => (
-                      <div key={day}>
-                        <div className="text-[11px] uppercase tracking-[0.2em] font-bold text-muted-foreground mb-2">{day}</div>
+                      <div
+                        key={day}
+                        className="rounded-2xl p-4"
+                        style={{
+                          background: "color-mix(in oklab, var(--background) 40%, transparent)",
+                          border: "1px solid color-mix(in oklab, var(--foreground) 8%, transparent)",
+                        }}
+                      >
+                        <div className="text-[11px] uppercase tracking-[0.2em] font-bold text-muted-foreground mb-3 flex items-center gap-2">
+                          <Calendar className="size-3" />
+                          {day}
+                        </div>
                         <div className="flex flex-wrap gap-2">
                           {items.map((s) => {
                             const time = new Date(s.starts_at).toLocaleTimeString(
@@ -847,16 +960,22 @@ export function CalendlyDialog() {
                             );
                             const active = selectedId === s.id;
                             return (
-                              <button key={s.id}
+                              <button
+                                key={s.id}
                                 onClick={() => setSelectedId(active ? null : s.id)}
-                                className="px-3.5 py-2 rounded-xl text-sm font-bold inline-flex items-center gap-1.5 transition shadow-sm hover:scale-[1.02] active:scale-[0.98]"
+                                className="px-4 py-2.5 rounded-xl text-sm font-bold inline-flex items-center gap-1.5 transition-all shadow-sm hover:scale-[1.04] active:scale-[0.97]"
                                 style={{
                                   background: active
                                     ? "linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 55%, var(--accent)))"
                                     : "color-mix(in oklab, var(--card) 92%, transparent)",
                                   color: active ? "var(--accent-foreground)" : "var(--foreground)",
-                                  border: `1px solid ${active ? "transparent" : "color-mix(in oklab, var(--foreground) 12%, transparent)"}`,
-                                }}>
+                                  border: `1.5px solid ${active ? "transparent" : "color-mix(in oklab, var(--foreground) 12%, transparent)"}`,
+                                  boxShadow: active
+                                    ? "0 8px 20px -8px color-mix(in oklab, var(--gold) 60%, transparent)"
+                                    : undefined,
+                                }}
+                              >
+                                {active && <Check className="size-3.5" strokeWidth={3} />}
                                 {time}
                               </button>
                             );
@@ -869,61 +988,124 @@ export function CalendlyDialog() {
               </div>
 
               {selectedId && (
-                <div className="rounded-2xl p-4 space-y-3"
+                <div
+                  className="rounded-3xl p-5 space-y-4 relative overflow-hidden"
                   style={{
-                    background: "color-mix(in oklab, var(--card) 95%, transparent)",
-                    border: "1px solid color-mix(in oklab, var(--gold) 40%, transparent)",
-                  }}>
-                  <div className="font-display font-extrabold text-sm">{tx("بياناتك", "Your details")}</div>
+                    background:
+                      "linear-gradient(180deg, color-mix(in oklab, var(--gold) 8%, var(--card)), var(--card))",
+                    border: "1.5px solid color-mix(in oklab, var(--gold) 45%, transparent)",
+                    boxShadow: "0 12px 32px -16px color-mix(in oklab, var(--gold) 40%, transparent)",
+                  }}
+                >
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="size-7 grid place-items-center rounded-lg"
+                      style={{
+                        background: "color-mix(in oklab, var(--gold) 20%, transparent)",
+                        color: "var(--accent)",
+                      }}
+                    >
+                      <UserIcon className="size-4" />
+                    </div>
+                    <div className="font-display font-extrabold text-base">
+                      {tx("بياناتك", "Your details")}
+                    </div>
+                  </div>
                   <div className="grid sm:grid-cols-2 gap-3">
                     <label className="block">
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
-                        {tx("الاسم", "Name")} *
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5 block">
+                        {tx("الاسم", "Full name")} *
                       </span>
-                      <input value={name} onChange={(e) => setName(e.target.value)} maxLength={120}
-                        className="w-full rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[var(--gold)]/40"
-                        style={{
-                          background: "color-mix(in oklab, var(--background) 70%, transparent)",
-                          border: "1px solid color-mix(in oklab, var(--foreground) 12%, transparent)",
-                        }} />
+                      <div className="relative">
+                        <UserIcon className="absolute top-1/2 -translate-y-1/2 start-3 size-4 text-muted-foreground" />
+                        <input
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          maxLength={120}
+                          placeholder={tx("اكتب اسمك", "Your name")}
+                          className="w-full rounded-xl ps-9 pe-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[var(--gold)]/40 transition"
+                          style={{
+                            background: "color-mix(in oklab, var(--background) 60%, transparent)",
+                            border: "1px solid color-mix(in oklab, var(--foreground) 12%, transparent)",
+                          }}
+                        />
+                      </div>
                     </label>
                     <label className="block">
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
-                        {tx("رقم التواصل", "Phone")} *
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5 block">
+                        {tx("رقم واتساب", "WhatsApp number")} *
                       </span>
-                      <input value={phone} onChange={(e) => setPhone(e.target.value)} maxLength={30}
-                        dir="ltr" placeholder="+20…"
-                        className="w-full rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[var(--gold)]/40"
-                        style={{
-                          background: "color-mix(in oklab, var(--background) 70%, transparent)",
-                          border: "1px solid color-mix(in oklab, var(--foreground) 12%, transparent)",
-                        }} />
+                      <div className="relative">
+                        <Phone className="absolute top-1/2 -translate-y-1/2 start-3 size-4 text-muted-foreground" />
+                        <input
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          maxLength={30}
+                          dir="ltr"
+                          placeholder="+20 1XX XXX XXXX"
+                          className="w-full rounded-xl ps-9 pe-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[var(--gold)]/40 transition"
+                          style={{
+                            background: "color-mix(in oklab, var(--background) 60%, transparent)",
+                            border: "1px solid color-mix(in oklab, var(--foreground) 12%, transparent)",
+                          }}
+                        />
+                      </div>
                     </label>
                   </div>
                   <label className="block">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1 block">
-                      {tx("موضوع الجلسة (اختياري)", "Topic (optional)")}
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5 block">
+                      {tx("موضوع الجلسة", "Session topic")}{" "}
+                      <span className="text-muted-foreground/60 normal-case font-medium">
+                        ({tx("اختياري", "optional")})
+                      </span>
                     </span>
-                    <textarea value={topic} onChange={(e) => setTopic(e.target.value)} rows={2} maxLength={500}
-                      placeholder={tx("ما الذي تحب نتناقش فيه؟", "What would you like to discuss?")}
-                      className="w-full rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[var(--gold)]/40 resize-none"
-                      style={{
-                        background: "color-mix(in oklab, var(--background) 70%, transparent)",
-                        border: "1px solid color-mix(in oklab, var(--foreground) 12%, transparent)",
-                      }} />
+                    <div className="relative">
+                      <MessageSquare className="absolute top-3 start-3 size-4 text-muted-foreground" />
+                      <textarea
+                        value={topic}
+                        onChange={(e) => setTopic(e.target.value)}
+                        rows={3}
+                        maxLength={500}
+                        placeholder={tx(
+                          "اكتب باختصار: إيه التحدي اللي بتواجهه؟ وإيه اللي تحب تطلع بيه من الجلسة؟",
+                          "Briefly: what challenge are you facing, and what would you like to take away?",
+                        )}
+                        className="w-full rounded-xl ps-9 pe-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[var(--gold)]/40 resize-none transition"
+                        style={{
+                          background: "color-mix(in oklab, var(--background) 60%, transparent)",
+                          border: "1px solid color-mix(in oklab, var(--foreground) 12%, transparent)",
+                        }}
+                      />
+                    </div>
+                    <div className="text-[10px] text-muted-foreground/70 mt-1 text-end">
+                      {topic.length}/500
+                    </div>
                   </label>
-                  <div className="flex flex-wrap gap-2 pt-1">
-                    <button onClick={confirmBooking} disabled={busy || !user}
-                      className="px-5 h-10 rounded-xl font-bold text-sm inline-flex items-center gap-2 shadow-md disabled:opacity-50 hover:scale-[1.02] active:scale-[0.98] transition"
-                      style={{
-                        background: "linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 55%, var(--accent)))",
-                        color: "var(--accent-foreground)",
-                      }}>
-                      {tx("تأكيد الحجز", "Confirm booking")}
-                    </button>
-                    <button onClick={() => setSelectedId(null)}
-                      className="px-4 h-10 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground transition">
+                  <div className="flex flex-col-reverse sm:flex-row sm:items-center gap-2 pt-1">
+                    <button
+                      onClick={() => setSelectedId(null)}
+                      className="px-4 h-11 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition"
+                    >
                       {tx("إلغاء", "Cancel")}
+                    </button>
+                    <button
+                      onClick={confirmBooking}
+                      disabled={busy || !user}
+                      className="flex-1 px-6 h-11 rounded-xl font-bold text-sm inline-flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 hover:scale-[1.02] active:scale-[0.98] transition"
+                      style={{
+                        background:
+                          "linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 55%, var(--accent)))",
+                        color: "var(--accent-foreground)",
+                        boxShadow:
+                          "0 12px 28px -10px color-mix(in oklab, var(--gold) 60%, transparent)",
+                      }}
+                    >
+                      {busy ? (
+                        <Loader2 className="size-4 animate-spin" />
+                      ) : (
+                        <Check className="size-4" strokeWidth={3} />
+                      )}
+                      {tx("تأكيد الحجز", "Confirm booking")}
                     </button>
                   </div>
                 </div>
@@ -973,7 +1155,13 @@ export function Nav({
   const [open, setOpen] = useState(false);
   const [portalOpen, setPortalOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
   const portalRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setSignedIn(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSignedIn(!!s));
+    return () => sub.subscription.unsubscribe();
+  }, []);
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       if (portalRef.current && !portalRef.current.contains(e.target as Node)) setPortalOpen(false);
@@ -1001,7 +1189,7 @@ export function Nav({
             <BrandMark />
           </Link>
           <nav className="hidden xl:flex items-center gap-0.5">
-            {NAV.map((n) => {
+            {NAV.filter((n) => n.action !== "book" || signedIn).map((n) => {
               const baseCls =
                 "px-2.5 py-1.5 text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-foreground/5";
               const highlightCls =
@@ -1017,7 +1205,7 @@ export function Nav({
                 return (
                   <button key={n.id} type="button" onClick={openCalendly} className={highlightCls} style={highlightStyle}>
                     <Calendar className="size-3.5" />
-                    {t(n.key)}
+                    {t("nav_manage_booking")}
                   </button>
                 );
               }
@@ -1214,12 +1402,14 @@ export function Nav({
               </AnimatePresence>
             </div>
 
-            <button
-              onClick={openCalendly}
-              className="hidden md:inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-4 py-2 text-sm font-bold hover:opacity-90 transition cursor-pointer"
-            >
-              <Calendar className="size-4" /> {t("book_cta")}
-            </button>
+            {signedIn && (
+              <button
+                onClick={openCalendly}
+                className="hidden md:inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-4 py-2 text-sm font-bold hover:opacity-90 transition cursor-pointer"
+              >
+                <Calendar className="size-4" /> {t("manage_booking_cta")}
+              </button>
+            )}
             <button className="xl:hidden p-2" onClick={() => setOpen((v) => !v)} aria-label="Menu">
               {open ? <X className="size-5" /> : <Menu className="size-5" />}
             </button>
@@ -1227,7 +1417,7 @@ export function Nav({
         </div>
         {open && (
           <div className="xl:hidden mt-2 glass-strong rounded-2xl p-3 grid gap-1">
-            {NAV_FULL.map((n) => {
+            {NAV_FULL.filter((n) => n.action !== "book" || signedIn).map((n) => {
               if (n.action === "book") {
                 return (
                   <button
@@ -1255,7 +1445,7 @@ export function Nav({
                     >
                       <Calendar className="size-3.5" />
                     </span>
-                    <span className="flex-1 text-start">{t(n.key)}</span>
+                    <span className="flex-1 text-start">{t("nav_manage_booking")}</span>
                     <ArrowRight className="size-4 rtl-flip opacity-70" />
                   </button>
                 );
