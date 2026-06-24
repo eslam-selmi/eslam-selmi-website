@@ -3860,8 +3860,8 @@ function TestimonialsPanel() {
             value={form.company}
             onChange={(v) => setForm({ ...form, company: v })}
           />
-          <Input
-            label={t("رابط الصورة", "Avatar URL")}
+          <AvatarUploadField
+            label={t("صورة العميل", "Client photo")}
             value={form.avatar_url}
             onChange={(v) => setForm({ ...form, avatar_url: v })}
           />
