@@ -1235,7 +1235,7 @@ export function Nav({
         </div>
         {open && (
           <div className="xl:hidden mt-2 glass-strong rounded-2xl p-3 grid gap-1">
-            {NAV_FULL.map((n) => {
+            {NAV_FULL.filter((n) => n.action !== "book" || signedIn).map((n) => {
               if (n.action === "book") {
                 return (
                   <button
@@ -1263,7 +1263,7 @@ export function Nav({
                     >
                       <Calendar className="size-3.5" />
                     </span>
-                    <span className="flex-1 text-start">{t(n.key)}</span>
+                    <span className="flex-1 text-start">{t("nav_manage_booking")}</span>
                     <ArrowRight className="size-4 rtl-flip opacity-70" />
                   </button>
                 );
