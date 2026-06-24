@@ -3954,6 +3954,101 @@ function TestimonialsPanel() {
   );
 }
 
+function AvatarUploadField({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const { lang } = useI18n();
+  const t = (a: string, b: string) => (lang === "ar" ? a : b);
+  const [busy, setBusy] = useState(false);
+
+  async function handlePick(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error(t("اختر ملف صورة", "Please pick an image"));
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error(t("الحد الأقصى ٥ ميجا", "Max size is 5 MB"));
+      return;
+    }
+    setBusy(true);
+    const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+    const path = `testimonials/${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage
+      .from("public-uploads")
+      .upload(path, file, { cacheControl: "31536000", upsert: false, contentType: file.type });
+    if (error) {
+      setBusy(false);
+      toast.error(error.message);
+      return;
+    }
+    const { data } = supabase.storage.from("public-uploads").getPublicUrl(path);
+    onChange(data.publicUrl);
+    setBusy(false);
+    toast.success(t("تم رفع الصورة", "Image uploaded"));
+  }
+
+  async function handleRemove() {
+    if (!value) return;
+    // Try to delete from bucket if it's our own URL
+    const marker = "/public-uploads/";
+    const idx = value.indexOf(marker);
+    if (idx > -1) {
+      const path = value.slice(idx + marker.length).split("?")[0];
+      await supabase.storage.from("public-uploads").remove([path]);
+    }
+    onChange("");
+  }
+
+  return (
+    <div className="block text-xs">
+      <span className="text-white/70">{label}</span>
+      <div className="mt-1 flex items-center gap-3">
+        {value ? (
+          <img
+            src={value}
+            alt=""
+            className="w-14 h-14 rounded-full object-cover border border-white/15"
+          />
+        ) : (
+          <div className="w-14 h-14 rounded-full bg-white/5 border border-dashed border-white/15 grid place-items-center text-white/40">
+            <Upload className="w-4 h-4" />
+          </div>
+        )}
+        <div className="flex flex-col gap-1.5">
+          <label
+            className={`inline-flex items-center gap-2 px-3 h-9 rounded-lg text-xs font-semibold cursor-pointer transition ${
+              busy ? "opacity-50 pointer-events-none" : "bg-white/10 hover:bg-white/15"
+            }`}
+          >
+            {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+            {value ? t("تغيير الصورة", "Change image") : t("رفع صورة", "Upload image")}
+            <input type="file" accept="image/*" className="hidden" onChange={handlePick} disabled={busy} />
+          </label>
+          {value && (
+            <button
+              type="button"
+              onClick={handleRemove}
+              className="text-[11px] text-rose-300 hover:text-rose-200 text-start"
+            >
+              {t("إزالة", "Remove")}
+            </button>
+          )}
+          <span className="text-[10px] text-white/40">{t("PNG/JPG حتى ٥ ميجا", "PNG/JPG up to 5 MB")}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ============================================================
 // Activations Panel — Pending account activation queue + settings
 // ============================================================
