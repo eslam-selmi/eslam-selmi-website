@@ -91,6 +91,18 @@ export const completeForcedPasswordReset = createServerFn({ method: "POST" })
   .inputValidator((input) => SelfPasswordInput.parse(input))
   .handler(async ({ data, context }) => {
     const { userId } = context;
+    // Guard: only allow users with force_password_reset=true to use this admin path.
+    // Everyone else must use the standard Supabase updateUser flow (which enforces
+    // recent session-age and email-verification requirements).
+    const { data: prof, error: profErr } = await supabaseAdmin
+      .from("profiles")
+      .select("force_password_reset")
+      .eq("id", userId)
+      .single();
+    if (profErr) throw new Error(profErr.message);
+    if (!prof?.force_password_reset) {
+      throw new Error("Forbidden: password change not required for this account");
+    }
     const { error } = await supabaseAdmin.auth.admin.updateUserById(userId, {
       password: data.password,
     });
