@@ -463,69 +463,6 @@ const SERVICES = [
       ar: "جلسات مخصصة لإطلاق الإمكانات والنمو.",
     },
   },
-  {
-    icon: BarChart3,
-    key: "svc_perf",
-    title: { en: "Performance & KPIs Design", ar: "تصميم أنظمة الأداء والمؤشرات" },
-    desc: {
-      en: "Build performance systems, balanced scorecards and KPI frameworks tied to business outcomes.",
-      ar: "بناء أنظمة الأداء وبطاقات الأداء المتوازن ومؤشرات قياس مرتبطة بنتائج الأعمال.",
-    },
-  },
-  {
-    icon: UserCheck,
-    key: "svc_talent",
-    title: { en: "Talent Management Architecture", ar: "هندسة إدارة المواهب" },
-    desc: {
-      en: "Succession planning, HiPo identification, competency mapping and retention strategies.",
-      ar: "تخطيط التعاقب، تحديد المواهب الواعدة، خرائط الجدارات واستراتيجيات الاستبقاء.",
-    },
-  },
-  {
-    icon: Presentation,
-    key: "svc_tot",
-    title: { en: "Train the Trainer (TOT)", ar: "تدريب المدربين (TOT)" },
-    desc: {
-      en: "Certify internal trainers with modern facilitation, design and assessment skills.",
-      ar: "اعتماد مدربين داخليين بمهارات التيسير الحديث والتصميم والتقييم.",
-    },
-  },
-  {
-    icon: Bot,
-    key: "svc_ai",
-    title: { en: "AI Enablement for HR & L&D", ar: "تمكين الذكاء الاصطناعي للموارد البشرية والتعلم" },
-    desc: {
-      en: "Embed AI workflows into HR & L&D operations: content generation, analytics and automation.",
-      ar: "دمج الذكاء الاصطناعي في عمليات الموارد البشرية والتعلم: المحتوى، التحليلات والأتمتة.",
-    },
-  },
-  {
-    icon: Rocket,
-    key: "svc_onboarding",
-    title: { en: "Onboarding Programs", ar: "برامج التأهيل الوظيفي" },
-    desc: {
-      en: "Structured onboarding journeys that shorten time-to-productivity for new hires.",
-      ar: "رحلات تأهيل منظمة تختصر زمن الإنتاجية للموظفين الجدد.",
-    },
-  },
-  {
-    icon: GraduationCap,
-    key: "svc_leadership",
-    title: { en: "Leadership Development", ar: "تطوير القيادات" },
-    desc: {
-      en: "Tailored leadership tracks for first-line managers up to senior executives.",
-      ar: "مسارات تطوير قيادية مخصصة من المشرفين حتى التنفيذيين.",
-    },
-  },
-  {
-    icon: BookOpen,
-    key: "svc_lms",
-    title: { en: "LMS Setup & Content Curation", ar: "إعداد منصات التعلم وتنسيق المحتوى" },
-    desc: {
-      en: "Stand up your LMS, structure learning paths and curate world-class content libraries.",
-      ar: "إطلاق منصة التعلم، بناء المسارات التدريبية وتنسيق مكتبات محتوى عالمية.",
-    },
-  },
 ];
 
 const PROGRAMS = [
@@ -1244,10 +1181,9 @@ export function Nav({
   const hashHref = (id: string) => (isHome ? `#${id}` : `/#${id}`);
   return (
     <header className={`fixed top-0 inset-x-0 z-50 transition-all ${scrolled ? "py-2" : "py-4"}`}>
-      <div className="w-full px-3 sm:px-5">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div
           className={`bg-card/85 backdrop-blur-xl border border-foreground/10 rounded-full ps-3 pe-2 py-2 flex items-center justify-between gap-2 ${scrolled ? "shadow-[0_8px_30px_-12px_rgba(15,27,61,0.15)]" : ""}`}
-
         >
           <Link to="/" className="flex items-center gap-2.5 group shrink-0">
             <BrandMark />
