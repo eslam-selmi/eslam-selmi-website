@@ -53,13 +53,13 @@
   --secondary-foreground: oklch(0.22 0.06 252);
   --muted: oklch(0.95 0.008 240);
   --muted-foreground: oklch(0.46 0.025 250);
-  --accent: oklch(0.72 0.13 180);
+  --accent: oklch(0.74 0.12 295);
   --accent-foreground: oklch(0.16 0.04 252);
   --destructive: oklch(0.55 0.22 27);
   --destructive-foreground: oklch(1 0 0);
   --border: oklch(0.18 0.04 252 / 0.10);
   --input: oklch(0.18 0.04 252 / 0.14);
-  --ring: oklch(0.72 0.13 180);
+  --ring: oklch(0.74 0.12 295);
 
   --gold: oklch(0.72 0.13 180);
   --gold-soft: oklch(0.86 0.08 182);
@@ -95,11 +95,11 @@
   --secondary-foreground: oklch(0.97 0.008 230);
   --muted: oklch(0.22 0.04 252);
   --muted-foreground: oklch(0.74 0.02 240);
-  --accent: oklch(0.75 0.13 180);
+  --accent: oklch(0.80 0.11 295);
   --accent-foreground: oklch(0.14 0.04 252);
   --border: oklch(1 0 0 / 0.10);
   --input: oklch(1 0 0 / 0.14);
-  --ring: oklch(0.75 0.13 180);
+  --ring: oklch(0.80 0.11 295);
   --gold: oklch(0.75 0.13 180);
   --gold-soft: oklch(0.86 0.09 182);
   --navy: oklch(0.92 0.02 230);
@@ -150,10 +150,10 @@ html[lang="ar"] {
 @layer utilities {
   .bg-aurora {
     background-image:
-      radial-gradient(ellipse 70% 55% at 8% 8%, oklch(0.73 0.12 238 / 0.22), transparent 62%),
-      radial-gradient(ellipse 52% 46% at 92% 12%, oklch(0.74 0.10 295 / 0.16), transparent 60%),
-      radial-gradient(ellipse 48% 42% at 88% 88%, oklch(0.72 0.13 180 / 0.16), transparent 60%),
-      radial-gradient(ellipse 72% 42% at 50% 108%, oklch(0.245 0.08 260 / 0.20), transparent 60%);
+      radial-gradient(ellipse 70% 55% at 8% 8%, oklch(0.74 0.12 295 / 0.26), transparent 62%),
+      radial-gradient(ellipse 52% 46% at 92% 12%, oklch(0.66 0.16 290 / 0.20), transparent 60%),
+      radial-gradient(ellipse 48% 42% at 88% 88%, oklch(0.80 0.10 295 / 0.18), transparent 60%),
+      radial-gradient(ellipse 72% 42% at 50% 108%, oklch(0.34 0.13 290 / 0.22), transparent 60%);
   }
   .text-balance { text-wrap: balance; }
   .text-gold { color: var(--gold); }
