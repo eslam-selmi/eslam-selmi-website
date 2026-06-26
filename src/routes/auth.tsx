@@ -102,13 +102,13 @@ function AuthPage() {
           }
           let customId = dupCustom?.id;
           if (!customId) {
-            const { data: inserted, error: insErr } = await supabase
-              .from("custom_countries")
-              .insert({ name_ar: nm, name_en: nm, normalized: norm })
-              .select("id")
-              .single();
-            if (insErr) throw new Error("تعذّر إضافة الدولة: " + insErr.message);
-            customId = inserted?.id;
+            try {
+              const { proposeCustomCountry } = await import("@/lib/custom-countries.functions");
+              const inserted = await proposeCustomCountry({ data: { name_ar: nm, name_en: nm } });
+              customId = inserted?.id;
+            } catch (err: any) {
+              throw new Error("تعذّر إضافة الدولة: " + (err?.message || "خطأ غير معروف"));
+            }
             // Refresh local list
             setCustomCountries((prev) => [...prev, { id: customId!, name_ar: nm, name_en: nm, dial: null, flag: null }]);
           }
