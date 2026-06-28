@@ -1437,7 +1437,7 @@ export function Nav({
                     >
                       <Calendar className="size-3.5" />
                     </span>
-                    <span className="flex-1 text-start">{t("nav_manage_booking")}</span>
+                    <span className="flex-1 text-start">{signedIn ? t("nav_manage_booking") : t("nav_book_consult")}</span>
                     <ArrowRight className="size-4 rtl-flip opacity-70" />
                   </button>
                 );
