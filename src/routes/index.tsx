@@ -288,24 +288,18 @@ const NAV: { id: string; key: string; to?: string; highlight?: boolean; action?:
   { id: "current-courses", key: "nav_courses" },
   { id: "success-cases", key: "nav_success_cases", to: "/success-cases" },
   { id: "library", key: "nav_library", to: "/library" },
-  { id: "book", key: "nav_book", action: "book", highlight: true },
   { id: "contact", key: "nav_contact" },
+  { id: "book", key: "nav_book", action: "book", highlight: true },
 ];
+// Mobile menu mirrors the desktop top-bar exactly (same labels, same order).
 const NAV_FULL: { id: string; key: string; to?: string; highlight?: boolean; action?: "book" }[] = [
-  { id: "home", key: "nav_home" },
-
-  { id: "pillars", key: "nav_pillars" },
-  { id: "journey", key: "nav_journey" },
   { id: "services", key: "nav_services" },
-  { id: "programs", key: "nav_programs" },
-  { id: "empowerment", key: "nav_empowerment", to: "/graduates" },
   { id: "current-courses", key: "nav_courses" },
   { id: "success-cases", key: "nav_success_cases", to: "/success-cases" },
   { id: "library", key: "nav_library", to: "/library" },
-  { id: "clients", key: "nav_clients" },
-  { id: "snapshots", key: "nav_snapshots" },
-  { id: "book", key: "nav_book", action: "book", highlight: true },
   { id: "contact", key: "nav_contact" },
+  { id: "book", key: "nav_book", action: "book", highlight: true },
+  { id: "empowerment", key: "nav_empowerment", to: "/graduates" },
 ];
 
 
@@ -792,8 +786,8 @@ export function CalendlyDialog() {
               </div>
               <div className="text-[12px] text-muted-foreground mt-1 leading-relaxed">
                 {tx(
-                  "جلسة شخصية مع إسلام سلمي — استراتيجية واضحة وخطوات عملية لمشروعك.",
-                  "A personal session with Eslam Selmi — clear strategy and actionable steps for your project.",
+                  "استشارة متخصصة في إدارة المواهب وتطوير القدرات — رؤية واضحة وحلول عملية لفريقك.",
+                  "A specialized consultation in talent management and capability development — clear insights and practical solutions for your team.",
                 )}
               </div>
               <div className="mt-3 flex flex-wrap gap-1.5">
