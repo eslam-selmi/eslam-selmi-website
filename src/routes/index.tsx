@@ -1189,7 +1189,7 @@ export function Nav({
             <BrandMark />
           </Link>
           <nav className="hidden xl:flex items-center gap-0.5">
-            {NAV.filter((n) => n.action !== "book" || signedIn).map((n) => {
+            {NAV.map((n) => {
               const baseCls =
                 "px-2.5 py-1.5 text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-foreground/5";
               const highlightCls =
