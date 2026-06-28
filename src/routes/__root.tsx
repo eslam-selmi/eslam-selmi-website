@@ -146,6 +146,7 @@ function RootComponent() {
             <main>
               <MaintenanceGate>
                 <Outlet />
+                <SitePopup />
               </MaintenanceGate>
             </main>
             <Toaster position="top-center" richColors />
