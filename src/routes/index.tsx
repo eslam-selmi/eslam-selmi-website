@@ -3877,19 +3877,7 @@ function Section({
 
 /* ---------- WHATSAPP FLOAT ---------- */
 export function WhatsAppFloat() {
-  const { t, dir } = useI18n();
-  return (
-    <a
-      href={WHATSAPP}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={t("book_cta")}
-      className={`fixed bottom-5 ${dir === "rtl" ? "left-5" : "right-5"} z-40 inline-flex items-center gap-2 rounded-full bg-primary hover:opacity-90 text-primary-foreground px-4 py-3 font-semibold shadow-[0_10px_40px_-10px_var(--foreground)] transition`}
-    >
-      <MessageCircle className="size-5" />
-      <span className="hidden sm:inline">{t("book_cta")}</span>
-    </a>
-  );
+  return null;
 }
 
 /* ---------- ASK SELMI FLOATING (removed — kept as no-op for backward compat) ---------- */
