@@ -302,9 +302,9 @@ const NAV_FULL: { id: string; key: string; to?: string; highlight?: boolean; act
   { id: "current-courses", key: "nav_courses" },
   { id: "success-cases", key: "nav_success_cases", to: "/success-cases" },
   { id: "library", key: "nav_library", to: "/library" },
-  { id: "book", key: "nav_book", action: "book", highlight: true },
   { id: "clients", key: "nav_clients" },
   { id: "snapshots", key: "nav_snapshots" },
+  { id: "book", key: "nav_book", action: "book", highlight: true },
   { id: "contact", key: "nav_contact" },
 ];
 
