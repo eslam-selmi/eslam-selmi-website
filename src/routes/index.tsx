@@ -1205,7 +1205,7 @@ export function Nav({
                 return (
                   <button key={n.id} type="button" onClick={openCalendly} className={highlightCls} style={highlightStyle}>
                     <Calendar className="size-3.5" />
-                    {t("nav_manage_booking")}
+                    {signedIn ? t("nav_manage_booking") : t("nav_book_consult")}
                   </button>
                 );
               }
