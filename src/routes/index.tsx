@@ -786,8 +786,8 @@ export function CalendlyDialog() {
               </div>
               <div className="text-[12px] text-muted-foreground mt-1 leading-relaxed">
                 {tx(
-                  "جلسة شخصية مع إسلام سلمي — استراتيجية واضحة وخطوات عملية لمشروعك.",
-                  "A personal session with Eslam Selmi — clear strategy and actionable steps for your project.",
+                  "استشارة متخصصة في إدارة المواهب وتطوير القدرات — رؤية واضحة وحلول عملية لفريقك.",
+                  "A specialized consultation in talent management and capability development — clear insights and practical solutions for your team.",
                 )}
               </div>
               <div className="mt-3 flex flex-wrap gap-1.5">
