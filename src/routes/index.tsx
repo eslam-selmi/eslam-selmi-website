@@ -1409,7 +1409,7 @@ export function Nav({
         </div>
         {open && (
           <div className="xl:hidden mt-2 glass-strong rounded-2xl p-3 grid gap-1">
-            {NAV_FULL.filter((n) => n.action !== "book" || signedIn).map((n) => {
+            {NAV_FULL.map((n) => {
               if (n.action === "book") {
                 return (
                   <button
