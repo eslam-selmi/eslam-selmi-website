@@ -302,9 +302,9 @@ const NAV_FULL: { id: string; key: string; to?: string; highlight?: boolean; act
   { id: "current-courses", key: "nav_courses" },
   { id: "success-cases", key: "nav_success_cases", to: "/success-cases" },
   { id: "library", key: "nav_library", to: "/library" },
-  { id: "book", key: "nav_book", action: "book", highlight: true },
   { id: "clients", key: "nav_clients" },
   { id: "snapshots", key: "nav_snapshots" },
+  { id: "book", key: "nav_book", action: "book", highlight: true },
   { id: "contact", key: "nav_contact" },
 ];
 
@@ -625,7 +625,7 @@ function Portfolio() {
       
       <ScrollTop />
       <CalendlyDialog />
-      <SitePopup />
+      
     </div>
     </MotionConfig>
   );
@@ -1189,7 +1189,7 @@ export function Nav({
             <BrandMark />
           </Link>
           <nav className="hidden xl:flex items-center gap-0.5">
-            {NAV.filter((n) => n.action !== "book" || signedIn).map((n) => {
+            {NAV.map((n) => {
               const baseCls =
                 "px-2.5 py-1.5 text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-foreground/5";
               const highlightCls =
@@ -1205,7 +1205,7 @@ export function Nav({
                 return (
                   <button key={n.id} type="button" onClick={openCalendly} className={highlightCls} style={highlightStyle}>
                     <Calendar className="size-3.5" />
-                    {t("nav_manage_booking")}
+                    {signedIn ? t("nav_manage_booking") : t("nav_book_consult")}
                   </button>
                 );
               }
@@ -1402,14 +1402,6 @@ export function Nav({
               </AnimatePresence>
             </div>
 
-            {signedIn && (
-              <button
-                onClick={openCalendly}
-                className="hidden md:inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-4 py-2 text-sm font-bold hover:opacity-90 transition cursor-pointer"
-              >
-                <Calendar className="size-4" /> {t("manage_booking_cta")}
-              </button>
-            )}
             <button className="xl:hidden p-2" onClick={() => setOpen((v) => !v)} aria-label="Menu">
               {open ? <X className="size-5" /> : <Menu className="size-5" />}
             </button>
@@ -1417,7 +1409,7 @@ export function Nav({
         </div>
         {open && (
           <div className="xl:hidden mt-2 glass-strong rounded-2xl p-3 grid gap-1">
-            {NAV_FULL.filter((n) => n.action !== "book" || signedIn).map((n) => {
+            {NAV_FULL.map((n) => {
               if (n.action === "book") {
                 return (
                   <button
@@ -1445,7 +1437,7 @@ export function Nav({
                     >
                       <Calendar className="size-3.5" />
                     </span>
-                    <span className="flex-1 text-start">{t("nav_manage_booking")}</span>
+                    <span className="flex-1 text-start">{signedIn ? t("nav_manage_booking") : t("nav_book_consult")}</span>
                     <ArrowRight className="size-4 rtl-flip opacity-70" />
                   </button>
                 );
@@ -3885,19 +3877,7 @@ function Section({
 
 /* ---------- WHATSAPP FLOAT ---------- */
 export function WhatsAppFloat() {
-  const { t, dir } = useI18n();
-  return (
-    <a
-      href={WHATSAPP}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={t("book_cta")}
-      className={`fixed bottom-5 ${dir === "rtl" ? "left-5" : "right-5"} z-40 inline-flex items-center gap-2 rounded-full bg-primary hover:opacity-90 text-primary-foreground px-4 py-3 font-semibold shadow-[0_10px_40px_-10px_var(--foreground)] transition`}
-    >
-      <MessageCircle className="size-5" />
-      <span className="hidden sm:inline">{t("book_cta")}</span>
-    </a>
-  );
+  return null;
 }
 
 /* ---------- ASK SELMI FLOATING (removed — kept as no-op for backward compat) ---------- */

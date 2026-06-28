@@ -15,6 +15,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { MotionConfig } from "motion/react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { MaintenanceGate } from "@/components/MaintenanceGate";
+import { SitePopup } from "@/components/SitePopup";
 
 function NotFoundComponent() {
   return (
@@ -145,6 +146,7 @@ function RootComponent() {
             <main>
               <MaintenanceGate>
                 <Outlet />
+                <SitePopup />
               </MaintenanceGate>
             </main>
             <Toaster position="top-center" richColors />
