@@ -4262,7 +4262,7 @@ function Interviews() {
   if (!loading && rows.length === 0) return null;
 
   return (
-    <Section id="interviews">
+    <Section id="interviews" eyebrow="">
       <div className="max-w-7xl mx-auto px-4 sm:px-5" dir={dir}>
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-accent/90">
