@@ -672,6 +672,48 @@ export type Database = {
           },
         ]
       }
+      interviews: {
+        Row: {
+          cover_url: string | null
+          created_at: string
+          description_ar: string | null
+          description_en: string | null
+          id: string
+          is_published: boolean
+          resource_url: string
+          sort_order: number
+          title_ar: string
+          title_en: string | null
+          updated_at: string
+        }
+        Insert: {
+          cover_url?: string | null
+          created_at?: string
+          description_ar?: string | null
+          description_en?: string | null
+          id?: string
+          is_published?: boolean
+          resource_url: string
+          sort_order?: number
+          title_ar: string
+          title_en?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cover_url?: string | null
+          created_at?: string
+          description_ar?: string | null
+          description_en?: string | null
+          id?: string
+          is_published?: boolean
+          resource_url?: string
+          sort_order?: number
+          title_ar?: string
+          title_en?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       latest_additions: {
         Row: {
           created_at: string
