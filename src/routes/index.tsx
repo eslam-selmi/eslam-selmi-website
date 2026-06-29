@@ -4219,3 +4219,135 @@ export function EmpowermentTools() {
   );
 }
 
+// ============================================================================
+// Interviews — public showcase grid, opens resources inside the site
+// ============================================================================
+type InterviewRow = {
+  id: string;
+  title_ar: string;
+  title_en: string | null;
+  description_ar: string | null;
+  description_en: string | null;
+  cover_url: string | null;
+  resource_url: string;
+};
+
+function Interviews() {
+  const { lang, dir } = useI18n();
+  const isAr = lang === "ar";
+  const tt = (a: string, b: string) => (isAr ? a : b);
+  const [rows, setRows] = useState<InterviewRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [active, setActive] = useState<InterviewRow | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("interviews")
+        .select("id,title_ar,title_en,description_ar,description_en,cover_url,resource_url")
+        .eq("is_published", true)
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: false });
+      if (!cancelled) {
+        setRows((data as InterviewRow[]) ?? []);
+        setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (!loading && rows.length === 0) return null;
+
+  return (
+    <Section id="interviews">
+      <div className="max-w-7xl mx-auto px-4 sm:px-5" dir={dir}>
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-accent/90">
+            <Video className="w-4 h-4" />
+            {tt("مقابلات وموارد", "Interviews & resources")}
+          </div>
+          <h2 className="mt-3 text-3xl sm:text-4xl font-extrabold tracking-tight">
+            {tt("ظهور إعلامي ومحتوى مختار", "Featured appearances & curated content")}
+          </h2>
+          <p className="mt-3 text-foreground/65 max-w-2xl mx-auto text-sm sm:text-base">
+            {tt(
+              "مقابلات، ورش، ومقاطع مختارة — يمكنك مشاهدتها هنا داخل الموقع مباشرة.",
+              "Interviews, talks, and selected pieces — watch them right here, without leaving the site.",
+            )}
+          </p>
+        </div>
+
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[0, 1, 2].map((i) => (
+              <div
+                key={i}
+                className="aspect-video rounded-2xl bg-foreground/[0.04] animate-pulse"
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {rows.map((r) => {
+              const title = isAr ? r.title_ar : r.title_en || r.title_ar;
+              const desc = isAr ? r.description_ar : r.description_en || r.description_ar;
+              return (
+                <button
+                  key={r.id}
+                  type="button"
+                  onClick={() => setActive(r)}
+                  className="group text-start relative overflow-hidden rounded-2xl border border-foreground/10 bg-foreground/[0.03] hover:border-accent/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_60px_-30px_var(--accent)]"
+                >
+                  <div className="relative aspect-video overflow-hidden bg-foreground/[0.05]">
+                    {r.cover_url ? (
+                      <img
+                        src={r.cover_url}
+                        alt={title}
+                        loading="lazy"
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 grid place-items-center text-foreground/30">
+                        <Video className="w-10 h-10" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-transparent" />
+                    <div className="absolute inset-0 grid place-items-center opacity-90 group-hover:opacity-100 transition">
+                      <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-white/15 backdrop-blur-md border border-white/30 group-hover:scale-110 transition">
+                        <PlayCircle className="w-8 h-8 text-white" />
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-5 space-y-2">
+                    <h3 className="font-bold text-base sm:text-lg leading-snug line-clamp-2">
+                      {title}
+                    </h3>
+                    {desc && (
+                      <p className="text-sm text-foreground/65 line-clamp-2">{desc}</p>
+                    )}
+                    <div className="pt-1 inline-flex items-center gap-1.5 text-xs font-semibold text-accent">
+                      <PlayCircle className="w-4 h-4" />
+                      {tt("شاهد الآن", "Watch now")}
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        <UniversalEmbedModal
+          open={!!active}
+          onOpenChange={(v) => !v && setActive(null)}
+          url={active?.resource_url || ""}
+          title={active ? (isAr ? active.title_ar : active.title_en || active.title_ar) : undefined}
+        />
+      </div>
+    </Section>
+  );
+}
+
+
