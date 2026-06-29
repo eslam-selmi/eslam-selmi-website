@@ -54,6 +54,7 @@ import {
   MessageSquare,
   Check,
   Video,
+  PlayCircle,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -62,6 +63,7 @@ import { useTheme } from "@/lib/theme";
 import { LatestAdditionsSection } from "@/components/LatestAdditions";
 import { useSiteContent } from "@/lib/site-content";
 import { SitePopup } from "@/components/SitePopup";
+import { UniversalEmbedModal } from "@/components/UniversalEmbedModal";
 import {
   COUNTRIES as PHONE_COUNTRIES,
   findCountry as findDialCountry,
