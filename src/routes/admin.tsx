@@ -43,6 +43,7 @@ import { SiteManagementPanel } from "@/components/admin/SiteManagementPanel";
 import { SuccessCasesPanel } from "@/components/admin/SuccessCasesPanel";
 import { BookingsPanel } from "@/components/admin/BookingsPanel";
 import { InterviewsPanel } from "@/components/admin/InterviewsPanel";
+import { TrainingsPanel } from "@/components/admin/TrainingsPanel";
 
 
 type AdminSearch = {
