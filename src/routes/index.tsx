@@ -64,6 +64,7 @@ import { LatestAdditionsSection } from "@/components/LatestAdditions";
 import { useSiteContent } from "@/lib/site-content";
 import { SitePopup } from "@/components/SitePopup";
 import { UniversalEmbedModal } from "@/components/UniversalEmbedModal";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
   COUNTRIES as PHONE_COUNTRIES,
   findCountry as findDialCountry,
