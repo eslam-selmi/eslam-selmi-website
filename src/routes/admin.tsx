@@ -43,6 +43,7 @@ import { SiteManagementPanel } from "@/components/admin/SiteManagementPanel";
 import { SuccessCasesPanel } from "@/components/admin/SuccessCasesPanel";
 import { BookingsPanel } from "@/components/admin/BookingsPanel";
 import { InterviewsPanel } from "@/components/admin/InterviewsPanel";
+import { TrainingsPanel } from "@/components/admin/TrainingsPanel";
 
 
 type AdminSearch = {
@@ -61,7 +62,8 @@ type AdminSearch = {
     | "testimonials"
     | "success_cases"
     | "bookings"
-    | "interviews";
+    | "interviews"
+    | "trainings";
 
   drawer?: string;
   editCourse?: string;
@@ -157,6 +159,7 @@ function AdminPage() {
     | "success_cases"
     | "bookings"
     | "interviews"
+    | "trainings"
   >(search.tab || "enrollments");
 
   const tab = tabState;
@@ -344,6 +347,7 @@ function AdminPage() {
             { id: "success_cases", label: t("حالات النجاح", "Success Cases") },
             { id: "bookings", label: t("حجوزات الاستشارات", "Bookings") },
             { id: "interviews", label: t("المقابلات", "Interviews") },
+            { id: "trainings", label: t("التدريبات", "Trainings") },
 
 
             { id: "site", label: t("إدارة الموقع", "Site management") },
@@ -399,6 +403,8 @@ function AdminPage() {
           <BookingsPanel />
         ) : tab === "interviews" ? (
           <InterviewsPanel />
+        ) : tab === "trainings" ? (
+          <TrainingsPanel />
         ) : tab === "site" ? (
           <SiteManagementPanel />
 
