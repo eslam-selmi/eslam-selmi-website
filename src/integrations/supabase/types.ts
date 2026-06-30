@@ -1351,6 +1351,78 @@ export type Database = {
         }
         Relationships: []
       }
+      trainings: {
+        Row: {
+          challenge_ar: string | null
+          challenge_en: string | null
+          cover_url: string | null
+          created_at: string
+          gallery: Json
+          id: string
+          is_featured: boolean
+          is_published: boolean
+          period_ar: string | null
+          period_en: string | null
+          result_ar: string | null
+          result_en: string | null
+          role_ar: string | null
+          role_en: string | null
+          solution_ar: string | null
+          solution_en: string | null
+          sort_order: number
+          tags: string[]
+          title_ar: string
+          title_en: string | null
+          updated_at: string
+        }
+        Insert: {
+          challenge_ar?: string | null
+          challenge_en?: string | null
+          cover_url?: string | null
+          created_at?: string
+          gallery?: Json
+          id?: string
+          is_featured?: boolean
+          is_published?: boolean
+          period_ar?: string | null
+          period_en?: string | null
+          result_ar?: string | null
+          result_en?: string | null
+          role_ar?: string | null
+          role_en?: string | null
+          solution_ar?: string | null
+          solution_en?: string | null
+          sort_order?: number
+          tags?: string[]
+          title_ar: string
+          title_en?: string | null
+          updated_at?: string
+        }
+        Update: {
+          challenge_ar?: string | null
+          challenge_en?: string | null
+          cover_url?: string | null
+          created_at?: string
+          gallery?: Json
+          id?: string
+          is_featured?: boolean
+          is_published?: boolean
+          period_ar?: string | null
+          period_en?: string | null
+          result_ar?: string | null
+          result_en?: string | null
+          role_ar?: string | null
+          role_en?: string | null
+          solution_ar?: string | null
+          solution_en?: string | null
+          sort_order?: number
+          tags?: string[]
+          title_ar?: string
+          title_en?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
