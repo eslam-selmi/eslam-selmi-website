@@ -159,6 +159,7 @@ function AdminPage() {
     | "success_cases"
     | "bookings"
     | "interviews"
+    | "trainings"
   >(search.tab || "enrollments");
 
   const tab = tabState;
