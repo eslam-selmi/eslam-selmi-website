@@ -403,6 +403,8 @@ function AdminPage() {
           <BookingsPanel />
         ) : tab === "interviews" ? (
           <InterviewsPanel />
+        ) : tab === "trainings" ? (
+          <TrainingsPanel />
         ) : tab === "site" ? (
           <SiteManagementPanel />
 
