@@ -652,6 +652,7 @@ export function CalendlyDialog() {
   const [topic, setTopic] = useState("");
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState<string | null>(null);
+  const [cooldownUntil, setCooldownUntil] = useState<string | null>(null);
 
   useEffect(() => {
     const handler = () => setOpen(true);
