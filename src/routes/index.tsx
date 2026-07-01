@@ -903,6 +903,56 @@ export function CalendlyDialog() {
                 {tx("تم", "Done")}
               </button>
             </div>
+          ) : cooldownUntil ? (
+            <div
+              className="rounded-3xl p-8 text-center space-y-4 relative overflow-hidden"
+              style={{
+                background: "color-mix(in oklab, var(--gold) 10%, var(--card))",
+                border: "1px solid color-mix(in oklab, var(--gold) 35%, transparent)",
+              }}
+            >
+              <div
+                className="size-16 mx-auto rounded-full grid place-items-center shadow-xl"
+                style={{
+                  background: "linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 55%, var(--accent)))",
+                  color: "var(--accent-foreground)",
+                }}
+              >
+                <Clock className="size-8" />
+              </div>
+              <div className="font-display font-extrabold text-lg">
+                {tx("لقد حجزت استشارة بالفعل خلال الـ ٢٤ ساعة الماضية", "You've already booked a consultation within the last 24 hours")}
+              </div>
+              <div className="text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed">
+                {tx(
+                  "نلتزم بمنح كل عميل الاهتمام الكامل. يمكنك حجز استشارة أخرى بعد:",
+                  "We give every client our full attention. You can book another consultation after:",
+                )}
+              </div>
+              <div
+                className="inline-block px-5 py-2 rounded-xl text-sm font-bold"
+                style={{
+                  background: "color-mix(in oklab, var(--gold) 20%, transparent)",
+                  color: "var(--accent)",
+                }}
+              >
+                {new Date(cooldownUntil).toLocaleString(isAr ? "ar-EG" : "en-US", {
+                  weekday: "short", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit",
+                })}
+              </div>
+              <div className="pt-2">
+                <button
+                  onClick={() => setOpen(false)}
+                  className="px-6 h-11 rounded-xl text-sm font-bold shadow-lg hover:scale-[1.02] active:scale-[0.98] transition"
+                  style={{
+                    background: "linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 55%, var(--accent)))",
+                    color: "var(--accent-foreground)",
+                  }}
+                >
+                  {tx("حسناً", "Got it")}
+                </button>
+              </div>
+            </div>
           ) : (
             <>
               {!user && (
