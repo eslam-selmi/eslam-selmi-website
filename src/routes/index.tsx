@@ -727,12 +727,24 @@ export function CalendlyDialog() {
         booker_name: name.trim().slice(0, 120),
         booker_phone: phone.trim().slice(0, 30),
         topic: topic.trim().slice(0, 500) || null,
+        booked_at: new Date().toISOString(),
       })
       .eq("id", selectedId)
       .is("booked_by", null);
     setBusy(false);
     if (error) {
-      toast.error(tx("تعذّر الحجز — قد يكون الموعد حُجز للتو", "Could not book — slot may be taken"));
+      const msg = (error.message || "") + " " + ((error as any).details || "") + " " + ((error as any).hint || "");
+      if (msg.includes("BOOKING_COOLDOWN_24H") || msg.toLowerCase().includes("cooldown")) {
+        toast.error(
+          tx(
+            "لا يمكن حجز أكثر من استشارة واحدة خلال ٢٤ ساعة. يسعدنا لقاؤك في الجلسة القادمة 🙏",
+            "Only one free consultation per 24 hours. We look forward to your upcoming session 🙏",
+          ),
+          { duration: 6000 },
+        );
+      } else {
+        toast.error(tx("تعذّر الحجز — قد يكون الموعد حُجز للتو", "Could not book — slot may be taken"));
+      }
       refresh();
       return;
     }
