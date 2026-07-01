@@ -676,6 +676,7 @@ export function CalendlyDialog() {
     if (!open) return;
     setDone(null);
     setSelectedId(null);
+    setCooldownUntil(null);
     refresh();
     supabase.auth.getUser().then(({ data }) => {
       if (data.user) {
@@ -688,6 +689,22 @@ export function CalendlyDialog() {
           .then(({ data: p }) => {
             if (p?.full_name && !name) setName(p.full_name);
             if (p?.phone && !phone) setPhone(p.phone);
+          });
+        // Preflight cooldown check: any booking by this user in the last 24h?
+        const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+        supabase
+          .from("consultation_slots")
+          .select("booked_at,starts_at")
+          .eq("booked_by", data.user.id)
+          .gte("booked_at", since)
+          .order("booked_at", { ascending: false })
+          .limit(1)
+          .then(({ data: recent }) => {
+            const r = recent?.[0];
+            if (r?.booked_at) {
+              const until = new Date(new Date(r.booked_at).getTime() + 24 * 60 * 60 * 1000);
+              setCooldownUntil(until.toISOString());
+            }
           });
       } else {
         setUser(null);
