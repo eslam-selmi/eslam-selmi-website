@@ -652,6 +652,7 @@ export function CalendlyDialog() {
   const [topic, setTopic] = useState("");
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState<string | null>(null);
+  const [cooldownUntil, setCooldownUntil] = useState<string | null>(null);
 
   useEffect(() => {
     const handler = () => setOpen(true);
@@ -675,6 +676,7 @@ export function CalendlyDialog() {
     if (!open) return;
     setDone(null);
     setSelectedId(null);
+    setCooldownUntil(null);
     refresh();
     supabase.auth.getUser().then(({ data }) => {
       if (data.user) {
@@ -687,6 +689,22 @@ export function CalendlyDialog() {
           .then(({ data: p }) => {
             if (p?.full_name && !name) setName(p.full_name);
             if (p?.phone && !phone) setPhone(p.phone);
+          });
+        // Preflight cooldown check: any booking by this user in the last 24h?
+        const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+        supabase
+          .from("consultation_slots")
+          .select("booked_at,starts_at")
+          .eq("booked_by", data.user.id)
+          .gte("booked_at", since)
+          .order("booked_at", { ascending: false })
+          .limit(1)
+          .then(({ data: recent }) => {
+            const r = recent?.[0];
+            if (r?.booked_at) {
+              const until = new Date(new Date(r.booked_at).getTime() + 24 * 60 * 60 * 1000);
+              setCooldownUntil(until.toISOString());
+            }
           });
       } else {
         setUser(null);
@@ -727,12 +745,24 @@ export function CalendlyDialog() {
         booker_name: name.trim().slice(0, 120),
         booker_phone: phone.trim().slice(0, 30),
         topic: topic.trim().slice(0, 500) || null,
+        booked_at: new Date().toISOString(),
       })
       .eq("id", selectedId)
       .is("booked_by", null);
     setBusy(false);
     if (error) {
-      toast.error(tx("تعذّر الحجز — قد يكون الموعد حُجز للتو", "Could not book — slot may be taken"));
+      const msg = (error.message || "") + " " + ((error as any).details || "") + " " + ((error as any).hint || "");
+      if (msg.includes("BOOKING_COOLDOWN_24H") || msg.toLowerCase().includes("cooldown")) {
+        toast.error(
+          tx(
+            "لا يمكن حجز أكثر من استشارة واحدة خلال ٢٤ ساعة. يسعدنا لقاؤك في الجلسة القادمة 🙏",
+            "Only one free consultation per 24 hours. We look forward to your upcoming session 🙏",
+          ),
+          { duration: 6000 },
+        );
+      } else {
+        toast.error(tx("تعذّر الحجز — قد يكون الموعد حُجز للتو", "Could not book — slot may be taken"));
+      }
       refresh();
       return;
     }
@@ -872,6 +902,56 @@ export function CalendlyDialog() {
               >
                 {tx("تم", "Done")}
               </button>
+            </div>
+          ) : cooldownUntil ? (
+            <div
+              className="rounded-3xl p-8 text-center space-y-4 relative overflow-hidden"
+              style={{
+                background: "color-mix(in oklab, var(--gold) 10%, var(--card))",
+                border: "1px solid color-mix(in oklab, var(--gold) 35%, transparent)",
+              }}
+            >
+              <div
+                className="size-16 mx-auto rounded-full grid place-items-center shadow-xl"
+                style={{
+                  background: "linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 55%, var(--accent)))",
+                  color: "var(--accent-foreground)",
+                }}
+              >
+                <Clock className="size-8" />
+              </div>
+              <div className="font-display font-extrabold text-lg">
+                {tx("لقد حجزت استشارة بالفعل خلال الـ ٢٤ ساعة الماضية", "You've already booked a consultation within the last 24 hours")}
+              </div>
+              <div className="text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed">
+                {tx(
+                  "نلتزم بمنح كل عميل الاهتمام الكامل. يمكنك حجز استشارة أخرى بعد:",
+                  "We give every client our full attention. You can book another consultation after:",
+                )}
+              </div>
+              <div
+                className="inline-block px-5 py-2 rounded-xl text-sm font-bold"
+                style={{
+                  background: "color-mix(in oklab, var(--gold) 20%, transparent)",
+                  color: "var(--accent)",
+                }}
+              >
+                {new Date(cooldownUntil).toLocaleString(isAr ? "ar-EG" : "en-US", {
+                  weekday: "short", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit",
+                })}
+              </div>
+              <div className="pt-2">
+                <button
+                  onClick={() => setOpen(false)}
+                  className="px-6 h-11 rounded-xl text-sm font-bold shadow-lg hover:scale-[1.02] active:scale-[0.98] transition"
+                  style={{
+                    background: "linear-gradient(135deg, var(--gold), color-mix(in oklab, var(--gold) 55%, var(--accent)))",
+                    color: "var(--accent-foreground)",
+                  }}
+                >
+                  {tx("حسناً", "Got it")}
+                </button>
+              </div>
             </div>
           ) : (
             <>

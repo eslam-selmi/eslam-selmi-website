@@ -126,6 +126,7 @@ export type Database = {
           admin_notes: string | null
           booked_at: string | null
           booked_by: string | null
+          booker_email: string | null
           booker_name: string | null
           booker_phone: string | null
           created_at: string
@@ -139,6 +140,7 @@ export type Database = {
           admin_notes?: string | null
           booked_at?: string | null
           booked_by?: string | null
+          booker_email?: string | null
           booker_name?: string | null
           booker_phone?: string | null
           created_at?: string
@@ -152,6 +154,7 @@ export type Database = {
           admin_notes?: string | null
           booked_at?: string | null
           booked_by?: string | null
+          booker_email?: string | null
           booker_name?: string | null
           booker_phone?: string | null
           created_at?: string
