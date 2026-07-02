@@ -326,8 +326,10 @@ function TrainingEditor({
       toast.error(error.message);
       return null;
     }
-    const { data } = supabase.storage.from("public-uploads").getPublicUrl(path);
-    return data.publicUrl;
+    const { data: signed } = await supabase.storage
+      .from("public-uploads")
+      .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
+    return signed?.signedUrl || null;
   }
 
   async function onCover(e: React.ChangeEvent<HTMLInputElement>) {
