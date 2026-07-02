@@ -4002,8 +4002,10 @@ function AvatarUploadField({
       toast.error(error.message);
       return;
     }
-    const { data } = supabase.storage.from("public-uploads").getPublicUrl(path);
-    onChange(data.publicUrl);
+    const { data: signed } = await supabase.storage
+      .from("public-uploads")
+      .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
+    onChange(signed?.signedUrl || "");
     setBusy(false);
     toast.success(t("تم رفع الصورة", "Image uploaded"));
   }
