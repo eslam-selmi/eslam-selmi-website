@@ -349,6 +349,7 @@ function AdminPage() {
             { id: "bookings", label: t("حجوزات الاستشارات", "Bookings") },
             { id: "interviews", label: t("المقابلات", "Interviews") },
             { id: "trainings", label: t("التدريبات", "Trainings") },
+            { id: "snapshots", label: t("لحظات شكّلت المسيرة", "Career moments") },
 
 
             { id: "site", label: t("إدارة الموقع", "Site management") },
