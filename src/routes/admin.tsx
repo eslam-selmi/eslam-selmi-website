@@ -63,7 +63,8 @@ type AdminSearch = {
     | "success_cases"
     | "bookings"
     | "interviews"
-    | "trainings";
+    | "trainings"
+    | "snapshots";
 
   drawer?: string;
   editCourse?: string;
