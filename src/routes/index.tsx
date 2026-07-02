@@ -2334,7 +2334,7 @@ function Snapshots() {
       });
     return () => { alive = false; };
   }, []);
-  const shots = dbShots && dbShots.length > 0 ? dbShots : shots;
+  const shots = dbShots && dbShots.length > 0 ? dbShots : SNAPSHOTS;
   const { t, dir } = useI18n();
   const [active, setActive] = useState<number | null>(null);
 
