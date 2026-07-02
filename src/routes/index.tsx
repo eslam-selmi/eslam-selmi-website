@@ -2317,6 +2317,24 @@ function Brands() {
 
 /* ---------- SNAPSHOTS w/ LIGHTBOX ---------- */
 function Snapshots() {
+  const [dbShots, setDbShots] = useState<string[] | null>(null);
+  useEffect(() => {
+    let alive = true;
+    supabase
+      .from("snapshots" as any)
+      .select("image_url,display_order,created_at,is_visible")
+      .eq("is_visible", true)
+      .order("display_order", { ascending: true })
+      .order("created_at", { ascending: false })
+      .then(({ data }) => {
+        if (!alive) return;
+        const rows = (data as any[]) || [];
+        if (rows.length > 0) setDbShots(rows.map((r) => r.image_url).filter(Boolean));
+        else setDbShots([]);
+      });
+    return () => { alive = false; };
+  }, []);
+  const shots = dbShots && dbShots.length > 0 ? dbShots : SNAPSHOTS;
   const { t, dir } = useI18n();
   const [active, setActive] = useState<number | null>(null);
 
