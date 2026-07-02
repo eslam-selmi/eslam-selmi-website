@@ -2506,7 +2506,7 @@ function Testimonials() {
     <Section
       id="testimonials"
       eyebrow={tt("شهادات", "Testimonials")}
-      title={tt("ماذا يقول العملاء", "What Clients Say")}
+      title={tt("شهادات نعتز بها", "Testimonials We Cherish")}
     >
       {!loaded ? (
         <div className="text-center py-10 text-muted-foreground text-sm">
