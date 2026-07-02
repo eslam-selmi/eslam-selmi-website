@@ -160,6 +160,7 @@ function AdminPage() {
     | "bookings"
     | "interviews"
     | "trainings"
+    | "snapshots"
   >(search.tab || "enrollments");
 
   const tab = tabState;
