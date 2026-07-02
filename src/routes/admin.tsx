@@ -3956,6 +3956,129 @@ function TestimonialsPanel() {
   );
 }
 
+type SnapshotRow = {
+  id: string;
+  image_url: string;
+  caption_ar: string | null;
+  caption_en: string | null;
+  display_order: number;
+  is_visible: boolean;
+};
+
+function SnapshotsPanel() {
+  const { lang } = useI18n();
+  const t = (a: string, b: string) => (lang === "ar" ? a : b);
+  const [items, setItems] = useState<SnapshotRow[]>([]);
+  const [busy, setBusy] = useState(false);
+  const empty = { image_url: "", caption_ar: "", caption_en: "", display_order: 0 };
+  const [form, setForm] = useState(empty);
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+  async function load() {
+    const { data } = await supabase
+      .from("snapshots" as any)
+      .select("*")
+      .order("display_order", { ascending: true })
+      .order("created_at", { ascending: false });
+    setItems(((data as unknown) as SnapshotRow[]) ?? []);
+  }
+  useEffect(() => { load(); }, []);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!form.image_url.trim()) return toast.error(t("ارفع صورة أولاً", "Upload an image first"));
+    setBusy(true);
+    const payload = {
+      image_url: form.image_url.trim(),
+      caption_ar: form.caption_ar.trim() || null,
+      caption_en: form.caption_en.trim() || null,
+      display_order: Number(form.display_order) || 0,
+    };
+    const { error } = editingId
+      ? await supabase.from("snapshots" as any).update(payload as any).eq("id", editingId)
+      : await supabase.from("snapshots" as any).insert(payload as any);
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    toast.success(editingId ? t("تم التحديث", "Updated") : t("تمت الإضافة", "Added"));
+    setForm(empty); setEditingId(null); load();
+  }
+  async function toggle(it: SnapshotRow) {
+    await supabase.from("snapshots" as any).update({ is_visible: !it.is_visible } as any).eq("id", it.id);
+    load();
+  }
+  async function del(id: string) {
+    if (!confirm(t("حذف هذه اللحظة؟", "Delete this snapshot?"))) return;
+    await supabase.from("snapshots" as any).delete().eq("id", id);
+    if (editingId === id) { setEditingId(null); setForm(empty); }
+    load();
+  }
+  function edit(it: SnapshotRow) {
+    setEditingId(it.id);
+    setForm({
+      image_url: it.image_url,
+      caption_ar: it.caption_ar || "",
+      caption_en: it.caption_en || "",
+      display_order: it.display_order,
+    });
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  return (
+    <div className="space-y-6">
+      <form onSubmit={submit} className="dash-card dash-card-hover p-5 space-y-3">
+        <h3 className="font-bold flex items-center gap-2">
+          <Plus className="w-4 h-4 text-[var(--gold)]" />
+          {editingId ? t("تعديل اللحظة", "Edit snapshot") : t("إضافة لحظة", "Add snapshot")}
+        </h3>
+        <AvatarUploadField
+          label={t("الصورة", "Image")}
+          value={form.image_url}
+          onChange={(v) => setForm({ ...form, image_url: v })}
+        />
+        <div className="grid sm:grid-cols-2 gap-3">
+          <Input label={t("تعليق بالعربية", "Arabic caption")} value={form.caption_ar} onChange={(v) => setForm({ ...form, caption_ar: v })} />
+          <Input label={t("تعليق بالإنجليزية", "English caption")} value={form.caption_en} onChange={(v) => setForm({ ...form, caption_en: v })} />
+          <Input label={t("ترتيب العرض", "Display order")} value={String(form.display_order)} onChange={(v) => setForm({ ...form, display_order: Number(v) || 0 })} />
+        </div>
+        <div className="flex items-center gap-2">
+          <button disabled={busy} type="submit"
+            className="px-4 h-10 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold text-sm disabled:opacity-50">
+            {busy ? t("جارٍ الحفظ...", "Saving...") : editingId ? t("حفظ", "Save") : t("إضافة", "Add")}
+          </button>
+          {editingId && (
+            <button type="button" onClick={() => { setEditingId(null); setForm(empty); }}
+              className="px-4 h-10 rounded-lg bg-white/[0.06] border border-white/10 text-sm">
+              {t("إلغاء", "Cancel")}
+            </button>
+          )}
+        </div>
+      </form>
+
+      <div className="dash-card dash-card-hover p-5">
+        <h3 className="font-bold mb-3">{t("اللحظات الحالية", "Current snapshots")} ({items.length})</h3>
+        {items.length === 0 ? (
+          <p className="text-sm text-white/40">{t("لم تُضاف لحظات بعد.", "No snapshots yet.")}</p>
+        ) : (
+          <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {items.map((it) => (
+              <li key={it.id} className={`p-2 rounded-xl border ${editingId === it.id ? "bg-[var(--gold)]/10 border-[var(--gold)]/30" : "bg-white/[0.03] border-white/5"}`}>
+                <img src={it.image_url} alt="" className="w-full aspect-[4/5] object-cover rounded-lg border border-white/10" />
+                <p className="text-[11px] text-white/70 mt-2 line-clamp-1">{it.caption_ar || it.caption_en || "—"}</p>
+                <p className="text-[10px] text-white/40 mt-1">#{it.display_order} · {it.is_visible ? t("ظاهرة", "Visible") : t("مخفية", "Hidden")}</p>
+                <div className="flex items-center gap-1 mt-2">
+                  <button onClick={() => edit(it)} className="text-[11px] px-2 h-7 rounded-md bg-[var(--gold)]/15 border border-[var(--gold)]/30 text-[var(--gold)]">{t("تعديل", "Edit")}</button>
+                  <button onClick={() => toggle(it)} className="text-[11px] px-2 h-7 rounded-md bg-white/[0.06] border border-white/10">{it.is_visible ? t("إخفاء", "Hide") : t("إظهار", "Show")}</button>
+                  <button onClick={() => del(it.id)} className="ms-auto p-2 rounded-lg md:hover:bg-rose-500/10 text-rose-300"><Trash2 className="w-4 h-4" /></button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function AvatarUploadField({
   label,
   value,
