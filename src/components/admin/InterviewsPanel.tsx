@@ -279,8 +279,10 @@ function InterviewEditor({
       .from("public-uploads")
       .upload(path, file, { cacheControl: "31536000", upsert: false, contentType: file.type });
     if (error) return toast.error(error.message);
-    const { data } = supabase.storage.from("public-uploads").getPublicUrl(path);
-    set("cover_url", data.publicUrl);
+    const { data: signed } = await supabase.storage
+      .from("public-uploads")
+      .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
+    set("cover_url", signed?.signedUrl || "");
     toast.success(t("تم رفع الصورة", "Cover uploaded"));
   }
 
