@@ -2334,7 +2334,7 @@ function Snapshots() {
       });
     return () => { alive = false; };
   }, []);
-  const shots = dbShots && dbShots.length > 0 ? dbShots : SNAPSHOTS;
+  const shots = dbShots && dbShots.length > 0 ? dbShots : shots;
   const { t, dir } = useI18n();
   const [active, setActive] = useState<number | null>(null);
 
@@ -2343,18 +2343,18 @@ function Snapshots() {
       if (active === null) return;
       if (e.key === "Escape") setActive(null);
       if (e.key === "ArrowRight")
-        setActive((a) => (a === null ? null : (a + 1) % SNAPSHOTS.length));
+        setActive((a) => (a === null ? null : (a + 1) % shots.length));
       if (e.key === "ArrowLeft")
-        setActive((a) => (a === null ? null : (a - 1 + SNAPSHOTS.length) % SNAPSHOTS.length));
+        setActive((a) => (a === null ? null : (a - 1 + shots.length) % shots.length));
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [active]);
 
   // Split snapshots across two tracks so the rows don't show the same images
-  const half = Math.ceil(SNAPSHOTS.length / 2);
-  const setA = SNAPSHOTS.slice(0, half);
-  const setB = SNAPSHOTS.slice(half);
+  const half = Math.ceil(shots.length / 2);
+  const setA = shots.slice(0, half);
+  const setB = shots.slice(half);
   const trackA = [setA, setA, setA];
   const trackBSet = setB.slice().reverse();
   const trackB = [trackBSet, trackBSet, trackBSet];
@@ -2399,7 +2399,7 @@ function Snapshots() {
                     key={`a-${copy}-${idx}`}
                     src={src}
                     i={idx}
-                    originalIndex={SNAPSHOTS.indexOf(src)}
+                    originalIndex={shots.indexOf(src)}
                   />
                 ))}
               </div>
@@ -2418,7 +2418,7 @@ function Snapshots() {
                     key={`b-${copy}-${idx}`}
                     src={src}
                     i={idx}
-                    originalIndex={SNAPSHOTS.indexOf(src)}
+                    originalIndex={shots.indexOf(src)}
                   />
                 ))}
               </div>
@@ -2450,7 +2450,7 @@ function Snapshots() {
               key={active}
               initial={{ scale: 0.94, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              src={SNAPSHOTS[active]}
+              src={shots[active]}
               alt=""
               className="max-h-[88vh] max-w-[92vw] object-contain rounded-xl shadow-2xl"
               onClick={(e) => e.stopPropagation()}
@@ -2460,7 +2460,7 @@ function Snapshots() {
                 onClick={(e) => {
                   e.stopPropagation();
                   setActive((a) =>
-                    a === null ? null : (a - 1 + SNAPSHOTS.length) % SNAPSHOTS.length,
+                    a === null ? null : (a - 1 + shots.length) % shots.length,
                   );
                 }}
                 className="px-4 py-2 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground text-sm"
@@ -2468,12 +2468,12 @@ function Snapshots() {
                 ← Prev
               </button>
               <span className="px-4 py-2 rounded-full bg-primary-foreground/10 text-primary-foreground text-sm">
-                {active + 1} / {SNAPSHOTS.length}
+                {active + 1} / {shots.length}
               </span>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  setActive((a) => (a === null ? null : (a + 1) % SNAPSHOTS.length));
+                  setActive((a) => (a === null ? null : (a + 1) % shots.length));
                 }}
                 className="px-4 py-2 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground text-sm"
               >
