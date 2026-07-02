@@ -407,6 +407,8 @@ function AdminPage() {
           <InterviewsPanel />
         ) : tab === "trainings" ? (
           <TrainingsPanel />
+        ) : tab === "snapshots" ? (
+          <SnapshotsPanel />
         ) : tab === "site" ? (
           <SiteManagementPanel />
 
