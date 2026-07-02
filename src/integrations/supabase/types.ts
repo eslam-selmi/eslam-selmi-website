@@ -1122,6 +1122,39 @@ export type Database = {
         }
         Relationships: []
       }
+      snapshots: {
+        Row: {
+          caption_ar: string | null
+          caption_en: string | null
+          created_at: string
+          display_order: number
+          id: string
+          image_url: string
+          is_visible: boolean
+          updated_at: string
+        }
+        Insert: {
+          caption_ar?: string | null
+          caption_en?: string | null
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_url: string
+          is_visible?: boolean
+          updated_at?: string
+        }
+        Update: {
+          caption_ar?: string | null
+          caption_en?: string | null
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_url?: string
+          is_visible?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       success_cases: {
         Row: {
           challenges_ar: string | null
