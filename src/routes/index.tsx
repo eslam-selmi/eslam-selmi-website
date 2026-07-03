@@ -289,6 +289,7 @@ const waServiceLink = (serviceEn: string, lang: "en" | "ar") => {
 const NAV: { id: string; key: string; to?: string; highlight?: boolean; action?: "book" }[] = [
   { id: "services", key: "nav_services" },
   { id: "current-courses", key: "nav_courses" },
+  { id: "trainings", key: "nav_trainings", to: "/trainings" },
   { id: "success-cases", key: "nav_success_cases", to: "/success-cases" },
   { id: "library", key: "nav_library", to: "/library" },
   { id: "contact", key: "nav_contact" },
@@ -298,6 +299,7 @@ const NAV: { id: string; key: string; to?: string; highlight?: boolean; action?:
 const NAV_FULL: { id: string; key: string; to?: string; highlight?: boolean; action?: "book" }[] = [
   { id: "services", key: "nav_services" },
   { id: "current-courses", key: "nav_courses" },
+  { id: "trainings", key: "nav_trainings", to: "/trainings" },
   { id: "success-cases", key: "nav_success_cases", to: "/success-cases" },
   { id: "library", key: "nav_library", to: "/library" },
   { id: "contact", key: "nav_contact" },
