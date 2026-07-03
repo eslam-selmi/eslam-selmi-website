@@ -363,6 +363,7 @@ const ar: Dict = {
   nav_courses: "الكورسات",
   nav_library: "المصادر",
   nav_success_cases: "حالات النجاح",
+  nav_trainings: "التدريبات",
 
   nav_empowerment: "خريج جديد؟",
 
