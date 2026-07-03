@@ -166,6 +166,7 @@ const en: Dict = {
   nav_courses: "Courses",
   nav_library: "Vault",
   nav_success_cases: "Success Cases",
+  nav_trainings: "Trainings",
 
   nav_empowerment: "New Grad?",
 
