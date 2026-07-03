@@ -289,6 +289,7 @@ const waServiceLink = (serviceEn: string, lang: "en" | "ar") => {
 const NAV: { id: string; key: string; to?: string; highlight?: boolean; action?: "book" }[] = [
   { id: "services", key: "nav_services" },
   { id: "current-courses", key: "nav_courses" },
+  { id: "trainings", key: "nav_trainings", to: "/trainings" },
   { id: "success-cases", key: "nav_success_cases", to: "/success-cases" },
   { id: "library", key: "nav_library", to: "/library" },
   { id: "contact", key: "nav_contact" },
@@ -298,6 +299,7 @@ const NAV: { id: string; key: string; to?: string; highlight?: boolean; action?:
 const NAV_FULL: { id: string; key: string; to?: string; highlight?: boolean; action?: "book" }[] = [
   { id: "services", key: "nav_services" },
   { id: "current-courses", key: "nav_courses" },
+  { id: "trainings", key: "nav_trainings", to: "/trainings" },
   { id: "success-cases", key: "nav_success_cases", to: "/success-cases" },
   { id: "library", key: "nav_library", to: "/library" },
   { id: "contact", key: "nav_contact" },
@@ -614,7 +616,7 @@ function Portfolio() {
 
       {isVisible("home.podcast") && <Podcast />}
       {isVisible("home.interviews") && <Interviews />}
-      {isVisible("home.trainings") && <Trainings />}
+      {isVisible("home.trainings") && <TrainingsTeaser />}
       {isVisible("home.clients") && <Clients />}
       {isVisible("home.snapshots") && <Snapshots />}
       {isVisible("home.testimonials") && <Testimonials />}
@@ -4454,6 +4456,114 @@ function Interviews() {
 // ============================================================================
 // Trainings — bento grid of training case studies with in-page modal
 // ============================================================================
+
+// Compact teaser shown on the homepage — links to the dedicated /trainings page.
+function TrainingsTeaser() {
+  const { lang, dir } = useI18n();
+  const isAr = lang === "ar";
+  const tt = (a: string, b: string) => (isAr ? a : b);
+  const [rows, setRows] = useState<TrainingRow[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("trainings")
+        .select("id,title_ar,title_en,role_ar,role_en,cover_url,tags,is_featured")
+        .eq("is_published", true)
+        .order("is_featured", { ascending: false })
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: false })
+        .limit(3);
+      if (!cancelled) {
+        setRows(
+          ((data as any) ?? []).map((r: any) => ({
+            ...r,
+            gallery: [],
+            tags: Array.isArray(r.tags) ? r.tags : [],
+          })),
+        );
+        setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (!loading && rows.length === 0) return null;
+
+  return (
+    <Section id="trainings" eyebrow="">
+      <div className="max-w-7xl mx-auto px-4 sm:px-5" dir={dir}>
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-accent/90">
+            <GraduationCap className="w-4 h-4" />
+            {tt("التدريبات والممارسات", "Trainings & practice")}
+          </div>
+          <h2 className="mt-3 text-3xl sm:text-4xl font-extrabold tracking-tight">
+            {tt("حالات تدريبية مختارة", "Selected training case studies")}
+          </h2>
+          <p className="mt-3 text-foreground/65 max-w-2xl mx-auto text-sm sm:text-base">
+            {tt(
+              "لمحة سريعة من برامج تدريبية صمّمتها وقُدتها — استعرض القائمة الكاملة في صفحة التدريبات.",
+              "A quick glance of programs I designed and led — browse the full list on the trainings page.",
+            )}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {(loading ? [null, null, null] : rows).map((r, i) => {
+            if (!r) {
+              return (
+                <div key={i} className="aspect-[4/3] rounded-2xl bg-foreground/[0.04] animate-pulse" />
+              );
+            }
+            const title = isAr ? r.title_ar : r.title_en || r.title_ar;
+            const role = isAr ? r.role_ar : r.role_en || r.role_ar;
+            return (
+              <Link
+                key={r.id}
+                to="/trainings"
+                className="group relative overflow-hidden rounded-2xl border border-foreground/10 bg-foreground/[0.03] hover:border-accent/40 transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_22px_60px_-30px_var(--accent)] aspect-[4/3]"
+              >
+                {r.cover_url ? (
+                  <img
+                    src={r.cover_url}
+                    alt={title}
+                    loading="lazy"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] group-hover:scale-110"
+                  />
+                ) : (
+                  <div className="absolute inset-0 bg-gradient-to-br from-accent/20 via-foreground/[0.04] to-transparent" />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+                <div className="absolute inset-0 p-5 flex flex-col justify-end gap-2">
+                  <h3 className="text-white font-extrabold text-lg sm:text-xl leading-snug drop-shadow line-clamp-3">
+                    {title}
+                  </h3>
+                  {role && <div className="text-xs text-white/80 line-clamp-1">{role}</div>}
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+
+        <div className="mt-8 text-center">
+          <Link
+            to="/trainings"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-accent text-[var(--navy)] font-bold hover:opacity-90 transition"
+          >
+            {tt("استعرض كل التدريبات", "View all trainings")}
+            <ArrowRight className={`w-4 h-4 ${isAr ? "rotate-180" : ""}`} />
+          </Link>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
 type TrainingRow = {
   id: string;
   title_ar: string;

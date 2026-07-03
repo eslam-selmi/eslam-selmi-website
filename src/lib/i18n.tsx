@@ -166,6 +166,7 @@ const en: Dict = {
   nav_courses: "Courses",
   nav_library: "Vault",
   nav_success_cases: "Success Cases",
+  nav_trainings: "Trainings",
 
   nav_empowerment: "New Grad?",
 
@@ -362,6 +363,7 @@ const ar: Dict = {
   nav_courses: "الكورسات",
   nav_library: "المصادر",
   nav_success_cases: "حالات النجاح",
+  nav_trainings: "التدريبات",
 
   nav_empowerment: "خريج جديد؟",
 
