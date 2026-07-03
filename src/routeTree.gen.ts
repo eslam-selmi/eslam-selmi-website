@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TrainingsRouteImport } from './routes/trainings'
 import { Route as TrainerRouteImport } from './routes/trainer'
 import { Route as SuccessCasesRouteImport } from './routes/success-cases'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -22,6 +23,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as VerifyIdRouteImport } from './routes/verify.$id'
 import { Route as CSlugRouteImport } from './routes/c.$slug'
 
+const TrainingsRoute = TrainingsRouteImport.update({
+  id: '/trainings',
+  path: '/trainings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TrainerRoute = TrainerRouteImport.update({
   id: '/trainer',
   path: '/trainer',
@@ -94,6 +100,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/success-cases': typeof SuccessCasesRoute
   '/trainer': typeof TrainerRoute
+  '/trainings': typeof TrainingsRoute
   '/c/$slug': typeof CSlugRoute
   '/verify/$id': typeof VerifyIdRoute
 }
@@ -108,6 +115,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/success-cases': typeof SuccessCasesRoute
   '/trainer': typeof TrainerRoute
+  '/trainings': typeof TrainingsRoute
   '/c/$slug': typeof CSlugRoute
   '/verify/$id': typeof VerifyIdRoute
 }
@@ -123,6 +131,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/success-cases': typeof SuccessCasesRoute
   '/trainer': typeof TrainerRoute
+  '/trainings': typeof TrainingsRoute
   '/c/$slug': typeof CSlugRoute
   '/verify/$id': typeof VerifyIdRoute
 }
@@ -139,6 +148,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/success-cases'
     | '/trainer'
+    | '/trainings'
     | '/c/$slug'
     | '/verify/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -153,6 +163,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/success-cases'
     | '/trainer'
+    | '/trainings'
     | '/c/$slug'
     | '/verify/$id'
   id:
@@ -167,6 +178,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/success-cases'
     | '/trainer'
+    | '/trainings'
     | '/c/$slug'
     | '/verify/$id'
   fileRoutesById: FileRoutesById
@@ -182,12 +194,20 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SuccessCasesRoute: typeof SuccessCasesRoute
   TrainerRoute: typeof TrainerRoute
+  TrainingsRoute: typeof TrainingsRoute
   CSlugRoute: typeof CSlugRoute
   VerifyIdRoute: typeof VerifyIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/trainings': {
+      id: '/trainings'
+      path: '/trainings'
+      fullPath: '/trainings'
+      preLoaderRoute: typeof TrainingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/trainer': {
       id: '/trainer'
       path: '/trainer'
@@ -286,6 +306,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SuccessCasesRoute: SuccessCasesRoute,
   TrainerRoute: TrainerRoute,
+  TrainingsRoute: TrainingsRoute,
   CSlugRoute: CSlugRoute,
   VerifyIdRoute: VerifyIdRoute,
 }
