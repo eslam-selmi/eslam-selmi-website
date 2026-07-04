@@ -1,7 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
+import { useTheme } from "@/lib/theme";
+import { Nav, Footer, type ThemeMode } from "@/routes/index";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
   GraduationCap,
@@ -9,8 +11,9 @@ import {
   Lightbulb,
   TrendingUp,
   Award,
-  ArrowLeft,
+  Sparkles,
 } from "lucide-react";
+
 
 export const Route = createFileRoute("/trainings")({
   head: () => ({
