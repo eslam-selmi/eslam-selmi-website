@@ -4366,21 +4366,7 @@ function Interviews() {
   return (
     <Section id="interviews" eyebrow="">
       <div className="max-w-7xl mx-auto px-4 sm:px-5" dir={dir}>
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-accent/90">
-            <Video className="w-4 h-4" />
-            {tt("مقابلات وموارد", "Interviews & resources")}
-          </div>
-          <h2 className="mt-3 text-3xl sm:text-4xl font-extrabold tracking-tight">
-            {tt("ظهور إعلامي ومحتوى مختار", "Featured appearances & curated content")}
-          </h2>
-          <p className="mt-3 text-foreground/65 max-w-2xl mx-auto text-sm sm:text-base">
-            {tt(
-              "مقابلات، ورش، ومقاطع مختارة — يمكنك مشاهدتها هنا داخل الموقع مباشرة.",
-              "Interviews, talks, and selected pieces — watch them right here, without leaving the site.",
-            )}
-          </p>
-        </div>
+
 
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
