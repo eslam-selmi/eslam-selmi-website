@@ -224,6 +224,7 @@ function TrainingsPage() {
 
         <TrainingModal training={active} onClose={() => setActive(null)} />
       </div>
+      <Footer />
     </main>
   );
 }
