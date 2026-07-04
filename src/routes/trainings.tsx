@@ -1,7 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
+import { useTheme } from "@/lib/theme";
+import { Nav, Footer, type ThemeMode } from "@/routes/index";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
   GraduationCap,
@@ -9,8 +11,9 @@ import {
   Lightbulb,
   TrendingUp,
   Award,
-  ArrowLeft,
+  Sparkles,
 } from "lucide-react";
+
 
 export const Route = createFileRoute("/trainings")({
   head: () => ({
@@ -57,6 +60,7 @@ function TrainingsPage() {
   const { lang, dir } = useI18n();
   const isAr = lang === "ar";
   const tt = (a: string, b: string) => (isAr ? a : b);
+  const { theme, toggle } = useTheme();
   const [rows, setRows] = useState<TrainingRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [active, setActive] = useState<TrainingRow | null>(null);
@@ -89,31 +93,68 @@ function TrainingsPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-background" dir={dir}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-24 pb-16">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-1.5 text-sm text-foreground/60 hover:text-accent transition mb-6"
-        >
-          <ArrowLeft className={`w-4 h-4 ${isAr ? "rotate-180" : ""}`} />
-          {tt("العودة للرئيسية", "Back to home")}
-        </Link>
+    <main className="min-h-screen bg-background text-foreground" dir={dir}>
+      <Nav theme={theme as ThemeMode} onThemeToggle={toggle} />
 
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-accent/90">
-            <GraduationCap className="w-4 h-4" />
-            {tt("التدريبات والممارسات", "Trainings & practice")}
+      {/* Hero */}
+      <section className="relative overflow-hidden border-b border-foreground/10">
+        <div
+          className="absolute inset-0 -z-10 opacity-90"
+          style={{
+            background:
+              "radial-gradient(60% 80% at 20% 0%, color-mix(in oklab, var(--accent) 22%, transparent), transparent 60%), radial-gradient(50% 70% at 100% 100%, color-mix(in oklab, var(--gold) 18%, transparent), transparent 60%), linear-gradient(180deg, color-mix(in oklab, var(--background) 96%, transparent), var(--background))",
+          }}
+        />
+        <div
+          className="absolute inset-0 -z-10 opacity-[0.06]"
+          style={{
+            backgroundImage:
+              "linear-gradient(var(--foreground) 1px, transparent 1px), linear-gradient(90deg, var(--foreground) 1px, transparent 1px)",
+            backgroundSize: "48px 48px",
+            maskImage:
+              "radial-gradient(ellipse 70% 60% at 50% 30%, black 40%, transparent 80%)",
+          }}
+        />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-28 sm:pt-32 pb-16 sm:pb-20">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-accent/30 bg-accent/10 text-accent text-[11px] font-semibold uppercase tracking-widest">
+              <Sparkles className="w-3.5 h-3.5" />
+              {tt("التدريبات والممارسات", "Trainings & practice")}
+            </div>
+            <h1 className="mt-5 text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.05]">
+              {tt("حالات تدريبية", "Selected training")}
+              <br />
+              <span
+                className="bg-clip-text text-transparent"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(110deg, var(--foreground) 0%, var(--accent) 55%, var(--gold) 100%)",
+                }}
+              >
+                {tt("مختارة ومؤثّرة", "case studies")}
+              </span>
+            </h1>
+            <p className="mt-5 text-foreground/70 text-base sm:text-lg leading-relaxed max-w-2xl">
+              {tt(
+                "نماذج حقيقية من برامج تدريبية صمّمتها وقُدتها — التحدي الذي واجهناه، المنهجية التي بنيناها، والأثر الذي تحقّق.",
+                "Real programs I designed and led — the challenge we faced, the methodology we built, and the impact we delivered.",
+              )}
+            </p>
+            <div className="mt-6 flex items-center gap-4 text-xs text-foreground/55">
+              <div className="inline-flex items-center gap-1.5">
+                <GraduationCap className="w-4 h-4 text-accent" />
+                {rows.length > 0
+                  ? tt(`${rows.length} حالة موثّقة`, `${rows.length} documented cases`)
+                  : tt("محتوى قادم", "Content coming")}
+              </div>
+            </div>
           </div>
-          <h1 className="mt-3 text-3xl sm:text-5xl font-extrabold tracking-tight">
-            {tt("حالات تدريبية مختارة", "Selected training case studies")}
-          </h1>
-          <p className="mt-4 text-foreground/65 max-w-2xl mx-auto text-sm sm:text-base">
-            {tt(
-              "نماذج من برامج تدريبية صمّمتها وقُدتها — التحدي، المنهجية، والأثر.",
-              "Examples of training programs I designed and led — the challenge, the methodology, and the impact.",
-            )}
-          </p>
         </div>
+      </section>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
+
 
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -183,6 +224,7 @@ function TrainingsPage() {
 
         <TrainingModal training={active} onClose={() => setActive(null)} />
       </div>
+      <Footer />
     </main>
   );
 }

@@ -53,23 +53,24 @@
   --secondary-foreground: oklch(0.22 0.06 252);
   --muted: oklch(0.95 0.008 240);
   --muted-foreground: oklch(0.46 0.025 250);
-  --accent: oklch(0.74 0.12 295);
+  --accent: oklch(0.72 0.12 195);
   --accent-foreground: oklch(0.16 0.04 252);
   --destructive: oklch(0.55 0.22 27);
   --destructive-foreground: oklch(1 0 0);
   --border: oklch(0.18 0.04 252 / 0.10);
   --input: oklch(0.18 0.04 252 / 0.14);
-  --ring: oklch(0.74 0.12 295);
+  --ring: oklch(0.72 0.12 195);
 
-  --gold: oklch(0.72 0.13 180);
-  --gold-soft: oklch(0.86 0.08 182);
+  --gold: oklch(0.78 0.14 78);
+  --gold-soft: oklch(0.88 0.09 82);
   --navy: oklch(0.22 0.06 252);
   --navy-deep: oklch(0.14 0.05 252);
   --steel: oklch(0.62 0.04 240);
 
-  --lavender: oklch(0.74 0.10 295);
-  --lavender-soft: oklch(0.90 0.05 295);
-  --lavender-deep: oklch(0.52 0.13 290);
+  --lavender: oklch(0.72 0.12 195);
+  --lavender-soft: oklch(0.90 0.05 200);
+  --lavender-deep: oklch(0.48 0.13 210);
+
 
   --glass: oklch(1 0 0 / 0.78);
   --glass-strong: oklch(1 0 0 / 0.92);
@@ -95,19 +96,20 @@
   --secondary-foreground: oklch(0.97 0.008 230);
   --muted: oklch(0.22 0.04 252);
   --muted-foreground: oklch(0.74 0.02 240);
-  --accent: oklch(0.80 0.11 295);
+  --accent: oklch(0.78 0.11 195);
   --accent-foreground: oklch(0.14 0.04 252);
   --border: oklch(1 0 0 / 0.10);
   --input: oklch(1 0 0 / 0.14);
-  --ring: oklch(0.80 0.11 295);
-  --gold: oklch(0.75 0.13 180);
-  --gold-soft: oklch(0.86 0.09 182);
+  --ring: oklch(0.78 0.11 195);
+  --gold: oklch(0.82 0.14 80);
+  --gold-soft: oklch(0.88 0.10 82);
   --navy: oklch(0.92 0.02 230);
   --navy-deep: oklch(0.10 0.035 252);
   --steel: oklch(0.72 0.03 240);
-  --lavender: oklch(0.80 0.11 295);
-  --lavender-soft: oklch(0.88 0.06 295);
-  --lavender-deep: oklch(0.66 0.14 290);
+  --lavender: oklch(0.78 0.11 195);
+  --lavender-soft: oklch(0.88 0.06 200);
+  --lavender-deep: oklch(0.62 0.14 210);
+
   --glass: oklch(0.18 0.04 252 / 0.72);
   --glass-strong: oklch(0.18 0.04 252 / 0.92);
   --glass-border: oklch(1 0 0 / 0.10);
