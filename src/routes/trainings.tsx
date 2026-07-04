@@ -60,6 +60,7 @@ function TrainingsPage() {
   const { lang, dir } = useI18n();
   const isAr = lang === "ar";
   const tt = (a: string, b: string) => (isAr ? a : b);
+  const { theme, toggle } = useTheme();
   const [rows, setRows] = useState<TrainingRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [active, setActive] = useState<TrainingRow | null>(null);
