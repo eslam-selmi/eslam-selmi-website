@@ -616,7 +616,7 @@ function Portfolio() {
 
       {isVisible("home.podcast") && <Podcast />}
       {isVisible("home.interviews") && <Interviews />}
-      {isVisible("home.trainings") && <TrainingsTeaser />}
+      {/* Trainings moved to dedicated /trainings page */}
       {isVisible("home.clients") && <Clients />}
       {isVisible("home.snapshots") && <Snapshots />}
       {isVisible("home.testimonials") && <Testimonials />}
