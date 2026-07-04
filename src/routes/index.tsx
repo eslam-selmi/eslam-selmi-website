@@ -572,7 +572,7 @@ const SNAPSHOTS = [
   snap6,
 ];
 
-type ThemeMode = "dark" | "light";
+export type ThemeMode = "dark" | "light";
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
