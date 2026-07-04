@@ -3662,12 +3662,6 @@ function Contact() {
           href="tel:+966555376228"
         />
         <ContactCard
-          icon={Mail}
-          label={t("contact_email")}
-          lines={["eslam.m.selmi@gmail.com"]}
-          href="mailto:eslam.m.selmi@gmail.com"
-        />
-        <ContactCard
           icon={Linkedin}
           label={t("contact_linkedin")}
           lines={[t("contact_linkedin_line")]}
