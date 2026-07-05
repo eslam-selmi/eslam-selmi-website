@@ -4485,7 +4485,7 @@ function TrainingsTeaser() {
 
   return (
     <Section id="trainings" eyebrow="">
-      <div className="max-w-7xl mx-auto px-4 sm:px-5" dir={dir}>
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-5" dir={dir}>
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-accent/90">
             <GraduationCap className="w-4 h-4" />
@@ -4494,7 +4494,7 @@ function TrainingsTeaser() {
           <h2 className="mt-3 text-3xl sm:text-4xl font-extrabold tracking-tight">
             {tt("حالات تدريبية مختارة", "Selected training case studies")}
           </h2>
-          <p className="mt-3 text-foreground/65 max-w-2xl mx-auto text-sm sm:text-base">
+          <p className="mt-3 text-foreground/65 max-w-4xl mx-auto text-sm sm:text-base leading-relaxed">
             {tt(
               "لمحة سريعة من برامج تدريبية صمّمتها وقُدتها — استعرض القائمة الكاملة في صفحة التدريبات.",
               "A quick glance of programs I designed and led — browse the full list on the trainings page.",
@@ -4612,7 +4612,7 @@ function Trainings() {
 
   return (
     <Section id="trainings" eyebrow="">
-      <div className="max-w-7xl mx-auto px-4 sm:px-5" dir={dir}>
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-5" dir={dir}>
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-accent/90">
             <GraduationCap className="w-4 h-4" />
@@ -4621,7 +4621,7 @@ function Trainings() {
           <h2 className="mt-3 text-3xl sm:text-4xl font-extrabold tracking-tight">
             {tt("حالات تدريبية مختارة", "Selected training case studies")}
           </h2>
-          <p className="mt-3 text-foreground/65 max-w-2xl mx-auto text-sm sm:text-base">
+          <p className="mt-3 text-foreground/65 max-w-4xl mx-auto text-sm sm:text-base leading-relaxed">
             {tt(
               "نماذج من برامج تدريبية صمّمتها وقُدتها — التحدي، المنهجية، والأثر.",
               "Examples of training programs I designed and led — the challenge, the methodology, and the impact.",
