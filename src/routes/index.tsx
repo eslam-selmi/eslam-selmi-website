@@ -1944,13 +1944,12 @@ function Journey() {
   const { t, lang } = useI18n();
   return (
     <Section id="journey" eyebrow={t("journey_eyebrow")} title={t("journey_title")}>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {JOURNEY.map((j, i) => {
+      {(() => {
+        const renderCard = (j: typeof JOURNEY[number], i: number) => {
           const country =
             j.country === "SA"
               ? { flag: "sa", name: { en: "Saudi Arabia", ar: "السعودية" } }
               : { flag: "eg", name: { en: "Egypt", ar: "مصر" } };
-
           return (
             <motion.div
               key={j.year.en + j.company.en + i}
@@ -1959,8 +1958,6 @@ function Journey() {
               className="group relative rounded-3xl bg-card border border-foreground/10 p-6 hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px_oklch(0.22_0.06_252/0.35)] transition-all overflow-hidden"
             >
               <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[var(--accent)] via-[var(--accent)]/40 to-transparent opacity-70" />
-
-              {/* Top row: year + country flag */}
               <div className="flex items-center justify-between mb-5">
                 <span
                   className="font-display text-3xl font-extrabold tracking-tight"
@@ -1979,8 +1976,6 @@ function Journey() {
                   {country.name[lang]}
                 </span>
               </div>
-
-              {/* Company */}
               <div className="min-w-0">
                 <div className="font-display font-bold text-xl leading-tight">
                   {j.company[lang]}
@@ -1997,8 +1992,22 @@ function Journey() {
               </div>
             </motion.div>
           );
-        })}
-      </div>
+        };
+        const firstRow = JOURNEY.slice(0, 3);
+        const secondRow = JOURNEY.slice(3);
+        return (
+          <div className="space-y-5">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {firstRow.map((j, i) => renderCard(j, i))}
+            </div>
+            {secondRow.length > 0 && (
+              <div className="grid sm:grid-cols-2 gap-5 lg:max-w-[66.5%] lg:mx-auto">
+                {secondRow.map((j, i) => renderCard(j, i + firstRow.length))}
+              </div>
+            )}
+          </div>
+        );
+      })()}
     </Section>
   );
 }
@@ -3631,7 +3640,7 @@ function Contact() {
   const { t } = useI18n();
   return (
     <Section id="contact" eyebrow={t("contact_eyebrow")} title={t("contact_title")}>
-      <div className="grid sm:grid-cols-3 gap-4">
+      <div className="grid gap-5 sm:grid-cols-2 max-w-3xl mx-auto">
         <ContactCard
           icon={Phone}
           label={t("contact_mobile")}
