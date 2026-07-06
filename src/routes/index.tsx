@@ -187,10 +187,10 @@ const BRANDS: { src: string; name: string; nameAr: string; specEn: string; specA
   },
   {
     src: logoNewBrand,
-    name: "Partner",
-    nameAr: "شريك",
-    specEn: "Strategic Partner",
-    specAr: "شريك استراتيجي",
+    name: "Knowledge City Holding",
+    nameAr: "مدينة المعرفة القابضة",
+    specEn: "Global Education & Training Sector",
+    specAr: "قطاع التعليم العالمي والتدريب",
   },
 ];
 import snap10Asset from "@/assets/snapshots/snap-10.jpg.asset.json";
@@ -1796,43 +1796,89 @@ function Hero() {
           className="lg:col-span-5 order-1 lg:order-2 relative"
         >
           <div className="relative w-full max-w-[440px] sm:max-w-[500px] lg:max-w-[560px] mx-auto aspect-[4/5]">
-            {/* Aurora backdrop */}
+            {/* Ambient cyan aurora */}
             <div
-              className="absolute -inset-8 blur-3xl opacity-70"
+              className="absolute -inset-10 blur-3xl opacity-70 -z-10"
               style={{
                 background:
-                  "radial-gradient(60% 50% at 30% 20%, oklch(0.74 0.10 295 / 0.45), transparent 70%), radial-gradient(50% 50% at 80% 80%, oklch(0.72 0.13 180 / 0.40), transparent 70%)",
+                  "radial-gradient(55% 45% at 25% 20%, oklch(0.72 0.14 210 / 0.45), transparent 70%), radial-gradient(45% 45% at 80% 85%, oklch(0.66 0.12 240 / 0.38), transparent 72%)",
               }}
             />
-            {/* Offset gold geometric accent (behind) */}
+
+            {/* Executive titanium panel — unified premium frame */}
             <div
-              className="absolute -right-3 -bottom-3 w-[70%] h-[70%] -z-0"
+              className="absolute -inset-4 -z-10 rounded-[2.75rem] overflow-hidden"
               style={{
-                background: "linear-gradient(135deg, var(--accent), oklch(0.78 0.10 85))",
-                borderRadius: "2.5rem 0.5rem 2.5rem 0.5rem",
-                transform: "rotate(-6deg)",
-                opacity: 0.95,
-                boxShadow: "0 30px 60px -25px oklch(0.55 0.13 85 / 0.45)",
+                background:
+                  "linear-gradient(145deg, #0f1620 0%, #1a222e 30%, #0c1219 65%, #141c26 100%)",
+                boxShadow:
+                  "0 45px 120px -40px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(0,0,0,0.6)",
               }}
-            />
-            {/* Offset navy plate (behind, opposite corner) */}
-            <div
-              className="absolute -left-4 -top-4 w-[55%] h-[55%] -z-0"
-              style={{
-                background: "linear-gradient(135deg, var(--navy-deep), var(--lavender-deep))",
-                borderRadius: "0.5rem 2rem 0.5rem 2rem",
-                transform: "rotate(5deg)",
-                opacity: 0.85,
-              }}
-            />
-            {/* Main portrait — squircle with double frame */}
+            >
+              {/* Carbon-fiber weave */}
+              <div
+                className="absolute inset-0 opacity-[0.28] mix-blend-overlay"
+                style={{
+                  backgroundImage:
+                    "repeating-linear-gradient(45deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 4px), repeating-linear-gradient(-45deg, rgba(0,0,0,0.35) 0 1px, transparent 1px 4px)",
+                }}
+              />
+              {/* Brushed metal streaks */}
+              <div
+                className="absolute inset-0 opacity-[0.18]"
+                style={{
+                  backgroundImage:
+                    "repeating-linear-gradient(90deg, rgba(255,255,255,0.10) 0 1px, transparent 1px 3px)",
+                  maskImage:
+                    "linear-gradient(180deg, transparent, black 30%, black 70%, transparent)",
+                }}
+              />
+              {/* Subtle geometric engravings */}
+              <svg
+                className="absolute inset-0 w-full h-full opacity-[0.10]"
+                viewBox="0 0 400 500"
+                preserveAspectRatio="none"
+                aria-hidden
+              >
+                <defs>
+                  <linearGradient id="engrav" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="#7dd3fc" />
+                    <stop offset="100%" stopColor="#22d3ee" />
+                  </linearGradient>
+                </defs>
+                <circle cx="60" cy="60" r="42" fill="none" stroke="url(#engrav)" strokeWidth="0.6" />
+                <circle cx="60" cy="60" r="28" fill="none" stroke="url(#engrav)" strokeWidth="0.4" />
+                <path d="M340 440 L380 440 L380 480" fill="none" stroke="url(#engrav)" strokeWidth="0.6" />
+                <path d="M20 460 L20 480 L60 480" fill="none" stroke="url(#engrav)" strokeWidth="0.6" />
+                <path d="M0 250 L400 250" stroke="url(#engrav)" strokeWidth="0.3" strokeDasharray="2 6" />
+              </svg>
+              {/* Cyan bevel edges */}
+              <div
+                className="absolute inset-0 rounded-[2.75rem] pointer-events-none"
+                style={{
+                  boxShadow:
+                    "inset 0 0 0 1px rgba(125,211,252,0.18), inset 0 0 40px rgba(34,211,238,0.10)",
+                }}
+              />
+              {/* Corner glass bevels with cyan accent lighting */}
+              <div
+                className="absolute -top-8 -left-8 w-40 h-40 rounded-full blur-2xl"
+                style={{ background: "radial-gradient(circle, rgba(34,211,238,0.35), transparent 70%)" }}
+              />
+              <div
+                className="absolute -bottom-10 -right-10 w-48 h-48 rounded-full blur-2xl"
+                style={{ background: "radial-gradient(circle, rgba(125,211,252,0.28), transparent 70%)" }}
+              />
+            </div>
+
+            {/* Main portrait — squircle framed inside the titanium panel */}
             <div
               className="relative h-full w-full p-[3px]"
               style={{
                 borderRadius: "2.25rem",
                 background:
-                  "linear-gradient(160deg, var(--accent) 0%, oklch(0.96 0.04 90) 35%, var(--lavender-deep) 70%, var(--navy) 100%)",
-                boxShadow: "0 40px 90px -35px oklch(0.22 0.06 252 / 0.55)",
+                  "linear-gradient(160deg, rgba(125,211,252,0.6) 0%, rgba(255,255,255,0.15) 35%, rgba(34,211,238,0.35) 70%, rgba(15,22,32,0.9) 100%)",
+                boxShadow: "0 40px 90px -35px rgba(6,20,35,0.7)",
               }}
             >
               <div
@@ -1840,7 +1886,7 @@ function Hero() {
                 style={{
                   borderRadius: "2.1rem",
                   background:
-                    "linear-gradient(170deg, oklch(0.96 0.015 200) 0%, oklch(0.90 0.03 195) 60%, oklch(0.82 0.05 260) 100%)",
+                    "linear-gradient(170deg, oklch(0.96 0.015 200) 0%, oklch(0.90 0.03 210) 60%, oklch(0.78 0.06 235) 100%)",
                 }}
               >
                 <img
@@ -1860,12 +1906,12 @@ function Hero() {
                     boxShadow: "inset 0 0 0 1px oklch(1 0 0 / 0.35)",
                   }}
                 />
-                {/* Bottom gradient wash */}
+                {/* Bottom gradient wash — cyan tint */}
                 <div
                   className="pointer-events-none absolute inset-0"
                   style={{
                     background:
-                      "linear-gradient(180deg, transparent 55%, oklch(0.22 0.06 252 / 0.35) 100%)",
+                      "linear-gradient(180deg, transparent 55%, rgba(8,20,35,0.45) 100%)",
                   }}
                 />
                 {/* Corner monogram */}

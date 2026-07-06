@@ -3970,7 +3970,7 @@ function SnapshotsPanel() {
   const t = (a: string, b: string) => (lang === "ar" ? a : b);
   const [items, setItems] = useState<SnapshotRow[]>([]);
   const [busy, setBusy] = useState(false);
-  const empty = { image_url: "", caption_ar: "", caption_en: "", display_order: 0 };
+  const empty = { image_url: "", caption_ar: "", caption_en: "", display_order: 0 as number };
   const [form, setForm] = useState(empty);
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -3988,18 +3988,24 @@ function SnapshotsPanel() {
     e.preventDefault();
     if (!form.image_url.trim()) return toast.error(t("ارفع صورة أولاً", "Upload an image first"));
     setBusy(true);
+    // Auto-append to the SAME unified gallery: new items get max(order)+1 so they
+    // slot into the existing collection instead of appearing as a separate group.
+    const nextOrder = editingId
+      ? Number(form.display_order) || 0
+      : (items.reduce((m, it) => Math.max(m, it.display_order || 0), 0) + 1);
     const payload = {
       image_url: form.image_url.trim(),
       caption_ar: form.caption_ar.trim() || null,
       caption_en: form.caption_en.trim() || null,
-      display_order: Number(form.display_order) || 0,
+      display_order: nextOrder,
+      is_visible: true,
     };
     const { error } = editingId
       ? await supabase.from("snapshots" as any).update(payload as any).eq("id", editingId)
       : await supabase.from("snapshots" as any).insert(payload as any);
     setBusy(false);
     if (error) return toast.error(error.message);
-    toast.success(editingId ? t("تم التحديث", "Updated") : t("تمت الإضافة", "Added"));
+    toast.success(editingId ? t("تم التحديث", "Updated") : t("تمت الإضافة إلى المعرض", "Added to gallery"));
     setForm(empty); setEditingId(null); load();
   }
   async function toggle(it: SnapshotRow) {
@@ -4055,7 +4061,8 @@ function SnapshotsPanel() {
       </form>
 
       <div className="dash-card dash-card-hover p-5">
-        <h3 className="font-bold mb-3">{t("اللحظات الحالية", "Current snapshots")} ({items.length})</h3>
+        <h3 className="font-bold mb-1">{t("المعرض الموحّد للحظات", "Unified moments gallery")} ({items.length})</h3>
+        <p className="text-[11px] text-white/50 mb-3">{t("كل صورة تُضاف تدخل ضمن نفس المعرض تلقائياً.", "Every image you add joins the same gallery automatically.")}</p>
         {items.length === 0 ? (
           <p className="text-sm text-white/40">{t("لم تُضاف لحظات بعد.", "No snapshots yet.")}</p>
         ) : (
