@@ -3970,7 +3970,7 @@ function SnapshotsPanel() {
   const t = (a: string, b: string) => (lang === "ar" ? a : b);
   const [items, setItems] = useState<SnapshotRow[]>([]);
   const [busy, setBusy] = useState(false);
-  const empty = { image_url: "", caption_ar: "", caption_en: "", display_order: 0 };
+  const empty = { image_url: "", caption_ar: "", caption_en: "", display_order: 0 as number };
   const [form, setForm] = useState(empty);
   const [editingId, setEditingId] = useState<string | null>(null);
 
