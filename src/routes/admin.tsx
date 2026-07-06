@@ -4061,7 +4061,8 @@ function SnapshotsPanel() {
       </form>
 
       <div className="dash-card dash-card-hover p-5">
-        <h3 className="font-bold mb-3">{t("اللحظات الحالية", "Current snapshots")} ({items.length})</h3>
+        <h3 className="font-bold mb-1">{t("المعرض الموحّد للحظات", "Unified moments gallery")} ({items.length})</h3>
+        <p className="text-[11px] text-white/50 mb-3">{t("كل صورة تُضاف تدخل ضمن نفس المعرض تلقائياً.", "Every image you add joins the same gallery automatically.")}</p>
         {items.length === 0 ? (
           <p className="text-sm text-white/40">{t("لم تُضاف لحظات بعد.", "No snapshots yet.")}</p>
         ) : (
