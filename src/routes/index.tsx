@@ -187,10 +187,10 @@ const BRANDS: { src: string; name: string; nameAr: string; specEn: string; specA
   },
   {
     src: logoNewBrand,
-    name: "Partner",
-    nameAr: "شريك",
-    specEn: "Strategic Partner",
-    specAr: "شريك استراتيجي",
+    name: "Knowledge City Holding",
+    nameAr: "مدينة المعرفة القابضة",
+    specEn: "Global Education & Training Sector",
+    specAr: "قطاع التعليم العالمي والتدريب",
   },
 ];
 import snap10Asset from "@/assets/snapshots/snap-10.jpg.asset.json";
