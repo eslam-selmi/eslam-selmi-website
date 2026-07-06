@@ -3988,18 +3988,24 @@ function SnapshotsPanel() {
     e.preventDefault();
     if (!form.image_url.trim()) return toast.error(t("ارفع صورة أولاً", "Upload an image first"));
     setBusy(true);
+    // Auto-append to the SAME unified gallery: new items get max(order)+1 so they
+    // slot into the existing collection instead of appearing as a separate group.
+    const nextOrder = editingId
+      ? Number(form.display_order) || 0
+      : (items.reduce((m, it) => Math.max(m, it.display_order || 0), 0) + 1);
     const payload = {
       image_url: form.image_url.trim(),
       caption_ar: form.caption_ar.trim() || null,
       caption_en: form.caption_en.trim() || null,
-      display_order: Number(form.display_order) || 0,
+      display_order: nextOrder,
+      is_visible: true,
     };
     const { error } = editingId
       ? await supabase.from("snapshots" as any).update(payload as any).eq("id", editingId)
       : await supabase.from("snapshots" as any).insert(payload as any);
     setBusy(false);
     if (error) return toast.error(error.message);
-    toast.success(editingId ? t("تم التحديث", "Updated") : t("تمت الإضافة", "Added"));
+    toast.success(editingId ? t("تم التحديث", "Updated") : t("تمت الإضافة إلى المعرض", "Added to gallery"));
     setForm(empty); setEditingId(null); load();
   }
   async function toggle(it: SnapshotRow) {
