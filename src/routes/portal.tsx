@@ -272,6 +272,12 @@ function PortalPage() {
           <StatCard icon={Award} label={lang === "ar" ? "شهادات صادرة" : "Certificates"} value={stats.certs} accent="gold" />
         </section>
 
+        <MyCertificatesSection
+          enrollments={trEnrollments.filter((e) => e.certificate_issued && (e.certificate_url_ar || e.certificate_url_en || e.certificate_url))}
+          onDownload={downloadCert}
+          lang={lang}
+        />
+
         <section>
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><BookOpen className="w-5 h-5 text-[var(--gold)]" /> {lang === "ar" ? "كورساتي" : "My Courses"}</h2>
           {loadingData ? <p className="text-white/50 text-sm">{lang === "ar" ? "جاري التحميل..." : "Loading..."}</p> :
