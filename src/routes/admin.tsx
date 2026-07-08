@@ -63,6 +63,7 @@ type AdminSearch = {
     | "testimonials"
     | "success_cases"
     | "bookings"
+    | "packages"
     | "interviews"
     | "trainings";
 
