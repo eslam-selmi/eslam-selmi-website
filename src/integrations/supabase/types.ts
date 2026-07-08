@@ -121,6 +121,98 @@ export type Database = {
           },
         ]
       }
+      consultation_package_purchases: {
+        Row: {
+          admin_notes: string | null
+          approved_at: string | null
+          created_at: string
+          id: string
+          package_id: string
+          payment_proof_url: string | null
+          sessions_remaining: number
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          approved_at?: string | null
+          created_at?: string
+          id?: string
+          package_id: string
+          payment_proof_url?: string | null
+          sessions_remaining?: number
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          approved_at?: string | null
+          created_at?: string
+          id?: string
+          package_id?: string
+          payment_proof_url?: string | null
+          sessions_remaining?: number
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consultation_package_purchases_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "consultation_packages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      consultation_packages: {
+        Row: {
+          active: boolean
+          created_at: string
+          currency: string
+          description_ar: string | null
+          description_en: string | null
+          id: string
+          name_ar: string
+          name_en: string
+          price: number
+          sessions_count: number
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          currency?: string
+          description_ar?: string | null
+          description_en?: string | null
+          id?: string
+          name_ar: string
+          name_en: string
+          price?: number
+          sessions_count: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          currency?: string
+          description_ar?: string | null
+          description_en?: string | null
+          id?: string
+          name_ar?: string
+          name_en?: string
+          price?: number
+          sessions_count?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       consultation_slots: {
         Row: {
           admin_notes: string | null
@@ -132,6 +224,7 @@ export type Database = {
           created_at: string
           duration_minutes: number
           id: string
+          package_purchase_id: string | null
           starts_at: string
           topic: string | null
           updated_at: string
@@ -146,6 +239,7 @@ export type Database = {
           created_at?: string
           duration_minutes?: number
           id?: string
+          package_purchase_id?: string | null
           starts_at: string
           topic?: string | null
           updated_at?: string
@@ -160,11 +254,20 @@ export type Database = {
           created_at?: string
           duration_minutes?: number
           id?: string
+          package_purchase_id?: string | null
           starts_at?: string
           topic?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "consultation_slots_package_purchase_id_fkey"
+            columns: ["package_purchase_id"]
+            isOneToOne: false
+            referencedRelation: "consultation_package_purchases"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       coupon_redemptions: {
         Row: {
