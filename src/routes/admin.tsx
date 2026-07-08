@@ -405,6 +405,8 @@ function AdminPage() {
           <SuccessCasesPanel />
         ) : tab === "bookings" ? (
           <BookingsPanel />
+        ) : tab === "packages" ? (
+          <PackagesPanel />
         ) : tab === "interviews" ? (
           <InterviewsPanel />
         ) : tab === "trainings" ? (
