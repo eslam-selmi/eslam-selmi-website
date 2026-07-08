@@ -42,6 +42,7 @@ import { assertAdmin } from "@/lib/admin-guard.functions";
 import { SiteManagementPanel } from "@/components/admin/SiteManagementPanel";
 import { SuccessCasesPanel } from "@/components/admin/SuccessCasesPanel";
 import { BookingsPanel } from "@/components/admin/BookingsPanel";
+import { PackagesPanel } from "@/components/admin/PackagesPanel";
 import { InterviewsPanel } from "@/components/admin/InterviewsPanel";
 import { TrainingsPanel } from "@/components/admin/TrainingsPanel";
 
@@ -62,6 +63,7 @@ type AdminSearch = {
     | "testimonials"
     | "success_cases"
     | "bookings"
+    | "packages"
     | "interviews"
     | "trainings";
 
@@ -158,6 +160,7 @@ function AdminPage() {
     | "testimonials"
     | "success_cases"
     | "bookings"
+    | "packages"
     | "interviews"
     | "trainings"
     | "snapshots"
@@ -347,6 +350,7 @@ function AdminPage() {
             { id: "testimonials", label: t("شهادات العملاء", "Testimonials") },
             { id: "success_cases", label: t("حالات النجاح", "Success Cases") },
             { id: "bookings", label: t("حجوزات الاستشارات", "Bookings") },
+            { id: "packages", label: t("باقات الاستشارات", "Packages") },
             { id: "interviews", label: t("المقابلات", "Interviews") },
             { id: "trainings", label: t("التدريبات", "Trainings") },
             { id: "snapshots", label: t("لحظات شكّلت المسيرة", "Career moments") },
@@ -403,6 +407,8 @@ function AdminPage() {
           <SuccessCasesPanel />
         ) : tab === "bookings" ? (
           <BookingsPanel />
+        ) : tab === "packages" ? (
+          <PackagesPanel />
         ) : tab === "interviews" ? (
           <InterviewsPanel />
         ) : tab === "trainings" ? (

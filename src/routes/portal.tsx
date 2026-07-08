@@ -14,6 +14,7 @@ import { Clock, CheckCircle2, XCircle, Download, Upload, BookOpen, Wallet, Loade
   FileText, Send, AlertCircle, X, Star } from "lucide-react";
 import { MediaViewerModal, type MediaItem } from "@/components/MediaViewerModal";
 import { TraineeSupportButton } from "@/components/SupportTickets";
+import { TraineePackagesSection } from "@/components/TraineePackagesSection";
 
 
 
@@ -277,6 +278,8 @@ function PortalPage() {
           onDownload={downloadCert}
           lang={lang}
         />
+
+        {user?.id && <TraineePackagesSection userId={user.id} />}
 
         <section>
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><BookOpen className="w-5 h-5 text-[var(--gold)]" /> {lang === "ar" ? "كورساتي" : "My Courses"}</h2>
