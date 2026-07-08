@@ -279,6 +279,8 @@ function PortalPage() {
           lang={lang}
         />
 
+        {user?.id && <TraineePackagesSection userId={user.id} />}
+
         <section>
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><BookOpen className="w-5 h-5 text-[var(--gold)]" /> {lang === "ar" ? "كورساتي" : "My Courses"}</h2>
           {loadingData ? <p className="text-white/50 text-sm">{lang === "ar" ? "جاري التحميل..." : "Loading..."}</p> :
