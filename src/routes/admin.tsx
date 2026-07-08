@@ -348,6 +348,7 @@ function AdminPage() {
             { id: "testimonials", label: t("شهادات العملاء", "Testimonials") },
             { id: "success_cases", label: t("حالات النجاح", "Success Cases") },
             { id: "bookings", label: t("حجوزات الاستشارات", "Bookings") },
+            { id: "packages", label: t("باقات الاستشارات", "Packages") },
             { id: "interviews", label: t("المقابلات", "Interviews") },
             { id: "trainings", label: t("التدريبات", "Trainings") },
             { id: "snapshots", label: t("لحظات شكّلت المسيرة", "Career moments") },
