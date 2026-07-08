@@ -160,6 +160,7 @@ function AdminPage() {
     | "testimonials"
     | "success_cases"
     | "bookings"
+    | "packages"
     | "interviews"
     | "trainings"
     | "snapshots"
