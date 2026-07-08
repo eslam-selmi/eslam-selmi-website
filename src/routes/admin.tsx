@@ -42,6 +42,7 @@ import { assertAdmin } from "@/lib/admin-guard.functions";
 import { SiteManagementPanel } from "@/components/admin/SiteManagementPanel";
 import { SuccessCasesPanel } from "@/components/admin/SuccessCasesPanel";
 import { BookingsPanel } from "@/components/admin/BookingsPanel";
+import { PackagesPanel } from "@/components/admin/PackagesPanel";
 import { InterviewsPanel } from "@/components/admin/InterviewsPanel";
 import { TrainingsPanel } from "@/components/admin/TrainingsPanel";
 
