@@ -14,6 +14,7 @@ import { Clock, CheckCircle2, XCircle, Download, Upload, BookOpen, Wallet, Loade
   FileText, Send, AlertCircle, X, Star } from "lucide-react";
 import { MediaViewerModal, type MediaItem } from "@/components/MediaViewerModal";
 import { TraineeSupportButton } from "@/components/SupportTickets";
+import { TraineePackagesSection } from "@/components/TraineePackagesSection";
 
 
 
