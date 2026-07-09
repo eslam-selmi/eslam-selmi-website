@@ -10,7 +10,7 @@ import { findCountry } from "@/lib/countries";
 import { safeHref } from "@/lib/safe-url";
 import { Clock, CheckCircle2, XCircle, Download, Upload, BookOpen, Wallet, Loader2,
   ExternalLink, Sparkles, ArrowRight, Calendar, Layers, StickyNote, Link as LinkIcon,
-  Paperclip, Check, ChevronLeft, PlayCircle, PhoneOutgoing, Award, Linkedin, GraduationCap, Hourglass,
+  Paperclip, Check, ChevronLeft, PlayCircle, PhoneOutgoing, Award, GraduationCap, Hourglass,
   FileText, Send, AlertCircle, X, Star } from "lucide-react";
 import { MediaViewerModal, type MediaItem } from "@/components/MediaViewerModal";
 import { TraineeSupportButton } from "@/components/SupportTickets";
@@ -871,17 +871,6 @@ function CertificatePanel({
 }
 
 
-function buildLinkedInShareUrl(courseTitle: string, hours: number) {
-  const siteUrl = typeof window !== "undefined" ? window.location.origin : "https://eslam-selmi.lovable.app";
-  const text =
-`🎓 Just completed the "${courseTitle}" course${hours > 0 ? `, accumulating ${hours} training hours` : ""} with Eslam Selmi Academy.
-
-Grateful for the depth of practical L&D, talent and performance management content. On to the next milestone!
-
-#LearningAndDevelopment #TalentManagement #Performance #ContinuousLearning #EslamSelmiAcademy`;
-  return `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(siteUrl)}&summary=${encodeURIComponent(text)}`;
-}
-
 function MyCertificatesSection({ enrollments, onDownload, lang }: {
   enrollments: Enrollment[];
   onDownload: (url: string) => void;
@@ -889,7 +878,6 @@ function MyCertificatesSection({ enrollments, onDownload, lang }: {
 }) {
   const isAr = lang === "ar";
   if (enrollments.length === 0) return null;
-  const siteUrl = typeof window !== "undefined" ? window.location.origin : "https://eslam-selmi.lovable.app";
 
   return (
     <section>
@@ -903,7 +891,6 @@ function MyCertificatesSection({ enrollments, onDownload, lang }: {
           const course = en.courses;
           if (!course) return null;
           const hours = Number(course.total_hours) || 0;
-          const linkedInUrl = buildLinkedInShareUrl(course.title, hours);
           return (
             <div key={en.id}
               className="group relative overflow-hidden rounded-2xl p-5 border border-[var(--gold)]/25 bg-gradient-to-br from-[var(--gold)]/[0.08] via-white/[0.03] to-transparent hover:border-[var(--gold)]/50 transition-all">
@@ -952,16 +939,10 @@ function MyCertificatesSection({ enrollments, onDownload, lang }: {
                   </button>
                 )}
 
-                <div className="grid grid-cols-2 gap-2 pt-1">
-                  <a href={linkedInUrl} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg text-[11px] font-semibold bg-[#0A66C2] text-white hover:brightness-110 transition">
-                    <Linkedin className="w-3.5 h-3.5" /> {isAr ? "مشاركة" : "Share"}
-                  </a>
-                  <a href={`/verify/${en.id}`} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg text-[11px] font-semibold border border-white/15 bg-white/5 text-white/85 hover:bg-white/10 transition">
-                    <ExternalLink className="w-3.5 h-3.5" /> {isAr ? "التحقق" : "Verify"}
-                  </a>
-                </div>
+                <a href={`/verify/${en.id}`} target="_blank" rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg text-[11px] font-semibold border border-white/15 bg-white/5 text-white/85 hover:bg-white/10 transition">
+                  <ExternalLink className="w-3.5 h-3.5" /> {isAr ? "التحقق من الشهادة" : "Verify certificate"}
+                </a>
               </div>
             </div>
           );
@@ -970,6 +951,7 @@ function MyCertificatesSection({ enrollments, onDownload, lang }: {
     </section>
   );
 }
+
 
 
 
