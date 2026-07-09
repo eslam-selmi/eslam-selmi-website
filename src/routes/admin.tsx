@@ -2048,10 +2048,9 @@ function EnrollmentDrawer({
         courseLogoUrl: (course as any).logo_url ?? null,
         courseBrandName: (course as any).brand_name ?? null,
       };
-      const [pdfAr, pdfEn] = await Promise.all([
-        generateCertificatePdf({ ...common, lang: "ar", studentName: nameAr }),
-        generateCertificatePdf({ ...common, lang: "en", studentName: nameEn }),
-      ]);
+      // Sequential to avoid concurrent DOM/font contention (was causing EN failures)
+      const pdfAr = await generateCertificatePdf({ ...common, lang: "ar", studentName: nameAr });
+      const pdfEn = await generateCertificatePdf({ ...common, lang: "en", studentName: nameEn });
       const ts = Date.now();
       const pathAr = `${enrollment.user_id}/${enrollment.id}-${ts}-ar.pdf`;
       const pathEn = `${enrollment.user_id}/${enrollment.id}-${ts}-en.pdf`;
