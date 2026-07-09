@@ -10,7 +10,7 @@ import { findCountry } from "@/lib/countries";
 import { safeHref } from "@/lib/safe-url";
 import { Clock, CheckCircle2, XCircle, Download, Upload, BookOpen, Wallet, Loader2,
   ExternalLink, Sparkles, ArrowRight, Calendar, Layers, StickyNote, Link as LinkIcon,
-  Paperclip, Check, ChevronLeft, PlayCircle, PhoneOutgoing, Award, Linkedin, GraduationCap, Hourglass,
+  Paperclip, Check, ChevronLeft, PlayCircle, PhoneOutgoing, Award, GraduationCap, Hourglass,
   FileText, Send, AlertCircle, X, Star } from "lucide-react";
 import { MediaViewerModal, type MediaItem } from "@/components/MediaViewerModal";
 import { TraineeSupportButton } from "@/components/SupportTickets";
