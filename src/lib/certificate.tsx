@@ -4,6 +4,7 @@ import jsPDF from "jspdf";
 import QRCode from "qrcode";
 import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
 const brandLogo = brandLogoAsset.url;
+
 export type CertificatePayload = {
   studentName: string;
   courseTitle: string;
@@ -11,172 +12,323 @@ export type CertificatePayload = {
   totalHours?: number | null;
   issueDate: Date;
   lang: "ar" | "en";
-  /** Unique verification id (use enrollment.id) */
   certificateId: string;
-  /** Signer name shown under the signature */
   signerName?: string;
   signerTitle?: string;
-  /** Optional course-branded logo URL — overrides academy logo when present */
   courseLogoUrl?: string | null;
-  /** Optional course-branded name shown under the logo */
   courseBrandName?: string | null;
 };
 
+/* ---------- Copy ---------- */
 const COPY = {
   ar: {
+    eyebrow: "أكاديمية إسلام سلمي",
     title: "شهادة إتمام",
-    subtitle: "تشهد أكاديمية إسلام سلمي",
-    intro: "بأن المتدرب الفاضل",
-    bridge: "قد أتمّ بنجاح كافة متطلبات كورس",
-    hoursLabel: "بإجمالي عدد ساعات تدريبية:",
+    subtitle: "تشهد الأكاديمية بكل فخر أن",
+    bridge: "قد أتمّ بامتياز جميع متطلبات كورس",
+    hoursLabel: "إجمالي ساعات التدريب",
     hoursUnit: "ساعة",
     dateLabel: "تاريخ الإصدار",
     idLabel: "رقم الشهادة",
-    signer: "المدرّب المعتمد",
+    verify: "امسح للتحقّق",
     defaultSigner: "م. إسلام سلمي",
     defaultRole: "المؤسس والمدرّب الرئيسي",
     seal: "ختم الأكاديمية",
+    monogram: "إ س",
+    latinTag: "ESLAM SELMI ACADEMY",
     dir: "rtl" as const,
+    fontDisplay: "'Amiri','IBM Plex Sans Arabic',serif",
     fontBody: "'IBM Plex Sans Arabic','Tajawal',sans-serif",
-    fontDisplay: "'IBM Plex Sans Arabic','Tajawal',sans-serif",
   },
   en: {
-    title: "Certificate of Completion",
-    subtitle: "Eslam Selmi Academy proudly certifies that",
-    intro: "",
-    bridge: "has successfully completed the training course",
-    hoursLabel: "Total training hours:",
+    eyebrow: "Eslam Selmi Academy",
+    title: "Certificate of Achievement",
+    subtitle: "This is to proudly certify that",
+    bridge: "has successfully completed all requirements of the programme",
+    hoursLabel: "Total training hours",
     hoursUnit: "hours",
     dateLabel: "Issued on",
-    idLabel: "Certificate ID",
-    signer: "Authorised Instructor",
+    idLabel: "Certificate No.",
+    verify: "Scan to verify",
     defaultSigner: "Eng. Eslam Selmi",
     defaultRole: "Founder & Lead Instructor",
     seal: "Academy Seal",
+    monogram: "ES",
+    latinTag: "أكاديمية إسلام سلمي",
     dir: "ltr" as const,
-    fontBody: "'Outfit','Helvetica Neue',Helvetica,Arial,sans-serif",
-    fontDisplay: "'Outfit','Helvetica Neue',Helvetica,Arial,sans-serif",
+    fontDisplay: "'Cinzel','Cormorant Garamond',Georgia,serif",
+    fontBody: "'Cormorant Garamond',Georgia,'Times New Roman',serif",
   },
 };
 
-/** Stylish SVG signature (kept identical across both languages so it reads as a real mark) */
-function Signature() {
+/* ---------- Ornaments ---------- */
+
+function GuillocheBorder() {
+  // Elegant repeating filigree pattern along the border
   return (
-    <svg viewBox="0 0 320 110" xmlns="http://www.w3.org/2000/svg" style={{ width: 260, height: 90 }}>
-      <path
-        d="M10 75 C 30 20, 60 105, 90 55 S 130 15, 160 60 Q 180 90, 205 50 T 260 55 L 300 40"
-        fill="none"
-        stroke="#0b1736"
-        strokeWidth="2.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M55 80 Q 120 95, 230 82"
-        fill="none"
-        stroke="#0b1736"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        opacity="0.7"
-      />
-      <circle cx="298" cy="38" r="2.5" fill="#0b1736" />
+    <svg
+      viewBox="0 0 2245 1587"
+      preserveAspectRatio="none"
+      style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
+    >
+      <defs>
+        <pattern id="guilloche" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+          <circle cx="30" cy="30" r="22" fill="none" stroke="#b8923f" strokeWidth="0.4" opacity="0.35" />
+          <circle cx="30" cy="30" r="14" fill="none" stroke="#b8923f" strokeWidth="0.4" opacity="0.35" />
+          <circle cx="0" cy="30" r="14" fill="none" stroke="#b8923f" strokeWidth="0.4" opacity="0.35" />
+          <circle cx="60" cy="30" r="14" fill="none" stroke="#b8923f" strokeWidth="0.4" opacity="0.35" />
+        </pattern>
+        <mask id="borderMask">
+          <rect x="0" y="0" width="2245" height="1587" fill="white" />
+          <rect x="140" y="140" width="1965" height="1307" fill="black" />
+        </mask>
+      </defs>
+      <rect x="0" y="0" width="2245" height="1587" fill="url(#guilloche)" mask="url(#borderMask)" />
     </svg>
   );
 }
 
-function CornerOrnament({ rotate }: { rotate: number }) {
+function CornerFiligree({ position }: { position: "tl" | "tr" | "bl" | "br" }) {
+  const rot = { tl: 0, tr: 90, br: 180, bl: 270 }[position];
+  const pos: Record<string, React.CSSProperties> = {
+    tl: { top: 70, left: 70 },
+    tr: { top: 70, right: 70 },
+    bl: { bottom: 70, left: 70 },
+    br: { bottom: 70, right: 70 },
+  };
   return (
     <svg
-      viewBox="0 0 140 140"
+      viewBox="0 0 240 240"
       style={{
         position: "absolute",
-        width: 150,
-        height: 150,
-        transform: `rotate(${rotate}deg)`,
-        opacity: 0.95,
+        ...pos[position],
+        width: 220,
+        height: 220,
+        transform: `rotate(${rot}deg)`,
       }}
     >
       <defs>
-        <linearGradient id={`g-${rotate}`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#d4af37" />
-          <stop offset="1" stopColor="#a07f28" />
+        <linearGradient id={`corner-${position}`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#f4d77a" />
+          <stop offset="0.5" stopColor="#d4af37" />
+          <stop offset="1" stopColor="#8b6914" />
         </linearGradient>
       </defs>
+      {/* Sweeping curls */}
       <path
-        d="M5 5 L 80 5 Q 75 12, 65 14 L 30 14 Q 18 16, 16 30 L 16 65 Q 14 75, 5 80 Z"
-        fill={`url(#g-${rotate})`}
+        d="M10 10 L 140 10 Q 120 24, 100 26 Q 80 28, 62 40 Q 46 52, 40 72 Q 34 92, 30 116 Q 26 138, 10 148 Z"
+        fill={`url(#corner-${position})`}
+        opacity="0.95"
       />
       <path
-        d="M20 20 Q 50 22, 70 18 M20 20 Q 22 50, 18 70"
+        d="M14 14 L 100 14 Q 90 28, 74 34 Q 56 42, 46 58 Q 38 74, 34 100 Q 30 122, 14 132 Z"
+        fill="#0b1736"
+        opacity="0.08"
+      />
+      {/* Inner floral */}
+      <path
+        d="M30 30 Q 60 34, 82 30 M30 30 Q 34 60, 30 82"
         stroke="#d4af37"
-        strokeWidth="1.2"
+        strokeWidth="1.4"
         fill="none"
-        opacity="0.7"
       />
-      <circle cx="22" cy="22" r="3" fill="#0b1736" />
+      <circle cx="30" cy="30" r="5" fill="#0b1736" />
+      <circle cx="30" cy="30" r="2.5" fill="#f4d77a" />
+      {/* Curl tips */}
+      <path
+        d="M150 20 Q 168 20, 172 36 Q 172 46, 160 46"
+        stroke="#d4af37"
+        strokeWidth="2"
+        fill="none"
+      />
+      <path
+        d="M20 150 Q 20 168, 36 172 Q 46 172, 46 160"
+        stroke="#d4af37"
+        strokeWidth="2"
+        fill="none"
+      />
     </svg>
   );
 }
 
-function Seal({ lang }: { lang: "ar" | "en" }) {
+function LaurelWreath({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ position: "relative", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+      <svg
+        viewBox="0 0 260 260"
+        style={{ position: "absolute", inset: 0, width: 260, height: 260 }}
+      >
+        <defs>
+          <linearGradient id="laurel-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#e6c366" />
+            <stop offset="1" stopColor="#8b6914" />
+          </linearGradient>
+        </defs>
+        {/* Left branch */}
+        <g stroke="url(#laurel-grad)" fill="url(#laurel-grad)">
+          <path d="M60 210 Q 30 140, 60 60" stroke="#8b6914" strokeWidth="2.4" fill="none" />
+          {Array.from({ length: 9 }).map((_, i) => {
+            const t = i / 8;
+            const x = 60 + Math.sin(t * Math.PI) * -30;
+            const y = 210 - t * 150;
+            const angle = -70 + t * 40;
+            return (
+              <ellipse
+                key={`l-${i}`}
+                cx={x - 12}
+                cy={y}
+                rx="14"
+                ry="5"
+                transform={`rotate(${angle} ${x - 12} ${y})`}
+                opacity="0.95"
+              />
+            );
+          })}
+        </g>
+        {/* Right branch */}
+        <g stroke="url(#laurel-grad)" fill="url(#laurel-grad)">
+          <path d="M200 210 Q 230 140, 200 60" stroke="#8b6914" strokeWidth="2.4" fill="none" />
+          {Array.from({ length: 9 }).map((_, i) => {
+            const t = i / 8;
+            const x = 200 - Math.sin(t * Math.PI) * -30;
+            const y = 210 - t * 150;
+            const angle = 70 - t * 40;
+            return (
+              <ellipse
+                key={`r-${i}`}
+                cx={x + 12}
+                cy={y}
+                rx="14"
+                ry="5"
+                transform={`rotate(${angle} ${x + 12} ${y})`}
+                opacity="0.95"
+              />
+            );
+          })}
+        </g>
+        {/* Ribbon knot at bottom */}
+        <path d="M110 210 Q 130 224, 150 210 L 155 232 L 130 220 L 105 232 Z" fill="#d4af37" />
+      </svg>
+      {children}
+    </div>
+  );
+}
+
+function GoldMedallion({ lang, logoUrl }: { lang: "ar" | "en"; logoUrl?: string | null }) {
   const t = COPY[lang];
   return (
     <div
       style={{
         position: "relative",
-        width: 150,
-        height: 150,
+        width: 260,
+        height: 260,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
       }}
     >
-      <svg viewBox="0 0 160 160" style={{ position: "absolute", inset: 0 }}>
-        <defs>
-          <radialGradient id="seal-grad" cx="50%" cy="50%" r="60%">
-            <stop offset="0" stopColor="#f4d77a" />
-            <stop offset="0.6" stopColor="#d4af37" />
-            <stop offset="1" stopColor="#8b6914" />
-          </radialGradient>
-        </defs>
-        <circle cx="80" cy="80" r="72" fill="url(#seal-grad)" />
-        <circle cx="80" cy="80" r="64" fill="none" stroke="#fff8e1" strokeWidth="1.5" opacity="0.55" />
-        <circle cx="80" cy="80" r="56" fill="none" stroke="#0b1736" strokeWidth="0.8" opacity="0.4" />
-        {Array.from({ length: 24 }).map((_, i) => {
-          const a = (i / 24) * Math.PI * 2;
-          const x1 = 80 + Math.cos(a) * 68;
-          const y1 = 80 + Math.sin(a) * 68;
-          const x2 = 80 + Math.cos(a) * 74;
-          const y2 = 80 + Math.sin(a) * 74;
-          return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#8b6914" strokeWidth="1.2" />;
-        })}
-        <path d="M80 38 L 86 70 L 118 70 L 92 88 L 102 118 L 80 100 L 58 118 L 68 88 L 42 70 L 74 70 Z" fill="#0b1736" />
-      </svg>
-      <div
-        style={{
-          position: "absolute",
-          bottom: -22,
-          fontSize: 10,
-          color: "#8b6914",
-          letterSpacing: 2,
-          textTransform: "uppercase",
-          fontFamily: COPY[lang].fontBody,
-        }}
-      >
-        {t.seal}
-      </div>
+      <LaurelWreath>
+        <svg viewBox="0 0 200 200" style={{ width: 170, height: 170 }}>
+          <defs>
+            <radialGradient id="med-grad" cx="50%" cy="45%" r="60%">
+              <stop offset="0" stopColor="#faecad" />
+              <stop offset="0.55" stopColor="#d4af37" />
+              <stop offset="1" stopColor="#7a5a10" />
+            </radialGradient>
+          </defs>
+          <circle cx="100" cy="100" r="92" fill="url(#med-grad)" />
+          <circle cx="100" cy="100" r="82" fill="none" stroke="#fff8e1" strokeWidth="1.8" opacity="0.7" />
+          <circle cx="100" cy="100" r="72" fill="none" stroke="#0b1736" strokeWidth="0.6" opacity="0.35" />
+          {/* Fluted rim */}
+          {Array.from({ length: 36 }).map((_, i) => {
+            const a = (i / 36) * Math.PI * 2;
+            const x1 = 100 + Math.cos(a) * 84;
+            const y1 = 100 + Math.sin(a) * 84;
+            const x2 = 100 + Math.cos(a) * 92;
+            const y2 = 100 + Math.sin(a) * 92;
+            return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#7a5a10" strokeWidth="0.8" />;
+          })}
+        </svg>
+        {/* Logo or monogram in center */}
+        <div
+          style={{
+            position: "absolute",
+            width: 120,
+            height: 120,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {logoUrl ? (
+            <img
+              src={logoUrl}
+              crossOrigin="anonymous"
+              alt=""
+              style={{ width: 96, height: 96, objectFit: "contain" }}
+            />
+          ) : (
+            <div
+              style={{
+                fontFamily: t.fontDisplay,
+                fontSize: 60,
+                fontWeight: 800,
+                color: "#0b1736",
+                letterSpacing: 2,
+                lineHeight: 1,
+              }}
+            >
+              {t.monogram}
+            </div>
+          )}
+        </div>
+      </LaurelWreath>
     </div>
   );
 }
 
-function CertificateCard({ p, qrDataUrl, verifyUrl }: { p: CertificatePayload; qrDataUrl?: string; verifyUrl?: string }) {
+/** Signature */
+function Signature() {
+  return (
+    <svg viewBox="0 0 340 110" xmlns="http://www.w3.org/2000/svg" style={{ width: 280, height: 92 }}>
+      <path
+        d="M10 78 C 34 22, 62 100, 92 58 S 132 18, 162 62 Q 184 90, 210 52 T 264 58 L 306 40"
+        fill="none"
+        stroke="#0b1736"
+        strokeWidth="2.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M55 84 Q 132 96, 240 84"
+        fill="none"
+        stroke="#0b1736"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        opacity="0.6"
+      />
+      <circle cx="304" cy="38" r="2.6" fill="#0b1736" />
+    </svg>
+  );
+}
+
+/* ---------- Card ---------- */
+
+function CertificateCard({
+  p,
+  qrDataUrl,
+  verifyUrl,
+}: {
+  p: CertificatePayload;
+  qrDataUrl?: string;
+  verifyUrl?: string;
+}) {
   const t = COPY[p.lang];
   const dateStr =
     p.lang === "ar"
       ? p.issueDate.toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" })
       : p.issueDate.toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" });
 
-  // A4 landscape proportions, rendered at high DPI
   const W = 2245;
   const H = 1587;
 
@@ -187,144 +339,177 @@ function CertificateCard({ p, qrDataUrl, verifyUrl }: { p: CertificatePayload; q
         width: W,
         height: H,
         position: "relative",
+        // Deep navy outer frame with luxurious warm inner card
         background:
-          "radial-gradient(ellipse at top, #fbf6e8 0%, #f5ecd3 55%, #ead9a8 100%)",
+          "radial-gradient(ellipse at 50% -10%, #1e2f6c 0%, #101b46 45%, #08102e 100%)",
         fontFamily: t.fontBody,
         color: "#0b1736",
         overflow: "hidden",
         boxSizing: "border-box",
       }}
     >
-      {/* outer gold frame */}
+      {/* Outer gold hairline */}
       <div
         style={{
           position: "absolute",
           inset: 40,
-          border: "3px solid #d4af37",
-          borderRadius: 12,
+          border: "2px solid #d4af37",
+          borderRadius: 10,
+          boxShadow: "inset 0 0 0 1px rgba(212,175,55,0.4)",
         }}
       />
-      {/* inner thin frame */}
+      {/* Guilloche band between outer border and inner card */}
+      <GuillocheBorder />
+      {/* Inner cream card */}
       <div
         style={{
           position: "absolute",
-          inset: 64,
-          border: "1.5px solid #b8923f",
-          borderRadius: 8,
-        }}
-      />
-      {/* watermark texture */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 64,
+          top: 140,
+          left: 140,
+          right: 140,
+          bottom: 140,
+          borderRadius: 6,
           background:
-            "repeating-linear-gradient(45deg, rgba(212,175,55,0.03) 0 2px, transparent 2px 18px)",
-          borderRadius: 8,
+            "radial-gradient(ellipse at top, #fdf9ec 0%, #f7ecc9 60%, #ecd9a2 100%)",
+          boxShadow:
+            "0 0 0 2px #d4af37, 0 0 0 4px rgba(212,175,55,0.4), 0 40px 80px rgba(0,0,0,0.35) inset",
         }}
       />
-      {/* corner ornaments */}
-      <div style={{ position: "absolute", top: 50, left: 50 }}>
-        <CornerOrnament rotate={0} />
-      </div>
-      <div style={{ position: "absolute", top: 50, right: 50 }}>
-        <CornerOrnament rotate={90} />
-      </div>
-      <div style={{ position: "absolute", bottom: 50, right: 50 }}>
-        <CornerOrnament rotate={180} />
-      </div>
-      <div style={{ position: "absolute", bottom: 50, left: 50 }}>
-        <CornerOrnament rotate={270} />
-      </div>
-
-      {/* content */}
+      {/* Watermark monogram */}
       <div
         style={{
           position: "absolute",
-          inset: 120,
+          top: 140,
+          left: 140,
+          right: 140,
+          bottom: 140,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          pointerEvents: "none",
+        }}
+      >
+        <div
+          style={{
+            fontFamily: COPY.en.fontDisplay,
+            fontSize: 620,
+            fontWeight: 800,
+            color: "#0b1736",
+            opacity: 0.035,
+            letterSpacing: 20,
+          }}
+        >
+          ES
+        </div>
+      </div>
+      {/* Corner filigrees */}
+      <CornerFiligree position="tl" />
+      <CornerFiligree position="tr" />
+      <CornerFiligree position="bl" />
+      <CornerFiligree position="br" />
+
+      {/* Content */}
+      <div
+        style={{
+          position: "absolute",
+          top: 180,
+          left: 180,
+          right: 180,
+          bottom: 180,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "space-between",
           textAlign: "center",
+          zIndex: 2,
         }}
       >
-        {/* header: logo + brand */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
-          <img
-            src={p.courseLogoUrl || brandLogo}
-            crossOrigin="anonymous"
-            alt=""
-            style={{ height: 110, width: "auto", objectFit: "contain" }}
-          />
+        {/* Header */}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
           <div
             style={{
-              fontSize: 16,
-              letterSpacing: 8,
-              color: "#8b6914",
-              textTransform: "uppercase",
               fontFamily: t.fontDisplay,
+              fontSize: 22,
+              letterSpacing: p.lang === "en" ? 10 : 2,
+              color: "#8b6914",
+              textTransform: p.lang === "en" ? "uppercase" : "none",
               fontWeight: 600,
             }}
           >
-            {p.courseBrandName || "Eslam Selmi Academy · أكاديمية إسلام سلمي"}
+            {t.eyebrow}
           </div>
           <div
             style={{
               height: 1,
-              width: 320,
+              width: 260,
               background: "linear-gradient(90deg, transparent, #d4af37, transparent)",
             }}
           />
+          <div
+            style={{
+              fontFamily: COPY.en.fontDisplay,
+              fontSize: 11,
+              letterSpacing: 6,
+              color: "#8b6914",
+              opacity: 0.7,
+            }}
+          >
+            EST · 2018
+          </div>
         </div>
 
-        {/* title block */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 22 }}>
+        {/* Title + medallion cluster */}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 24 }}>
+          <GoldMedallion lang={p.lang} logoUrl={p.courseLogoUrl || brandLogo} />
+
           <h1
             style={{
-              fontSize: 96,
-              fontWeight: 800,
+              fontSize: p.lang === "en" ? 96 : 108,
+              fontWeight: p.lang === "en" ? 700 : 800,
               margin: 0,
               fontFamily: t.fontDisplay,
-              background: "linear-gradient(180deg, #1a2a5e 0%, #0b1736 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              letterSpacing: p.lang === "ar" ? 0 : -1,
+              color: "#0b1736",
+              letterSpacing: p.lang === "en" ? 8 : 0,
               lineHeight: 1.05,
+              textTransform: p.lang === "en" ? "uppercase" : "none",
             }}
           >
             {t.title}
           </h1>
-          <div
-            style={{
-              fontSize: 28,
-              color: "#6b5418",
-              letterSpacing: p.lang === "ar" ? 0 : 3,
-              fontWeight: 500,
-            }}
-          >
-            {t.subtitle}
-          </div>
-          {t.intro && (
-            <div style={{ fontSize: 26, color: "#4a5478", fontWeight: 400 }}>{t.intro}</div>
-          )}
 
-          {/* student name — the hero */}
           <div
             style={{
-              position: "relative",
-              padding: "18px 90px",
-              marginTop: 8,
+              display: "flex",
+              alignItems: "center",
+              gap: 16,
+              color: "#6b5418",
             }}
           >
+            <span style={{ height: 1, width: 60, background: "#c9a84c" }} />
+            <span
+              style={{
+                fontSize: 26,
+                fontStyle: p.lang === "en" ? "italic" : "normal",
+                fontFamily: t.fontDisplay,
+                fontWeight: 500,
+              }}
+            >
+              {t.subtitle}
+            </span>
+            <span style={{ height: 1, width: 60, background: "#c9a84c" }} />
+          </div>
+
+          {/* Student name */}
+          <div style={{ position: "relative", padding: "6px 100px", marginTop: 4 }}>
             <h2
               style={{
-                fontSize: 110,
-                fontWeight: 800,
+                fontSize: p.lang === "en" ? 118 : 128,
+                fontWeight: p.lang === "en" ? 600 : 800,
                 margin: 0,
                 fontFamily: t.fontDisplay,
                 color: "#0b1736",
                 lineHeight: 1.1,
+                fontStyle: p.lang === "en" ? "italic" : "normal",
               }}
             >
               {p.studentName.replace(/"/g, "")}
@@ -332,89 +517,85 @@ function CertificateCard({ p, qrDataUrl, verifyUrl }: { p: CertificatePayload; q
             <div
               style={{
                 position: "absolute",
-                bottom: 4,
-                left: "10%",
-                right: "10%",
+                bottom: -2,
+                left: "5%",
+                right: "5%",
                 height: 2,
-                background: "linear-gradient(90deg, transparent, #d4af37 20%, #d4af37 80%, transparent)",
+                background:
+                  "linear-gradient(90deg, transparent, #d4af37 15%, #d4af37 85%, transparent)",
               }}
             />
           </div>
 
-          <div style={{ fontSize: 26, color: "#4a5478", maxWidth: 1400 }}>{t.bridge}</div>
+          <div
+            style={{
+              fontSize: 26,
+              color: "#4a5478",
+              maxWidth: 1500,
+              fontFamily: t.fontDisplay,
+              fontStyle: p.lang === "en" ? "italic" : "normal",
+            }}
+          >
+            {t.bridge}
+          </div>
 
-          {/* course title */}
+          {/* Course title */}
           <h3
             style={{
               fontSize: 56,
-              fontWeight: 700,
-              margin: 0,
+              fontWeight: p.lang === "en" ? 600 : 700,
+              margin: "4px 0 0",
               fontFamily: t.fontDisplay,
               color: "#1a2a5e",
-              maxWidth: 1600,
+              maxWidth: 1700,
               lineHeight: 1.2,
             }}
           >
             «{p.courseTitle}»
           </h3>
 
-          {p.courseDescription && !p.courseDescription.includes("مركز تدريب") && (
-            <p
-              style={{
-                fontSize: 22,
-                color: "#4a5478",
-                maxWidth: 1500,
-                lineHeight: 1.6,
-                margin: "4px 0 0",
-                fontStyle: p.lang === "en" ? "italic" : "normal",
-              }}
-            >
-              {p.courseDescription.length > 280
-                ? p.courseDescription.slice(0, 277) + "…"
-                : p.courseDescription}
-            </p>
-          )}
-
           {Number(p.totalHours) > 0 && (
             <div
               style={{
-                marginTop: 6,
+                marginTop: 8,
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 14,
-                padding: "12px 28px",
+                padding: "12px 32px",
                 borderRadius: 999,
-                background: "linear-gradient(135deg, rgba(212,175,55,0.18), rgba(212,175,55,0.06))",
+                background:
+                  "linear-gradient(135deg, rgba(212,175,55,0.22), rgba(212,175,55,0.05))",
                 border: "1.5px solid #d4af37",
                 fontSize: 24,
                 fontWeight: 600,
                 color: "#6b5418",
+                fontFamily: t.fontBody,
               }}
             >
               <span>{t.hoursLabel}</span>
-              <span style={{ fontSize: 30, color: "#0b1736", fontWeight: 800 }}>{p.totalHours}</span>
+              <span style={{ fontSize: 32, color: "#0b1736", fontWeight: 800 }}>{p.totalHours}</span>
               <span>{t.hoursUnit}</span>
             </div>
           )}
         </div>
 
-        {/* footer: signature + seal + date */}
+        {/* Footer */}
         <div
           style={{
             width: "100%",
             display: "grid",
-            gridTemplateColumns: "1fr auto 1fr",
+            gridTemplateColumns: "1fr 1fr 1fr",
             alignItems: "end",
             gap: 40,
-            marginTop: 20,
           }}
         >
-          {/* date (start side) */}
+          {/* Date + ID + QR */}
           <div style={{ textAlign: p.lang === "ar" ? "right" : "left" }}>
             <div
               style={{
-                fontSize: 14,
-                letterSpacing: 3,
+                fontFamily: COPY.en.fontDisplay,
+                fontSize: 12,
+                letterSpacing: 4,
                 color: "#8b6914",
                 textTransform: "uppercase",
                 marginBottom: 6,
@@ -422,41 +603,74 @@ function CertificateCard({ p, qrDataUrl, verifyUrl }: { p: CertificatePayload; q
             >
               {t.dateLabel}
             </div>
-            <div style={{ fontSize: 24, fontWeight: 700, color: "#0b1736" }}>{dateStr}</div>
-            <div style={{ marginTop: 14, fontSize: 12, color: "#8b6914", letterSpacing: 2 }}>
+            <div
+              style={{
+                fontSize: 24,
+                fontWeight: 700,
+                color: "#0b1736",
+                fontFamily: t.fontDisplay,
+              }}
+            >
+              {dateStr}
+            </div>
+            <div
+              style={{
+                marginTop: 14,
+                fontFamily: COPY.en.fontDisplay,
+                fontSize: 11,
+                color: "#8b6914",
+                letterSpacing: 3,
+                textTransform: "uppercase",
+              }}
+            >
               {t.idLabel}
             </div>
             <div
               style={{ fontSize: 14, color: "#4a5478", fontFamily: "monospace" }}
               dir="ltr"
             >
-              {p.certificateId.slice(0, 8).toUpperCase()}-{p.certificateId.slice(-4).toUpperCase()}
+              {p.certificateId.slice(0, 8).toUpperCase()}-
+              {p.certificateId.slice(-4).toUpperCase()}
             </div>
+          </div>
+
+          {/* Center: QR */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
             {qrDataUrl && (
-              <div style={{ marginTop: 18, display: "flex", flexDirection: "column", alignItems: p.lang === "ar" ? "flex-end" : "flex-start", gap: 4 }}>
-                <img src={qrDataUrl} alt="" style={{ width: 120, height: 120, background: "#fff", padding: 6, borderRadius: 8, border: "1px solid #d4af37" }} />
-                <div style={{ fontSize: 10, color: "#8b6914", letterSpacing: 1 }}>
-                  {p.lang === "ar" ? "امسح للتحقّق" : "Scan to verify"}
+              <>
+                <img
+                  src={qrDataUrl}
+                  alt=""
+                  style={{
+                    width: 130,
+                    height: 130,
+                    background: "#fff",
+                    padding: 6,
+                    borderRadius: 8,
+                    border: "1.5px solid #d4af37",
+                  }}
+                />
+                <div
+                  style={{
+                    fontSize: 11,
+                    color: "#8b6914",
+                    letterSpacing: 2,
+                    fontFamily: t.fontBody,
+                  }}
+                >
+                  {t.verify}
                 </div>
-                {verifyUrl && (
-                  <div style={{ fontSize: 9, color: "#6b5418", fontFamily: "monospace", maxWidth: 220, wordBreak: "break-all" }} dir="ltr">
-                    {verifyUrl}
-                  </div>
-                )}
-              </div>
+              </>
             )}
           </div>
 
-          {/* seal */}
-          <Seal lang={p.lang} />
-
-          {/* signature (end side) */}
+          {/* Signature */}
           <div style={{ textAlign: p.lang === "ar" ? "left" : "right" }}>
             <div
               style={{
                 display: "flex",
                 justifyContent: p.lang === "ar" ? "flex-start" : "flex-end",
-                marginBottom: -8,
+                marginBottom: -6,
               }}
             >
               <Signature />
@@ -464,14 +678,31 @@ function CertificateCard({ p, qrDataUrl, verifyUrl }: { p: CertificatePayload; q
             <div
               style={{
                 height: 1.5,
-                background: "linear-gradient(90deg, transparent, #0b1736 40%, #0b1736 60%, transparent)",
+                background:
+                  "linear-gradient(90deg, transparent, #0b1736 40%, #0b1736 60%, transparent)",
                 marginBottom: 8,
               }}
             />
-            <div style={{ fontSize: 22, fontWeight: 700, color: "#0b1736" }}>
+            <div
+              style={{
+                fontSize: 24,
+                fontWeight: 700,
+                color: "#0b1736",
+                fontFamily: t.fontDisplay,
+              }}
+            >
               {p.signerName || t.defaultSigner}
             </div>
-            <div style={{ fontSize: 14, color: "#6b5418", letterSpacing: 2, marginTop: 4 }}>
+            <div
+              style={{
+                fontSize: 13,
+                color: "#6b5418",
+                letterSpacing: 2,
+                marginTop: 4,
+                fontFamily: COPY.en.fontDisplay,
+                textTransform: "uppercase",
+              }}
+            >
               {p.signerTitle || t.defaultRole}
             </div>
           </div>
@@ -481,20 +712,26 @@ function CertificateCard({ p, qrDataUrl, verifyUrl }: { p: CertificatePayload; q
   );
 }
 
-/** Render off-screen, rasterise, return a single-page A4 landscape PDF blob */
+/* ---------- Generator ---------- */
+
 export async function generateCertificatePdf(p: CertificatePayload): Promise<Blob> {
-  // Ensure fonts are ready (Sora / IBM Plex Arabic / Manrope are already loaded via the site).
   if (document.fonts && (document.fonts as any).ready) {
     try {
       await (document.fonts as any).ready;
     } catch {}
   }
 
-  const origin = typeof window !== "undefined" ? window.location.origin : "https://eslam-selmi.lovable.app";
+  const origin =
+    typeof window !== "undefined" ? window.location.origin : "https://eslam-selmi.lovable.app";
   const verifyUrl = `${origin}/verify/${p.certificateId}`;
   let qrDataUrl: string | undefined;
   try {
-    qrDataUrl = await QRCode.toDataURL(verifyUrl, { errorCorrectionLevel: "M", margin: 0, width: 240, color: { dark: "#0b1736", light: "#ffffff" } });
+    qrDataUrl = await QRCode.toDataURL(verifyUrl, {
+      errorCorrectionLevel: "M",
+      margin: 0,
+      width: 260,
+      color: { dark: "#0b1736", light: "#ffffff" },
+    });
   } catch {}
 
   const host = document.createElement("div");
@@ -508,42 +745,42 @@ export async function generateCertificatePdf(p: CertificatePayload): Promise<Blo
   const root = createRoot(host);
   await new Promise<void>((resolve) => {
     root.render(<CertificateCard p={p} qrDataUrl={qrDataUrl} verifyUrl={verifyUrl} />);
-    // give react & images a tick
-    setTimeout(resolve, 80);
+    setTimeout(resolve, 120);
   });
 
-  // wait for the logo image to fully load
-  const img = host.querySelector("img");
-  if (img && !(img as HTMLImageElement).complete) {
-    await new Promise((res) => {
-      (img as HTMLImageElement).onload = () => res(null);
-      (img as HTMLImageElement).onerror = () => res(null);
-    });
-  }
-  // small extra delay to let layout settle
-  await new Promise((r) => setTimeout(r, 120));
+  // Wait for any images (logo) to load
+  const imgs = Array.from(host.querySelectorAll("img")) as HTMLImageElement[];
+  await Promise.all(
+    imgs.map(
+      (img) =>
+        new Promise<void>((res) => {
+          if (img.complete) return res();
+          img.onload = () => res();
+          img.onerror = () => res();
+        }),
+    ),
+  );
+  await new Promise((r) => setTimeout(r, 180));
 
   try {
     const target = host.firstElementChild as HTMLElement;
-    // html-to-image renders via SVG foreignObject and does NOT parse the page's
-    // stylesheets, so it works fine even when the site uses oklch() tokens.
     const dataUrl = await toJpeg(target, {
       quality: 0.96,
-      backgroundColor: "#fbf6e8",
+      backgroundColor: "#0b1736",
       width: 2245,
       height: 1587,
       pixelRatio: 1,
       cacheBust: true,
-      // Skip walking external stylesheets — we only need inline styles from our
-      // own component tree, which uses plain hex colors.
       skipFonts: false,
     });
 
-    // A4 landscape (297 × 210 mm)
     const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
     pdf.addImage(dataUrl, "JPEG", 0, 0, 297, 210, undefined, "FAST");
-    const blob = pdf.output("blob");
-    return blob;
+    return pdf.output("blob");
+  } catch (err: any) {
+    // Surface the true error so callers can display it
+    const msg = err?.message || String(err);
+    throw new Error(`Certificate render failed (${p.lang}): ${msg}`);
   } finally {
     root.unmount();
     host.remove();
