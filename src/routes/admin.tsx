@@ -34,6 +34,13 @@ import {
   Ticket,
   Percent,
   Archive,
+  Camera,
+  LifeBuoy,
+  Star,
+  CreditCard,
+  Trophy,
+  Video,
+  ShieldCheck,
 } from "lucide-react";
 import { findCountry } from "@/lib/countries";
 import { safeHref } from "@/lib/safe-url";
