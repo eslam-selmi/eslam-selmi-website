@@ -343,6 +343,7 @@ export type Database = {
       }
       course_interests: {
         Row: {
+          admin_notes: string | null
           country_code: string | null
           course_id: string | null
           course_title: string | null
@@ -358,6 +359,7 @@ export type Database = {
           user_agent: string | null
         }
         Insert: {
+          admin_notes?: string | null
           country_code?: string | null
           course_id?: string | null
           course_title?: string | null
@@ -373,6 +375,7 @@ export type Database = {
           user_agent?: string | null
         }
         Update: {
+          admin_notes?: string | null
           country_code?: string | null
           course_id?: string | null
           course_title?: string | null

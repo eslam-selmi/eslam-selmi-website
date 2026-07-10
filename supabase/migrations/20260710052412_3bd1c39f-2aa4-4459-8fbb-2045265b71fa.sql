@@ -1,0 +1,1 @@
+ALTER TABLE public.course_interests ADD COLUMN IF NOT EXISTS admin_notes text;
