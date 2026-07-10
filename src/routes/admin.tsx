@@ -341,103 +341,214 @@ function AdminPage() {
           />
         </div>
 
-        <div className="dash-card p-1.5 flex gap-1 overflow-x-auto flex-nowrap sm:flex-wrap">
-          {[
+        {(() => {
+          const groups: {
+            id: string;
+            label: string;
+            items: { id: string; label: string; icon: any; badge?: number | string }[];
+          }[] = [
             {
-              id: "activations",
-              label: `${t("تفعيل الحسابات", "Activations")}${pendingActivations > 0 ? ` (${pendingActivations})` : ""}`,
+              id: "people",
+              label: t("الطلبات والمستخدمون", "Requests & Users"),
+              items: [
+                {
+                  id: "activations",
+                  label: t("تفعيل الحسابات", "Activations"),
+                  icon: ShieldCheck,
+                  badge: pendingActivations || undefined,
+                },
+                {
+                  id: "enrollments",
+                  label: t("طلبات وانضمامات", "Enrollments"),
+                  icon: Users,
+                  badge: enrollments.length || undefined,
+                },
+                {
+                  id: "banned",
+                  label: t("الموقوفون", "Banned"),
+                  icon: Archive,
+                  badge:
+                    enrollments.filter((e) => e.profiles?.account_blocked).length || undefined,
+                },
+              ],
             },
             {
-              id: "enrollments",
-              label: `${t("طلبات وانضمامات", "Requests & enrollments")} (${enrollments.length})`,
+              id: "content",
+              label: t("المحتوى التعليمي", "Learning Content"),
+              items: [
+                {
+                  id: "courses",
+                  label: t("الكورسات", "Courses"),
+                  icon: BookOpen,
+                  badge: courses.length || undefined,
+                },
+                { id: "trainings", label: t("التدريبات", "Trainings"), icon: Layers },
+                { id: "snapshots", label: t("لحظات المسيرة", "Career moments"), icon: Camera },
+                { id: "additions", label: t("أحدث الإضافات", "Latest additions"), icon: Sparkles },
+              ],
             },
-            { id: "courses", label: `${t("الكورسات", "Courses")} (${courses.length})` },
-            { id: "coupons", label: t("كوبونات الخصم", "Discount coupons") },
-            { id: "additions", label: t("أحدث الإضافات", "Latest additions") },
-            { id: "testimonials", label: t("شهادات العملاء", "Testimonials") },
-            { id: "success_cases", label: t("حالات النجاح", "Success Cases") },
-            { id: "bookings", label: t("حجوزات الاستشارات", "Bookings") },
-            { id: "packages", label: t("باقات الاستشارات", "Packages") },
-            { id: "interviews", label: t("المقابلات", "Interviews") },
-            { id: "trainings", label: t("التدريبات", "Trainings") },
-            { id: "snapshots", label: t("لحظات شكّلت المسيرة", "Career moments") },
-
-
-            { id: "site", label: t("إدارة الموقع", "Site management") },
-            { id: "leads", label: t("اهتمامات الكورسات", "Course leads") },
-            { id: "tickets", label: t("تذاكر الدعم", "Support tickets") },
-            { id: "finance", label: t("المعاملات المالية", "Financial logs") },
-            { id: "methods", label: t("طرق الدفع", "Payment methods") },
-
             {
-              id: "banned",
-              label: `${t("الموقوفون", "Banned")} (${enrollments.filter((e) => e.profiles?.account_blocked).length})`,
+              id: "growth",
+              label: t("المبيعات والتسويق", "Sales & Marketing"),
+              items: [
+                { id: "leads", label: t("اهتمامات الكورسات", "Course leads"), icon: StickyNote },
+                { id: "coupons", label: t("كوبونات الخصم", "Coupons"), icon: Ticket },
+                { id: "testimonials", label: t("شهادات العملاء", "Testimonials"), icon: Star },
+                { id: "success_cases", label: t("حالات النجاح", "Success cases"), icon: Trophy },
+              ],
             },
-          ].map((tb) => (
-            <button
-              key={tb.id}
-              onClick={() => setTab(tb.id as any)}
-              className={`whitespace-nowrap px-3.5 h-10 rounded-xl text-xs sm:text-sm font-semibold transition ${
-                tab === tb.id
-                  ? "bg-gradient-to-b from-[var(--gold)] to-[#c89a3a] text-[#0b1736] shadow-[0_8px_24px_-10px_rgba(212,175,55,0.6)]"
-                  : "text-white/65 hover:text-white hover:bg-white/5"
-              }`}
-            >
-              {tb.label}
-            </button>
-          ))}
-        </div>
+            {
+              id: "consult",
+              label: t("الاستشارات والمقابلات", "Consulting & Interviews"),
+              items: [
+                { id: "bookings", label: t("حجوزات الاستشارات", "Bookings"), icon: Calendar },
+                { id: "packages", label: t("باقات الاستشارات", "Packages"), icon: Layers },
+                { id: "interviews", label: t("المقابلات", "Interviews"), icon: Video },
+              ],
+            },
+            {
+              id: "ops",
+              label: t("الموقع والدعم", "Site & Support"),
+              items: [
+                { id: "site", label: t("إدارة الموقع", "Site management"), icon: Settings2 },
+                { id: "tickets", label: t("تذاكر الدعم", "Support tickets"), icon: LifeBuoy },
+              ],
+            },
+            {
+              id: "finance",
+              label: t("المالية", "Finance"),
+              items: [
+                { id: "finance", label: t("المعاملات المالية", "Transactions"), icon: Wallet },
+                { id: "methods", label: t("طرق الدفع", "Payment methods"), icon: CreditCard },
+              ],
+            },
+          ];
 
-        {tab === "activations" ? (
-          <ActivationsPanel />
-        ) : tab === "enrollments" ? (
-          <EnrollmentsTable
-            enrollments={enrollments}
-            courses={courses}
-            onOpen={setDrawer}
-            refresh={refresh}
-          />
-        ) : tab === "courses" ? (
-          <CoursesPanel
-            courses={courses}
-            enrollments={enrollments}
-            refresh={refresh}
-            onEdit={setEditingCourse}
-          />
-        ) : tab === "coupons" ? (
-          <CouponsPanel courses={courses} />
-        ) : tab === "additions" ? (
-          <LatestAdditionsPanel />
-        ) : tab === "testimonials" ? (
-          <TestimonialsPanel />
-        ) : tab === "success_cases" ? (
-          <SuccessCasesPanel />
-        ) : tab === "bookings" ? (
-          <BookingsPanel />
-        ) : tab === "packages" ? (
-          <PackagesPanel />
-        ) : tab === "interviews" ? (
-          <InterviewsPanel />
-        ) : tab === "trainings" ? (
-          <TrainingsPanel />
-        ) : tab === "snapshots" ? (
-          <SnapshotsPanel />
-        ) : tab === "site" ? (
-          <SiteManagementPanel />
+          return (
+            <div className="flex flex-col lg:flex-row gap-6">
+              {/* Mobile grouped select */}
+              <div className="lg:hidden dash-card p-2">
+                <select
+                  value={tab}
+                  onChange={(e) => setTab(e.target.value as any)}
+                  className="w-full bg-[#0b1736] text-white text-sm font-semibold h-11 px-3 rounded-xl border border-white/10 focus:border-[var(--gold)] outline-none"
+                >
+                  {groups.map((g) => (
+                    <optgroup key={g.id} label={g.label}>
+                      {g.items.map((it) => (
+                        <option key={it.id} value={it.id}>
+                          {it.label}
+                          {it.badge ? ` (${it.badge})` : ""}
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))}
+                </select>
+              </div>
 
-        ) : tab === "leads" ? (
-          <CourseLeadsPanel />
-        ) : tab === "tickets" ? (
-          user ? (
-            <AdminSupportPanel adminUserId={user.id} />
-          ) : null
-        ) : tab === "finance" ? (
-          <FinancePanel courses={courses} enrollments={enrollments} />
-        ) : tab === "methods" ? (
-          <PaymentMethodsPanel />
-        ) : (
-          <BannedPanel enrollments={enrollments} refresh={refresh} />
-        )}
+              {/* Desktop sidebar */}
+              <aside className="hidden lg:block w-64 shrink-0">
+                <nav className="dash-card p-3 sticky top-24 space-y-5 max-h-[calc(100vh-7rem)] overflow-y-auto">
+                  {groups.map((g) => (
+                    <div key={g.id} className="space-y-1.5">
+                      <p className="px-2 text-[10px] uppercase tracking-[0.14em] text-white/40 font-bold">
+                        {g.label}
+                      </p>
+                      <ul className="space-y-1">
+                        {g.items.map((it) => {
+                          const Icon = it.icon;
+                          const active = tab === it.id;
+                          return (
+                            <li key={it.id}>
+                              <button
+                                onClick={() => setTab(it.id as any)}
+                                className={`w-full group flex items-center gap-2.5 px-3 h-10 rounded-xl text-[13px] font-semibold transition text-start ${
+                                  active
+                                    ? "bg-gradient-to-b from-[var(--gold)] to-[#c89a3a] text-[#0b1736] shadow-[0_8px_24px_-10px_rgba(212,175,55,0.6)]"
+                                    : "text-white/70 hover:text-white hover:bg-white/5"
+                                }`}
+                              >
+                                <Icon
+                                  className={`w-4 h-4 shrink-0 ${active ? "text-[#0b1736]" : "text-white/50 group-hover:text-white/80"}`}
+                                />
+                                <span className="flex-1 truncate">{it.label}</span>
+                                {it.badge ? (
+                                  <span
+                                    className={`min-w-[22px] text-center text-[10px] font-bold px-1.5 h-5 leading-5 rounded-md ${
+                                      active
+                                        ? "bg-[#0b1736]/20 text-[#0b1736]"
+                                        : "bg-white/10 text-white/80"
+                                    }`}
+                                  >
+                                    {it.badge}
+                                  </span>
+                                ) : null}
+                              </button>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  ))}
+                </nav>
+              </aside>
+
+              {/* Main content */}
+              <div className="flex-1 min-w-0 space-y-6">
+                {tab === "activations" ? (
+                  <ActivationsPanel />
+                ) : tab === "enrollments" ? (
+                  <EnrollmentsTable
+                    enrollments={enrollments}
+                    courses={courses}
+                    onOpen={setDrawer}
+                    refresh={refresh}
+                  />
+                ) : tab === "courses" ? (
+                  <CoursesPanel
+                    courses={courses}
+                    enrollments={enrollments}
+                    refresh={refresh}
+                    onEdit={setEditingCourse}
+                  />
+                ) : tab === "coupons" ? (
+                  <CouponsPanel courses={courses} />
+                ) : tab === "additions" ? (
+                  <LatestAdditionsPanel />
+                ) : tab === "testimonials" ? (
+                  <TestimonialsPanel />
+                ) : tab === "success_cases" ? (
+                  <SuccessCasesPanel />
+                ) : tab === "bookings" ? (
+                  <BookingsPanel />
+                ) : tab === "packages" ? (
+                  <PackagesPanel />
+                ) : tab === "interviews" ? (
+                  <InterviewsPanel />
+                ) : tab === "trainings" ? (
+                  <TrainingsPanel />
+                ) : tab === "snapshots" ? (
+                  <SnapshotsPanel />
+                ) : tab === "site" ? (
+                  <SiteManagementPanel />
+                ) : tab === "leads" ? (
+                  <CourseLeadsPanel />
+                ) : tab === "tickets" ? (
+                  user ? (
+                    <AdminSupportPanel adminUserId={user.id} />
+                  ) : null
+                ) : tab === "finance" ? (
+                  <FinancePanel courses={courses} enrollments={enrollments} />
+                ) : tab === "methods" ? (
+                  <PaymentMethodsPanel />
+                ) : (
+                  <BannedPanel enrollments={enrollments} refresh={refresh} />
+                )}
+              </div>
+            </div>
+          );
+        })()}
+
       </div>
 
       {drawer && (
