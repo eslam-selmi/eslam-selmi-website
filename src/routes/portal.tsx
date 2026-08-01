@@ -353,7 +353,7 @@ function PortalPage() {
           )}
         </section>
 
-        <section>
+        <section id="available" className="scroll-mt-24">
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><Sparkles className="w-5 h-5 text-[var(--gold)]" /> {lang === "ar" ? "كورسات متاحة" : "Available courses"}</h2>
           {availableCourses.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-white/15 p-8 text-center text-white/50">{lang === "ar" ? "لا توجد كورسات جديدة حالياً." : "No new courses right now."}</div>
@@ -405,6 +405,7 @@ function PortalPage() {
           )}
         </section>
 
+        </div>
       </div>
 
 
