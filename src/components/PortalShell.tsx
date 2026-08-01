@@ -122,11 +122,12 @@ export function PortalShell({ userId, role, userLabel, children }: Props) {
   };
 
   return (
-    <div dir={dir} className="relative min-h-screen dash-bg text-white">
+    <div dir={dir} className="dash-shell relative min-h-screen dash-bg text-white">
       <div className="absolute inset-0 dash-grid pointer-events-none opacity-70" />
-      <div className="absolute inset-x-0 top-0 h-[520px] bg-aurora opacity-40 pointer-events-none" />
-      <header className="relative border-b border-white/10 backdrop-blur-xl bg-[rgba(8,16,40,0.72)] sticky top-0 z-40">
+      <div className="absolute inset-x-0 top-0 h-[520px] bg-aurora opacity-40 pointer-events-none dark:opacity-40 opacity-20" />
+      <header className="dash-header relative border-b border-white/10 backdrop-blur-xl sticky top-0 z-40">
         <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/40 to-transparent" />
+
         <div className="max-w-7xl mx-auto px-4 sm:px-5 h-16 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <Link to="/" className="flex items-center gap-2.5 group">
