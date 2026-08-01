@@ -154,18 +154,18 @@ export function PortalShell({ userId, role, userLabel, children }: Props) {
                 <Link to="/trainer" className="flex items-center gap-1.5 text-xs text-white/70 hover:text-white px-3 h-9 rounded-lg hover:bg-white/5 transition">
                   <GraduationCap className="w-3.5 h-3.5" /> {L.trainer}
                 </Link>
-              ) : (
-                <Link to="/portal" className="flex items-center gap-1.5 text-xs text-white/70 hover:text-white px-3 h-9 rounded-lg hover:bg-white/5 transition">
-                  <GraduationCap className="w-3.5 h-3.5" /> {L.courses}
-                </Link>
-              )}
+              ) : null}
             </nav>
           </div>
           <div className="flex items-center gap-2">
+            <button onClick={toggle} title={theme === "dark" ? (isAr ? "الوضع الفاتح" : "Light mode") : (isAr ? "الوضع الداكن" : "Dark mode")} aria-label="toggle theme" className="flex items-center justify-center w-10 h-10 rounded-xl border border-white/15 bg-white/[0.03] hover:bg-white/10 hover:border-[var(--gold)]/40 transition">
+              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
             <button onClick={() => setLang(isAr ? "en" : "ar")} title={L.switchLang} className="flex items-center gap-1.5 text-xs px-3 h-10 rounded-xl border border-white/15 bg-white/[0.03] hover:bg-white/10 hover:border-[var(--gold)]/40 transition">
               <Languages className="w-3.5 h-3.5" />
               <span className="hidden sm:inline font-semibold tracking-wide">{L.switchLang}</span>
             </button>
+
             <button onClick={() => setShowChangePassword(true)} title={isAr ? "تغيير كلمة المرور" : "Change Password"} className="flex items-center gap-1.5 text-xs px-3 h-10 rounded-xl border border-white/15 bg-white/[0.03] hover:bg-white/10 hover:border-[var(--gold)]/40 transition">
               <KeyRound className="w-3.5 h-3.5" />
               <span className="hidden md:inline">{isAr ? "كلمة المرور" : "Password"}</span>
