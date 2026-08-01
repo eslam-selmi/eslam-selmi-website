@@ -1,9 +1,10 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { ForcePasswordResetGate } from "@/components/ForcePasswordResetGate";
 import { useAuth, signOut } from "@/lib/portal-auth";
-import { LogOut, Home, ShieldCheck, GraduationCap, Languages, KeyRound } from "lucide-react";
+import { LogOut, Home, ShieldCheck, GraduationCap, Languages, KeyRound, Sun, Moon } from "lucide-react";
 import { NotificationsBell } from "@/lib/notifications";
 import { useI18n } from "@/lib/i18n";
+import { useTheme } from "@/lib/theme";
 
 import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
 const brandLogo = brandLogoAsset.url;
@@ -21,6 +22,7 @@ type Props = {
 export function PortalShell({ userId, role, userLabel, children }: Props) {
   const nav = useNavigate();
   const { lang, setLang, dir } = useI18n();
+  const { theme, toggle } = useTheme();
   
   const isAr = lang === "ar";
   const { forcePasswordReset, session } = useAuth();
