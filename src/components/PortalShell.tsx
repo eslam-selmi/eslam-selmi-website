@@ -1,9 +1,10 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { ForcePasswordResetGate } from "@/components/ForcePasswordResetGate";
 import { useAuth, signOut } from "@/lib/portal-auth";
-import { LogOut, Home, ShieldCheck, GraduationCap, Languages, KeyRound } from "lucide-react";
+import { LogOut, Home, ShieldCheck, GraduationCap, Languages, KeyRound, Sun, Moon } from "lucide-react";
 import { NotificationsBell } from "@/lib/notifications";
 import { useI18n } from "@/lib/i18n";
+import { useTheme } from "@/lib/theme";
 
 import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
 const brandLogo = brandLogoAsset.url;
@@ -21,6 +22,7 @@ type Props = {
 export function PortalShell({ userId, role, userLabel, children }: Props) {
   const nav = useNavigate();
   const { lang, setLang, dir } = useI18n();
+  const { theme, toggle } = useTheme();
   
   const isAr = lang === "ar";
   const { forcePasswordReset, session } = useAuth();
@@ -122,11 +124,12 @@ export function PortalShell({ userId, role, userLabel, children }: Props) {
   };
 
   return (
-    <div dir={dir} className="relative min-h-screen dash-bg text-white">
+    <div dir={dir} className="dash-shell relative min-h-screen dash-bg text-white">
       <div className="absolute inset-0 dash-grid pointer-events-none opacity-70" />
-      <div className="absolute inset-x-0 top-0 h-[520px] bg-aurora opacity-40 pointer-events-none" />
-      <header className="relative border-b border-white/10 backdrop-blur-xl bg-[rgba(8,16,40,0.72)] sticky top-0 z-40">
+      <div className="absolute inset-x-0 top-0 h-[520px] bg-aurora opacity-40 pointer-events-none dark:opacity-40 opacity-20" />
+      <header className="dash-header relative border-b border-white/10 backdrop-blur-xl sticky top-0 z-40">
         <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/40 to-transparent" />
+
         <div className="max-w-7xl mx-auto px-4 sm:px-5 h-16 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <Link to="/" className="flex items-center gap-2.5 group">
@@ -153,18 +156,18 @@ export function PortalShell({ userId, role, userLabel, children }: Props) {
                 <Link to="/trainer" className="flex items-center gap-1.5 text-xs text-white/70 hover:text-white px-3 h-9 rounded-lg hover:bg-white/5 transition">
                   <GraduationCap className="w-3.5 h-3.5" /> {L.trainer}
                 </Link>
-              ) : (
-                <Link to="/portal" className="flex items-center gap-1.5 text-xs text-white/70 hover:text-white px-3 h-9 rounded-lg hover:bg-white/5 transition">
-                  <GraduationCap className="w-3.5 h-3.5" /> {L.courses}
-                </Link>
-              )}
+              ) : null}
             </nav>
           </div>
           <div className="flex items-center gap-2">
+            <button onClick={toggle} title={theme === "dark" ? (isAr ? "الوضع الفاتح" : "Light mode") : (isAr ? "الوضع الداكن" : "Dark mode")} aria-label="toggle theme" className="flex items-center justify-center w-10 h-10 rounded-xl border border-white/15 bg-white/[0.03] hover:bg-white/10 hover:border-[var(--gold)]/40 transition">
+              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
             <button onClick={() => setLang(isAr ? "en" : "ar")} title={L.switchLang} className="flex items-center gap-1.5 text-xs px-3 h-10 rounded-xl border border-white/15 bg-white/[0.03] hover:bg-white/10 hover:border-[var(--gold)]/40 transition">
               <Languages className="w-3.5 h-3.5" />
               <span className="hidden sm:inline font-semibold tracking-wide">{L.switchLang}</span>
             </button>
+
             <button onClick={() => setShowChangePassword(true)} title={isAr ? "تغيير كلمة المرور" : "Change Password"} className="flex items-center gap-1.5 text-xs px-3 h-10 rounded-xl border border-white/15 bg-white/[0.03] hover:bg-white/10 hover:border-[var(--gold)]/40 transition">
               <KeyRound className="w-3.5 h-3.5" />
               <span className="hidden md:inline">{isAr ? "كلمة المرور" : "Password"}</span>

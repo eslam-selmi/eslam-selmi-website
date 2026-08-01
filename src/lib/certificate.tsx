@@ -22,9 +22,9 @@ export type CertificatePayload = {
 /* ---------- Copy ---------- */
 const COPY = {
   ar: {
-    eyebrow: "أكاديمية إسلام سلمي",
+    eyebrow: "إسلام سلمي",
     title: "شهادة إتمام",
-    subtitle: "تشهد الأكاديمية بكل فخر أن",
+    subtitle: "نشهد بكل فخر أن",
     bridge: "قد أتمّ بامتياز جميع متطلبات كورس",
     hoursLabel: "إجمالي ساعات التدريب",
     hoursUnit: "ساعة",
@@ -33,7 +33,7 @@ const COPY = {
     verify: "امسح للتحقّق",
     defaultSigner: "م. إسلام سلمي",
     defaultRole: "المؤسس والمدرّب الرئيسي",
-    seal: "ختم الأكاديمية",
+    seal: "الختم الرسمي",
     monogram: "إ س",
     latinTag: "ESLAM SELMI ACADEMY",
     dir: "rtl" as const,
@@ -54,7 +54,7 @@ const COPY = {
     defaultRole: "Founder & Lead Instructor",
     seal: "Academy Seal",
     monogram: "ES",
-    latinTag: "أكاديمية إسلام سلمي",
+    latinTag: "إسلام سلمي",
     dir: "ltr" as const,
     fontDisplay: "'Cinzel','Cormorant Garamond',Georgia,serif",
     fontBody: "'Cormorant Garamond',Georgia,'Times New Roman',serif",

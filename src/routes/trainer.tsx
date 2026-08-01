@@ -13,7 +13,7 @@ import { safeHref } from "@/lib/safe-url";
 export const Route = createFileRoute("/trainer")({
   head: () => ({
     meta: [
-      { title: "لوحة المدرّب · أكاديمية إسلام سلمي" },
+      { title: "لوحة المدرّب · إسلام سلمي" },
       { name: "robots", content: "noindex" },
     ],
   }),

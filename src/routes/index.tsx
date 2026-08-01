@@ -400,7 +400,7 @@ const CREDENTIALS = [
   },
   {
     name: { en: "Risk Management Workshop", ar: "ورشة إدارة المخاطر" },
-    issuer: { en: "Masar Academy", ar: "أكاديمية مسار" },
+    issuer: { en: "Masar Academy", ar: "مسار" },
     icon: Target,
   },
   {

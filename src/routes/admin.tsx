@@ -98,7 +98,7 @@ export const Route = createFileRoute("/admin")({
     return {};
   },
   head: () => ({
-    meta: [{ title: "لوحة الإدارة · أكاديمية إسلام سلمي" }, { name: "robots", content: "noindex" }],
+    meta: [{ title: "لوحة الإدارة · إسلام سلمي" }, { name: "robots", content: "noindex" }],
   }),
   component: AdminPage,
 });

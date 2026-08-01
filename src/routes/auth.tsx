@@ -24,7 +24,7 @@ export const Route = createFileRoute("/auth")({
     role: (search.role as string) || "trainee",
   }),
   head: () => ({
-    meta: [{ title: "تسجيل الدخول · أكاديمية إسلام سلمي" }, { name: "robots", content: "noindex" }],
+    meta: [{ title: "تسجيل الدخول · إسلام سلمي" }, { name: "robots", content: "noindex" }],
   }),
   component: AuthPage,
 });
