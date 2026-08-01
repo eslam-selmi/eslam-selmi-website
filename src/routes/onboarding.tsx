@@ -10,7 +10,7 @@ import { useI18n } from "@/lib/i18n";
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
     meta: [
-      { title: "تفعيل الحساب · أكاديمية إسلام سلمي" },
+      { title: "تفعيل الحساب · إسلام سلمي" },
       { name: "robots", content: "noindex" },
     ],
   }),

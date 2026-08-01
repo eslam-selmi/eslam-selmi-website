@@ -28,7 +28,7 @@ export const Route = createFileRoute("/portal")({
   }),
   head: () => ({
     meta: [
-      { title: "بوابة المتدرب · أكاديمية إسلام سلمي" },
+      { title: "بوابة المتدرب · إسلام سلمي" },
       { name: "robots", content: "noindex" },
     ],
   }),
