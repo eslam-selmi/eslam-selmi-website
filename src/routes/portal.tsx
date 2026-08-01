@@ -227,13 +227,66 @@ function PortalPage() {
     );
   }
 
+  const hour = new Date().getHours();
+  const greeting = lang === "ar"
+    ? (hour < 12 ? "صباح الخير" : hour < 17 ? "طاب يومك" : "مساء الخير")
+    : (hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening");
+  const firstName = (profile?.full_name || "").trim().split(/\s+/)[0] || (lang === "ar" ? "متدرب جديد" : "there");
+
+  const navItems = [
+    { id: "overview", label: lang === "ar" ? "نظرة عامة" : "Overview", icon: Sparkles },
+    { id: "my-courses", label: lang === "ar" ? "كورساتي" : "My courses", icon: BookOpen, badge: enrollments.length || undefined },
+    { id: "certificates", label: lang === "ar" ? "شهاداتي" : "My certificates", icon: Award, badge: stats.certs || undefined },
+    { id: "packages", label: lang === "ar" ? "باقات الاستشارات" : "Consulting packages", icon: PhoneOutgoing },
+    { id: "available", label: lang === "ar" ? "كورسات متاحة" : "Available courses", icon: GraduationCap, badge: availableCourses.length || undefined },
+  ];
+
   return (
     <PortalShell userId={user.id} role="trainee" userLabel={profile?.full_name || profile?.email}>
-      <div className="space-y-10">
-        <section className="dash-card p-7 sm:p-9 backdrop-blur-xl">
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Sidebar */}
+        <aside className="lg:w-64 shrink-0">
+          <div className="dash-card p-3 lg:sticky lg:top-24 space-y-4 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
+            <div className="px-2 pt-1">
+              <p className="text-[10px] uppercase tracking-[0.16em] text-white/40 font-bold">
+                {lang === "ar" ? "ملخص سريع" : "Quick summary"}
+              </p>
+              <div className="mt-2 grid grid-cols-3 lg:grid-cols-1 gap-2">
+                <MiniStat label={lang === "ar" ? "كورسات نشطة" : "Active"} value={stats.active} />
+                <MiniStat label={lang === "ar" ? "ساعات" : "Hours"} value={`${stats.hoursEarned}/${stats.hoursTotal}`} />
+                <MiniStat label={lang === "ar" ? "شهادات" : "Certificates"} value={stats.certs} />
+              </div>
+            </div>
+            <div className="gold-divider" />
+            <nav>
+              <ul className="space-y-1">
+                {navItems.map((it) => {
+                  const Icon = it.icon;
+                  return (
+                    <li key={it.id}>
+                      <button
+                        onClick={() => document.getElementById(it.id)?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                        className="w-full group flex items-center gap-2.5 px-3 h-10 rounded-xl text-[13px] font-semibold transition text-start text-white/70 hover:text-white hover:bg-white/5"
+                      >
+                        <Icon className="w-4 h-4 shrink-0 text-white/50 group-hover:text-[var(--gold)]" />
+                        <span className="flex-1 truncate">{it.label}</span>
+                        {it.badge ? (
+                          <span className="min-w-[22px] text-center text-[10px] font-bold px-1.5 h-5 leading-5 rounded-md bg-white/10 text-white/80">{it.badge}</span>
+                        ) : null}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
+          </div>
+        </aside>
+
+        <div className="flex-1 min-w-0 space-y-10">
+        <section id="overview" className="dash-card p-7 sm:p-9 backdrop-blur-xl scroll-mt-24">
           <div className="flex items-start justify-between gap-6 flex-wrap">
             <div>
-              <p className="text-xs tracking-widest text-[var(--gold)] mb-2">{lang === "ar" ? "مرحباً بك" : "Welcome"}</p>
+              <p className="text-xs tracking-widest text-[var(--gold)] mb-2">{greeting}</p>
               <h1 className="text-3xl sm:text-4xl font-bold flex items-center gap-3 flex-wrap">
                 {(() => {
                   const country = findCountry(profile?.country);
@@ -250,8 +303,8 @@ function PortalPage() {
                 <span>{profile?.full_name || (lang === "ar" ? "متدرب جديد" : "New trainee")}</span>
               </h1>
               <p className="text-white/60 mt-2 max-w-xl">{lang === "ar"
-                ? "نظرة سريعة على كورساتك وتقدمك."
-                : "A quick look at your courses and progress."}</p>
+                ? `أهلاً ${firstName} — نظرة سريعة على كورساتك وتقدمك.`
+                : `Hi ${firstName} — a quick look at your courses and progress.`}</p>
             </div>
             <div className="flex items-center gap-2">
               <TraineeSupportButton
@@ -272,6 +325,7 @@ function PortalPage() {
           <StatCard icon={Clock} label={lang === "ar" ? "ساعات تدريبية مكتملة" : "Training hours done"} value={`${stats.hoursEarned} / ${stats.hoursTotal}`} suffix={lang === "ar" ? "ساعة" : "hrs"} accent="sky" />
           <StatCard icon={Award} label={lang === "ar" ? "شهادات صادرة" : "Certificates"} value={stats.certs} accent="gold" />
         </section>
+
 
         <MyCertificatesSection
           enrollments={trEnrollments.filter((e) => e.certificate_issued && (e.certificate_url_ar || e.certificate_url_en || e.certificate_url))}
