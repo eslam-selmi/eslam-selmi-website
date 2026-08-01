@@ -405,3 +405,68 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
     transform: none !important;
   }
 }
+
+/* ============================================================
+   DASHBOARD LIGHT MODE
+   The trainee/admin/trainer shells are authored dark-first with
+   white-alpha utilities. In light mode we remap those surfaces
+   to an airy, minimal ink-on-paper palette.
+   ============================================================ */
+:root:not(.dark) .dash-bg {
+  background:
+    radial-gradient(ellipse 80% 50% at 10% -8%, oklch(0.86 0.06 250 / 0.55), transparent 62%),
+    radial-gradient(ellipse 65% 45% at 92% -6%, oklch(0.90 0.05 200 / 0.55), transparent 60%),
+    linear-gradient(180deg, #f7f9fd 0%, #f2f5fb 45%, #eef2f9 100%);
+}
+:root:not(.dark) .dash-grid {
+  background-image:
+    linear-gradient(to right, oklch(0.20 0.06 260 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(0.20 0.06 260 / 0.05) 1px, transparent 1px);
+}
+:root:not(.dark) .dash-card {
+  background: linear-gradient(155deg, #ffffff, #fdfefe 60%, #fbfcfe);
+  border: 1px solid oklch(0.20 0.06 260 / 0.09);
+  box-shadow: 0 18px 44px -30px oklch(0.20 0.06 260 / 0.35), inset 0 1px 0 #fff;
+}
+:root:not(.dark) .dash-header {
+  background: color-mix(in oklab, #ffffff 82%, transparent);
+  border-color: oklch(0.20 0.06 260 / 0.08);
+}
+.dash-header { background: rgba(8, 16, 40, 0.72); }
+:root:not(.dark) .dash-pill {
+  background: oklch(0.20 0.06 260 / 0.04);
+  border-color: oklch(0.20 0.06 260 / 0.10);
+  color: oklch(0.30 0.04 255);
+}
+:root:not(.dark) .premium-dialog {
+  background: linear-gradient(160deg, #ffffff, #fbfcfe);
+  border: 1px solid oklch(0.20 0.06 260 / 0.10);
+  box-shadow: 0 40px 100px -40px oklch(0.20 0.06 260 / 0.45);
+  color: #101d3b;
+}
+:root:not(.dark) .premium-input {
+  background: oklch(0.20 0.06 260 / 0.03);
+  border-color: oklch(0.20 0.06 260 / 0.12);
+  color: #101d3b;
+}
+
+/* Remap dark-first alpha utilities inside the dashboard shell */
+:root:not(.dark) .dash-shell { color: #101d3b; }
+:root:not(.dark) .dash-shell [class*="text-white"] { color: rgba(16, 29, 59, 0.92); }
+:root:not(.dark) .dash-shell [class*="text-white/30"],
+:root:not(.dark) .dash-shell [class*="text-white/35"],
+:root:not(.dark) .dash-shell [class*="text-white/40"],
+:root:not(.dark) .dash-shell [class*="text-white/45"] { color: rgba(16, 29, 59, 0.45); }
+:root:not(.dark) .dash-shell [class*="text-white/50"],
+:root:not(.dark) .dash-shell [class*="text-white/55"],
+:root:not(.dark) .dash-shell [class*="text-white/60"],
+:root:not(.dark) .dash-shell [class*="text-white/65"] { color: rgba(16, 29, 59, 0.60); }
+:root:not(.dark) .dash-shell [class*="text-white/70"],
+:root:not(.dark) .dash-shell [class*="text-white/75"],
+:root:not(.dark) .dash-shell [class*="text-white/80"],
+:root:not(.dark) .dash-shell [class*="text-white/85"] { color: rgba(16, 29, 59, 0.78); }
+:root:not(.dark) .dash-shell [class*="bg-white/"] { background-color: oklch(0.20 0.06 260 / 0.04); }
+:root:not(.dark) .dash-shell [class*="border-white/"] { border-color: oklch(0.20 0.06 260 / 0.10); }
+:root:not(.dark) .dash-shell [class*="divide-white/"] > * + * { border-color: oklch(0.20 0.06 260 / 0.10); }
+/* Gold CTAs keep their navy ink */
+:root:not(.dark) .dash-shell [class*="text-[#0b1736]"] { color: #0b1736; }
