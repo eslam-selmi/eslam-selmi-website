@@ -11,7 +11,7 @@ import { safeHref } from "@/lib/safe-url";
 import { Clock, CheckCircle2, XCircle, Download, Upload, BookOpen, Wallet, Loader2,
   ExternalLink, Sparkles, ArrowRight, Calendar, Layers, StickyNote, Link as LinkIcon,
   Paperclip, Check, ChevronLeft, PlayCircle, PhoneOutgoing, Award, GraduationCap, Hourglass,
-  FileText, Send, AlertCircle, X, Star } from "lucide-react";
+  FileText, Send, AlertCircle, X, Star, UserCog, Camera, Save } from "lucide-react";
 import { MediaViewerModal, type MediaItem } from "@/components/MediaViewerModal";
 import { TraineeSupportButton } from "@/components/SupportTickets";
 import { TraineePackagesSection } from "@/components/TraineePackagesSection";
