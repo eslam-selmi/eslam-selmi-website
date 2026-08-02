@@ -50,7 +50,7 @@ type Enrollment = {
   payment_reminder_dismissed_at: string | null;
   courses: Course | null;
 };
-type Profile = { full_name: string | null; email: string | null; phone: string | null; country: string | null; country_code: string | null; account_blocked?: boolean };
+type Profile = { full_name: string | null; email: string | null; phone: string | null; country: string | null; country_code: string | null; account_blocked?: boolean; avatar_url?: string | null };
 type ModuleRow = { id: string; course_id: string; completed_by_admin: boolean };
 
 const DRIVE_URL = "https://drive.google.com/drive/folders/1_GB18CPhfYZQt06orG1pIgbGffUk8dXA?usp=sharing";
