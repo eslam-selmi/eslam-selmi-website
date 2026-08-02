@@ -89,7 +89,7 @@ function PortalPage() {
     if (!user) return;
     setLoadingData(true);
     const [p, c, e] = await Promise.all([
-      supabase.from("profiles").select("full_name,email,phone,country,country_code,account_blocked").eq("id", user.id).maybeSingle(),
+      supabase.from("profiles").select("full_name,email,phone,country,country_code,account_blocked,avatar_url").eq("id", user.id).maybeSingle(),
       supabase.from("courses").select("*").eq("active", true).order("created_at", { ascending: false }),
       supabase.from("enrollments").select("*, courses(*)").eq("user_id", user.id).order("created_at", { ascending: false }),
     ]);
