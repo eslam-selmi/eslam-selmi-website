@@ -534,6 +534,8 @@ function EnrollmentCard({ en, onOpen, onWithdraw, progress = 0, doneCount = 0, t
           </button>
         )}
       </div>
+    </div>
+
 
   );
 }
