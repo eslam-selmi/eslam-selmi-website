@@ -11,7 +11,7 @@ import { safeHref } from "@/lib/safe-url";
 import { Clock, CheckCircle2, XCircle, Download, Upload, BookOpen, Wallet, Loader2,
   ExternalLink, Sparkles, ArrowRight, Calendar, Layers, StickyNote, Link as LinkIcon,
   Paperclip, Check, ChevronLeft, PlayCircle, PhoneOutgoing, Award, GraduationCap, Hourglass,
-  FileText, Send, AlertCircle, X, Star } from "lucide-react";
+  FileText, Send, AlertCircle, X, Star, UserCog, Camera, Save } from "lucide-react";
 import { MediaViewerModal, type MediaItem } from "@/components/MediaViewerModal";
 import { TraineeSupportButton } from "@/components/SupportTickets";
 import { TraineePackagesSection } from "@/components/TraineePackagesSection";
@@ -50,7 +50,7 @@ type Enrollment = {
   payment_reminder_dismissed_at: string | null;
   courses: Course | null;
 };
-type Profile = { full_name: string | null; email: string | null; phone: string | null; country: string | null; country_code: string | null; account_blocked?: boolean };
+type Profile = { full_name: string | null; email: string | null; phone: string | null; country: string | null; country_code: string | null; account_blocked?: boolean; avatar_url?: string | null };
 type ModuleRow = { id: string; course_id: string; completed_by_admin: boolean };
 
 const DRIVE_URL = "https://drive.google.com/drive/folders/1_GB18CPhfYZQt06orG1pIgbGffUk8dXA?usp=sharing";
@@ -89,7 +89,7 @@ function PortalPage() {
     if (!user) return;
     setLoadingData(true);
     const [p, c, e] = await Promise.all([
-      supabase.from("profiles").select("full_name,email,phone,country,country_code,account_blocked").eq("id", user.id).maybeSingle(),
+      supabase.from("profiles").select("full_name,email,phone,country,country_code,account_blocked,avatar_url").eq("id", user.id).maybeSingle(),
       supabase.from("courses").select("*").eq("active", true).order("created_at", { ascending: false }),
       supabase.from("enrollments").select("*, courses(*)").eq("user_id", user.id).order("created_at", { ascending: false }),
     ]);
@@ -118,6 +118,18 @@ function PortalPage() {
     setLoadingData(false);
   }
   useEffect(() => { if (user) refresh(); }, [user]);
+
+  // Signed URL for the private avatar file
+  const [avatarSrc, setAvatarSrc] = useState<string | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    const path = profile?.avatar_url;
+    if (!path) { setAvatarSrc(null); return; }
+    supabase.storage.from("avatars").createSignedUrl(path, 3600).then(({ data }) => {
+      if (!cancelled) setAvatarSrc(data?.signedUrl ?? null);
+    });
+    return () => { cancelled = true; };
+  }, [profile?.avatar_url]);
 
   // Realtime refresh on enrollment / payment changes
   useEffect(() => {
@@ -229,9 +241,20 @@ function PortalPage() {
 
   const hour = new Date().getHours();
   const greeting = lang === "ar"
-    ? (hour < 12 ? "صباح الخير" : hour < 17 ? "طاب يومك" : "مساء الخير")
-    : (hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening");
+    ? (hour < 5 ? "ليلة هادئة" : hour < 12 ? "صباح الخير" : hour < 17 ? "طاب يومك" : hour < 21 ? "مساء الخير" : "مساء النور")
+    : (hour < 5 ? "Quiet night" : hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : hour < 21 ? "Good evening" : "Good night");
   const firstName = (profile?.full_name || "").trim().split(/\s+/)[0] || (lang === "ar" ? "متدرب جديد" : "there");
+  const welcomeLine = lang === "ar"
+    ? (hour < 5 ? `${firstName}، شغف التعلّم لا ينام — خُذ راحتك واستكمل من حيث توقفت.`
+      : hour < 12 ? `صباح النشاط يا ${firstName} — ابدأ يومك بمحاضرة جديدة.`
+      : hour < 17 ? `أهلاً ${firstName} — نظرة سريعة على كورساتك وتقدمك.`
+      : hour < 21 ? `مساء الخير يا ${firstName} — وقت مثالي لمراجعة ما أنجزته اليوم.`
+      : `${firstName}، جلسة مذاكرة هادئة قبل النوم؟ محتواك في انتظارك.`)
+    : (hour < 5 ? `${firstName}, the night is quiet — pick up where you left off.`
+      : hour < 12 ? `Good morning ${firstName} — start the day with a fresh lecture.`
+      : hour < 17 ? `Hi ${firstName} — a quick look at your courses and progress.`
+      : hour < 21 ? `Good evening ${firstName} — a great time to review today's progress.`
+      : `${firstName}, a calm late-night session? Your content is ready.`);
 
   const navItems = [
     { id: "overview", label: lang === "ar" ? "نظرة عامة" : "Overview", icon: Sparkles },
@@ -239,6 +262,7 @@ function PortalPage() {
     { id: "certificates", label: lang === "ar" ? "شهاداتي" : "My certificates", icon: Award, badge: stats.certs || undefined },
     { id: "packages", label: lang === "ar" ? "باقات الاستشارات" : "Consulting packages", icon: PhoneOutgoing },
     { id: "available", label: lang === "ar" ? "كورسات متاحة" : "Available courses", icon: GraduationCap, badge: availableCourses.length || undefined },
+    { id: "account", label: lang === "ar" ? "إعدادات الحساب" : "Account settings", icon: UserCog },
   ];
 
   return (
@@ -285,7 +309,18 @@ function PortalPage() {
         <div className="flex-1 min-w-0 space-y-10">
         <section id="overview" className="dash-card p-7 sm:p-9 backdrop-blur-xl scroll-mt-24">
           <div className="flex items-start justify-between gap-6 flex-wrap">
-            <div>
+            <div className="flex items-start gap-4 min-w-0">
+              <button
+                type="button"
+                onClick={() => document.getElementById("account")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                title={lang === "ar" ? "تغيير الصورة الشخصية" : "Change profile photo"}
+                className="relative shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden border border-[var(--gold)]/35 bg-white/5 flex items-center justify-center text-2xl font-bold text-[var(--gold)] hover:border-[var(--gold)] transition"
+              >
+                {avatarSrc
+                  ? <img src={avatarSrc} alt={profile?.full_name || "avatar"} className="w-full h-full object-cover" />
+                  : (profile?.full_name || profile?.email || "?").trim().charAt(0).toUpperCase()}
+              </button>
+              <div className="min-w-0">
               <p className="text-xs tracking-widest text-[var(--gold)] mb-2">{greeting}</p>
               <h1 className="text-3xl sm:text-4xl font-bold flex items-center gap-3 flex-wrap">
                 {(() => {
@@ -302,9 +337,8 @@ function PortalPage() {
                 })()}
                 <span>{profile?.full_name || (lang === "ar" ? "متدرب جديد" : "New trainee")}</span>
               </h1>
-              <p className="text-white/60 mt-2 max-w-xl">{lang === "ar"
-                ? `أهلاً ${firstName} — نظرة سريعة على كورساتك وتقدمك.`
-                : `Hi ${firstName} — a quick look at your courses and progress.`}</p>
+              <p className="text-white/60 mt-2 max-w-xl">{welcomeLine}</p>
+              </div>
             </div>
             <div className="flex items-center gap-2">
               <TraineeSupportButton
@@ -418,6 +452,15 @@ function PortalPage() {
             </div>
           )}
         </section>
+
+        <AccountSettingsSection
+          userId={user.id}
+          profile={profile}
+          avatarSrc={avatarSrc}
+          onSaved={refresh}
+        />
+
+
 
         </div>
       </div>
@@ -988,6 +1031,134 @@ function CertificatePanel({
         </div>
       )}
     </div>
+  );
+}
+
+// ============= ACCOUNT SETTINGS (trainee) =============
+function AccountSettingsSection({ userId, profile, avatarSrc, onSaved }: {
+  userId: string;
+  profile: Profile | null;
+  avatarSrc: string | null;
+  onSaved: () => void;
+}) {
+  const { lang } = useI18n();
+  const isAr = lang === "ar";
+  const [name, setName] = useState(profile?.full_name || "");
+  const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
+  useEffect(() => { setName(profile?.full_name || ""); }, [profile?.full_name]);
+
+  async function saveName(e: React.FormEvent) {
+    e.preventDefault();
+    const trimmed = name.trim();
+    if (trimmed.length < 3) {
+      toast.error(isAr ? "الاسم يجب ألا يقل عن 3 أحرف" : "Name must be at least 3 characters");
+      return;
+    }
+    setSaving(true);
+    const { error } = await supabase.from("profiles").update({ full_name: trimmed }).eq("id", userId);
+    setSaving(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success(isAr ? "تم تحديث اسمك بنجاح" : "Your name was updated");
+    onSaved();
+  }
+
+  async function uploadAvatar(file: File) {
+    if (!file.type.startsWith("image/")) {
+      toast.error(isAr ? "الرجاء اختيار ملف صورة" : "Please choose an image file");
+      return;
+    }
+    if (file.size > 3 * 1024 * 1024) {
+      toast.error(isAr ? "أقصى حجم للصورة 3 ميجابايت" : "Max image size is 3MB");
+      return;
+    }
+    setUploading(true);
+    const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+    const path = `${userId}/avatar-${Date.now()}.${ext}`;
+    const { error: upErr } = await supabase.storage.from("avatars").upload(path, file, { upsert: true, contentType: file.type });
+    if (upErr) { setUploading(false); toast.error(upErr.message); return; }
+    const oldPath = profile?.avatar_url;
+    const { error } = await supabase.from("profiles").update({ avatar_url: path }).eq("id", userId);
+    setUploading(false);
+    if (error) { toast.error(error.message); return; }
+    if (oldPath && oldPath !== path) { await supabase.storage.from("avatars").remove([oldPath]); }
+    toast.success(isAr ? "تم تحديث صورتك الشخصية" : "Profile photo updated");
+    onSaved();
+  }
+
+  async function removeAvatar() {
+    const oldPath = profile?.avatar_url;
+    if (!oldPath) return;
+    setUploading(true);
+    const { error } = await supabase.from("profiles").update({ avatar_url: null }).eq("id", userId);
+    setUploading(false);
+    if (error) { toast.error(error.message); return; }
+    await supabase.storage.from("avatars").remove([oldPath]);
+    toast.success(isAr ? "تم حذف الصورة" : "Photo removed");
+    onSaved();
+  }
+
+  return (
+    <section id="account" className="scroll-mt-24">
+      <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+        <UserCog className="w-5 h-5 text-[var(--gold)]" /> {isAr ? "إعدادات الحساب" : "Account settings"}
+      </h2>
+      <div className="dash-card p-6 grid md:grid-cols-[auto_1fr] gap-6 items-start">
+        <div className="flex flex-col items-center gap-3">
+          <div className="relative w-28 h-28 rounded-2xl overflow-hidden border border-[var(--gold)]/35 bg-white/5 flex items-center justify-center text-4xl font-bold text-[var(--gold)]">
+            {avatarSrc
+              ? <img src={avatarSrc} alt={profile?.full_name || "avatar"} className="w-full h-full object-cover" />
+              : (profile?.full_name || profile?.email || "?").trim().charAt(0).toUpperCase()}
+            {uploading && (
+              <div className="absolute inset-0 bg-[#040818]/70 flex items-center justify-center">
+                <Loader2 className="w-6 h-6 animate-spin text-[var(--gold)]" />
+              </div>
+            )}
+          </div>
+          <label className="cursor-pointer inline-flex items-center gap-1.5 text-xs px-3 h-9 rounded-lg bg-white/5 border border-white/15 hover:bg-white/10 transition">
+            <Camera className="w-3.5 h-3.5" /> {isAr ? "تغيير الصورة" : "Change photo"}
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              disabled={uploading}
+              onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) uploadAvatar(f); }}
+            />
+          </label>
+          {profile?.avatar_url && (
+            <button type="button" onClick={removeAvatar} disabled={uploading}
+              className="text-[11px] text-rose-300 hover:text-rose-200 transition">
+              {isAr ? "حذف الصورة" : "Remove photo"}
+            </button>
+          )}
+        </div>
+
+        <form onSubmit={saveName} className="space-y-4">
+          <div>
+            <label className="block text-[11px] uppercase tracking-wider text-white/55 mb-1.5 font-semibold">
+              {isAr ? "الاسم بالكامل" : "Full name"}
+            </label>
+            <input value={name} onChange={(e) => setName(e.target.value)} className="premium-input" placeholder={isAr ? "اكتب اسمك" : "Your name"} />
+            <p className="text-[11px] text-white/45 mt-1.5">
+              {isAr ? "هذا الاسم يظهر في لوحتك وفي التواصل مع الإدارة." : "This name appears on your dashboard and in admin communication."}
+            </p>
+          </div>
+          <div>
+            <label className="block text-[11px] uppercase tracking-wider text-white/55 mb-1.5 font-semibold">
+              {isAr ? "البريد الإلكتروني" : "Email"}
+            </label>
+            <input value={profile?.email || ""} readOnly disabled className="premium-input opacity-60 cursor-not-allowed" />
+          </div>
+          <button type="submit" disabled={saving}
+            className="h-11 px-6 rounded-xl font-bold flex items-center gap-2 disabled:opacity-50 hover:brightness-110 transition"
+            style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
+            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+            {isAr ? "حفظ التغييرات" : "Save changes"}
+          </button>
+        </form>
+      </div>
+    </section>
   );
 }
 

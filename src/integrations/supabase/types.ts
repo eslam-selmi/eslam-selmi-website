@@ -1098,6 +1098,7 @@ export type Database = {
           account_blocked: boolean
           activated_at: string | null
           activation_status: string
+          avatar_url: string | null
           country: string | null
           country_code: string | null
           created_at: string
@@ -1112,6 +1113,7 @@ export type Database = {
           account_blocked?: boolean
           activated_at?: string | null
           activation_status?: string
+          avatar_url?: string | null
           country?: string | null
           country_code?: string | null
           created_at?: string
@@ -1126,6 +1128,7 @@ export type Database = {
           account_blocked?: boolean
           activated_at?: string | null
           activation_status?: string
+          avatar_url?: string | null
           country?: string | null
           country_code?: string | null
           created_at?: string
