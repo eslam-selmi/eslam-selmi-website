@@ -119,6 +119,18 @@ function PortalPage() {
   }
   useEffect(() => { if (user) refresh(); }, [user]);
 
+  // Signed URL for the private avatar file
+  const [avatarSrc, setAvatarSrc] = useState<string | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    const path = profile?.avatar_url;
+    if (!path) { setAvatarSrc(null); return; }
+    supabase.storage.from("avatars").createSignedUrl(path, 3600).then(({ data }) => {
+      if (!cancelled) setAvatarSrc(data?.signedUrl ?? null);
+    });
+    return () => { cancelled = true; };
+  }, [profile?.avatar_url]);
+
   // Realtime refresh on enrollment / payment changes
   useEffect(() => {
     if (!user) return;
