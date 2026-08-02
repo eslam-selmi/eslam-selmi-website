@@ -348,7 +348,21 @@ function PortalPage() {
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 gap-4">
-              {trEnrollments.map((en) => <EnrollmentCard key={en.id} en={en} onOpen={() => setViewing(en)} onWithdraw={withdraw} />)}
+              {trEnrollments.map((en) => {
+                const mods = modules.filter((m) => m.course_id === en.course_id);
+                const done = mods.filter((m) => m.completed_by_admin).length;
+                return (
+                  <EnrollmentCard
+                    key={en.id}
+                    en={en}
+                    progress={mods.length ? Math.round((done / mods.length) * 100) : 0}
+                    doneCount={done}
+                    totalCount={mods.length}
+                    onOpen={() => setViewing(en)}
+                    onWithdraw={withdraw}
+                  />
+                );
+              })}
             </div>
           )}
         </section>
