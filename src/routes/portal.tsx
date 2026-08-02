@@ -241,9 +241,20 @@ function PortalPage() {
 
   const hour = new Date().getHours();
   const greeting = lang === "ar"
-    ? (hour < 12 ? "صباح الخير" : hour < 17 ? "طاب يومك" : "مساء الخير")
-    : (hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening");
+    ? (hour < 5 ? "ليلة هادئة" : hour < 12 ? "صباح الخير" : hour < 17 ? "طاب يومك" : hour < 21 ? "مساء الخير" : "مساء النور")
+    : (hour < 5 ? "Quiet night" : hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : hour < 21 ? "Good evening" : "Good night");
   const firstName = (profile?.full_name || "").trim().split(/\s+/)[0] || (lang === "ar" ? "متدرب جديد" : "there");
+  const welcomeLine = lang === "ar"
+    ? (hour < 5 ? `${firstName}، شغف التعلّم لا ينام — خُذ راحتك واستكمل من حيث توقفت.`
+      : hour < 12 ? `صباح النشاط يا ${firstName} — ابدأ يومك بمحاضرة جديدة.`
+      : hour < 17 ? `أهلاً ${firstName} — نظرة سريعة على كورساتك وتقدمك.`
+      : hour < 21 ? `مساء الخير يا ${firstName} — وقت مثالي لمراجعة ما أنجزته اليوم.`
+      : `${firstName}، جلسة مذاكرة هادئة قبل النوم؟ محتواك في انتظارك.`)
+    : (hour < 5 ? `${firstName}, the night is quiet — pick up where you left off.`
+      : hour < 12 ? `Good morning ${firstName} — start the day with a fresh lecture.`
+      : hour < 17 ? `Hi ${firstName} — a quick look at your courses and progress.`
+      : hour < 21 ? `Good evening ${firstName} — a great time to review today's progress.`
+      : `${firstName}, a calm late-night session? Your content is ready.`);
 
   const navItems = [
     { id: "overview", label: lang === "ar" ? "نظرة عامة" : "Overview", icon: Sparkles },
@@ -251,6 +262,7 @@ function PortalPage() {
     { id: "certificates", label: lang === "ar" ? "شهاداتي" : "My certificates", icon: Award, badge: stats.certs || undefined },
     { id: "packages", label: lang === "ar" ? "باقات الاستشارات" : "Consulting packages", icon: PhoneOutgoing },
     { id: "available", label: lang === "ar" ? "كورسات متاحة" : "Available courses", icon: GraduationCap, badge: availableCourses.length || undefined },
+    { id: "account", label: lang === "ar" ? "إعدادات الحساب" : "Account settings", icon: UserCog },
   ];
 
   return (
