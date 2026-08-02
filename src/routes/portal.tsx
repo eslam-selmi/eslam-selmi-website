@@ -348,7 +348,21 @@ function PortalPage() {
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 gap-4">
-              {trEnrollments.map((en) => <EnrollmentCard key={en.id} en={en} onOpen={() => setViewing(en)} onWithdraw={withdraw} />)}
+              {trEnrollments.map((en) => {
+                const mods = modules.filter((m) => m.course_id === en.course_id);
+                const done = mods.filter((m) => m.completed_by_admin).length;
+                return (
+                  <EnrollmentCard
+                    key={en.id}
+                    en={en}
+                    progress={mods.length ? Math.round((done / mods.length) * 100) : 0}
+                    doneCount={done}
+                    totalCount={mods.length}
+                    onOpen={() => setViewing(en)}
+                    onWithdraw={withdraw}
+                  />
+                );
+              })}
             </div>
           )}
         </section>
@@ -431,7 +445,7 @@ function MiniStat({ label, value }: { label: string; value: number | string }) {
   );
 }
 
-function EnrollmentCard({ en, onOpen, onWithdraw }: { en: Enrollment; onOpen: () => void; onWithdraw: (id: string) => void }) {
+function EnrollmentCard({ en, onOpen, onWithdraw, progress = 0, doneCount = 0, totalCount = 0 }: { en: Enrollment; onOpen: () => void; onWithdraw: (id: string) => void; progress?: number; doneCount?: number; totalCount?: number }) {
   const { lang } = useI18n();
   const isAr = lang === "ar";
   const statusBadge = {
@@ -442,48 +456,87 @@ function EnrollmentCard({ en, onOpen, onWithdraw }: { en: Enrollment; onOpen: ()
 
   const SIcon = statusBadge.icon;
   const c = en.courses;
+  const hasCert = Boolean(en.certificate_url || en.certificate_url_ar || en.certificate_url_en);
 
   return (
-    <div className="dash-card dash-card-hover p-5 flex flex-col">
-      <div className="flex items-start gap-3">
-        <div className="w-12 h-12 rounded-xl bg-[var(--gold)]/10 border border-[var(--gold)]/30 flex items-center justify-center text-2xl shrink-0">
-          {c?.cover_emoji || "🎓"}
-        </div>
-        <div className="flex-1 min-w-0">
-          <h3 className="font-bold text-lg leading-tight">{c?.title}</h3>
-          <span className={`mt-1.5 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border text-[11px] ${statusBadge.color}`}>
-            <SIcon className="w-3 h-3" /> {statusBadge.label}
-          </span>
-        </div>
-      </div>
+    <div className="dash-card dash-card-hover relative overflow-hidden flex flex-col">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/60 to-transparent" />
+      <div className="pointer-events-none absolute -top-20 -end-16 w-52 h-52 rounded-full bg-[var(--gold)]/10 blur-3xl" />
 
-      {en.status === "pending" && (
-        <>
-          <p className="mt-3 text-xs text-amber-200/80 bg-amber-300/5 border border-amber-300/15 rounded-lg p-3">
-            {isAr ? "لم تتم الموافقة على انضمامك حتى الآن. يمكنك تصفح عناوين المحاضرات (المحتوى مقفل 🔒) أو سحب الطلب."
-                  : "Your enrollment isn't approved yet. You can preview lecture titles (content locked 🔒) or withdraw the request."}
-          </p>
-          <div className="flex gap-2 mt-3">
-            <button onClick={onOpen} className="flex-1 text-xs h-10 rounded-lg bg-white/5 border border-white/15 hover:bg-white/10">
-              {isAr ? "معاينة المحاضرات 🔒" : "Preview lectures 🔒"}
-            </button>
-            <button onClick={() => onWithdraw(en.id)} className="text-xs px-3 h-10 rounded-lg bg-rose-500/15 text-rose-300 border border-rose-500/30 hover:bg-rose-500/25">
-              {isAr ? "انسحاب" : "Withdraw"}
-            </button>
+      <div className="relative p-5 flex flex-col flex-1">
+        <div className="flex items-start gap-3">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--gold)]/25 to-transparent border border-[var(--gold)]/30 flex items-center justify-center text-2xl shrink-0 shadow-[0_10px_28px_-14px_rgba(212,175,55,0.7)]">
+            {c?.cover_emoji || "🎓"}
           </div>
-        </>
-      )}
-      {en.status === "rejected" && en.notes && <p className="mt-3 text-sm text-rose-200/80">{en.notes}</p>}
+          <div className="flex-1 min-w-0">
+            <h3 className="font-bold text-lg leading-tight truncate">{c?.title}</h3>
+            <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+              <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border text-[11px] ${statusBadge.color}`}>
+                <SIcon className="w-3 h-3" /> {statusBadge.label}
+              </span>
+              {hasCert && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border text-[11px] text-[var(--gold)] bg-[var(--gold)]/10 border-[var(--gold)]/30">
+                  <Award className="w-3 h-3" /> {isAr ? "شهادة جاهزة" : "Certificate ready"}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
 
-      {en.status === "approved" && (
-        <button onClick={onOpen}
-          className="mt-4 w-full h-11 rounded-xl font-semibold flex items-center justify-center gap-2"
-          style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
-          {isAr ? "فتح الكورس" : "Open course"} <ArrowRight className="w-4 h-4 rtl-flip" />
-        </button>
-      )}
+        <div className="flex flex-wrap items-center gap-2 mt-3 text-[11px] text-white/55">
+          {Number((c as any)?.total_hours) > 0 && (
+            <span className="inline-flex items-center gap-1 px-2 h-6 rounded-lg bg-white/5 border border-white/10">
+              <Clock className="w-3 h-3" /> {(c as any).total_hours} {isAr ? "ساعة" : "hrs"}
+            </span>
+          )}
+          {(c?.starts_at || c?.ends_at) && (
+            <span className="inline-flex items-center gap-1 px-2 h-6 rounded-lg bg-white/5 border border-white/10">
+              <Calendar className="w-3 h-3" /> {c?.starts_at || "—"} → {c?.ends_at || "—"}
+            </span>
+          )}
+        </div>
 
+        {en.status === "approved" && totalCount > 0 && (
+          <div className="mt-4">
+            <div className="flex items-center justify-between text-[11px] mb-1.5">
+              <span className="text-white/55">{isAr ? "التقدّم" : "Progress"}</span>
+              <span className="font-bold text-[var(--gold)]">{progress}% <span className="text-white/45 font-normal">({doneCount}/{totalCount})</span></span>
+            </div>
+            <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+              <div className="h-full rounded-full transition-all duration-700" style={{ width: `${progress}%`, background: "linear-gradient(90deg, var(--gold), #b8923f)" }} />
+            </div>
+          </div>
+        )}
+
+        {en.status === "pending" && (
+          <>
+            <p className="mt-3 text-xs text-amber-200/80 bg-amber-300/5 border border-amber-300/15 rounded-lg p-3">
+              {isAr ? "لم تتم الموافقة على انضمامك حتى الآن. يمكنك تصفح عناوين المحاضرات (المحتوى مقفل 🔒) أو سحب الطلب."
+                    : "Your enrollment isn't approved yet. You can preview lecture titles (content locked 🔒) or withdraw the request."}
+            </p>
+            <div className="flex gap-2 mt-3">
+              <button onClick={onOpen} className="flex-1 text-xs h-10 rounded-lg bg-white/5 border border-white/15 hover:bg-white/10 transition">
+                {isAr ? "معاينة المحاضرات 🔒" : "Preview lectures 🔒"}
+              </button>
+              <button onClick={() => onWithdraw(en.id)} className="text-xs px-3 h-10 rounded-lg bg-rose-500/15 text-rose-300 border border-rose-500/30 hover:bg-rose-500/25 transition">
+                {isAr ? "انسحاب" : "Withdraw"}
+              </button>
+            </div>
+          </>
+        )}
+        {en.status === "rejected" && en.notes && <p className="mt-3 text-sm text-rose-200/80">{en.notes}</p>}
+
+        {en.status === "approved" && (
+          <button onClick={onOpen}
+            className="mt-auto pt-0 w-full h-11 rounded-xl font-semibold flex items-center justify-center gap-2 hover:brightness-110 transition"
+            style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736", marginTop: "1rem" }}>
+            {isAr ? "فتح الكورس" : "Open course"} <ArrowRight className="w-4 h-4 rtl-flip" />
+          </button>
+        )}
+      </div>
     </div>
+
+
   );
 }
 

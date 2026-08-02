@@ -448,7 +448,8 @@ function AdminPage() {
 
               {/* Desktop sidebar */}
               <aside className="hidden lg:block w-64 shrink-0">
-                <nav className="dash-card p-3 sticky top-24 space-y-5 max-h-[calc(100vh-7rem)] overflow-y-auto">
+                <nav className="dash-card p-3 sticky top-[4.5rem] h-[calc(100vh-6rem)] overflow-y-auto space-y-5 [scrollbar-width:thin]">
+
                   {groups.map((g) => (
                     <div key={g.id} className="space-y-1.5">
                       <p className="px-2 text-[10px] uppercase tracking-[0.14em] text-white/40 font-bold">
