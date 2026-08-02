@@ -1034,6 +1034,134 @@ function CertificatePanel({
   );
 }
 
+// ============= ACCOUNT SETTINGS (trainee) =============
+function AccountSettingsSection({ userId, profile, avatarSrc, onSaved }: {
+  userId: string;
+  profile: Profile | null;
+  avatarSrc: string | null;
+  onSaved: () => void;
+}) {
+  const { lang } = useI18n();
+  const isAr = lang === "ar";
+  const [name, setName] = useState(profile?.full_name || "");
+  const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
+  useEffect(() => { setName(profile?.full_name || ""); }, [profile?.full_name]);
+
+  async function saveName(e: React.FormEvent) {
+    e.preventDefault();
+    const trimmed = name.trim();
+    if (trimmed.length < 3) {
+      toast.error(isAr ? "الاسم يجب ألا يقل عن 3 أحرف" : "Name must be at least 3 characters");
+      return;
+    }
+    setSaving(true);
+    const { error } = await supabase.from("profiles").update({ full_name: trimmed }).eq("id", userId);
+    setSaving(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success(isAr ? "تم تحديث اسمك بنجاح" : "Your name was updated");
+    onSaved();
+  }
+
+  async function uploadAvatar(file: File) {
+    if (!file.type.startsWith("image/")) {
+      toast.error(isAr ? "الرجاء اختيار ملف صورة" : "Please choose an image file");
+      return;
+    }
+    if (file.size > 3 * 1024 * 1024) {
+      toast.error(isAr ? "أقصى حجم للصورة 3 ميجابايت" : "Max image size is 3MB");
+      return;
+    }
+    setUploading(true);
+    const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+    const path = `${userId}/avatar-${Date.now()}.${ext}`;
+    const { error: upErr } = await supabase.storage.from("avatars").upload(path, file, { upsert: true, contentType: file.type });
+    if (upErr) { setUploading(false); toast.error(upErr.message); return; }
+    const oldPath = profile?.avatar_url;
+    const { error } = await supabase.from("profiles").update({ avatar_url: path }).eq("id", userId);
+    setUploading(false);
+    if (error) { toast.error(error.message); return; }
+    if (oldPath && oldPath !== path) { await supabase.storage.from("avatars").remove([oldPath]); }
+    toast.success(isAr ? "تم تحديث صورتك الشخصية" : "Profile photo updated");
+    onSaved();
+  }
+
+  async function removeAvatar() {
+    const oldPath = profile?.avatar_url;
+    if (!oldPath) return;
+    setUploading(true);
+    const { error } = await supabase.from("profiles").update({ avatar_url: null }).eq("id", userId);
+    setUploading(false);
+    if (error) { toast.error(error.message); return; }
+    await supabase.storage.from("avatars").remove([oldPath]);
+    toast.success(isAr ? "تم حذف الصورة" : "Photo removed");
+    onSaved();
+  }
+
+  return (
+    <section id="account" className="scroll-mt-24">
+      <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+        <UserCog className="w-5 h-5 text-[var(--gold)]" /> {isAr ? "إعدادات الحساب" : "Account settings"}
+      </h2>
+      <div className="dash-card p-6 grid md:grid-cols-[auto_1fr] gap-6 items-start">
+        <div className="flex flex-col items-center gap-3">
+          <div className="relative w-28 h-28 rounded-2xl overflow-hidden border border-[var(--gold)]/35 bg-white/5 flex items-center justify-center text-4xl font-bold text-[var(--gold)]">
+            {avatarSrc
+              ? <img src={avatarSrc} alt={profile?.full_name || "avatar"} className="w-full h-full object-cover" />
+              : (profile?.full_name || profile?.email || "?").trim().charAt(0).toUpperCase()}
+            {uploading && (
+              <div className="absolute inset-0 bg-[#040818]/70 flex items-center justify-center">
+                <Loader2 className="w-6 h-6 animate-spin text-[var(--gold)]" />
+              </div>
+            )}
+          </div>
+          <label className="cursor-pointer inline-flex items-center gap-1.5 text-xs px-3 h-9 rounded-lg bg-white/5 border border-white/15 hover:bg-white/10 transition">
+            <Camera className="w-3.5 h-3.5" /> {isAr ? "تغيير الصورة" : "Change photo"}
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              disabled={uploading}
+              onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) uploadAvatar(f); }}
+            />
+          </label>
+          {profile?.avatar_url && (
+            <button type="button" onClick={removeAvatar} disabled={uploading}
+              className="text-[11px] text-rose-300 hover:text-rose-200 transition">
+              {isAr ? "حذف الصورة" : "Remove photo"}
+            </button>
+          )}
+        </div>
+
+        <form onSubmit={saveName} className="space-y-4">
+          <div>
+            <label className="block text-[11px] uppercase tracking-wider text-white/55 mb-1.5 font-semibold">
+              {isAr ? "الاسم بالكامل" : "Full name"}
+            </label>
+            <input value={name} onChange={(e) => setName(e.target.value)} className="premium-input" placeholder={isAr ? "اكتب اسمك" : "Your name"} />
+            <p className="text-[11px] text-white/45 mt-1.5">
+              {isAr ? "هذا الاسم يظهر في لوحتك وفي التواصل مع الإدارة." : "This name appears on your dashboard and in admin communication."}
+            </p>
+          </div>
+          <div>
+            <label className="block text-[11px] uppercase tracking-wider text-white/55 mb-1.5 font-semibold">
+              {isAr ? "البريد الإلكتروني" : "Email"}
+            </label>
+            <input value={profile?.email || ""} readOnly disabled className="premium-input opacity-60 cursor-not-allowed" />
+          </div>
+          <button type="submit" disabled={saving}
+            className="h-11 px-6 rounded-xl font-bold flex items-center gap-2 disabled:opacity-50 hover:brightness-110 transition"
+            style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
+            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+            {isAr ? "حفظ التغييرات" : "Save changes"}
+          </button>
+        </form>
+      </div>
+    </section>
+  );
+}
+
 
 function MyCertificatesSection({ enrollments, onDownload, lang }: {
   enrollments: Enrollment[];
