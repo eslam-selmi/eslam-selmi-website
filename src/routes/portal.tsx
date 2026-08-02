@@ -309,7 +309,18 @@ function PortalPage() {
         <div className="flex-1 min-w-0 space-y-10">
         <section id="overview" className="dash-card p-7 sm:p-9 backdrop-blur-xl scroll-mt-24">
           <div className="flex items-start justify-between gap-6 flex-wrap">
-            <div>
+            <div className="flex items-start gap-4 min-w-0">
+              <button
+                type="button"
+                onClick={() => document.getElementById("account")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                title={lang === "ar" ? "تغيير الصورة الشخصية" : "Change profile photo"}
+                className="relative shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden border border-[var(--gold)]/35 bg-white/5 flex items-center justify-center text-2xl font-bold text-[var(--gold)] hover:border-[var(--gold)] transition"
+              >
+                {avatarSrc
+                  ? <img src={avatarSrc} alt={profile?.full_name || "avatar"} className="w-full h-full object-cover" />
+                  : (profile?.full_name || profile?.email || "?").trim().charAt(0).toUpperCase()}
+              </button>
+              <div className="min-w-0">
               <p className="text-xs tracking-widest text-[var(--gold)] mb-2">{greeting}</p>
               <h1 className="text-3xl sm:text-4xl font-bold flex items-center gap-3 flex-wrap">
                 {(() => {
@@ -326,9 +337,8 @@ function PortalPage() {
                 })()}
                 <span>{profile?.full_name || (lang === "ar" ? "متدرب جديد" : "New trainee")}</span>
               </h1>
-              <p className="text-white/60 mt-2 max-w-xl">{lang === "ar"
-                ? `أهلاً ${firstName} — نظرة سريعة على كورساتك وتقدمك.`
-                : `Hi ${firstName} — a quick look at your courses and progress.`}</p>
+              <p className="text-white/60 mt-2 max-w-xl">{welcomeLine}</p>
+              </div>
             </div>
             <div className="flex items-center gap-2">
               <TraineeSupportButton
