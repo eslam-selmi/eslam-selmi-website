@@ -21,7 +21,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VerifyIdRouteImport } from './routes/verify.$id'
-import { Route as OnboardingCertPreviewRouteImport } from './routes/onboarding.cert-preview'
+import { Route as OnboardingCertPreviewRouteImport } from './routes/onboarding_.cert-preview'
 import { Route as CSlugRouteImport } from './routes/c.$slug'
 
 const TrainingsRoute = TrainingsRouteImport.update({
@@ -85,9 +85,9 @@ const VerifyIdRoute = VerifyIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingCertPreviewRoute = OnboardingCertPreviewRouteImport.update({
-  id: '/cert-preview',
-  path: '/cert-preview',
-  getParentRoute: () => OnboardingRoute,
+  id: '/onboarding_/cert-preview',
+  path: '/onboarding/cert-preview',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const CSlugRoute = CSlugRouteImport.update({
   id: '/c/$slug',
@@ -101,7 +101,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/graduates': typeof GraduatesRoute
   '/library': typeof LibraryRoute
-  '/onboarding': typeof OnboardingRouteWithChildren
+  '/onboarding': typeof OnboardingRoute
   '/portal': typeof PortalRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/success-cases': typeof SuccessCasesRoute
@@ -117,7 +117,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/graduates': typeof GraduatesRoute
   '/library': typeof LibraryRoute
-  '/onboarding': typeof OnboardingRouteWithChildren
+  '/onboarding': typeof OnboardingRoute
   '/portal': typeof PortalRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/success-cases': typeof SuccessCasesRoute
@@ -134,14 +134,14 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/graduates': typeof GraduatesRoute
   '/library': typeof LibraryRoute
-  '/onboarding': typeof OnboardingRouteWithChildren
+  '/onboarding': typeof OnboardingRoute
   '/portal': typeof PortalRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/success-cases': typeof SuccessCasesRoute
   '/trainer': typeof TrainerRoute
   '/trainings': typeof TrainingsRoute
   '/c/$slug': typeof CSlugRoute
-  '/onboarding/cert-preview': typeof OnboardingCertPreviewRoute
+  '/onboarding_/cert-preview': typeof OnboardingCertPreviewRoute
   '/verify/$id': typeof VerifyIdRoute
 }
 export interface FileRouteTypes {
@@ -191,7 +191,7 @@ export interface FileRouteTypes {
     | '/trainer'
     | '/trainings'
     | '/c/$slug'
-    | '/onboarding/cert-preview'
+    | '/onboarding_/cert-preview'
     | '/verify/$id'
   fileRoutesById: FileRoutesById
 }
@@ -201,13 +201,14 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   GraduatesRoute: typeof GraduatesRoute
   LibraryRoute: typeof LibraryRoute
-  OnboardingRoute: typeof OnboardingRouteWithChildren
+  OnboardingRoute: typeof OnboardingRoute
   PortalRoute: typeof PortalRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SuccessCasesRoute: typeof SuccessCasesRoute
   TrainerRoute: typeof TrainerRoute
   TrainingsRoute: typeof TrainingsRoute
   CSlugRoute: typeof CSlugRoute
+  OnboardingCertPreviewRoute: typeof OnboardingCertPreviewRoute
   VerifyIdRoute: typeof VerifyIdRoute
 }
 
@@ -297,12 +298,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VerifyIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/onboarding/cert-preview': {
-      id: '/onboarding/cert-preview'
-      path: '/cert-preview'
+    '/onboarding_/cert-preview': {
+      id: '/onboarding_/cert-preview'
+      path: '/onboarding/cert-preview'
       fullPath: '/onboarding/cert-preview'
       preLoaderRoute: typeof OnboardingCertPreviewRouteImport
-      parentRoute: typeof OnboardingRoute
+      parentRoute: typeof rootRouteImport
     }
     '/c/$slug': {
       id: '/c/$slug'
@@ -314,31 +315,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface OnboardingRouteChildren {
-  OnboardingCertPreviewRoute: typeof OnboardingCertPreviewRoute
-}
-
-const OnboardingRouteChildren: OnboardingRouteChildren = {
-  OnboardingCertPreviewRoute: OnboardingCertPreviewRoute,
-}
-
-const OnboardingRouteWithChildren = OnboardingRoute._addFileChildren(
-  OnboardingRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
   GraduatesRoute: GraduatesRoute,
   LibraryRoute: LibraryRoute,
-  OnboardingRoute: OnboardingRouteWithChildren,
+  OnboardingRoute: OnboardingRoute,
   PortalRoute: PortalRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SuccessCasesRoute: SuccessCasesRoute,
   TrainerRoute: TrainerRoute,
   TrainingsRoute: TrainingsRoute,
   CSlugRoute: CSlugRoute,
+  OnboardingCertPreviewRoute: OnboardingCertPreviewRoute,
   VerifyIdRoute: VerifyIdRoute,
 }
 export const routeTree = rootRouteImport
