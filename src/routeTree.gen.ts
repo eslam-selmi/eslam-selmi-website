@@ -21,6 +21,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VerifyIdRouteImport } from './routes/verify.$id'
+import { Route as OnboardingCertPreviewRouteImport } from './routes/onboarding_.cert-preview'
 import { Route as CSlugRouteImport } from './routes/c.$slug'
 
 const TrainingsRoute = TrainingsRouteImport.update({
@@ -83,6 +84,11 @@ const VerifyIdRoute = VerifyIdRouteImport.update({
   path: '/verify/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OnboardingCertPreviewRoute = OnboardingCertPreviewRouteImport.update({
+  id: '/onboarding_/cert-preview',
+  path: '/onboarding/cert-preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CSlugRoute = CSlugRouteImport.update({
   id: '/c/$slug',
   path: '/c/$slug',
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/trainer': typeof TrainerRoute
   '/trainings': typeof TrainingsRoute
   '/c/$slug': typeof CSlugRoute
+  '/onboarding/cert-preview': typeof OnboardingCertPreviewRoute
   '/verify/$id': typeof VerifyIdRoute
 }
 export interface FileRoutesByTo {
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/trainer': typeof TrainerRoute
   '/trainings': typeof TrainingsRoute
   '/c/$slug': typeof CSlugRoute
+  '/onboarding/cert-preview': typeof OnboardingCertPreviewRoute
   '/verify/$id': typeof VerifyIdRoute
 }
 export interface FileRoutesById {
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/trainer': typeof TrainerRoute
   '/trainings': typeof TrainingsRoute
   '/c/$slug': typeof CSlugRoute
+  '/onboarding_/cert-preview': typeof OnboardingCertPreviewRoute
   '/verify/$id': typeof VerifyIdRoute
 }
 export interface FileRouteTypes {
@@ -150,6 +159,7 @@ export interface FileRouteTypes {
     | '/trainer'
     | '/trainings'
     | '/c/$slug'
+    | '/onboarding/cert-preview'
     | '/verify/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -165,6 +175,7 @@ export interface FileRouteTypes {
     | '/trainer'
     | '/trainings'
     | '/c/$slug'
+    | '/onboarding/cert-preview'
     | '/verify/$id'
   id:
     | '__root__'
@@ -180,6 +191,7 @@ export interface FileRouteTypes {
     | '/trainer'
     | '/trainings'
     | '/c/$slug'
+    | '/onboarding_/cert-preview'
     | '/verify/$id'
   fileRoutesById: FileRoutesById
 }
@@ -196,6 +208,7 @@ export interface RootRouteChildren {
   TrainerRoute: typeof TrainerRoute
   TrainingsRoute: typeof TrainingsRoute
   CSlugRoute: typeof CSlugRoute
+  OnboardingCertPreviewRoute: typeof OnboardingCertPreviewRoute
   VerifyIdRoute: typeof VerifyIdRoute
 }
 
@@ -285,6 +298,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VerifyIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/onboarding_/cert-preview': {
+      id: '/onboarding_/cert-preview'
+      path: '/onboarding/cert-preview'
+      fullPath: '/onboarding/cert-preview'
+      preLoaderRoute: typeof OnboardingCertPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/c/$slug': {
       id: '/c/$slug'
       path: '/c/$slug'
@@ -308,6 +328,7 @@ const rootRouteChildren: RootRouteChildren = {
   TrainerRoute: TrainerRoute,
   TrainingsRoute: TrainingsRoute,
   CSlugRoute: CSlugRoute,
+  OnboardingCertPreviewRoute: OnboardingCertPreviewRoute,
   VerifyIdRoute: VerifyIdRoute,
 }
 export const routeTree = rootRouteImport
