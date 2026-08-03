@@ -235,14 +235,17 @@ export function CertificateTemplate({ data }: { data: CertificateData }) {
                 <div className="h-[6cqw] w-[6cqw] animate-pulse bg-[#0b1f4b]/10" />
               )}
             </div>
-            <p className="mt-2 text-[0.66cqw] font-bold tracking-[0.14em] text-white">
-              VERIFY CERTIFICATE
-            </p>
-            <p className="text-[0.6cqw] leading-snug text-white/85">
-              Scan the QR code
-              <br />
-              to verify authenticity
-            </p>
+            <div className="mt-2 rounded-md bg-[#0b1f4b] px-[0.7cqw] py-[0.4cqw]">
+              <p className="text-[0.66cqw] font-bold tracking-[0.14em] text-white">
+                VERIFY CERTIFICATE
+              </p>
+              <p className="text-[0.6cqw] leading-snug text-white/85">
+                Scan the QR code
+                <br />
+                to verify authenticity
+              </p>
+            </div>
+
           </div>
         </div>
       </div>
