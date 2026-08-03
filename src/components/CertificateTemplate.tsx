@@ -120,7 +120,7 @@ export function CertificateTemplate({ data }: { data: CertificateData }) {
   return (
     <div
       dir="ltr"
-      className="relative mx-auto aspect-[297/210] w-full max-w-[1123px] overflow-hidden bg-[#fbfcfe] font-[Manrope,sans-serif] text-[#0b1f4b]"
+      className="relative mx-auto @container aspect-[297/210] w-full max-w-[1123px] overflow-hidden bg-[#fbfcfe] font-[Manrope,sans-serif] text-[#0b1f4b]"
     >
       <Waves side="left" />
       <Waves side="right" />
@@ -132,14 +132,14 @@ export function CertificateTemplate({ data }: { data: CertificateData }) {
       <div className="relative flex h-full flex-col px-[6%] py-[4.5%]">
         {/* Header */}
         <div className="flex items-start justify-between">
-          <p className="text-[0.62vw] font-semibold uppercase tracking-[0.28em] text-[#0b1f4b]/55">
+          <p className="text-[0.62cqw] font-semibold uppercase tracking-[0.28em] text-[#0b1f4b]/55">
             Certificate ID: <span className="text-[#0b1f4b]">{data.certificateId}</span>
           </p>
           <div className="flex items-center gap-3">
-            <img src={brandLogo} alt="Eslam Selmi" className="h-[3.4vw] max-h-14 w-auto" />
+            <img src={brandLogo} alt="Eslam Selmi" className="h-[3.4cqw] max-h-14 w-auto" />
             <div className="leading-tight">
-              <p className="text-[1.25vw] font-extrabold tracking-[0.12em]">ESLAM SELMI</p>
-              <p className="text-[0.62vw] font-semibold tracking-[0.22em] text-[#1c56c9]">
+              <p className="text-[1.25cqw] font-extrabold tracking-[0.12em]">ESLAM SELMI</p>
+              <p className="text-[0.62cqw] font-semibold tracking-[0.22em] text-[#1c56c9]">
                 TRAINING &amp; DEVELOPMENT
               </p>
             </div>
@@ -148,46 +148,46 @@ export function CertificateTemplate({ data }: { data: CertificateData }) {
 
         {/* Center */}
         <div className="-mt-[1%] flex flex-1 flex-col items-center text-center">
-          <h1 className="text-[4.4vw] font-extrabold leading-none tracking-[0.16em] text-[#0b1f4b]">
+          <h1 className="text-[4.4cqw] font-extrabold leading-none tracking-[0.16em] text-[#0b1f4b]">
             CERTIFICATE
           </h1>
-          <p className="mt-[1%] text-[1.55vw] font-semibold tracking-[0.42em] text-[#1c56c9]">
+          <p className="mt-[1%] text-[1.55cqw] font-semibold tracking-[0.42em] text-[#1c56c9]">
             OF COMPLETION
           </p>
 
           <div className="mt-[1.4%] flex items-center gap-3">
-            <span className="h-px w-[7vw] bg-gradient-to-l from-[#1c56c9]/70 to-transparent" />
+            <span className="h-px w-[7cqw] bg-gradient-to-l from-[#1c56c9]/70 to-transparent" />
             <span className="h-[5px] w-[5px] rounded-full bg-[#1c56c9]" />
-            <span className="h-px w-[7vw] bg-gradient-to-r from-[#1c56c9]/70 to-transparent" />
+            <span className="h-px w-[7cqw] bg-gradient-to-r from-[#1c56c9]/70 to-transparent" />
           </div>
 
-          <p className="mt-[2%] text-[0.95vw] font-medium tracking-[0.22em] text-[#0b1f4b]/80">
+          <p className="mt-[2%] text-[0.95cqw] font-medium tracking-[0.22em] text-[#0b1f4b]/80">
             THIS CERTIFICATE IS PROUDLY PRESENTED TO
           </p>
 
           <div className="mt-[1.6%] w-[62%] border-b border-[#1c56c9]/40 pb-[0.8%]">
-            <p className="font-[Cormorant_Garamond,serif] text-[3.2vw] font-semibold leading-tight text-[#0b1f4b]">
+            <p className="font-[Cormorant_Garamond,serif] text-[3.2cqw] font-semibold leading-tight text-[#0b1f4b]">
               {data.traineeName}
             </p>
           </div>
 
-          <p className="mt-[1.8%] text-[0.9vw] font-medium tracking-[0.2em] text-[#0b1f4b]/80">
+          <p className="mt-[1.8%] text-[0.9cqw] font-medium tracking-[0.2em] text-[#0b1f4b]/80">
             FOR SUCCESSFULLY COMPLETING THE
           </p>
 
-          <p className="mt-[1%] max-w-[78%] text-[1.7vw] font-bold leading-tight text-[#1c56c9]">
+          <p className="mt-[1%] max-w-[78%] text-[1.7cqw] font-bold leading-tight text-[#1c56c9]">
             {data.courseName}
           </p>
 
           <div className="mt-[1.4%] flex w-[52%] items-center gap-4">
             <span className="h-px flex-1 bg-[#0b1f4b]/25" />
-            <span className="whitespace-nowrap text-[0.95vw] font-semibold tracking-[0.2em] text-[#0b1f4b]">
+            <span className="whitespace-nowrap text-[0.95cqw] font-semibold tracking-[0.2em] text-[#0b1f4b]">
               {data.trainingHours}
             </span>
             <span className="h-px flex-1 bg-[#0b1f4b]/25" />
           </div>
 
-          <p className="mt-[1.6%] max-w-[64%] text-[0.72vw] leading-relaxed text-[#0b1f4b]/65">
+          <p className="mt-[1.6%] max-w-[64%] text-[0.72cqw] leading-relaxed text-[#0b1f4b]/65">
             This certificate is awarded in recognition of the successful completion of the training
             program, demonstrating full attendance, active participation, and the achievement of all
             required learning outcomes and assessment criteria.
@@ -199,11 +199,11 @@ export function CertificateTemplate({ data }: { data: CertificateData }) {
           {/* Issued on */}
           <div className="flex items-center gap-3">
             <CalendarIcon />
-            <div className="min-w-[9vw]">
-              <p className="text-[0.66vw] font-semibold tracking-[0.24em] text-[#0b1f4b]/70">
+            <div className="min-w-[9cqw]">
+              <p className="text-[0.66cqw] font-semibold tracking-[0.24em] text-[#0b1f4b]/70">
                 ISSUED ON
               </p>
-              <p className="mt-1 border-t border-[#0b1f4b]/30 pt-1 text-[0.82vw] font-semibold">
+              <p className="mt-1 border-t border-[#0b1f4b]/30 pt-1 text-[0.82cqw] font-semibold">
                 {data.issueDate}
               </p>
             </div>
@@ -214,31 +214,31 @@ export function CertificateTemplate({ data }: { data: CertificateData }) {
 
           {/* Signature */}
           <div className="flex flex-col items-center">
-            <p className="font-[Cormorant_Garamond,serif] text-[1.9vw] italic leading-none text-[#0b1f4b]">
+            <p className="font-[Cormorant_Garamond,serif] text-[1.9cqw] italic leading-none text-[#0b1f4b]">
               Eslam Selmi
             </p>
-            <span className="mt-[0.6vw] h-px w-[13vw] bg-[#0b1f4b]/35" />
-            <p className="mt-2 text-[0.85vw] font-bold tracking-[0.12em] text-[#1c56c9]">
+            <span className="mt-[0.6cqw] h-px w-[13cqw] bg-[#0b1f4b]/35" />
+            <p className="mt-2 text-[0.85cqw] font-bold tracking-[0.12em] text-[#1c56c9]">
               ESLAM SELMI
             </p>
-            <p className="text-[0.68vw] font-medium tracking-[0.16em] text-[#0b1f4b]/75">
+            <p className="text-[0.68cqw] font-medium tracking-[0.16em] text-[#0b1f4b]/75">
               FOUNDER &amp; TRAINER
             </p>
           </div>
 
           {/* QR */}
           <div className="flex flex-col items-center text-center">
-            <div className="rounded-md bg-white p-[0.5vw] shadow-sm">
+            <div className="rounded-md bg-white p-[0.5cqw] shadow-sm">
               {qr ? (
-                <img src={qr} alt="Verification QR code" className="h-[6vw] w-[6vw]" />
+                <img src={qr} alt="Verification QR code" className="h-[6cqw] w-[6cqw]" />
               ) : (
-                <div className="h-[6vw] w-[6vw] animate-pulse bg-[#0b1f4b]/10" />
+                <div className="h-[6cqw] w-[6cqw] animate-pulse bg-[#0b1f4b]/10" />
               )}
             </div>
-            <p className="mt-2 text-[0.66vw] font-bold tracking-[0.14em] text-[#0b1f4b]">
+            <p className="mt-2 text-[0.66cqw] font-bold tracking-[0.14em] text-[#0b1f4b]">
               VERIFY CERTIFICATE
             </p>
-            <p className="text-[0.6vw] leading-snug text-[#0b1f4b]/65">
+            <p className="text-[0.6cqw] leading-snug text-[#0b1f4b]/65">
               Scan the QR code
               <br />
               to verify authenticity
