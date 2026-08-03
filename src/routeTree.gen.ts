@@ -17,6 +17,7 @@ import { Route as PortalRouteImport } from './routes/portal'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as GraduatesRouteImport } from './routes/graduates'
+import { Route as CertPreviewRouteImport } from './routes/cert-preview'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -63,6 +64,11 @@ const GraduatesRoute = GraduatesRouteImport.update({
   path: '/graduates',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CertPreviewRoute = CertPreviewRouteImport.update({
+  id: '/cert-preview',
+  path: '/cert-preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -93,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/cert-preview': typeof CertPreviewRoute
   '/graduates': typeof GraduatesRoute
   '/library': typeof LibraryRoute
   '/onboarding': typeof OnboardingRoute
@@ -108,6 +115,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/cert-preview': typeof CertPreviewRoute
   '/graduates': typeof GraduatesRoute
   '/library': typeof LibraryRoute
   '/onboarding': typeof OnboardingRoute
@@ -124,6 +132,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/cert-preview': typeof CertPreviewRoute
   '/graduates': typeof GraduatesRoute
   '/library': typeof LibraryRoute
   '/onboarding': typeof OnboardingRoute
@@ -141,6 +150,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
+    | '/cert-preview'
     | '/graduates'
     | '/library'
     | '/onboarding'
@@ -156,6 +166,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
+    | '/cert-preview'
     | '/graduates'
     | '/library'
     | '/onboarding'
@@ -171,6 +182,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
+    | '/cert-preview'
     | '/graduates'
     | '/library'
     | '/onboarding'
@@ -187,6 +199,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
+  CertPreviewRoute: typeof CertPreviewRoute
   GraduatesRoute: typeof GraduatesRoute
   LibraryRoute: typeof LibraryRoute
   OnboardingRoute: typeof OnboardingRoute
@@ -257,6 +270,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GraduatesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cert-preview': {
+      id: '/cert-preview'
+      path: '/cert-preview'
+      fullPath: '/cert-preview'
+      preLoaderRoute: typeof CertPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -299,6 +319,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
+  CertPreviewRoute: CertPreviewRoute,
   GraduatesRoute: GraduatesRoute,
   LibraryRoute: LibraryRoute,
   OnboardingRoute: OnboardingRoute,
@@ -313,13 +334,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
