@@ -26,7 +26,7 @@ function Waves({ side }: { side: "left" | "right" }) {
       aria-hidden="true"
       className={`pointer-events-none absolute inset-y-0 ${
         side === "right" ? "right-0" : "left-0 -scale-x-100"
-      } h-full w-[34%]`}
+      } h-full ${side === "right" ? "w-[34%]" : "w-[20%]"}`}
     >
       {side === "right" && (
         <>
@@ -51,7 +51,7 @@ function Waves({ side }: { side: "left" | "right" }) {
           fill="none"
           stroke={BLUE}
           strokeWidth="0.6"
-          opacity={side === "right" ? 0.16 : 0.1}
+          opacity={side === "right" ? 0.16 : 0.05}
         />
       ))}
     </svg>
@@ -147,7 +147,7 @@ export function CertificateTemplate({ data }: { data: CertificateData }) {
         </div>
 
         {/* Center */}
-        <div className="-mt-[1%] flex flex-1 flex-col items-center text-center">
+        <div className="flex flex-1 flex-col items-center justify-center text-center">
           <h1 className="text-[4.4cqw] font-extrabold leading-none tracking-[0.16em] text-[#0b1f4b]">
             CERTIFICATE
           </h1>
@@ -235,10 +235,10 @@ export function CertificateTemplate({ data }: { data: CertificateData }) {
                 <div className="h-[6cqw] w-[6cqw] animate-pulse bg-[#0b1f4b]/10" />
               )}
             </div>
-            <p className="mt-2 text-[0.66cqw] font-bold tracking-[0.14em] text-[#0b1f4b]">
+            <p className="mt-2 text-[0.66cqw] font-bold tracking-[0.14em] text-white">
               VERIFY CERTIFICATE
             </p>
-            <p className="text-[0.6cqw] leading-snug text-[#0b1f4b]/65">
+            <p className="text-[0.6cqw] leading-snug text-white/85">
               Scan the QR code
               <br />
               to verify authenticity
