@@ -85,9 +85,10 @@ function PortalPage() {
     }
   }, [user, role, loading, activationStatus, nav]);
 
-  async function refresh() {
+  async function refresh(opts?: { silent?: boolean }) {
     if (!user) return;
-    setLoadingData(true);
+    if (!opts?.silent) setLoadingData(true);
+
     const [p, c, e] = await Promise.all([
       supabase.from("profiles").select("full_name,email,phone,country,country_code,account_blocked,avatar_url").eq("id", user.id).maybeSingle(),
       supabase.from("courses").select("*").eq("active", true).order("created_at", { ascending: false }),
