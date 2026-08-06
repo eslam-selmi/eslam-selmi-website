@@ -461,12 +461,6 @@ function PortalPage() {
           )}
         </section>
 
-        <AccountSettingsSection
-          userId={user.id}
-          profile={profile}
-          avatarSrc={avatarSrc}
-          onSaved={refresh}
-        />
 
 
 
