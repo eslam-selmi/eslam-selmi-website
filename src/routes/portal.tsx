@@ -132,18 +132,24 @@ function PortalPage() {
     return () => { cancelled = true; };
   }, [profile?.avatar_url]);
 
-  // Realtime refresh on enrollment / payment changes
+  // Realtime refresh on enrollment / payment changes (silent → no loading flicker)
   useEffect(() => {
     if (!user) return;
+    const silentRefresh = () => { refresh({ silent: true }); };
     const ch = supabase.channel(`trainee-${user.id}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "enrollments", filter: `user_id=eq.${user.id}` }, refresh)
-      .on("postgres_changes", { event: "*", schema: "public", table: "payments" }, refresh)
+      .on("postgres_changes", { event: "*", schema: "public", table: "enrollments", filter: `user_id=eq.${user.id}` }, silentRefresh)
+      .on("postgres_changes", { event: "*", schema: "public", table: "payments" }, silentRefresh)
       .subscribe();
     return () => { supabase.removeChannel(ch); };
   }, [user?.id]);
 
   const enrolledIds = useMemo(() => new Set(enrollments.map((e) => e.course_id)), [enrollments]);
-  const availableCourses = useMemo(() => courses.filter((c) => !(c.is_archived && !enrolledIds.has(c.id))), [courses, enrolledIds]);
+  // Available = active, non-archived courses the trainee is NOT already enrolled in
+  const availableCourses = useMemo(
+    () => courses.filter((c) => !enrolledIds.has(c.id) && !c.is_archived),
+    [courses, enrolledIds]
+  );
+
 
   // Batched translation of available + enrolled course titles & descriptions
   const courseTextsFlat = useMemo(() => {
