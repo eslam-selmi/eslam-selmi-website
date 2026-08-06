@@ -263,14 +263,15 @@ function PortalPage() {
       : hour < 21 ? `Good evening ${firstName} — a great time to review today's progress.`
       : `${firstName}, a calm late-night session? Your content is ready.`);
 
-  const navItems = [
+  const navItems: { id: string; label: string; icon: any; badge?: number; to?: string }[] = [
     { id: "overview", label: lang === "ar" ? "نظرة عامة" : "Overview", icon: Sparkles },
     { id: "my-courses", label: lang === "ar" ? "كورساتي" : "My courses", icon: BookOpen, badge: enrollments.length || undefined },
     { id: "certificates", label: lang === "ar" ? "شهاداتي" : "My certificates", icon: Award, badge: stats.certs || undefined },
     { id: "packages", label: lang === "ar" ? "باقات الاستشارات" : "Consulting packages", icon: PhoneOutgoing },
     { id: "available", label: lang === "ar" ? "كورسات متاحة" : "Available courses", icon: GraduationCap, badge: availableCourses.length || undefined },
-    { id: "account", label: lang === "ar" ? "إعدادات الحساب" : "Account settings", icon: UserCog },
+    { id: "account", label: lang === "ar" ? "إعدادات الحساب" : "Account settings", icon: UserCog, to: "/account" },
   ];
+
 
   return (
     <PortalShell userId={user.id} role="trainee" userLabel={profile?.full_name || profile?.email}>
