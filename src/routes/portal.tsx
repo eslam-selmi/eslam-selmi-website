@@ -297,7 +297,7 @@ function PortalPage() {
                   return (
                     <li key={it.id}>
                       <button
-                        onClick={() => document.getElementById(it.id)?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                        onClick={() => { if (it.to) { nav({ to: it.to }); return; } document.getElementById(it.id)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
                         className="w-full group flex items-center gap-2.5 px-3 h-10 rounded-xl text-[13px] font-semibold transition text-start text-white/70 hover:text-white hover:bg-white/5"
                       >
                         <Icon className="w-4 h-4 shrink-0 text-white/50 group-hover:text-[var(--gold)]" />
