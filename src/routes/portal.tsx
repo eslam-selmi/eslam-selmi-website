@@ -320,7 +320,7 @@ function PortalPage() {
             <div className="flex items-start gap-4 min-w-0">
               <button
                 type="button"
-                onClick={() => document.getElementById("account")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                onClick={() => nav({ to: "/account" })}
                 title={lang === "ar" ? "تغيير الصورة الشخصية" : "Change profile photo"}
                 className="relative shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden border border-[var(--gold)]/35 bg-white/5 flex items-center justify-center text-2xl font-bold text-[var(--gold)] hover:border-[var(--gold)] transition"
               >
