@@ -85,9 +85,10 @@ function PortalPage() {
     }
   }, [user, role, loading, activationStatus, nav]);
 
-  async function refresh() {
+  async function refresh(opts?: { silent?: boolean }) {
     if (!user) return;
-    setLoadingData(true);
+    if (!opts?.silent) setLoadingData(true);
+
     const [p, c, e] = await Promise.all([
       supabase.from("profiles").select("full_name,email,phone,country,country_code,account_blocked,avatar_url").eq("id", user.id).maybeSingle(),
       supabase.from("courses").select("*").eq("active", true).order("created_at", { ascending: false }),
@@ -131,18 +132,24 @@ function PortalPage() {
     return () => { cancelled = true; };
   }, [profile?.avatar_url]);
 
-  // Realtime refresh on enrollment / payment changes
+  // Realtime refresh on enrollment / payment changes (silent → no loading flicker)
   useEffect(() => {
     if (!user) return;
+    const silentRefresh = () => { refresh({ silent: true }); };
     const ch = supabase.channel(`trainee-${user.id}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "enrollments", filter: `user_id=eq.${user.id}` }, refresh)
-      .on("postgres_changes", { event: "*", schema: "public", table: "payments" }, refresh)
+      .on("postgres_changes", { event: "*", schema: "public", table: "enrollments", filter: `user_id=eq.${user.id}` }, silentRefresh)
+      .on("postgres_changes", { event: "*", schema: "public", table: "payments" }, silentRefresh)
       .subscribe();
     return () => { supabase.removeChannel(ch); };
   }, [user?.id]);
 
   const enrolledIds = useMemo(() => new Set(enrollments.map((e) => e.course_id)), [enrollments]);
-  const availableCourses = useMemo(() => courses.filter((c) => !(c.is_archived && !enrolledIds.has(c.id))), [courses, enrolledIds]);
+  // Available = active, non-archived courses the trainee is NOT already enrolled in
+  const availableCourses = useMemo(
+    () => courses.filter((c) => !enrolledIds.has(c.id) && !c.is_archived),
+    [courses, enrolledIds]
+  );
+
 
   // Batched translation of available + enrolled course titles & descriptions
   const courseTextsFlat = useMemo(() => {
@@ -256,14 +263,15 @@ function PortalPage() {
       : hour < 21 ? `Good evening ${firstName} — a great time to review today's progress.`
       : `${firstName}, a calm late-night session? Your content is ready.`);
 
-  const navItems = [
+  const navItems: { id: string; label: string; icon: any; badge?: number; to?: string }[] = [
     { id: "overview", label: lang === "ar" ? "نظرة عامة" : "Overview", icon: Sparkles },
     { id: "my-courses", label: lang === "ar" ? "كورساتي" : "My courses", icon: BookOpen, badge: enrollments.length || undefined },
     { id: "certificates", label: lang === "ar" ? "شهاداتي" : "My certificates", icon: Award, badge: stats.certs || undefined },
     { id: "packages", label: lang === "ar" ? "باقات الاستشارات" : "Consulting packages", icon: PhoneOutgoing },
     { id: "available", label: lang === "ar" ? "كورسات متاحة" : "Available courses", icon: GraduationCap, badge: availableCourses.length || undefined },
-    { id: "account", label: lang === "ar" ? "إعدادات الحساب" : "Account settings", icon: UserCog },
+    { id: "account", label: lang === "ar" ? "إعدادات الحساب" : "Account settings", icon: UserCog, to: "/account" },
   ];
+
 
   return (
     <PortalShell userId={user.id} role="trainee" userLabel={profile?.full_name || profile?.email}>
@@ -289,7 +297,7 @@ function PortalPage() {
                   return (
                     <li key={it.id}>
                       <button
-                        onClick={() => document.getElementById(it.id)?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                        onClick={() => { if (it.to) { nav({ to: it.to }); return; } document.getElementById(it.id)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
                         className="w-full group flex items-center gap-2.5 px-3 h-10 rounded-xl text-[13px] font-semibold transition text-start text-white/70 hover:text-white hover:bg-white/5"
                       >
                         <Icon className="w-4 h-4 shrink-0 text-white/50 group-hover:text-[var(--gold)]" />
@@ -312,7 +320,7 @@ function PortalPage() {
             <div className="flex items-start gap-4 min-w-0">
               <button
                 type="button"
-                onClick={() => document.getElementById("account")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                onClick={() => nav({ to: "/account" })}
                 title={lang === "ar" ? "تغيير الصورة الشخصية" : "Change profile photo"}
                 className="relative shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden border border-[var(--gold)]/35 bg-white/5 flex items-center justify-center text-2xl font-bold text-[var(--gold)] hover:border-[var(--gold)] transition"
               >
@@ -453,12 +461,6 @@ function PortalPage() {
           )}
         </section>
 
-        <AccountSettingsSection
-          userId={user.id}
-          profile={profile}
-          avatarSrc={avatarSrc}
-          onSaved={refresh}
-        />
 
 
 
@@ -491,97 +493,121 @@ function MiniStat({ label, value }: { label: string; value: number | string }) {
 function EnrollmentCard({ en, onOpen, onWithdraw, progress = 0, doneCount = 0, totalCount = 0 }: { en: Enrollment; onOpen: () => void; onWithdraw: (id: string) => void; progress?: number; doneCount?: number; totalCount?: number }) {
   const { lang } = useI18n();
   const isAr = lang === "ar";
-  const statusBadge = {
-    pending: { label: isAr ? "قيد المراجعة" : "Under review", icon: Clock, color: "text-amber-300 bg-amber-300/10 border-amber-300/30" },
-    approved: { label: isAr ? "مقبول" : "Approved", icon: CheckCircle2, color: "text-emerald-300 bg-emerald-300/10 border-emerald-300/30" },
-    rejected: { label: isAr ? "مرفوض" : "Rejected", icon: XCircle, color: "text-rose-300 bg-rose-300/10 border-rose-300/30" },
-  }[en.status];
-
-  const SIcon = statusBadge.icon;
   const c = en.courses;
   const hasCert = Boolean(en.certificate_url || en.certificate_url_ar || en.certificate_url_en);
 
-  return (
-    <div className="dash-card dash-card-hover relative overflow-hidden flex flex-col">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/60 to-transparent" />
-      <div className="pointer-events-none absolute -top-20 -end-16 w-52 h-52 rounded-full bg-[var(--gold)]/10 blur-3xl" />
+  const status = {
+    pending: { label: isAr ? "قيد المراجعة" : "Under review", icon: Clock, ring: "border-amber-300/30", chip: "text-amber-200 bg-amber-300/10 border-amber-300/30", glow: "rgba(245,190,90,0.18)" },
+    approved: { label: isAr ? "مقبول" : "Approved", icon: CheckCircle2, ring: "border-[var(--gold)]/35", chip: "text-emerald-200 bg-emerald-300/10 border-emerald-300/30", glow: "rgba(212,175,55,0.22)" },
+    rejected: { label: isAr ? "مرفوض" : "Rejected", icon: XCircle, ring: "border-rose-400/30", chip: "text-rose-200 bg-rose-400/10 border-rose-400/30", glow: "rgba(244,114,140,0.15)" },
+  }[en.status];
+  const SIcon = status.icon;
 
-      <div className="relative p-5 flex flex-col flex-1">
-        <div className="flex items-start gap-3">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--gold)]/25 to-transparent border border-[var(--gold)]/30 flex items-center justify-center text-2xl shrink-0 shadow-[0_10px_28px_-14px_rgba(212,175,55,0.7)]">
-            {c?.cover_emoji || "🎓"}
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="font-bold text-lg leading-tight truncate">{c?.title}</h3>
-            <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
-              <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border text-[11px] ${statusBadge.color}`}>
-                <SIcon className="w-3 h-3" /> {statusBadge.label}
-              </span>
-              {hasCert && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border text-[11px] text-[var(--gold)] bg-[var(--gold)]/10 border-[var(--gold)]/30">
-                  <Award className="w-3 h-3" /> {isAr ? "شهادة جاهزة" : "Certificate ready"}
-                </span>
-              )}
+  // Circular progress geometry
+  const R = 22, CIRC = 2 * Math.PI * R;
+
+  return (
+    <div className={`group relative overflow-hidden rounded-[22px] border ${status.ring} bg-gradient-to-br from-white/[0.07] via-white/[0.03] to-transparent backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_28px_60px_-30px_rgba(0,0,0,0.85)] flex flex-col`}>
+      {/* top hairline + ambient glow */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/70 to-transparent" />
+      <div className="pointer-events-none absolute -top-24 -end-20 w-64 h-64 rounded-full blur-3xl opacity-70 transition-opacity duration-500 group-hover:opacity-100" style={{ background: `radial-gradient(circle, ${status.glow}, transparent 65%)` }} />
+      {/* subtle engraved grid */}
+      <div className="pointer-events-none absolute inset-0 opacity-[0.06]" style={{ backgroundImage: "linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)", backgroundSize: "26px 26px" }} />
+
+      <div className="relative p-5 sm:p-6 flex flex-col flex-1">
+        <div className="flex items-start gap-4">
+          <div className="relative shrink-0">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--gold)]/30 via-[var(--gold)]/10 to-transparent border border-[var(--gold)]/35 flex items-center justify-center text-3xl shadow-[0_14px_34px_-18px_rgba(212,175,55,0.9)]">
+              {c?.cover_emoji || "🎓"}
             </div>
+            {hasCert && (
+              <span className="absolute -bottom-1.5 -end-1.5 w-7 h-7 rounded-xl bg-[var(--gold)] text-[#0b1736] flex items-center justify-center shadow-lg" title={isAr ? "شهادة جاهزة" : "Certificate ready"}>
+                <Award className="w-3.5 h-3.5" />
+              </span>
+            )}
           </div>
+
+          <div className="flex-1 min-w-0">
+            <h3 className="font-bold text-lg leading-snug line-clamp-2">{c?.title}</h3>
+            <span className={`mt-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border text-[11px] ${status.chip}`}>
+              <SIcon className="w-3 h-3" /> {status.label}
+            </span>
+          </div>
+
+          {en.status === "approved" && totalCount > 0 && (
+            <div className="relative shrink-0 w-14 h-14">
+              <svg viewBox="0 0 56 56" className="w-14 h-14 -rotate-90">
+                <circle cx="28" cy="28" r={R} fill="none" strokeWidth="4" className="stroke-white/10" />
+                <circle cx="28" cy="28" r={R} fill="none" strokeWidth="4" strokeLinecap="round"
+                  stroke="var(--gold)" strokeDasharray={CIRC}
+                  strokeDashoffset={CIRC - (CIRC * progress) / 100}
+                  style={{ transition: "stroke-dashoffset 900ms ease" }} />
+              </svg>
+              <span className="absolute inset-0 flex items-center justify-center text-[11px] font-extrabold text-[var(--gold)]">{progress}%</span>
+            </div>
+          )}
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 mt-3 text-[11px] text-white/55">
+        {/* meta chips */}
+        <div className="flex flex-wrap items-center gap-2 mt-4 text-[11px] text-white/60">
           {Number((c as any)?.total_hours) > 0 && (
-            <span className="inline-flex items-center gap-1 px-2 h-6 rounded-lg bg-white/5 border border-white/10">
-              <Clock className="w-3 h-3" /> {(c as any).total_hours} {isAr ? "ساعة" : "hrs"}
+            <span className="inline-flex items-center gap-1 px-2.5 h-7 rounded-lg bg-white/5 border border-white/10">
+              <Clock className="w-3 h-3 text-[var(--gold)]" /> {(c as any).total_hours} {isAr ? "ساعة" : "hrs"}
+            </span>
+          )}
+          {totalCount > 0 && (
+            <span className="inline-flex items-center gap-1 px-2.5 h-7 rounded-lg bg-white/5 border border-white/10">
+              <Layers className="w-3 h-3 text-[var(--gold)]" /> {doneCount}/{totalCount} {isAr ? "وحدة" : "modules"}
             </span>
           )}
           {(c?.starts_at || c?.ends_at) && (
-            <span className="inline-flex items-center gap-1 px-2 h-6 rounded-lg bg-white/5 border border-white/10">
-              <Calendar className="w-3 h-3" /> {c?.starts_at || "—"} → {c?.ends_at || "—"}
+            <span className="inline-flex items-center gap-1 px-2.5 h-7 rounded-lg bg-white/5 border border-white/10">
+              <Calendar className="w-3 h-3 text-[var(--gold)]" /> {c?.starts_at || "—"} → {c?.ends_at || "—"}
             </span>
           )}
         </div>
 
         {en.status === "approved" && totalCount > 0 && (
           <div className="mt-4">
-            <div className="flex items-center justify-between text-[11px] mb-1.5">
-              <span className="text-white/55">{isAr ? "التقدّم" : "Progress"}</span>
-              <span className="font-bold text-[var(--gold)]">{progress}% <span className="text-white/45 font-normal">({doneCount}/{totalCount})</span></span>
-            </div>
-            <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-              <div className="h-full rounded-full transition-all duration-700" style={{ width: `${progress}%`, background: "linear-gradient(90deg, var(--gold), #b8923f)" }} />
+            <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+              <div className="h-full rounded-full transition-all duration-700" style={{ width: `${progress}%`, background: "linear-gradient(90deg, #e8c870, var(--gold))" }} />
             </div>
           </div>
         )}
 
         {en.status === "pending" && (
           <>
-            <p className="mt-3 text-xs text-amber-200/80 bg-amber-300/5 border border-amber-300/15 rounded-lg p-3">
+            <p className="mt-4 text-xs text-amber-200/80 bg-amber-300/5 border border-amber-300/15 rounded-xl p-3 leading-relaxed">
               {isAr ? "لم تتم الموافقة على انضمامك حتى الآن. يمكنك تصفح عناوين المحاضرات (المحتوى مقفل 🔒) أو سحب الطلب."
                     : "Your enrollment isn't approved yet. You can preview lecture titles (content locked 🔒) or withdraw the request."}
             </p>
-            <div className="flex gap-2 mt-3">
-              <button onClick={onOpen} className="flex-1 text-xs h-10 rounded-lg bg-white/5 border border-white/15 hover:bg-white/10 transition">
+            <div className="flex gap-2 mt-auto pt-4">
+              <button onClick={onOpen} className="flex-1 text-xs h-11 rounded-xl bg-white/5 border border-white/15 hover:bg-white/10 transition font-semibold">
                 {isAr ? "معاينة المحاضرات 🔒" : "Preview lectures 🔒"}
               </button>
-              <button onClick={() => onWithdraw(en.id)} className="text-xs px-3 h-10 rounded-lg bg-rose-500/15 text-rose-300 border border-rose-500/30 hover:bg-rose-500/25 transition">
+              <button onClick={() => onWithdraw(en.id)} className="text-xs px-4 h-11 rounded-xl bg-rose-500/15 text-rose-300 border border-rose-500/30 hover:bg-rose-500/25 transition font-semibold">
                 {isAr ? "انسحاب" : "Withdraw"}
               </button>
             </div>
           </>
         )}
-        {en.status === "rejected" && en.notes && <p className="mt-3 text-sm text-rose-200/80">{en.notes}</p>}
+
+        {en.status === "rejected" && en.notes && (
+          <p className="mt-4 text-sm text-rose-200/80 bg-rose-500/5 border border-rose-400/15 rounded-xl p-3">{en.notes}</p>
+        )}
 
         {en.status === "approved" && (
           <button onClick={onOpen}
-            className="mt-auto pt-0 w-full h-11 rounded-xl font-semibold flex items-center justify-center gap-2 hover:brightness-110 transition"
-            style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736", marginTop: "1rem" }}>
-            {isAr ? "فتح الكورس" : "Open course"} <ArrowRight className="w-4 h-4 rtl-flip" />
+            className="mt-auto w-full h-12 rounded-xl font-bold flex items-center justify-center gap-2 hover:brightness-110 transition shadow-[0_16px_34px_-18px_rgba(212,175,55,0.9)]"
+            style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736", marginTop: "1.25rem" }}>
+            {isAr ? "متابعة الكورس" : "Continue course"} <ArrowRight className="w-4 h-4 rtl-flip" />
           </button>
         )}
       </div>
     </div>
-
-
   );
 }
+
 
 // ============= COURSE DETAIL (trainee) =============
 function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: { enrollment: Enrollment; onBack: () => void; onDownloadCert: (url: string) => void; onRefresh: () => void }) {
@@ -1031,134 +1057,6 @@ function CertificatePanel({
         </div>
       )}
     </div>
-  );
-}
-
-// ============= ACCOUNT SETTINGS (trainee) =============
-function AccountSettingsSection({ userId, profile, avatarSrc, onSaved }: {
-  userId: string;
-  profile: Profile | null;
-  avatarSrc: string | null;
-  onSaved: () => void;
-}) {
-  const { lang } = useI18n();
-  const isAr = lang === "ar";
-  const [name, setName] = useState(profile?.full_name || "");
-  const [saving, setSaving] = useState(false);
-  const [uploading, setUploading] = useState(false);
-
-  useEffect(() => { setName(profile?.full_name || ""); }, [profile?.full_name]);
-
-  async function saveName(e: React.FormEvent) {
-    e.preventDefault();
-    const trimmed = name.trim();
-    if (trimmed.length < 3) {
-      toast.error(isAr ? "الاسم يجب ألا يقل عن 3 أحرف" : "Name must be at least 3 characters");
-      return;
-    }
-    setSaving(true);
-    const { error } = await supabase.from("profiles").update({ full_name: trimmed }).eq("id", userId);
-    setSaving(false);
-    if (error) { toast.error(error.message); return; }
-    toast.success(isAr ? "تم تحديث اسمك بنجاح" : "Your name was updated");
-    onSaved();
-  }
-
-  async function uploadAvatar(file: File) {
-    if (!file.type.startsWith("image/")) {
-      toast.error(isAr ? "الرجاء اختيار ملف صورة" : "Please choose an image file");
-      return;
-    }
-    if (file.size > 3 * 1024 * 1024) {
-      toast.error(isAr ? "أقصى حجم للصورة 3 ميجابايت" : "Max image size is 3MB");
-      return;
-    }
-    setUploading(true);
-    const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
-    const path = `${userId}/avatar-${Date.now()}.${ext}`;
-    const { error: upErr } = await supabase.storage.from("avatars").upload(path, file, { upsert: true, contentType: file.type });
-    if (upErr) { setUploading(false); toast.error(upErr.message); return; }
-    const oldPath = profile?.avatar_url;
-    const { error } = await supabase.from("profiles").update({ avatar_url: path }).eq("id", userId);
-    setUploading(false);
-    if (error) { toast.error(error.message); return; }
-    if (oldPath && oldPath !== path) { await supabase.storage.from("avatars").remove([oldPath]); }
-    toast.success(isAr ? "تم تحديث صورتك الشخصية" : "Profile photo updated");
-    onSaved();
-  }
-
-  async function removeAvatar() {
-    const oldPath = profile?.avatar_url;
-    if (!oldPath) return;
-    setUploading(true);
-    const { error } = await supabase.from("profiles").update({ avatar_url: null }).eq("id", userId);
-    setUploading(false);
-    if (error) { toast.error(error.message); return; }
-    await supabase.storage.from("avatars").remove([oldPath]);
-    toast.success(isAr ? "تم حذف الصورة" : "Photo removed");
-    onSaved();
-  }
-
-  return (
-    <section id="account" className="scroll-mt-24">
-      <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-        <UserCog className="w-5 h-5 text-[var(--gold)]" /> {isAr ? "إعدادات الحساب" : "Account settings"}
-      </h2>
-      <div className="dash-card p-6 grid md:grid-cols-[auto_1fr] gap-6 items-start">
-        <div className="flex flex-col items-center gap-3">
-          <div className="relative w-28 h-28 rounded-2xl overflow-hidden border border-[var(--gold)]/35 bg-white/5 flex items-center justify-center text-4xl font-bold text-[var(--gold)]">
-            {avatarSrc
-              ? <img src={avatarSrc} alt={profile?.full_name || "avatar"} className="w-full h-full object-cover" />
-              : (profile?.full_name || profile?.email || "?").trim().charAt(0).toUpperCase()}
-            {uploading && (
-              <div className="absolute inset-0 bg-[#040818]/70 flex items-center justify-center">
-                <Loader2 className="w-6 h-6 animate-spin text-[var(--gold)]" />
-              </div>
-            )}
-          </div>
-          <label className="cursor-pointer inline-flex items-center gap-1.5 text-xs px-3 h-9 rounded-lg bg-white/5 border border-white/15 hover:bg-white/10 transition">
-            <Camera className="w-3.5 h-3.5" /> {isAr ? "تغيير الصورة" : "Change photo"}
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              disabled={uploading}
-              onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) uploadAvatar(f); }}
-            />
-          </label>
-          {profile?.avatar_url && (
-            <button type="button" onClick={removeAvatar} disabled={uploading}
-              className="text-[11px] text-rose-300 hover:text-rose-200 transition">
-              {isAr ? "حذف الصورة" : "Remove photo"}
-            </button>
-          )}
-        </div>
-
-        <form onSubmit={saveName} className="space-y-4">
-          <div>
-            <label className="block text-[11px] uppercase tracking-wider text-white/55 mb-1.5 font-semibold">
-              {isAr ? "الاسم بالكامل" : "Full name"}
-            </label>
-            <input value={name} onChange={(e) => setName(e.target.value)} className="premium-input" placeholder={isAr ? "اكتب اسمك" : "Your name"} />
-            <p className="text-[11px] text-white/45 mt-1.5">
-              {isAr ? "هذا الاسم يظهر في لوحتك وفي التواصل مع الإدارة." : "This name appears on your dashboard and in admin communication."}
-            </p>
-          </div>
-          <div>
-            <label className="block text-[11px] uppercase tracking-wider text-white/55 mb-1.5 font-semibold">
-              {isAr ? "البريد الإلكتروني" : "Email"}
-            </label>
-            <input value={profile?.email || ""} readOnly disabled className="premium-input opacity-60 cursor-not-allowed" />
-          </div>
-          <button type="submit" disabled={saving}
-            className="h-11 px-6 rounded-xl font-bold flex items-center gap-2 disabled:opacity-50 hover:brightness-110 transition"
-            style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
-            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-            {isAr ? "حفظ التغييرات" : "Save changes"}
-          </button>
-        </form>
-      </div>
-    </section>
   );
 }
 
