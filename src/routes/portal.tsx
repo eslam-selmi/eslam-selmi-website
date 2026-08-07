@@ -480,7 +480,16 @@ function PortalPage() {
       )}
 
       {showUpload && <UploadModal onClose={() => setShowUpload(false)} />}
+
+      <AccountSettingsModal
+        open={accountOpen}
+        onClose={() => setAccountOpen(false)}
+        userId={user.id}
+        userEmail={profile?.email}
+        onSaved={() => refresh({ silent: true })}
+      />
     </PortalShell>
+
   );
 }
 
