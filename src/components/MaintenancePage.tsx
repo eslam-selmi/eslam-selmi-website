@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "@tanstack/react-router";
+import { ShieldCheck, GraduationCap, ArrowLeft } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
 const brandLogo = brandLogoAsset.url;
@@ -157,6 +159,42 @@ export function MaintenancePage({ message, until }: Props) {
               ) : null}
             </>
           ) : null}
+
+          {/* Access shortcuts */}
+          <div className="mt-9 grid sm:grid-cols-2 gap-4 max-w-lg mx-auto">
+            {[
+              { to: "/auth", Icon: ShieldCheck, title: t("دخول الإدارة", "Admin login"), sub: t("لوحة تحكم المشرفين", "Administrator panel"), hue: "oklch(0.78 0.14 90)" },
+              { to: "/auth", Icon: GraduationCap, title: t("دخول المتدرب", "Trainee login"), sub: t("بوابة المتدربين", "Trainee portal"), hue: "oklch(0.72 0.13 200)" },
+            ].map(({ to, Icon, title, sub, hue }, i) => (
+              <Link
+                key={i}
+                to={to}
+                className="group relative overflow-hidden rounded-2xl p-4 flex items-center gap-3 text-start transition-transform duration-300 hover:-translate-y-1"
+                style={{
+                  background: "linear-gradient(160deg, oklch(1 0 0 / 0.08), oklch(1 0 0 / 0.02))",
+                  border: `1px solid ${hue.replace(")", " / 0.35)")}`,
+                  boxShadow: `0 18px 45px -22px ${hue.replace(")", " / 0.7)")}, inset 0 1px 0 oklch(1 0 0 / 0.08)`,
+                }}
+              >
+                <span
+                  aria-hidden
+                  className="absolute -top-10 -end-10 w-28 h-28 rounded-full blur-2xl opacity-60 transition-opacity group-hover:opacity-100"
+                  style={{ background: `radial-gradient(circle, ${hue.replace(")", " / 0.45)")}, transparent 70%)` }}
+                />
+                <span
+                  className="relative shrink-0 w-11 h-11 rounded-xl flex items-center justify-center"
+                  style={{ background: hue.replace(")", " / 0.14)"), border: `1px solid ${hue.replace(")", " / 0.4)")}` }}
+                >
+                  <Icon className="w-5 h-5" style={{ color: hue }} />
+                </span>
+                <span className="relative min-w-0 flex-1">
+                  <span className="block text-sm font-bold text-white">{title}</span>
+                  <span className="block text-[11px] text-white/55">{sub}</span>
+                </span>
+                <ArrowLeft className="relative w-4 h-4 text-white/40 group-hover:text-white transition rtl-flip" />
+              </Link>
+            ))}
+          </div>
 
           {/* Footer */}
           <div className="mt-8 pt-6 border-t border-white/10 text-[11px] text-white/40">
