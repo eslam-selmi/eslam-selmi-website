@@ -15,6 +15,7 @@ import { Clock, CheckCircle2, XCircle, Download, Upload, BookOpen, Wallet, Loade
 import { MediaViewerModal, type MediaItem } from "@/components/MediaViewerModal";
 import { TraineeSupportButton } from "@/components/SupportTickets";
 import { TraineePackagesSection } from "@/components/TraineePackagesSection";
+import { AccountSettingsModal } from "@/components/AccountSettingsModal";
 
 
 
@@ -263,13 +264,15 @@ function PortalPage() {
       : hour < 21 ? `Good evening ${firstName} — a great time to review today's progress.`
       : `${firstName}, a calm late-night session? Your content is ready.`);
 
+  const [accountOpen, setAccountOpen] = useState(false);
+
   const navItems: { id: string; label: string; icon: any; badge?: number; to?: string }[] = [
     { id: "overview", label: lang === "ar" ? "نظرة عامة" : "Overview", icon: Sparkles },
     { id: "my-courses", label: lang === "ar" ? "كورساتي" : "My courses", icon: BookOpen, badge: enrollments.length || undefined },
     { id: "certificates", label: lang === "ar" ? "شهاداتي" : "My certificates", icon: Award, badge: stats.certs || undefined },
     { id: "packages", label: lang === "ar" ? "باقات الاستشارات" : "Consulting packages", icon: PhoneOutgoing },
     { id: "available", label: lang === "ar" ? "كورسات متاحة" : "Available courses", icon: GraduationCap, badge: availableCourses.length || undefined },
-    { id: "account", label: lang === "ar" ? "إعدادات الحساب" : "Account settings", icon: UserCog, to: "/account" },
+    { id: "account", label: lang === "ar" ? "إعدادات الحساب" : "Account settings", icon: UserCog },
   ];
 
 
@@ -297,7 +300,7 @@ function PortalPage() {
                   return (
                     <li key={it.id}>
                       <button
-                        onClick={() => { if (it.to) { nav({ to: it.to }); return; } document.getElementById(it.id)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
+                        onClick={() => { if (it.id === "account") { setAccountOpen(true); return; } if (it.to) { nav({ to: it.to }); return; } document.getElementById(it.id)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
                         className="w-full group flex items-center gap-2.5 px-3 h-10 rounded-xl text-[13px] font-semibold transition text-start text-white/70 hover:text-white hover:bg-white/5"
                       >
                         <Icon className="w-4 h-4 shrink-0 text-white/50 group-hover:text-[var(--gold)]" />
@@ -320,7 +323,7 @@ function PortalPage() {
             <div className="flex items-start gap-4 min-w-0">
               <button
                 type="button"
-                onClick={() => nav({ to: "/account" })}
+                onClick={() => setAccountOpen(true)}
                 title={lang === "ar" ? "تغيير الصورة الشخصية" : "Change profile photo"}
                 className="relative shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden border border-[var(--gold)]/35 bg-white/5 flex items-center justify-center text-2xl font-bold text-[var(--gold)] hover:border-[var(--gold)] transition"
               >
@@ -477,7 +480,16 @@ function PortalPage() {
       )}
 
       {showUpload && <UploadModal onClose={() => setShowUpload(false)} />}
+
+      <AccountSettingsModal
+        open={accountOpen}
+        onClose={() => setAccountOpen(false)}
+        userId={user.id}
+        userEmail={profile?.email}
+        onSaved={() => refresh({ silent: true })}
+      />
     </PortalShell>
+
   );
 }
 
