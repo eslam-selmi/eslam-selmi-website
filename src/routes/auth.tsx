@@ -372,12 +372,16 @@ function AuthPage() {
               <button
                 type="submit"
                 disabled={busy}
-                className="w-full mt-2 h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-60 transition bg-white text-[#0a1224] hover:bg-white/90"
+                className={`w-full mt-2 h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-60 transition ${
+                  isAdminView
+                    ? "bg-gradient-to-l from-sky-400 to-cyan-300 text-[#04121f] hover:brightness-110 shadow-[0_14px_36px_-16px_rgba(56,189,248,0.8)]"
+                    : "bg-white text-[#0a1224] hover:bg-white/90"
+                }`}
               >
                 {busy ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
-                  <>{isAdminView || mode === "login" ? "دخول" : "إنشاء الحساب"}</>
+                  <>{isAdminView ? "دخول آمن" : mode === "login" ? "دخول" : "إنشاء الحساب"}</>
                 )}
               </button>
             </form>
@@ -395,12 +399,12 @@ function AuthPage() {
               </div>
             )}
 
-            <div className="mt-8 flex justify-center">
+            <div className={`flex justify-center ${isAdminView ? "mt-6 border-t border-white/[0.06] pt-5" : "mt-8"}`}>
               {isAdminView ? (
                 <button
                   type="button"
                   onClick={() => setAuthRole("trainee")}
-                  className="text-[12px] text-white/45 hover:text-white/80 transition"
+                  className="text-[12px] text-sky-200/50 hover:text-sky-100 transition"
                 >
                   دخول المتدربين
                 </button>
@@ -418,10 +422,13 @@ function AuthPage() {
               )}
             </div>
 
-            <div className="mt-10 flex items-center justify-center gap-1.5 text-[11px] text-white/35">
+            <div
+              className={`flex items-center justify-center gap-1.5 text-[11px] ${isAdminView ? "mt-6 text-sky-200/35" : "mt-10 text-white/35"}`}
+            >
               <ShieldCheck className="h-3.5 w-3.5" />
-              <span>اتصال مشفّر</span>
+              <span>{isAdminView ? "جلسة مراقَبة · اتصال مشفّر" : "اتصال مشفّر"}</span>
             </div>
+
           </div>
         </div>
       </div>
