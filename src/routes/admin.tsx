@@ -79,6 +79,7 @@ type AdminSearch = {
 };
 
 export const Route = createFileRoute("/admin")({
+  ssr: false,
   validateSearch: (search: Record<string, unknown>): AdminSearch => ({
     tab: search.tab as AdminSearch["tab"],
     drawer: search.drawer as string | undefined,

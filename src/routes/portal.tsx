@@ -24,6 +24,7 @@ type PortalSearch = {
 };
 
 export const Route = createFileRoute("/portal")({
+  ssr: false,
   validateSearch: (search: Record<string, unknown>): PortalSearch => ({
     view: search.view as string | undefined,
   }),
