@@ -72,6 +72,7 @@ type AdminSearch = {
     | "bookings"
     | "packages"
     | "interviews"
+    | "snapshots"
     | "trainings";
 
   drawer?: string;
