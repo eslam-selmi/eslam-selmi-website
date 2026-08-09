@@ -161,37 +161,20 @@ export function MaintenancePage({ message, until }: Props) {
           ) : null}
 
           {/* Access shortcuts */}
-          <div className="mt-9 grid sm:grid-cols-2 gap-4 max-w-lg mx-auto">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-2.5">
             {[
-              { to: "/auth", Icon: ShieldCheck, title: t("دخول الإدارة", "Admin login"), sub: t("لوحة تحكم المشرفين", "Administrator panel"), hue: "oklch(0.78 0.14 90)" },
-              { to: "/auth", Icon: GraduationCap, title: t("دخول المتدرب", "Trainee login"), sub: t("بوابة المتدربين", "Trainee portal"), hue: "oklch(0.72 0.13 200)" },
-            ].map(({ to, Icon, title, sub, hue }, i) => (
+              { search: { role: "admin" }, Icon: ShieldCheck, title: t("دخول الإدارة", "Admin login") },
+              { search: { role: "trainee" }, Icon: GraduationCap, title: t("دخول المتدرب", "Trainee login") },
+            ].map(({ search, Icon, title }, i) => (
               <Link
                 key={i}
-                to={to}
-                className="group relative overflow-hidden rounded-2xl p-4 flex items-center gap-3 text-start transition-transform duration-300 hover:-translate-y-1"
-                style={{
-                  background: "linear-gradient(160deg, oklch(1 0 0 / 0.08), oklch(1 0 0 / 0.02))",
-                  border: `1px solid ${hue.replace(")", " / 0.35)")}`,
-                  boxShadow: `0 18px 45px -22px ${hue.replace(")", " / 0.7)")}, inset 0 1px 0 oklch(1 0 0 / 0.08)`,
-                }}
+                to="/auth"
+                search={search}
+                className="group inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.05] px-4 py-2 text-[12.5px] font-semibold text-white/80 backdrop-blur-sm transition hover:border-white/30 hover:bg-white/[0.09] hover:text-white"
               >
-                <span
-                  aria-hidden
-                  className="absolute -top-10 -end-10 w-28 h-28 rounded-full blur-2xl opacity-60 transition-opacity group-hover:opacity-100"
-                  style={{ background: `radial-gradient(circle, ${hue.replace(")", " / 0.45)")}, transparent 70%)` }}
-                />
-                <span
-                  className="relative shrink-0 w-11 h-11 rounded-xl flex items-center justify-center"
-                  style={{ background: hue.replace(")", " / 0.14)"), border: `1px solid ${hue.replace(")", " / 0.4)")}` }}
-                >
-                  <Icon className="w-5 h-5" style={{ color: hue }} />
-                </span>
-                <span className="relative min-w-0 flex-1">
-                  <span className="block text-sm font-bold text-white">{title}</span>
-                  <span className="block text-[11px] text-white/55">{sub}</span>
-                </span>
-                <ArrowLeft className="relative w-4 h-4 text-white/40 group-hover:text-white transition rtl-flip" />
+                <Icon className="w-3.5 h-3.5 opacity-70 group-hover:opacity-100" />
+                {title}
+                <ArrowLeft className="w-3.5 h-3.5 opacity-40 transition group-hover:opacity-90 rtl-flip" />
               </Link>
             ))}
           </div>

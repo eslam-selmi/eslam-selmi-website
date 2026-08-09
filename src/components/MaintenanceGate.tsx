@@ -14,7 +14,7 @@ const ALLOWED_PREFIXES = ["/admin", "/auth", "/portal", "/trainer", "/onboarding
 
 export function MaintenanceGate({ children }: { children: React.ReactNode }) {
   const [config, setConfig] = useState<Config | null>(null);
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const [signedIn, setSignedIn] = useState<boolean>(false);
   const location = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
@@ -39,33 +39,24 @@ export function MaintenanceGate({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     let alive = true;
-    (async () => {
-      const { data: u } = await supabase.auth.getUser();
-      if (!u.user) { if (alive) setIsAdmin(false); return; }
-      const { data } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", u.user.id)
-        .eq("role", "admin")
-        .maybeSingle();
-      if (alive) setIsAdmin(!!data);
-    })();
-    const { data: sub } = supabase.auth.onAuthStateChange(() => {
-      supabase.auth.getUser().then(async ({ data: u }) => {
-        if (!alive) return;
-        if (!u.user) { setIsAdmin(false); return; }
-        const { data } = await supabase
-          .from("user_roles").select("role")
-          .eq("user_id", u.user.id).eq("role", "admin").maybeSingle();
-        if (alive) setIsAdmin(!!data);
-      });
+    const sync = async () => {
+      try {
+        const { data } = await supabase.auth.getSession();
+        if (alive) setSignedIn(!!data.session?.user);
+      } catch {
+        if (alive) setSignedIn(true); // fail open
+      }
+    };
+    sync();
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      if (alive) setSignedIn(!!session?.user);
     });
     return () => { alive = false; sub.subscription.unsubscribe(); };
   }, []);
 
   if (!config) return <>{children}</>;
   if (!config.enabled) return <>{children}</>;
-  if (isAdmin) return <>{children}</>;
+  if (signedIn) return <>{children}</>;
   if (ALLOWED_PREFIXES.some((p) => location === p || location.startsWith(p + "/"))) {
     return <>{children}</>;
   }
