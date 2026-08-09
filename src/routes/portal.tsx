@@ -67,6 +67,7 @@ function PortalPage() {
   const [modules, setModules] = useState<ModuleRow[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [showUpload, setShowUpload] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
   const search = Route.useSearch();
   const [viewingId, setViewingId] = useState<string | null>(search.view || null);
   const viewing = useMemo(() => enrollments.find(e => e.id === viewingId) || null, [viewingId, enrollments]);
@@ -264,8 +265,6 @@ function PortalPage() {
       : hour < 17 ? `Hi ${firstName} — a quick look at your courses and progress.`
       : hour < 21 ? `Good evening ${firstName} — a great time to review today's progress.`
       : `${firstName}, a calm late-night session? Your content is ready.`);
-
-  const [accountOpen, setAccountOpen] = useState(false);
 
   const navItems: { id: string; label: string; icon: any; badge?: number; to?: string }[] = [
     { id: "overview", label: lang === "ar" ? "نظرة عامة" : "Overview", icon: Sparkles },

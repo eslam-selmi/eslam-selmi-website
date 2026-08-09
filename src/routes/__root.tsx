@@ -113,7 +113,7 @@ const NO_FLASH_SCRIPT = `(function(){try{var l=localStorage.getItem('lang');if(l
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ar" dir="rtl" style={{ backgroundColor: "#0b1736" }}>
+    <html lang="ar" dir="rtl" style={{ backgroundColor: "#0b1736" }} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: NO_FLASH_SCRIPT }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
