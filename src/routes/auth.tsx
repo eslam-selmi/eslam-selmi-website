@@ -20,9 +20,10 @@ async function fetchAdminWhatsApp(): Promise<string> {
 }
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>) => ({
+  validateSearch: (search: Record<string, unknown>): { role?: string } => ({
     role: (search.role as string) || "trainee",
   }),
+
   head: () => ({
     meta: [{ title: "تسجيل الدخول · إسلام سلمي" }, { name: "robots", content: "noindex" }],
   }),
