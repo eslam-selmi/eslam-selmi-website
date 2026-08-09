@@ -179,34 +179,29 @@ function AuthPage() {
   return (
     <div
       dir="rtl"
-      className={`min-h-screen relative overflow-hidden px-4 py-10 sm:py-16 font-[var(--font-body-ar)] text-white ${isAdminView ? "bg-[#070b14]" : "bg-[#0a1224]"}`}
+      className="min-h-screen relative overflow-hidden px-4 py-10 sm:py-16 font-[var(--font-body-ar)] text-white bg-[#070b14]"
     >
-      {/* Distinct ambience per role */}
       <div
         aria-hidden
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: isAdminView
-            ? "radial-gradient(700px 420px at 85% -5%, rgba(56,189,248,0.14), transparent 62%), radial-gradient(600px 400px at 10% 100%, rgba(148,163,184,0.10), transparent 60%), linear-gradient(180deg, #070b14 0%, #05080f 100%)"
-            : "radial-gradient(900px 500px at 50% -10%, rgba(212,175,108,0.12), transparent 60%), linear-gradient(180deg, #0a1224 0%, #0a1224 100%)",
+          background:
+            "radial-gradient(700px 420px at 85% -5%, rgba(56,189,248,0.14), transparent 62%), radial-gradient(600px 400px at 10% 100%, rgba(148,163,184,0.10), transparent 60%), linear-gradient(180deg, #070b14 0%, #05080f 100%)",
         }}
       />
-      {isAdminView && (
-        <div
-          aria-hidden
-          className="absolute inset-0 pointer-events-none opacity-[0.16]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(148,163,184,0.14) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,0.14) 1px, transparent 1px)",
-            backgroundSize: "54px 54px",
-            maskImage: "radial-gradient(60% 60% at 50% 40%, #000 20%, transparent 100%)",
-          }}
-        />
-      )}
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none opacity-[0.16]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(148,163,184,0.14) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,0.14) 1px, transparent 1px)",
+          backgroundSize: "54px 54px",
+          maskImage: "radial-gradient(60% 60% at 50% 40%, #000 20%, transparent 100%)",
+        }}
+      />
       <div aria-hidden className="absolute inset-0 pointer-events-none opacity-[0.05] grain" />
 
-      <div className={`relative mx-auto flex min-h-[calc(100vh-5rem)] w-full flex-col ${isAdminView ? "max-w-sm" : "max-w-md"}`}>
-        {/* Back to site */}
+      <div className="relative mx-auto flex min-h-[calc(100vh-5rem)] w-full flex-col max-w-sm">
         <Link
           to="/"
           className="self-start inline-flex items-center gap-1.5 text-[12px] text-white/55 hover:text-white/90 transition"
@@ -216,47 +211,23 @@ function AuthPage() {
         </Link>
 
         <div className="flex-1 flex items-center justify-center py-8">
-          <div
-            className={
-              isAdminView
-                ? "w-full rounded-2xl border border-sky-300/15 bg-white/[0.025] p-6 sm:p-7 backdrop-blur-xl shadow-[0_30px_80px_-40px_rgba(56,189,248,0.45)]"
-                : "w-full"
-            }
-          >
+          <div className="w-full rounded-2xl border border-sky-300/15 bg-white/[0.025] p-6 sm:p-7 backdrop-blur-xl shadow-[0_30px_80px_-40px_rgba(56,189,248,0.45)]">
             {/* Brand */}
             <div className="flex flex-col items-center text-center mb-8">
-              {isAdminView ? (
-                <>
-                  <div className="h-14 w-14 rounded-xl border border-sky-300/25 bg-sky-400/[0.07] flex items-center justify-center mb-4 shadow-[0_0_40px_-12px_rgba(56,189,248,0.6)]">
-                    <ShieldCheck className="h-7 w-7 text-sky-300/90" />
-                  </div>
-                  <span className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-sky-300/25 bg-sky-400/10 px-3 py-1 text-[10px] font-semibold tracking-[0.18em] text-sky-200/90">
-                    منطقة مقيّدة
-                  </span>
-                </>
-              ) : (
-                <div className="h-14 w-14 rounded-2xl border border-white/12 bg-white/[0.03] flex items-center justify-center mb-5">
-                  <img src={brandLogo} alt="" className="h-9 w-auto opacity-90" />
-                </div>
-              )}
-              <h1
-                className={`font-semibold tracking-tight text-white ${isAdminView ? "text-[20px] sm:text-[22px]" : "text-[22px] sm:text-[24px]"}`}
-              >
-                {isAdminView
-                  ? "لوحة تحكم الإدارة"
-                  : mode === "login"
-                    ? "تسجيل الدخول"
-                    : "إنشاء حساب"}
+              <div className="h-14 w-14 rounded-xl border border-white/12 bg-white/[0.04] flex items-center justify-center mb-4">
+                <img src={brandLogo} alt="" className="h-9 w-auto opacity-90" />
+              </div>
+              <h1 className="font-semibold tracking-tight text-white text-[21px] sm:text-[23px]">
+                {isAdminView ? "لوحة التحكم" : mode === "login" ? "تسجيل الدخول" : "إنشاء حساب"}
               </h1>
-              <p className={`mt-1.5 text-[13px] ${isAdminView ? "text-sky-100/45" : "text-white/50"}`}>
+              <p className="mt-1.5 text-[13px] text-white/50">
                 {isAdminView
-                  ? "الدخول مصرّح للمخوّلين فقط."
+                  ? "سجّل الدخول للمتابعة إلى لوحة التحكم."
                   : mode === "login"
                     ? "ادخل إلى حسابك للمتابعة."
                     : "أنشئ حساباً جديداً للتقديم على الكورسات."}
               </p>
             </div>
-
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-3.5">
@@ -372,16 +343,12 @@ function AuthPage() {
               <button
                 type="submit"
                 disabled={busy}
-                className={`w-full mt-2 h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-60 transition ${
-                  isAdminView
-                    ? "bg-gradient-to-l from-sky-400 to-cyan-300 text-[#04121f] hover:brightness-110 shadow-[0_14px_36px_-16px_rgba(56,189,248,0.8)]"
-                    : "bg-white text-[#0a1224] hover:bg-white/90"
-                }`}
+                className="w-full mt-2 h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-60 transition bg-gradient-to-l from-sky-400 to-cyan-300 text-[#04121f] hover:brightness-110 shadow-[0_14px_36px_-16px_rgba(56,189,248,0.8)]"
               >
                 {busy ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
-                  <>{isAdminView ? "دخول آمن" : mode === "login" ? "دخول" : "إنشاء الحساب"}</>
+                  <>{isAdminView ? "دخول" : mode === "login" ? "دخول" : "إنشاء الحساب"}</>
                 )}
               </button>
             </form>
@@ -399,12 +366,12 @@ function AuthPage() {
               </div>
             )}
 
-            <div className={`flex justify-center ${isAdminView ? "mt-6 border-t border-white/[0.06] pt-5" : "mt-8"}`}>
+            <div className="flex justify-center mt-6 border-t border-white/[0.06] pt-5">
               {isAdminView ? (
                 <button
                   type="button"
                   onClick={() => setAuthRole("trainee")}
-                  className="text-[12px] text-sky-200/50 hover:text-sky-100 transition"
+                  className="text-[12px] text-white/45 hover:text-white/80 transition"
                 >
                   دخول المتدربين
                 </button>
@@ -422,12 +389,11 @@ function AuthPage() {
               )}
             </div>
 
-            <div
-              className={`flex items-center justify-center gap-1.5 text-[11px] ${isAdminView ? "mt-6 text-sky-200/35" : "mt-10 text-white/35"}`}
-            >
+            <div className="flex items-center justify-center gap-1.5 text-[11px] mt-6 text-white/35">
               <ShieldCheck className="h-3.5 w-3.5" />
-              <span>{isAdminView ? "جلسة مراقَبة · اتصال مشفّر" : "اتصال مشفّر"}</span>
+              <span>اتصال مشفّر</span>
             </div>
+
 
           </div>
         </div>
