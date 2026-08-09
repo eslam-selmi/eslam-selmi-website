@@ -218,7 +218,7 @@ export const Route = createFileRoute("/")({
     ],
     links: [
       { rel: "canonical", href: "https://eslam-selmi.lovable.app/" },
-      { rel: "preload", as: "image", href: headshot, fetchpriority: "high" },
+      { rel: "preload", as: "image", href: headshot, fetchPriority: "high" },
     ],
     scripts: [
       {
