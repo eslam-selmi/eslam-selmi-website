@@ -53,23 +53,24 @@
   --secondary-foreground: oklch(0.22 0.06 252);
   --muted: oklch(0.95 0.008 240);
   --muted-foreground: oklch(0.46 0.025 250);
-  --accent: oklch(0.72 0.12 195);
-  --accent-foreground: oklch(0.16 0.04 252);
+  --accent: oklch(0.743 0.117 89.5);
+  --accent-foreground: oklch(0.214 0.063 265.5);
   --destructive: oklch(0.55 0.22 27);
   --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.18 0.04 252 / 0.10);
-  --input: oklch(0.18 0.04 252 / 0.14);
-  --ring: oklch(0.72 0.12 195);
+  --border: oklch(0.214 0.063 265.5 / 0.10);
+  --input: oklch(0.214 0.063 265.5 / 0.14);
+  --ring: oklch(0.743 0.117 89.5);
 
-  --gold: oklch(0.78 0.14 78);
-  --gold-soft: oklch(0.88 0.09 82);
-  --navy: oklch(0.22 0.06 252);
-  --navy-deep: oklch(0.14 0.05 252);
-  --steel: oklch(0.62 0.04 240);
+  --gold: oklch(0.743 0.117 89.5);
+  --gold-soft: oklch(0.883 0.098 91.7);
+  --navy: oklch(0.214 0.063 265.5);
+  --navy-deep: oklch(0.180 0.047 266.5);
+  --steel: oklch(0.62 0.04 260);
 
-  --lavender: oklch(0.72 0.12 195);
-  --lavender-soft: oklch(0.90 0.05 200);
-  --lavender-deep: oklch(0.48 0.13 210);
+  --lavender: oklch(0.743 0.117 89.5);
+  --lavender-soft: oklch(0.883 0.098 91.7);
+  --lavender-deep: oklch(0.62 0.11 86);
+
 
 
   --glass: oklch(1 0 0 / 0.78);
