@@ -1970,7 +1970,7 @@ function Pillars() {
             key={p.key}
             {...fadeUp}
             transition={{ duration: 0.6, delay: i * 0.1 }}
-            className="relative glass-panel rounded-[2rem] p-7 overflow-hidden group hover:-translate-y-1 transition"
+            className="relative glass-panel rounded-[2rem] p-7 overflow-hidden group hover:-translate-y-1 transition hover:border-[color-mix(in_oklab,var(--gold)_45%,transparent)] hover:shadow-[0_30px_70px_-34px_color-mix(in_oklab,var(--gold)_55%,transparent)]"
           >
             <div
               className={`absolute -top-20 -end-20 size-48 rounded-full bg-gradient-to-br ${p.color} blur-3xl opacity-60 group-hover:opacity-100 transition`}
