@@ -1820,89 +1820,56 @@ function Hero() {
           className="lg:col-span-5 order-1 lg:order-2 relative"
         >
           <div className="relative w-full max-w-[440px] sm:max-w-[500px] lg:max-w-[560px] mx-auto aspect-[4/5]">
-            {/* Ambient cyan aurora */}
+            {/* Ambient gold aurora */}
             <div
               className="absolute -inset-10 blur-3xl opacity-70 -z-10"
               style={{
                 background:
-                  "radial-gradient(55% 45% at 25% 20%, oklch(0.72 0.14 210 / 0.45), transparent 70%), radial-gradient(45% 45% at 80% 85%, oklch(0.66 0.12 240 / 0.38), transparent 72%)",
+                  "radial-gradient(55% 45% at 25% 18%, oklch(0.743 0.117 89.5 / 0.32), transparent 70%), radial-gradient(45% 45% at 82% 86%, oklch(0.214 0.063 265.5 / 0.35), transparent 72%)",
               }}
             />
 
-            {/* Executive titanium panel — unified premium frame */}
+            {/* Executive navy panel */}
             <div
               className="absolute -inset-4 -z-10 rounded-[2.75rem] overflow-hidden"
               style={{
                 background:
-                  "linear-gradient(145deg, #0f1620 0%, #1a222e 30%, #0c1219 65%, #141c26 100%)",
+                  "linear-gradient(150deg, #12224a 0%, #0b1736 45%, #081026 100%)",
                 boxShadow:
-                  "0 45px 120px -40px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(0,0,0,0.6)",
+                  "0 45px 120px -40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(240,215,140,0.14)",
               }}
             >
-              {/* Carbon-fiber weave */}
+              {/* Fine engraved lines */}
               <div
-                className="absolute inset-0 opacity-[0.28] mix-blend-overlay"
+                className="absolute inset-0 opacity-[0.12]"
                 style={{
                   backgroundImage:
-                    "repeating-linear-gradient(45deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 4px), repeating-linear-gradient(-45deg, rgba(0,0,0,0.35) 0 1px, transparent 1px 4px)",
-                }}
-              />
-              {/* Brushed metal streaks */}
-              <div
-                className="absolute inset-0 opacity-[0.18]"
-                style={{
-                  backgroundImage:
-                    "repeating-linear-gradient(90deg, rgba(255,255,255,0.10) 0 1px, transparent 1px 3px)",
+                    "repeating-linear-gradient(135deg, rgba(240,215,140,0.35) 0 1px, transparent 1px 12px)",
                   maskImage:
-                    "linear-gradient(180deg, transparent, black 30%, black 70%, transparent)",
+                    "linear-gradient(180deg, transparent, black 25%, black 70%, transparent)",
                 }}
               />
-              {/* Subtle geometric engravings */}
-              <svg
-                className="absolute inset-0 w-full h-full opacity-[0.10]"
-                viewBox="0 0 400 500"
-                preserveAspectRatio="none"
-                aria-hidden
-              >
-                <defs>
-                  <linearGradient id="engrav" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="#7dd3fc" />
-                    <stop offset="100%" stopColor="#22d3ee" />
-                  </linearGradient>
-                </defs>
-                <circle cx="60" cy="60" r="42" fill="none" stroke="url(#engrav)" strokeWidth="0.6" />
-                <circle cx="60" cy="60" r="28" fill="none" stroke="url(#engrav)" strokeWidth="0.4" />
-                <path d="M340 440 L380 440 L380 480" fill="none" stroke="url(#engrav)" strokeWidth="0.6" />
-                <path d="M20 460 L20 480 L60 480" fill="none" stroke="url(#engrav)" strokeWidth="0.6" />
-                <path d="M0 250 L400 250" stroke="url(#engrav)" strokeWidth="0.3" strokeDasharray="2 6" />
-              </svg>
-              {/* Cyan bevel edges */}
               <div
                 className="absolute inset-0 rounded-[2.75rem] pointer-events-none"
                 style={{
                   boxShadow:
-                    "inset 0 0 0 1px rgba(125,211,252,0.18), inset 0 0 40px rgba(34,211,238,0.10)",
+                    "inset 0 0 0 1px rgba(201,168,76,0.28), inset 0 0 60px rgba(201,168,76,0.08)",
                 }}
               />
-              {/* Corner glass bevels with cyan accent lighting */}
               <div
                 className="absolute -top-8 -left-8 w-40 h-40 rounded-full blur-2xl"
-                style={{ background: "radial-gradient(circle, rgba(34,211,238,0.35), transparent 70%)" }}
-              />
-              <div
-                className="absolute -bottom-10 -right-10 w-48 h-48 rounded-full blur-2xl"
-                style={{ background: "radial-gradient(circle, rgba(125,211,252,0.28), transparent 70%)" }}
+                style={{ background: "radial-gradient(circle, rgba(201,168,76,0.30), transparent 70%)" }}
               />
             </div>
 
-            {/* Main portrait — squircle framed inside the titanium panel */}
+            {/* Main portrait — gold-rimmed squircle */}
             <div
-              className="relative h-full w-full p-[3px]"
+              className="relative h-full w-full p-[2px]"
               style={{
                 borderRadius: "2.25rem",
                 background:
-                  "linear-gradient(160deg, rgba(125,211,252,0.6) 0%, rgba(255,255,255,0.15) 35%, rgba(34,211,238,0.35) 70%, rgba(15,22,32,0.9) 100%)",
-                boxShadow: "0 40px 90px -35px rgba(6,20,35,0.7)",
+                  "linear-gradient(160deg, rgba(240,215,140,0.85) 0%, rgba(201,168,76,0.35) 40%, rgba(11,23,54,0.9) 100%)",
+                boxShadow: "0 40px 90px -35px rgba(6,14,35,0.75)",
               }}
             >
               <div
@@ -1910,7 +1877,7 @@ function Hero() {
                 style={{
                   borderRadius: "2.1rem",
                   background:
-                    "linear-gradient(170deg, oklch(0.96 0.015 200) 0%, oklch(0.90 0.03 210) 60%, oklch(0.78 0.06 235) 100%)",
+                    "linear-gradient(170deg, oklch(0.96 0.012 250) 0%, oklch(0.90 0.02 255) 60%, oklch(0.80 0.04 262) 100%)",
                 }}
               >
                 <img
@@ -1922,30 +1889,45 @@ function Hero() {
                   decoding="async"
                   className="absolute inset-x-0 bottom-0 h-[120%] w-full object-contain object-bottom"
                 />
-                {/* Thin inner stroke */}
                 <div
                   className="pointer-events-none absolute inset-1.5"
                   style={{
                     borderRadius: "1.95rem",
-                    boxShadow: "inset 0 0 0 1px oklch(1 0 0 / 0.35)",
+                    boxShadow: "inset 0 0 0 1px rgba(240,215,140,0.45)",
                   }}
                 />
-                {/* Bottom gradient wash — cyan tint */}
                 <div
                   className="pointer-events-none absolute inset-0"
                   style={{
                     background:
-                      "linear-gradient(180deg, transparent 55%, rgba(8,20,35,0.45) 100%)",
+                      "linear-gradient(180deg, transparent 55%, rgba(11,23,54,0.5) 100%)",
                   }}
                 />
                 {/* Corner monogram */}
-                <div className="absolute top-3 left-3 size-9 grid place-items-center rounded-xl backdrop-blur bg-white/15 border border-white/30 text-white font-display text-[13px] font-extrabold tracking-tight">
+                <div
+                  className="absolute top-3 left-3 size-9 grid place-items-center rounded-xl backdrop-blur font-display text-[13px] font-extrabold tracking-tight"
+                  style={{
+                    background: "rgba(11,23,54,0.55)",
+                    border: "1px solid rgba(240,215,140,0.45)",
+                    color: "#f0d78c",
+                  }}
+                >
                   ES
                 </div>
               </div>
             </div>
 
+            {/* Offset gold corner rule */}
+            <div
+              className="pointer-events-none absolute -bottom-7 -right-7 w-32 h-32 rounded-br-[2.75rem]"
+              style={{
+                borderBottom: "3px solid var(--gold)",
+                borderRight: "3px solid var(--gold)",
+                opacity: 0.8,
+              }}
+            />
           </div>
+
         </motion.div>
       </div>
     </section>
