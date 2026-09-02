@@ -1737,7 +1737,12 @@ function Hero() {
           >
             <button
               onClick={openCalendly}
-              className="group inline-flex items-center gap-2 rounded-xl bg-primary px-7 py-4 text-sm font-bold text-primary-foreground shadow-[0_18px_40px_-14px_oklch(0.22_0.06_252/0.5)] hover:translate-y-[-2px] transition cursor-pointer"
+              className="group inline-flex items-center gap-2 rounded-xl px-7 py-4 text-sm font-bold transition cursor-pointer hover:-translate-y-0.5"
+              style={{
+                background: "linear-gradient(135deg, var(--gold), var(--gold-soft))",
+                color: "oklch(0.180 0.047 266.5)",
+                boxShadow: "0 18px 44px -18px color-mix(in oklab, var(--gold) 60%, transparent)",
+              }}
             >
               <Calendar className="size-4" /> {t("hero_btn_book")}
               <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
@@ -1746,25 +1751,30 @@ function Hero() {
               href={WHATSAPP}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-xl border border-foreground/15 bg-card px-7 py-4 text-sm font-bold text-foreground hover:border-foreground/30 hover:bg-foreground/[0.03] transition"
+              className="inline-flex items-center gap-2 rounded-xl border border-foreground/15 bg-card/60 backdrop-blur px-7 py-4 text-sm font-bold text-foreground hover:border-[color-mix(in_oklab,var(--gold)_45%,transparent)] transition"
             >
               <MessageCircle className="size-4" /> WhatsApp
             </a>
             <a
               href="#podcast"
               aria-label="Listen to the L&D Podcast"
-              className="group relative inline-flex items-center gap-2 rounded-xl px-7 py-4 text-sm font-bold text-white overflow-hidden shadow-[0_18px_40px_-14px_oklch(0.55_0.2_290/0.55)] hover:translate-y-[-2px] transition"
+              className="group relative inline-flex items-center gap-2 rounded-xl px-7 py-4 text-sm font-bold overflow-hidden transition hover:-translate-y-0.5"
               style={{
-                background: "linear-gradient(135deg, oklch(0.32 0.13 280), oklch(0.55 0.18 200))",
+                color: "var(--gold-soft)",
+                border: "1px solid color-mix(in oklab, var(--gold) 30%, transparent)",
+                background: "color-mix(in oklab, var(--gold) 8%, transparent)",
               }}
             >
-              <span className="relative grid place-items-center size-6 rounded-full bg-white/15 backdrop-blur-sm">
+              <span
+                className="relative grid place-items-center size-6 rounded-full"
+                style={{ background: "color-mix(in oklab, var(--gold) 18%, transparent)" }}
+              >
                 <Mic className="size-3.5" />
-                <span className="absolute inset-0 rounded-full ring-2 ring-white/40 animate-ping" />
               </span>
               <span className="relative">{t("listen_podcast")}</span>
               <ArrowRight className="relative size-4 group-hover:translate-x-1 rtl-flip transition" />
             </a>
+
           </motion.div>
 
           {/* Social row */}
