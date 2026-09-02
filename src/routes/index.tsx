@@ -1659,19 +1659,28 @@ function Hero() {
       ref={ref}
       className="relative min-h-screen pt-28 pb-16 lg:pt-32 overflow-hidden"
     >
-      {/* Soft background wash */}
+      {/* Executive navy + gold wash */}
       <div
         className="pointer-events-none absolute inset-0 -z-10"
         style={{
           background:
-            "radial-gradient(ellipse 60% 50% at 85% 12%, oklch(0.72 0.13 180 / 0.18), transparent 60%), radial-gradient(ellipse 50% 40% at 5% 90%, oklch(0.22 0.06 252 / 0.10), transparent 60%)",
+            "radial-gradient(ellipse 55% 45% at 88% 8%, oklch(0.743 0.117 89.5 / 0.16), transparent 62%), radial-gradient(ellipse 50% 40% at 4% 88%, oklch(0.214 0.063 265.5 / 0.10), transparent 62%)",
+        }}
+      />
+      <div
+        className="pointer-events-none absolute inset-0 -z-10 opacity-[0.05]"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)",
+          backgroundSize: "64px 64px",
+          maskImage: "radial-gradient(ellipse 65% 55% at 50% 25%, #000 25%, transparent 78%)",
         }}
       />
       <div
         className="pointer-events-none absolute inset-x-0 top-0 h-px"
         style={{
-          background: "linear-gradient(90deg, transparent, var(--accent), transparent)",
-          opacity: 0.4,
+          background: "linear-gradient(90deg, transparent, var(--gold), transparent)",
+          opacity: 0.55,
         }}
       />
 
@@ -1681,12 +1690,17 @@ function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 text-[11px] sm:text-xs font-bold uppercase tracking-[0.28em]"
-            style={{ color: "var(--accent)" }}
+            className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px] sm:text-xs font-bold tracking-[0.14em]"
+            style={{
+              color: "var(--gold)",
+              background: "color-mix(in oklab, var(--gold) 10%, transparent)",
+              border: "1px solid color-mix(in oklab, var(--gold) 28%, transparent)",
+            }}
           >
-            <span className="h-px w-8" style={{ background: "var(--accent)" }} />
+            <span className="size-1.5 rounded-full" style={{ background: "var(--gold)" }} />
             {lang === "ar" ? "حلول مبتكرة لبناء القدرات" : "Innovative Solutions for Building"}
           </motion.div>
+
 
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
