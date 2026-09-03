@@ -1836,7 +1836,7 @@ function Hero() {
                 background:
                   "linear-gradient(150deg, #12224a 0%, #0b1736 45%, #081026 100%)",
                 boxShadow:
-                  "0 45px 120px -40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(240,215,140,0.14)",
+                  "0 45px 120px -40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(232,232,236,0.14)",
               }}
             >
               {/* Fine engraved lines */}
@@ -1844,7 +1844,7 @@ function Hero() {
                 className="absolute inset-0 opacity-[0.12]"
                 style={{
                   backgroundImage:
-                    "repeating-linear-gradient(135deg, rgba(240,215,140,0.35) 0 1px, transparent 1px 12px)",
+                    "repeating-linear-gradient(135deg, rgba(232,232,236,0.35) 0 1px, transparent 1px 12px)",
                   maskImage:
                     "linear-gradient(180deg, transparent, black 25%, black 70%, transparent)",
                 }}
@@ -1853,12 +1853,12 @@ function Hero() {
                 className="absolute inset-0 rounded-[2.75rem] pointer-events-none"
                 style={{
                   boxShadow:
-                    "inset 0 0 0 1px rgba(201,168,76,0.28), inset 0 0 60px rgba(201,168,76,0.08)",
+                    "inset 0 0 0 1px rgba(148,163,184,0.28), inset 0 0 60px rgba(148,163,184,0.08)",
                 }}
               />
               <div
                 className="absolute -top-8 -left-8 w-40 h-40 rounded-full blur-2xl"
-                style={{ background: "radial-gradient(circle, rgba(201,168,76,0.30), transparent 70%)" }}
+                style={{ background: "radial-gradient(circle, rgba(148,163,184,0.30), transparent 70%)" }}
               />
             </div>
 
@@ -1868,7 +1868,7 @@ function Hero() {
               style={{
                 borderRadius: "2.25rem",
                 background:
-                  "linear-gradient(160deg, rgba(240,215,140,0.85) 0%, rgba(201,168,76,0.35) 40%, rgba(11,23,54,0.9) 100%)",
+                  "linear-gradient(160deg, rgba(232,232,236,0.85) 0%, rgba(148,163,184,0.35) 40%, rgba(11,23,54,0.9) 100%)",
                 boxShadow: "0 40px 90px -35px rgba(6,14,35,0.75)",
               }}
             >
@@ -1893,7 +1893,7 @@ function Hero() {
                   className="pointer-events-none absolute inset-1.5"
                   style={{
                     borderRadius: "1.95rem",
-                    boxShadow: "inset 0 0 0 1px rgba(240,215,140,0.45)",
+                    boxShadow: "inset 0 0 0 1px rgba(232,232,236,0.45)",
                   }}
                 />
                 <div
@@ -1908,7 +1908,7 @@ function Hero() {
                   className="absolute top-3 left-3 size-9 grid place-items-center rounded-xl backdrop-blur font-display text-[13px] font-extrabold tracking-tight"
                   style={{
                     background: "rgba(11,23,54,0.55)",
-                    border: "1px solid rgba(240,215,140,0.45)",
+                    border: "1px solid rgba(232,232,236,0.45)",
                     color: "#e8e8ec",
                   }}
                 >
