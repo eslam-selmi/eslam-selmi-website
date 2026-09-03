@@ -40,41 +40,43 @@
 
 :root {
   --radius: 1rem;
-  /* Cobalt Growth — training & development identity */
-  --background: #f6f8fb;
-  --foreground: #0a2540;
-  --card: #ffffff;
-  --card-foreground: #0a2540;
-  --popover: #ffffff;
-  --popover-foreground: #0a2540;
-  --primary: #0a2540;
-  --primary-foreground: #ffffff;
-  --secondary: #e6eef7;
-  --secondary-foreground: #143d66;
-  --muted: #eef3f8;
-  --muted-foreground: #55667a;
-  --accent: #f15a24;
-  --accent-foreground: #ffffff;
-  --destructive: #dc2626;
-  --destructive-foreground: #ffffff;
-  --border: #cbd5e1;
-  --input: #d1dbe6;
-  --ring: #f15a24;
+  /* Clean professional — navy + teal with subtle lavender accent */
+  --background: oklch(0.985 0.004 230);
+  --foreground: oklch(0.18 0.04 252);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.04 252);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.04 252);
+  --primary: oklch(0.22 0.06 252);
+  --primary-foreground: oklch(0.99 0.004 230);
+  --secondary: oklch(0.94 0.012 240);
+  --secondary-foreground: oklch(0.22 0.06 252);
+  --muted: oklch(0.95 0.008 240);
+  --muted-foreground: oklch(0.46 0.025 250);
+  --accent: oklch(0.743 0.117 89.5);
+  --accent-foreground: oklch(0.214 0.063 265.5);
+  --destructive: oklch(0.55 0.22 27);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.214 0.063 265.5 / 0.10);
+  --input: oklch(0.214 0.063 265.5 / 0.14);
+  --ring: oklch(0.743 0.117 89.5);
 
-  --gold: #f15a24;
-  --gold-soft: #ffcc80;
-  --navy: #0a2540;
-  --navy-deep: #071525;
-  --steel: #6b7c94;
+  --gold: oklch(0.743 0.117 89.5);
+  --gold-soft: oklch(0.883 0.098 91.7);
+  --navy: oklch(0.214 0.063 265.5);
+  --navy-deep: oklch(0.180 0.047 266.5);
+  --steel: oklch(0.62 0.04 260);
 
-  --lavender: #143d66;
-  --lavender-soft: #e6eef7;
-  --lavender-deep: #f15a24;
+  --lavender: oklch(0.743 0.117 89.5);
+  --lavender-soft: oklch(0.883 0.098 91.7);
+  --lavender-deep: oklch(0.62 0.11 86);
 
-  --glass: color-mix(in srgb, #ffffff 78%, transparent);
-  --glass-strong: color-mix(in srgb, #ffffff 92%, transparent);
-  --glass-border: color-mix(in srgb, #0a2540 8%, transparent);
-  --shadow-glass: 0 22px 60px -28px color-mix(in srgb, #0a2540 24%, transparent);
+
+
+  --glass: oklch(1 0 0 / 0.78);
+  --glass-strong: oklch(1 0 0 / 0.92);
+  --glass-border: oklch(0.18 0.04 252 / 0.08);
+  --shadow-glass: 0 22px 60px -28px oklch(0.20 0.06 260 / 0.24);
 
   --font-heading-en: 'Sora', ui-sans-serif, system-ui, sans-serif;
   --font-body-en: 'Manrope', ui-sans-serif, system-ui, sans-serif;
@@ -83,36 +85,36 @@
 }
 
 .dark {
-  --background: #071525;
-  --foreground: #f6f8fb;
-  --card: #143d66;
-  --card-foreground: #f6f8fb;
-  --popover: #0f2d4d;
-  --popover-foreground: #f6f8fb;
-  --primary: #f6f8fb;
-  --primary-foreground: #0a2540;
-  --secondary: #143d66;
-  --secondary-foreground: #f6f8fb;
-  --muted: #143d66;
-  --muted-foreground: #9eb1c8;
-  --accent: #f15a24;
-  --accent-foreground: #ffffff;
-  --border: color-mix(in srgb, #ffffff 10%, transparent);
-  --input: color-mix(in srgb, #ffffff 14%, transparent);
-  --ring: #f15a24;
-  --gold: #f15a24;
-  --gold-soft: #ffcc80;
-  --navy: #143d66;
-  --navy-deep: #05101d;
-  --steel: #8fa3bd;
-  --lavender: #1e5282;
-  --lavender-soft: #ffcc80;
-  --lavender-deep: #ff9f6b;
+  --background: oklch(0.180 0.047 266.5);
+  --foreground: oklch(0.97 0.008 250);
+  --card: oklch(0.264 0.077 265.1);
+  --card-foreground: oklch(0.97 0.008 250);
+  --popover: oklch(0.235 0.070 265);
+  --popover-foreground: oklch(0.97 0.008 250);
+  --primary: oklch(0.743 0.117 89.5);
+  --primary-foreground: oklch(0.180 0.047 266.5);
+  --secondary: oklch(0.264 0.077 265.1);
+  --secondary-foreground: oklch(0.97 0.008 250);
+  --muted: oklch(0.264 0.077 265.1);
+  --muted-foreground: oklch(0.76 0.02 260);
+  --accent: oklch(0.743 0.117 89.5);
+  --accent-foreground: oklch(0.180 0.047 266.5);
+  --border: oklch(1 0 0 / 0.10);
+  --input: oklch(1 0 0 / 0.14);
+  --ring: oklch(0.743 0.117 89.5);
+  --gold: oklch(0.743 0.117 89.5);
+  --gold-soft: oklch(0.883 0.098 91.7);
+  --navy: oklch(0.264 0.077 265.1);
+  --navy-deep: oklch(0.160 0.045 266);
+  --steel: oklch(0.72 0.03 260);
+  --lavender: oklch(0.743 0.117 89.5);
+  --lavender-soft: oklch(0.883 0.098 91.7);
+  --lavender-deep: oklch(0.62 0.11 86);
 
-  --glass: color-mix(in srgb, #143d66 62%, transparent);
-  --glass-strong: color-mix(in srgb, #143d66 88%, transparent);
-  --glass-border: color-mix(in srgb, #ffcc80 14%, transparent);
-  --shadow-glass: 0 28px 80px -36px color-mix(in srgb, #000000 65%, transparent);
+  --glass: oklch(0.264 0.077 265.1 / 0.62);
+  --glass-strong: oklch(0.264 0.077 265.1 / 0.88);
+  --glass-border: oklch(0.883 0.098 91.7 / 0.14);
+  --shadow-glass: 0 28px 80px -36px oklch(0 0 0 / 0.65);
 }
 
 
@@ -168,15 +170,7 @@ html[lang="ar"] {
   .text-gradient-gold,
   .text-gradient-lavender,
   .text-gradient-premium {
-    background: linear-gradient(110deg, var(--navy) 0%, var(--lavender) 55%, var(--lavender-deep) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  .dark .text-gradient-gold,
-  .dark .text-gradient-lavender,
-  .dark .text-gradient-premium {
-    background: linear-gradient(110deg, #f6f8fb 0%, #ffcc80 55%, #f15a24 100%);
+    background: linear-gradient(110deg, var(--navy) 0%, var(--accent) 55%, var(--lavender-deep) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -240,65 +234,65 @@ html[lang="ar"] {
      ============================================================ */
   .dash-bg {
     background:
-      radial-gradient(ellipse 85% 55% at 12% -5%, color-mix(in srgb, #1e5282 32%, transparent), transparent 60%),
-      radial-gradient(ellipse 70% 50% at 88% -8%, color-mix(in srgb, #f15a24 18%, transparent), transparent 60%),
-      radial-gradient(ellipse 60% 45% at 50% 110%, color-mix(in srgb, #143d66 22%, transparent), transparent 60%),
-      linear-gradient(180deg, #05101d 0%, #0a2540 40%, #071525 100%);
+      radial-gradient(ellipse 85% 55% at 12% -5%, oklch(0.55 0.18 258 / 0.32), transparent 60%),
+      radial-gradient(ellipse 70% 50% at 88% -8%, oklch(0.72 0.13 180 / 0.18), transparent 60%),
+      radial-gradient(ellipse 60% 45% at 50% 110%, oklch(0.34 0.13 290 / 0.22), transparent 60%),
+      linear-gradient(180deg, #07112a 0%, #0a1635 40%, #08122a 100%);
   }
   .dash-grid {
     background-image:
-      linear-gradient(to right, color-mix(in srgb, #ffffff 2.5%, transparent) 1px, transparent 1px),
-      linear-gradient(to bottom, color-mix(in srgb, #ffffff 2.5%, transparent) 1px, transparent 1px);
+      linear-gradient(to right, oklch(1 0 0 / 0.025) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(1 0 0 / 0.025) 1px, transparent 1px);
     background-size: 56px 56px;
     mask-image: radial-gradient(ellipse 70% 60% at 50% 20%, #000 30%, transparent 80%);
   }
   .dash-card {
     background:
-      linear-gradient(155deg, color-mix(in srgb, #ffffff 6%, transparent), color-mix(in srgb, #ffffff 1.5%, transparent) 55%, transparent),
-      color-mix(in srgb, #0a2540 55%, transparent);
+      linear-gradient(155deg, oklch(1 0 0 / 0.06), oklch(1 0 0 / 0.015) 55%, transparent),
+      oklch(0.18 0.05 252 / 0.55);
     backdrop-filter: blur(18px) saturate(140%);
     -webkit-backdrop-filter: blur(18px) saturate(140%);
-    border: 1px solid color-mix(in srgb, #ffffff 8%, transparent);
+    border: 1px solid oklch(1 0 0 / 0.08);
     box-shadow:
-      0 24px 60px -28px color-mix(in srgb, #000000 60%, transparent),
-      inset 0 1px 0 color-mix(in srgb, #ffffff 8%, transparent);
+      0 24px 60px -28px oklch(0 0 0 / 0.6),
+      inset 0 1px 0 oklch(1 0 0 / 0.08);
     border-radius: 1.25rem;
   }
   .dash-card-hover { transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease; }
   .dash-card-hover:hover {
     transform: translateY(-2px);
-    border-color: color-mix(in srgb, var(--gold-soft) 35%, transparent);
+    border-color: oklch(0.78 0.14 90 / 0.35);
     box-shadow:
-      0 30px 70px -28px color-mix(in srgb, #000000 70%, transparent),
-      0 0 0 1px color-mix(in srgb, var(--gold-soft) 18%, transparent),
-      inset 0 1px 0 color-mix(in srgb, #ffffff 12%, transparent);
+      0 30px 70px -28px oklch(0 0 0 / 0.7),
+      0 0 0 1px oklch(0.78 0.14 90 / 0.18),
+      inset 0 1px 0 oklch(1 0 0 / 0.12);
   }
   .dash-pill {
     display: inline-flex; align-items: center; gap: .375rem;
     padding: .25rem .625rem; border-radius: 999px;
     font-size: 11px; font-weight: 600; letter-spacing: .02em;
-    background: color-mix(in srgb, #ffffff 5%, transparent);
-    border: 1px solid color-mix(in srgb, #ffffff 10%, transparent);
-    color: color-mix(in srgb, #ffffff 72%, transparent);
+    background: oklch(1 0 0 / 0.05);
+    border: 1px solid oklch(1 0 0 / 0.1);
+    color: oklch(1 0 0 / 0.72);
   }
   .gold-divider {
     height: 1px;
-    background: linear-gradient(to right, transparent, color-mix(in srgb, var(--gold-soft) 55%, transparent), transparent);
+    background: linear-gradient(to right, transparent, oklch(0.78 0.14 90 / 0.55), transparent);
   }
   .gold-glow {
     box-shadow:
-      0 0 0 1px color-mix(in srgb, var(--gold-soft) 35%, transparent),
-      0 0 30px -6px color-mix(in srgb, var(--gold) 45%, transparent);
+      0 0 0 1px oklch(0.78 0.14 90 / 0.35),
+      0 0 30px -6px oklch(0.78 0.14 90 / 0.45);
   }
   .premium-dialog {
     background:
-      linear-gradient(160deg, color-mix(in srgb, #ffffff 5%, transparent), transparent 45%),
-      linear-gradient(180deg, #0d2240 0%, #0a2540 55%, #071525 100%);
-    border: 1px solid color-mix(in srgb, var(--gold-soft) 22%, transparent);
+      linear-gradient(160deg, oklch(1 0 0 / 0.05), transparent 45%),
+      linear-gradient(180deg, #0d1a3d 0%, #0b1736 55%, #08122a 100%);
+    border: 1px solid oklch(0.78 0.14 90 / 0.22);
     box-shadow:
-      0 40px 100px -30px color-mix(in srgb, #000000 80%, transparent),
-      0 0 0 1px color-mix(in srgb, #ffffff 4%, transparent),
-      inset 0 1px 0 color-mix(in srgb, #ffffff 8%, transparent);
+      0 40px 100px -30px oklch(0 0 0 / 0.8),
+      0 0 0 1px oklch(1 0 0 / 0.04),
+      inset 0 1px 0 oklch(1 0 0 / 0.08);
     color: #fff;
   }
   .premium-input {
@@ -310,7 +304,7 @@ html[lang="ar"] {
     color: #fff; font-size: .875rem;
     transition: border-color .15s ease, background .15s ease;
   }
-  .premium-input:focus { outline: none; border-color: oklch(0.86 0.012 264 / 0.55); background: oklch(1 0 0 / 0.06); }
+  .premium-input:focus { outline: none; border-color: oklch(0.78 0.14 90 / 0.55); background: oklch(1 0 0 / 0.06); }
 
   @keyframes shimmer-x {
     0% { background-position: -160% 0; }
