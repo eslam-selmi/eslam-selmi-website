@@ -40,43 +40,41 @@
 
 :root {
   --radius: 1rem;
-  /* Clean professional — navy + teal with subtle lavender accent */
-  --background: oklch(0.985 0.004 230);
-  --foreground: oklch(0.18 0.04 252);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.04 252);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.04 252);
-  --primary: oklch(0.22 0.06 252);
-  --primary-foreground: oklch(0.99 0.004 230);
-  --secondary: oklch(0.94 0.012 240);
-  --secondary-foreground: oklch(0.22 0.06 252);
-  --muted: oklch(0.95 0.008 240);
-  --muted-foreground: oklch(0.46 0.025 250);
-  --accent: oklch(0.927 0.006 264);
-  --accent-foreground: oklch(0.214 0.063 265.5);
-  --destructive: oklch(0.55 0.22 27);
-  --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.214 0.063 265.5 / 0.10);
-  --input: oklch(0.214 0.063 265.5 / 0.14);
-  --ring: oklch(0.927 0.006 264);
+  /* Cobalt Growth — training & development identity */
+  --background: #f6f8fb;
+  --foreground: #0a2540;
+  --card: #ffffff;
+  --card-foreground: #0a2540;
+  --popover: #ffffff;
+  --popover-foreground: #0a2540;
+  --primary: #0a2540;
+  --primary-foreground: #ffffff;
+  --secondary: #e6eef7;
+  --secondary-foreground: #143d66;
+  --muted: #eef3f8;
+  --muted-foreground: #55667a;
+  --accent: #f15a24;
+  --accent-foreground: #ffffff;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #cbd5e1;
+  --input: #d1dbe6;
+  --ring: #f15a24;
 
-  --gold: oklch(0.927 0.006 264);
-  --gold-soft: oklch(0.965 0.004 264);
-  --navy: oklch(0.214 0.063 265.5);
-  --navy-deep: oklch(0.180 0.047 266.5);
-  --steel: oklch(0.62 0.04 260);
+  --gold: #f15a24;
+  --gold-soft: #ffcc80;
+  --navy: #0a2540;
+  --navy-deep: #071525;
+  --steel: #6b7c94;
 
-  --lavender: oklch(0.927 0.006 264);
-  --lavender-soft: oklch(0.965 0.004 264);
-  --lavender-deep: oklch(0.704 0.035 252);
+  --lavender: #143d66;
+  --lavender-soft: #e6eef7;
+  --lavender-deep: #f15a24;
 
-
-
-  --glass: oklch(1 0 0 / 0.78);
-  --glass-strong: oklch(1 0 0 / 0.92);
-  --glass-border: oklch(0.18 0.04 252 / 0.08);
-  --shadow-glass: 0 22px 60px -28px oklch(0.20 0.06 260 / 0.24);
+  --glass: color-mix(in srgb, #ffffff 78%, transparent);
+  --glass-strong: color-mix(in srgb, #ffffff 92%, transparent);
+  --glass-border: color-mix(in srgb, #0a2540 8%, transparent);
+  --shadow-glass: 0 22px 60px -28px color-mix(in srgb, #0a2540 24%, transparent);
 
   --font-heading-en: 'Sora', ui-sans-serif, system-ui, sans-serif;
   --font-body-en: 'Manrope', ui-sans-serif, system-ui, sans-serif;
@@ -85,36 +83,36 @@
 }
 
 .dark {
-  --background: oklch(0.180 0.047 266.5);
-  --foreground: oklch(0.97 0.008 250);
-  --card: oklch(0.264 0.077 265.1);
-  --card-foreground: oklch(0.97 0.008 250);
-  --popover: oklch(0.235 0.070 265);
-  --popover-foreground: oklch(0.97 0.008 250);
-  --primary: oklch(0.927 0.006 264);
-  --primary-foreground: oklch(0.180 0.047 266.5);
-  --secondary: oklch(0.264 0.077 265.1);
-  --secondary-foreground: oklch(0.97 0.008 250);
-  --muted: oklch(0.264 0.077 265.1);
-  --muted-foreground: oklch(0.76 0.02 260);
-  --accent: oklch(0.927 0.006 264);
-  --accent-foreground: oklch(0.180 0.047 266.5);
-  --border: oklch(1 0 0 / 0.10);
-  --input: oklch(1 0 0 / 0.14);
-  --ring: oklch(0.927 0.006 264);
-  --gold: oklch(0.927 0.006 264);
-  --gold-soft: oklch(0.965 0.004 264);
-  --navy: oklch(0.264 0.077 265.1);
-  --navy-deep: oklch(0.160 0.045 266);
-  --steel: oklch(0.72 0.03 260);
-  --lavender: oklch(0.927 0.006 264);
-  --lavender-soft: oklch(0.965 0.004 264);
-  --lavender-deep: oklch(0.704 0.035 252);
+  --background: #071525;
+  --foreground: #f6f8fb;
+  --card: #143d66;
+  --card-foreground: #f6f8fb;
+  --popover: #0f2d4d;
+  --popover-foreground: #f6f8fb;
+  --primary: #f6f8fb;
+  --primary-foreground: #0a2540;
+  --secondary: #143d66;
+  --secondary-foreground: #f6f8fb;
+  --muted: #143d66;
+  --muted-foreground: #9eb1c8;
+  --accent: #f15a24;
+  --accent-foreground: #ffffff;
+  --border: color-mix(in srgb, #ffffff 10%, transparent);
+  --input: color-mix(in srgb, #ffffff 14%, transparent);
+  --ring: #f15a24;
+  --gold: #f15a24;
+  --gold-soft: #ffcc80;
+  --navy: #143d66;
+  --navy-deep: #05101d;
+  --steel: #8fa3bd;
+  --lavender: #1e5282;
+  --lavender-soft: #ffcc80;
+  --lavender-deep: #ff9f6b;
 
-  --glass: oklch(0.264 0.077 265.1 / 0.62);
-  --glass-strong: oklch(0.264 0.077 265.1 / 0.88);
-  --glass-border: oklch(0.965 0.004 264 / 0.14);
-  --shadow-glass: 0 28px 80px -36px oklch(0 0 0 / 0.65);
+  --glass: color-mix(in srgb, #143d66 62%, transparent);
+  --glass-strong: color-mix(in srgb, #143d66 88%, transparent);
+  --glass-border: color-mix(in srgb, #ffcc80 14%, transparent);
+  --shadow-glass: 0 28px 80px -36px color-mix(in srgb, #000000 65%, transparent);
 }
 
 
