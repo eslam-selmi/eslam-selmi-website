@@ -175,6 +175,14 @@ html[lang="ar"] {
     background-clip: text;
     color: transparent;
   }
+  .dark .text-gradient-gold,
+  .dark .text-gradient-lavender,
+  .dark .text-gradient-premium {
+    background: linear-gradient(110deg, oklch(0.99 0.003 264) 0%, oklch(0.86 0.012 264) 55%, oklch(0.704 0.035 252) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
 
   .serif-italic {
     font-family: var(--font-heading-en);
