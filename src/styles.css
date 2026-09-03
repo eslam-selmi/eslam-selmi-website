@@ -240,65 +240,65 @@ html[lang="ar"] {
      ============================================================ */
   .dash-bg {
     background:
-      radial-gradient(ellipse 85% 55% at 12% -5%, oklch(0.55 0.18 258 / 0.32), transparent 60%),
-      radial-gradient(ellipse 70% 50% at 88% -8%, oklch(0.72 0.13 180 / 0.18), transparent 60%),
-      radial-gradient(ellipse 60% 45% at 50% 110%, oklch(0.34 0.13 290 / 0.22), transparent 60%),
-      linear-gradient(180deg, #07112a 0%, #0a1635 40%, #08122a 100%);
+      radial-gradient(ellipse 85% 55% at 12% -5%, color-mix(in srgb, #1e5282 32%, transparent), transparent 60%),
+      radial-gradient(ellipse 70% 50% at 88% -8%, color-mix(in srgb, #f15a24 18%, transparent), transparent 60%),
+      radial-gradient(ellipse 60% 45% at 50% 110%, color-mix(in srgb, #143d66 22%, transparent), transparent 60%),
+      linear-gradient(180deg, #05101d 0%, #0a2540 40%, #071525 100%);
   }
   .dash-grid {
     background-image:
-      linear-gradient(to right, oklch(1 0 0 / 0.025) 1px, transparent 1px),
-      linear-gradient(to bottom, oklch(1 0 0 / 0.025) 1px, transparent 1px);
+      linear-gradient(to right, color-mix(in srgb, #ffffff 2.5%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, #ffffff 2.5%, transparent) 1px, transparent 1px);
     background-size: 56px 56px;
     mask-image: radial-gradient(ellipse 70% 60% at 50% 20%, #000 30%, transparent 80%);
   }
   .dash-card {
     background:
-      linear-gradient(155deg, oklch(1 0 0 / 0.06), oklch(1 0 0 / 0.015) 55%, transparent),
-      oklch(0.18 0.05 252 / 0.55);
+      linear-gradient(155deg, color-mix(in srgb, #ffffff 6%, transparent), color-mix(in srgb, #ffffff 1.5%, transparent) 55%, transparent),
+      color-mix(in srgb, #0a2540 55%, transparent);
     backdrop-filter: blur(18px) saturate(140%);
     -webkit-backdrop-filter: blur(18px) saturate(140%);
-    border: 1px solid oklch(1 0 0 / 0.08);
+    border: 1px solid color-mix(in srgb, #ffffff 8%, transparent);
     box-shadow:
-      0 24px 60px -28px oklch(0 0 0 / 0.6),
-      inset 0 1px 0 oklch(1 0 0 / 0.08);
+      0 24px 60px -28px color-mix(in srgb, #000000 60%, transparent),
+      inset 0 1px 0 color-mix(in srgb, #ffffff 8%, transparent);
     border-radius: 1.25rem;
   }
   .dash-card-hover { transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease; }
   .dash-card-hover:hover {
     transform: translateY(-2px);
-    border-color: oklch(0.86 0.012 264 / 0.35);
+    border-color: color-mix(in srgb, var(--gold-soft) 35%, transparent);
     box-shadow:
-      0 30px 70px -28px oklch(0 0 0 / 0.7),
-      0 0 0 1px oklch(0.86 0.012 264 / 0.18),
-      inset 0 1px 0 oklch(1 0 0 / 0.12);
+      0 30px 70px -28px color-mix(in srgb, #000000 70%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--gold-soft) 18%, transparent),
+      inset 0 1px 0 color-mix(in srgb, #ffffff 12%, transparent);
   }
   .dash-pill {
     display: inline-flex; align-items: center; gap: .375rem;
     padding: .25rem .625rem; border-radius: 999px;
     font-size: 11px; font-weight: 600; letter-spacing: .02em;
-    background: oklch(1 0 0 / 0.05);
-    border: 1px solid oklch(1 0 0 / 0.1);
-    color: oklch(1 0 0 / 0.72);
+    background: color-mix(in srgb, #ffffff 5%, transparent);
+    border: 1px solid color-mix(in srgb, #ffffff 10%, transparent);
+    color: color-mix(in srgb, #ffffff 72%, transparent);
   }
   .gold-divider {
     height: 1px;
-    background: linear-gradient(to right, transparent, oklch(0.86 0.012 264 / 0.55), transparent);
+    background: linear-gradient(to right, transparent, color-mix(in srgb, var(--gold-soft) 55%, transparent), transparent);
   }
   .gold-glow {
     box-shadow:
-      0 0 0 1px oklch(0.86 0.012 264 / 0.35),
-      0 0 30px -6px oklch(0.86 0.012 264 / 0.45);
+      0 0 0 1px color-mix(in srgb, var(--gold-soft) 35%, transparent),
+      0 0 30px -6px color-mix(in srgb, var(--gold) 45%, transparent);
   }
   .premium-dialog {
     background:
-      linear-gradient(160deg, oklch(1 0 0 / 0.05), transparent 45%),
-      linear-gradient(180deg, #0d1a3d 0%, #0b1736 55%, #08122a 100%);
-    border: 1px solid oklch(0.86 0.012 264 / 0.22);
+      linear-gradient(160deg, color-mix(in srgb, #ffffff 5%, transparent), transparent 45%),
+      linear-gradient(180deg, #0d2240 0%, #0a2540 55%, #071525 100%);
+    border: 1px solid color-mix(in srgb, var(--gold-soft) 22%, transparent);
     box-shadow:
-      0 40px 100px -30px oklch(0 0 0 / 0.8),
-      0 0 0 1px oklch(1 0 0 / 0.04),
-      inset 0 1px 0 oklch(1 0 0 / 0.08);
+      0 40px 100px -30px color-mix(in srgb, #000000 80%, transparent),
+      0 0 0 1px color-mix(in srgb, #ffffff 4%, transparent),
+      inset 0 1px 0 color-mix(in srgb, #ffffff 8%, transparent);
     color: #fff;
   }
   .premium-input {
