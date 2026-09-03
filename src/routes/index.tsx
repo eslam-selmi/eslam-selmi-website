@@ -1664,7 +1664,7 @@ function Hero() {
         className="pointer-events-none absolute inset-0 -z-10"
         style={{
           background:
-            "radial-gradient(ellipse 55% 45% at 88% 8%, oklch(0.743 0.117 89.5 / 0.16), transparent 62%), radial-gradient(ellipse 50% 40% at 4% 88%, oklch(0.214 0.063 265.5 / 0.10), transparent 62%)",
+            "radial-gradient(ellipse 55% 45% at 88% 8%, oklch(0.927 0.006 264 / 0.16), transparent 62%), radial-gradient(ellipse 50% 40% at 4% 88%, oklch(0.214 0.063 265.5 / 0.10), transparent 62%)",
         }}
       />
       <div
@@ -1825,7 +1825,7 @@ function Hero() {
               className="absolute -inset-10 blur-3xl opacity-70 -z-10"
               style={{
                 background:
-                  "radial-gradient(55% 45% at 25% 18%, oklch(0.743 0.117 89.5 / 0.32), transparent 70%), radial-gradient(45% 45% at 82% 86%, oklch(0.214 0.063 265.5 / 0.35), transparent 72%)",
+                  "radial-gradient(55% 45% at 25% 18%, oklch(0.927 0.006 264 / 0.32), transparent 70%), radial-gradient(45% 45% at 82% 86%, oklch(0.214 0.063 265.5 / 0.35), transparent 72%)",
               }}
             />
 
@@ -1909,7 +1909,7 @@ function Hero() {
                   style={{
                     background: "rgba(11,23,54,0.55)",
                     border: "1px solid rgba(240,215,140,0.45)",
-                    color: "#f0d78c",
+                    color: "#e8e8ec",
                   }}
                 >
                   ES
