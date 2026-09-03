@@ -168,7 +168,7 @@ html[lang="ar"] {
   .text-gradient-gold,
   .text-gradient-lavender,
   .text-gradient-premium {
-    background: linear-gradient(110deg, var(--navy) 0%, var(--accent) 55%, var(--lavender-deep) 100%);
+    background: linear-gradient(110deg, var(--navy) 0%, var(--lavender) 55%, var(--lavender-deep) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -176,7 +176,7 @@ html[lang="ar"] {
   .dark .text-gradient-gold,
   .dark .text-gradient-lavender,
   .dark .text-gradient-premium {
-    background: linear-gradient(110deg, oklch(0.99 0.003 264) 0%, oklch(0.86 0.012 264) 55%, oklch(0.704 0.035 252) 100%);
+    background: linear-gradient(110deg, #f6f8fb 0%, #ffcc80 55%, #f15a24 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
