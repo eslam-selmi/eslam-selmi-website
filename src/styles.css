@@ -316,6 +316,42 @@ html[lang="ar"] {
     animation: shimmer-x 3.2s ease-in-out infinite;
     pointer-events: none;
   }
+
+  .portrait-ambient {
+    border-radius: 48% 48% 44% 44%;
+    background:
+      radial-gradient(ellipse 68% 62% at 50% 44%, color-mix(in oklab, var(--accent) 18%, transparent), transparent 72%),
+      radial-gradient(ellipse 48% 38% at 50% 68%, color-mix(in oklab, var(--foreground) 8%, transparent), transparent 78%);
+    filter: blur(32px);
+  }
+
+  .portrait-halo {
+    border-radius: 48% 48% 42% 42%;
+    box-shadow:
+      0 0 46px color-mix(in oklab, var(--foreground) 16%, transparent),
+      0 18px 70px color-mix(in oklab, var(--accent) 14%, transparent);
+    filter: blur(12px);
+    opacity: .68;
+  }
+
+  .portrait-cutout {
+    filter:
+      drop-shadow(0 0 1px color-mix(in oklab, var(--foreground) 80%, transparent))
+      drop-shadow(0 0 9px color-mix(in oklab, var(--foreground) 30%, transparent))
+      drop-shadow(0 24px 30px color-mix(in oklab, var(--navy-deep) 38%, transparent));
+  }
+
+  .portrait-floor {
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--foreground) 18%, transparent);
+    filter: blur(24px);
+    opacity: .56;
+  }
+
+  .portrait-bottom-blend {
+    background: linear-gradient(to bottom, transparent, color-mix(in oklab, var(--background) 82%, transparent) 88%, var(--background));
+    filter: blur(.2px);
+  }
 }
 
 @keyframes float-slow {
