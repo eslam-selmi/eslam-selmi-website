@@ -89,6 +89,7 @@ const snap5 = snap5Asset.url;
 import snap6Asset from "@/assets/snapshots/snap-6.jpg.asset.json";
 const snap6 = snap6Asset.url;
 import snap7Asset from "@/assets/snapshots/snap-7.jpg.asset.json";
+import etecLicenseAsset from "@/assets/etec-license.png.asset.json";
 const snap7 = snap7Asset.url;
 import snap8Asset from "@/assets/snapshots/snap-8.jpg.asset.json";
 const snap8 = snap8Asset.url;
@@ -1660,6 +1661,8 @@ function Hero() {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], [0, 60]);
+
+  const [licenseOpen, setLicenseOpen] = useState(false);
 
   const nameEn = "Eslam Selmi";
   const nameAr = "إسلام سلمي";
