@@ -241,6 +241,17 @@ export const Route = createFileRoute("/")({
                 "KPIs",
                 "Corporate Training",
               ],
+              hasCredential: {
+                "@type": "EducationalOccupationalCredential",
+                name: "Certified Trainer by ETEC, Saudi Arabia",
+                alternateName: "مدرب معتمد من هيئة تقويم التعليم والتدريب بالمملكة العربية السعودية",
+                recognizedBy: {
+                  "@type": "Organization",
+                  name: "Education and Training Evaluation Commission (ETEC)",
+                  alternateName: "هيئة تقويم التعليم والتدريب",
+                  address: { "@type": "PostalAddress", addressCountry: "SA" },
+                },
+              },
             },
             {
               "@type": "WebSite",
