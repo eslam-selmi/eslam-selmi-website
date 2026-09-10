@@ -1729,12 +1729,14 @@ function Hero() {
             {t("hero_intro")}
           </motion.p>
 
-          {/* ETEC certified trainer credential */}
-          <motion.div
+          {/* ETEC certified trainer credential — opens license popup */}
+          <motion.button
+            type="button"
+            onClick={() => setLicenseOpen(true)}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.38 }}
-            className="inline-flex items-center gap-2.5 rounded-full border border-foreground/10 bg-card/60 backdrop-blur-sm px-3.5 py-2 w-fit"
+            className="group inline-flex items-center gap-2.5 rounded-full border border-foreground/10 bg-card/60 backdrop-blur-sm px-3.5 py-2 w-fit cursor-pointer hover:border-[var(--gold)]/50 hover:shadow-[0_10px_30px_-12px_var(--gold)] transition"
           >
             <span className="inline-flex items-center justify-center rounded-full bg-gradient-to-br from-[var(--gold)] to-[var(--gold-soft)] p-1.5 shadow">
               <Award className="size-4 text-accent-foreground" />
@@ -1749,8 +1751,19 @@ function Hero() {
               {lang === "ar"
                 ? "مدرب معتمد من هيئة تقويم التعليم والتدريب بالمملكة العربية السعودية"
                 : "Certified Trainer by ETEC, Saudi Arabia"}
+              <ExternalLink className="size-3.5 text-muted-foreground group-hover:text-[var(--gold)] transition" />
             </span>
-          </motion.div>
+          </motion.button>
+
+          <Dialog open={licenseOpen} onOpenChange={setLicenseOpen}>
+            <DialogContent className="max-w-3xl p-2 sm:p-3 bg-card">
+              <img
+                src={etecLicenseAsset.url}
+                alt={lang === "ar" ? "رخصة مدرب مهنية — هيئة تقويم التعليم والتدريب" : "Professional Trainer License — ETEC"}
+                className="w-full h-auto rounded-lg"
+              />
+            </DialogContent>
+          </Dialog>
 
           <motion.div
             initial={{ opacity: 0, y: 16 }}
