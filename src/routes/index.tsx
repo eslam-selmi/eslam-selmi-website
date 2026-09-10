@@ -1795,22 +1795,56 @@ function Hero() {
           transition={{ duration: 0.8 }}
           className="lg:col-span-5 order-1 lg:order-2 relative"
         >
-          <div className="relative mx-auto aspect-[4/5] w-full max-w-[430px] sm:max-w-[480px] lg:max-w-[540px]">
-            <div className="portrait-ambient absolute inset-[7%_4%_5%] -z-10" aria-hidden />
-            <div className="portrait-halo absolute inset-[5%_2%_4%] -z-10" aria-hidden />
-
-            <img
-              src={headshot}
-              alt="Eslam Selmi"
-              width={1024}
-              height={1024}
-              fetchPriority="high"
-              decoding="async"
-              className="portrait-cutout absolute inset-x-0 bottom-0 h-full w-full object-contain object-bottom"
+          <div className="relative mx-auto w-full max-w-[400px] sm:max-w-[440px] lg:max-w-[500px]">
+            {/* soft ambient light behind the frame */}
+            <div
+              className="pointer-events-none absolute -inset-8 -z-10 rounded-[999px] blur-3xl opacity-70"
+              style={{
+                background:
+                  "radial-gradient(ellipse 60% 55% at 50% 40%, color-mix(in oklab, var(--accent) 22%, transparent), transparent 70%)",
+              }}
+              aria-hidden
+            />
+            {/* offset editorial frame */}
+            <div
+              className="pointer-events-none absolute inset-0 translate-x-4 translate-y-4 rounded-[2.5rem] border border-foreground/12 sm:translate-x-5 sm:translate-y-5"
+              aria-hidden
             />
 
-            <div className="portrait-floor absolute inset-x-[13%] bottom-[1.5%] h-[10%] -z-10" aria-hidden />
-            <div className="portrait-bottom-blend pointer-events-none absolute inset-x-[4%] bottom-0 h-[18%]" aria-hidden />
+            <div
+              className="relative overflow-hidden rounded-[2.5rem] ring-1 ring-foreground/10"
+              style={{
+                background:
+                  "linear-gradient(165deg, color-mix(in oklab, var(--navy) 92%, transparent), color-mix(in oklab, var(--navy-deep) 96%, transparent))",
+                boxShadow: "0 40px 90px -40px color-mix(in oklab, var(--navy-deep) 65%, transparent)",
+              }}
+            >
+              <div className="relative aspect-[4/5] w-full">
+                <img
+                  src={headshot}
+                  alt="Eslam Selmi"
+                  width={1024}
+                  height={1024}
+                  fetchPriority="high"
+                  decoding="async"
+                  className="absolute inset-0 h-full w-full scale-[1.04] object-cover object-top"
+                />
+                {/* gentle top light + bottom depth so the frame reads premium */}
+                <div
+                  className="pointer-events-none absolute inset-0"
+                  style={{
+                    background:
+                      "linear-gradient(to top, color-mix(in oklab, var(--navy-deep) 55%, transparent) 0%, transparent 42%), radial-gradient(ellipse 70% 40% at 50% 0%, oklch(1 0 0 / 0.14), transparent 70%)",
+                  }}
+                  aria-hidden
+                />
+                <div
+                  className="pointer-events-none absolute inset-0 rounded-[2.5rem]"
+                  style={{ boxShadow: "inset 0 1px 0 oklch(1 0 0 / 0.16)" }}
+                  aria-hidden
+                />
+              </div>
+            </div>
           </div>
         </motion.div>
       </div>
