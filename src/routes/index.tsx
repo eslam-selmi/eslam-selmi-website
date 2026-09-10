@@ -241,6 +241,17 @@ export const Route = createFileRoute("/")({
                 "KPIs",
                 "Corporate Training",
               ],
+              hasCredential: {
+                "@type": "EducationalOccupationalCredential",
+                name: "Certified Trainer by ETEC, Saudi Arabia",
+                alternateName: "مدرب معتمد من هيئة تقويم التعليم والتدريب بالمملكة العربية السعودية",
+                recognizedBy: {
+                  "@type": "Organization",
+                  name: "Education and Training Evaluation Commission (ETEC)",
+                  alternateName: "هيئة تقويم التعليم والتدريب",
+                  address: { "@type": "PostalAddress", addressCountry: "SA" },
+                },
+              },
             },
             {
               "@type": "WebSite",
@@ -1714,6 +1725,29 @@ function Hero() {
           >
             {t("hero_intro")}
           </motion.p>
+
+          {/* ETEC certified trainer credential */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.38 }}
+            className="inline-flex items-center gap-2.5 rounded-full border border-foreground/10 bg-card/60 backdrop-blur-sm px-3.5 py-2 w-fit"
+          >
+            <span className="inline-flex items-center justify-center rounded-full bg-gradient-to-br from-[var(--gold)] to-[var(--gold-soft)] p-1.5 shadow">
+              <Award className="size-4 text-accent-foreground" />
+            </span>
+            <span className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-foreground">
+              <img
+                src="https://flagcdn.com/sa.svg"
+                alt=""
+                loading="lazy"
+                className="w-4 h-3 rounded-sm object-cover"
+              />
+              {lang === "ar"
+                ? "مدرب معتمد من هيئة تقويم التعليم والتدريب بالمملكة العربية السعودية"
+                : "Certified Trainer by ETEC, Saudi Arabia"}
+            </span>
+          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 16 }}
