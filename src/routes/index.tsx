@@ -1736,7 +1736,10 @@ function Hero() {
             transition={{ delay: 0.38 }}
             className="w-full max-w-xl"
           >
-            <div className="relative overflow-hidden rounded-2xl border border-[var(--gold)]/25 bg-gradient-to-l from-[var(--gold)]/[0.07] via-card/70 to-card/70 backdrop-blur-md p-3.5 sm:p-4 shadow-[0_16px_40px_-20px_oklch(0.22_0.06_252/0.35)]">
+            <div
+              onClick={() => setLicenseOpen(true)}
+              className="relative overflow-hidden rounded-2xl border border-[var(--gold)]/25 bg-gradient-to-l from-[var(--gold)]/[0.07] via-card/70 to-card/70 backdrop-blur-md p-3.5 sm:p-4 shadow-[0_16px_40px_-20px_oklch(0.22_0.06_252/0.35)] cursor-pointer hover:border-[var(--gold)]/45 hover:shadow-[0_20px_45px_-18px_var(--gold)] transition"
+            >
               {/* subtle gold glow */}
               <span aria-hidden className="pointer-events-none absolute -top-10 -end-10 size-32 rounded-full bg-[var(--gold)]/15 blur-2xl" />
               <div className="relative flex items-center gap-3 sm:gap-4">
