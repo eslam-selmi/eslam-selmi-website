@@ -1730,30 +1730,48 @@ function Hero() {
           </motion.p>
 
           {/* ETEC certified trainer credential — opens license popup */}
-          <motion.button
-            type="button"
-            onClick={() => setLicenseOpen(true)}
+          <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.38 }}
-            className="group inline-flex items-center gap-2.5 rounded-full border border-foreground/10 bg-card/60 backdrop-blur-sm px-3.5 py-2 w-fit cursor-pointer hover:border-[var(--gold)]/50 hover:shadow-[0_10px_30px_-12px_var(--gold)] transition"
+            className="w-full max-w-xl"
           >
-            <span className="inline-flex items-center justify-center rounded-full bg-gradient-to-br from-[var(--gold)] to-[var(--gold-soft)] p-1.5 shadow">
-              <Award className="size-4 text-accent-foreground" />
-            </span>
-            <span className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-foreground">
-              <img
-                src="https://flagcdn.com/sa.svg"
-                alt=""
-                loading="lazy"
-                className="w-4 h-3 rounded-sm object-cover"
-              />
-              {lang === "ar"
-                ? "مدرب معتمد من هيئة تقويم التعليم والتدريب بالمملكة العربية السعودية"
-                : "Certified Trainer by ETEC, Saudi Arabia"}
-              <ExternalLink className="size-3.5 text-muted-foreground group-hover:text-[var(--gold)] transition" />
-            </span>
-          </motion.button>
+            <div className="relative overflow-hidden rounded-2xl border border-[var(--gold)]/25 bg-gradient-to-l from-[var(--gold)]/[0.07] via-card/70 to-card/70 backdrop-blur-md p-3.5 sm:p-4 shadow-[0_16px_40px_-20px_oklch(0.22_0.06_252/0.35)]">
+              {/* subtle gold glow */}
+              <span aria-hidden className="pointer-events-none absolute -top-10 -end-10 size-32 rounded-full bg-[var(--gold)]/15 blur-2xl" />
+              <div className="relative flex items-center gap-3 sm:gap-4">
+                <span className="inline-flex shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--gold)] to-[var(--gold-soft)] p-2.5 shadow-lg shadow-[var(--gold)]/25">
+                  <BadgeCheck className="size-5 sm:size-6 text-[#0b1736]" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm sm:text-base font-extrabold text-foreground leading-snug">
+                    {lang === "ar" ? "مدرب معتمد دوليًا" : "Certified Professional Trainer"}
+                  </p>
+                  <p className="mt-0.5 flex items-center gap-1.5 text-[11px] sm:text-xs text-muted-foreground leading-snug">
+                    <img
+                      src="https://flagcdn.com/sa.svg"
+                      alt=""
+                      loading="lazy"
+                      className="w-3.5 h-2.5 rounded-[2px] object-cover shrink-0"
+                    />
+                    {lang === "ar"
+                      ? "هيئة تقويم التعليم والتدريب — السعودية"
+                      : "ETEC — Saudi Arabia"}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setLicenseOpen(true)}
+                  className="relative inline-flex shrink-0 items-center gap-1.5 overflow-hidden rounded-full bg-primary px-3.5 sm:px-5 py-2 sm:py-2.5 text-[11px] sm:text-xs font-bold text-primary-foreground shadow-[0_10px_25px_-10px_oklch(0.22_0.06_252/0.6)] hover:translate-y-[-1px] transition cursor-pointer"
+                >
+                  {/* shimmer sweep */}
+                  <span aria-hidden className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent animate-[shimmer_2.6s_ease-in-out_infinite]" />
+                  <Award className="size-3.5" />
+                  {lang === "ar" ? "عرض الترخيص" : "View License"}
+                </button>
+              </div>
+            </div>
+          </motion.div>
 
           <Dialog open={licenseOpen} onOpenChange={setLicenseOpen}>
             <DialogContent className="max-w-3xl p-2 sm:p-3 bg-card">
