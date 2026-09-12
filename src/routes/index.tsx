@@ -1730,35 +1730,30 @@ function Hero() {
           </motion.p>
 
           {/* ETEC certified trainer credential — opens license popup */}
-          <motion.div
+          <motion.button
+            type="button"
+            onClick={() => setLicenseOpen(true)}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.38 }}
+            className="group inline-flex items-center gap-2.5 rounded-full border border-foreground/10 bg-card/60 backdrop-blur-sm px-3.5 py-2 w-fit cursor-pointer hover:border-[var(--gold)]/50 hover:shadow-[0_10px_30px_-12px_var(--gold)] transition"
           >
-            <button
-              type="button"
-              onClick={() => setLicenseOpen(true)}
-              className="group inline-flex items-center gap-2 rounded-full border border-[var(--gold)]/25 bg-card/60 px-2.5 py-1.5 shadow-sm backdrop-blur-sm hover:border-[var(--gold)]/50 hover:bg-card/80 transition cursor-pointer"
-            >
-              <span className="inline-flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[var(--gold)] to-[var(--gold-soft)] p-0.5">
-                <BadgeCheck className="size-3.5 text-[#0b1736]" />
-              </span>
-              <span className="flex min-w-0 flex-col items-start leading-none">
-                <span className="text-[11px] sm:text-xs font-semibold text-foreground">
-                  {lang === "ar" ? "مدرب مهني معتمد" : "Certified Professional Trainer"}
-                </span>
-                <span className="mt-0.5 flex items-center gap-1 text-[10px] text-muted-foreground">
-                  <img
-                    src="https://flagcdn.com/sa.svg"
-                    alt=""
-                    loading="lazy"
-                    className="w-3 h-2 rounded-[1px] object-cover shrink-0"
-                  />
-                  {lang === "ar" ? "هيئة تقويم التعليم والتدريب" : "ETEC"}
-                </span>
-              </span>
-            </button>
-          </motion.div>
+            <span className="inline-flex items-center justify-center rounded-full bg-gradient-to-br from-[var(--gold)] to-[var(--gold-soft)] p-1.5 shadow">
+              <Award className="size-4 text-accent-foreground" />
+            </span>
+            <span className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-foreground">
+              <img
+                src="https://flagcdn.com/sa.svg"
+                alt=""
+                loading="lazy"
+                className="w-4 h-3 rounded-sm object-cover"
+              />
+              {lang === "ar"
+                ? "مدرب معتمد من هيئة تقويم التعليم والتدريب بالمملكة العربية السعودية"
+                : "Certified Trainer by ETEC, Saudi Arabia"}
+              <ExternalLink className="size-3.5 text-muted-foreground group-hover:text-[var(--gold)] transition" />
+            </span>
+          </motion.button>
 
           <Dialog open={licenseOpen} onOpenChange={setLicenseOpen}>
             <DialogContent className="max-w-3xl p-2 sm:p-3 bg-card">
