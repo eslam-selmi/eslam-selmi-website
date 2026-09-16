@@ -269,6 +269,69 @@ export type Database = {
           },
         ]
       }
+      contracts: {
+        Row: {
+          country_ar: string | null
+          country_code: string
+          country_en: string | null
+          created_at: string
+          description_ar: string | null
+          description_en: string | null
+          display_order: number
+          id: string
+          industry_ar: string | null
+          industry_en: string | null
+          is_active: boolean
+          is_current: boolean
+          org_ar: string
+          org_en: string | null
+          role_ar: string | null
+          role_en: string | null
+          updated_at: string
+          year: string | null
+        }
+        Insert: {
+          country_ar?: string | null
+          country_code?: string
+          country_en?: string | null
+          created_at?: string
+          description_ar?: string | null
+          description_en?: string | null
+          display_order?: number
+          id?: string
+          industry_ar?: string | null
+          industry_en?: string | null
+          is_active?: boolean
+          is_current?: boolean
+          org_ar: string
+          org_en?: string | null
+          role_ar?: string | null
+          role_en?: string | null
+          updated_at?: string
+          year?: string | null
+        }
+        Update: {
+          country_ar?: string | null
+          country_code?: string
+          country_en?: string | null
+          created_at?: string
+          description_ar?: string | null
+          description_en?: string | null
+          display_order?: number
+          id?: string
+          industry_ar?: string | null
+          industry_en?: string | null
+          is_active?: boolean
+          is_current?: boolean
+          org_ar?: string
+          org_en?: string | null
+          role_ar?: string | null
+          role_en?: string | null
+          updated_at?: string
+          year?: string | null
+        }
+        Relationships: []
+      }
       coupon_redemptions: {
         Row: {
           coupon_id: string
@@ -954,6 +1017,51 @@ export type Database = {
           read?: boolean
           title?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      partners: {
+        Row: {
+          created_at: string
+          description_ar: string | null
+          description_en: string | null
+          display_order: number
+          id: string
+          industry_ar: string | null
+          industry_en: string | null
+          is_active: boolean
+          logo_url: string | null
+          name_ar: string
+          name_en: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description_ar?: string | null
+          description_en?: string | null
+          display_order?: number
+          id?: string
+          industry_ar?: string | null
+          industry_en?: string | null
+          is_active?: boolean
+          logo_url?: string | null
+          name_ar: string
+          name_en?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description_ar?: string | null
+          description_en?: string | null
+          display_order?: number
+          id?: string
+          industry_ar?: string | null
+          industry_en?: string | null
+          is_active?: boolean
+          logo_url?: string | null
+          name_ar?: string
+          name_en?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
