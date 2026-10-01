@@ -1960,16 +1960,43 @@ function Pillars() {
 }
 
 /* ---------- JOURNEY ---------- */
+type JourneyItem = (typeof JOURNEY)[number] & { current?: boolean; countryName?: { en: string; ar: string } };
 function Journey() {
   const { t, lang } = useI18n();
+  const [items, setItems] = useState<JourneyItem[]>([]);
+  useEffect(() => {
+    supabase
+      .from("contracts" as any)
+      .select("*")
+      .eq("is_active", true)
+      .order("display_order", { ascending: true })
+      .then(({ data, error }) => {
+        if (error || !data) return;
+        setItems(
+          (data as any[]).map((r) => ({
+            year: { en: r.year || "", ar: r.year || "" },
+            role: { en: r.role_en || r.role_ar || "", ar: r.role_ar || "" },
+            company: { en: r.org_en || r.org_ar, ar: r.org_ar },
+            industry: { en: r.industry_en || r.industry_ar || "", ar: r.industry_ar || "" },
+            country: r.country_code,
+            logo: "",
+            current: r.is_current,
+            countryName: r.country_ar || r.country_en ? { en: r.country_en || r.country_ar, ar: r.country_ar || r.country_en } : undefined,
+          })),
+        );
+      });
+  }, []);
   return (
     <Section id="journey" eyebrow={t("journey_eyebrow")} title={t("journey_title")}>
       {(() => {
-        const renderCard = (j: typeof JOURNEY[number], i: number) => {
-          const country =
+        const renderCard = (j: JourneyItem, i: number) => {
+          const base =
             j.country === "SA"
               ? { flag: "sa", name: { en: "Saudi Arabia", ar: "السعودية" } }
-              : { flag: "eg", name: { en: "Egypt", ar: "مصر" } };
+              : j.country === "EG"
+                ? { flag: "eg", name: { en: "Egypt", ar: "مصر" } }
+                : { flag: String(j.country).toLowerCase(), name: { en: String(j.country), ar: String(j.country) } };
+          const country = { flag: base.flag, name: j.countryName || base.name };
           return (
             <motion.div
               key={j.year.en + j.company.en + i}
@@ -1983,7 +2010,7 @@ function Journey() {
                   className="font-display text-3xl font-extrabold tracking-tight"
                   style={{ color: "var(--accent)" }}
                 >
-                  {j.year[lang]}
+                  {j.current ? (lang === "ar" ? "حالياً" : "Present") : j.year[lang]}
                 </span>
                 <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground bg-foreground/[0.04] rounded-full px-2.5 py-1">
                   <img
@@ -2013,8 +2040,9 @@ function Journey() {
             </motion.div>
           );
         };
-        const firstRow = JOURNEY.slice(0, 3);
-        const secondRow = JOURNEY.slice(3);
+        if (items.length === 0) return null;
+        const firstRow = items.slice(0, 3);
+        const secondRow = items.slice(3);
         return (
           <div className="space-y-5">
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -2259,8 +2287,30 @@ function Clients() {
 /* ---------- BRANDS / LOGO MARQUEE ---------- */
 function Brands() {
   const { t, lang } = useI18n();
-  const row1 = BRANDS;
-  const row2 = [...BRANDS].reverse();
+  const [brands, setBrands] = useState<typeof BRANDS>([]);
+  useEffect(() => {
+    supabase
+      .from("partners" as any)
+      .select("*")
+      .eq("is_active", true)
+      .order("display_order", { ascending: true })
+      .then(({ data, error }) => {
+        if (error || !data) return;
+        setBrands(
+          (data as any[])
+            .filter((r) => r.logo_url)
+            .map((r) => ({
+              src: r.logo_url,
+              name: r.name_en || r.name_ar,
+              nameAr: r.name_ar,
+              specEn: r.industry_en || r.industry_ar || "",
+              specAr: r.industry_ar || "",
+            })),
+        );
+      });
+  }, []);
+  const row1 = brands;
+  const row2 = [...brands].reverse();
 
   const Chip = ({
     b,
@@ -2300,7 +2350,7 @@ function Brands() {
         <p className="text-muted-foreground max-w-2xl">{t("brands_desc")}</p>
         <div className="flex items-center gap-3 text-sm">
           <span className="font-display text-4xl font-bold text-gradient-gold leading-none">
-            {BRANDS.length}+
+            {brands.length}+
           </span>
           <span className="text-muted-foreground uppercase tracking-widest text-xs leading-tight">
             {t("brands_meta")}

@@ -48,6 +48,8 @@ import { AdminSupportPanel } from "@/components/SupportTickets";
 import { assertAdmin } from "@/lib/admin-guard.functions";
 import { SiteManagementPanel } from "@/components/admin/SiteManagementPanel";
 import { SuccessCasesPanel } from "@/components/admin/SuccessCasesPanel";
+import { PartnersPanel } from "@/components/admin/PartnersPanel";
+import { ContractsPanel } from "@/components/admin/ContractsPanel";
 import { BookingsPanel } from "@/components/admin/BookingsPanel";
 import { PackagesPanel } from "@/components/admin/PackagesPanel";
 import { InterviewsPanel } from "@/components/admin/InterviewsPanel";
@@ -73,7 +75,9 @@ type AdminSearch = {
     | "packages"
     | "interviews"
     | "snapshots"
-    | "trainings";
+    | "trainings"
+    | "partners"
+    | "contracts";
 
   drawer?: string;
   editCourse?: string;
@@ -173,6 +177,8 @@ function AdminPage() {
     | "interviews"
     | "trainings"
     | "snapshots"
+    | "partners"
+    | "contracts"
   >(search.tab || "enrollments");
 
   const tab = tabState;
@@ -397,6 +403,8 @@ function AdminPage() {
                 { id: "coupons", label: t("كوبونات الخصم", "Coupons"), icon: Ticket },
                 { id: "testimonials", label: t("شهادات العملاء", "Testimonials"), icon: Star },
                 { id: "success_cases", label: t("حالات النجاح", "Success cases"), icon: Trophy },
+                { id: "partners", label: t("الشركاء", "Partners"), icon: Star },
+                { id: "contracts", label: t("عقود التميز", "Contracts"), icon: Trophy },
               ],
             },
             {
@@ -522,6 +530,10 @@ function AdminPage() {
                   <TestimonialsPanel />
                 ) : tab === "success_cases" ? (
                   <SuccessCasesPanel />
+                ) : tab === "partners" ? (
+                  <PartnersPanel />
+                ) : tab === "contracts" ? (
+                  <ContractsPanel />
                 ) : tab === "bookings" ? (
                   <BookingsPanel />
                 ) : tab === "packages" ? (
