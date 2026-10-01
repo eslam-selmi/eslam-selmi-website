@@ -36,7 +36,7 @@ export const Route = createFileRoute("/c/$slug")({
       <p className="text-muted-foreground">Course not found</p>
     </div>
   ),
-  errorComponent: ({ error }: { error: Error }) => (
+  errorComponent: ({ error }: ErrorComponentProps) => (
     <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
       <p className="text-destructive">{error.message}</p>
     </div>
