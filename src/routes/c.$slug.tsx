@@ -38,7 +38,7 @@ export const Route = createFileRoute("/c/$slug")({
   ),
   errorComponent: ({ error }: ErrorComponentProps) => (
     <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
-      <p className="text-destructive">{error.message}</p>
+      <p className="text-destructive">{(error as Error).message}</p>
     </div>
   ),
   component: WhiteLabelCoursePage,
