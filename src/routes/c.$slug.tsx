@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, type ErrorComponentProps } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/portal-auth";
@@ -36,9 +36,9 @@ export const Route = createFileRoute("/c/$slug")({
       <p className="text-muted-foreground">Course not found</p>
     </div>
   ),
-  errorComponent: ({ error }) => (
+  errorComponent: ({ error }: ErrorComponentProps) => (
     <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
-      <p className="text-destructive">{error.message}</p>
+      <p className="text-destructive">{(error as Error).message}</p>
     </div>
   ),
   component: WhiteLabelCoursePage,

@@ -1,6 +1,4 @@
 import { createRoot } from "react-dom/client";
-import { toJpeg } from "html-to-image";
-import jsPDF from "jspdf";
 import QRCode from "qrcode";
 import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
 const brandLogo = brandLogoAsset.url;
@@ -764,6 +762,10 @@ export async function generateCertificatePdf(p: CertificatePayload): Promise<Blo
 
   try {
     const target = host.firstElementChild as HTMLElement;
+    const [{ toJpeg }, { default: jsPDF }] = await Promise.all([
+      import("html-to-image"),
+      import("jspdf"),
+    ]);
     const dataUrl = await toJpeg(target, {
       quality: 0.96,
       backgroundColor: "#0b1736",
