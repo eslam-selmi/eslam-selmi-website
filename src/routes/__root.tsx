@@ -104,7 +104,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
-  errorComponent: (props) => <ErrorComponent error={props.error as Error} reset={props.reset} />,
+  errorComponent: (props: ErrorComponentProps) => <ErrorComponent error={props.error as Error} reset={props.reset} />,
 });
 
 // Runs BEFORE React hydrates. Reads persisted lang from localStorage and
