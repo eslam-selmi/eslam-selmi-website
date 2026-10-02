@@ -130,11 +130,20 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
                     <div className="flex-1 min-w-0">
                       <h4 className="font-semibold">{trSessionTitles[sessions.indexOf(s)] || s.title}</h4>
                       <p className="text-xs text-white/60 mt-1">{dt.toLocaleString(isAr ? "ar-EG" : "en-GB")} · {s.duration_minutes}{isAr ? "د" : "m"}</p>
-                      {safeHref(s.online_url) && !past && (
-                        <a href={safeHref(s.online_url)!} target="_blank" rel="noopener"
-                          className="mt-3 inline-flex items-center gap-1.5 text-xs px-3 h-8 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold">
-                          {isAr ? "الانضمام" : "Join"} <ExternalLink className="w-3 h-3" />
-                        </a>
+                      {!past && (
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {safeHref(s.online_url) && (
+                            <a href={safeHref(s.online_url)!} target="_blank" rel="noopener"
+                              className="inline-flex items-center gap-1.5 text-xs px-3 h-8 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold">
+                              {isAr ? "الانضمام" : "Join"} <ExternalLink className="w-3 h-3" />
+                            </a>
+                          )}
+                          <button type="button"
+                            onClick={() => downloadSessionIcs({ id: s.id, title: trSessionTitles[sessions.indexOf(s)] || s.title, courseTitle: c.title, startsAt: s.starts_at, durationMinutes: s.duration_minutes, url: safeHref(s.online_url) })}
+                            className="inline-flex items-center gap-1.5 text-xs px-3 h-8 rounded-lg border border-[var(--gold)]/40 bg-[var(--gold)]/10 text-[var(--gold)] font-semibold hover:bg-[var(--gold)]/20 transition">
+                            <Calendar className="w-3 h-3" /> {isAr ? "أضف للتقويم" : "Add to calendar"}
+                          </button>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -206,6 +215,7 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
                     })}
                   </ul>
                 )}
+                <ModuleNotes moduleId={m.id} userId={enrollment.user_id} isAr={isAr} />
               </div>
             ))}
           </div>
