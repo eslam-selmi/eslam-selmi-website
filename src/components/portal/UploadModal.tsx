@@ -19,6 +19,8 @@ import { AccountSettingsModal } from "@/components/AccountSettingsModal";
 import type { Course, Enrollment, Profile, ModuleRow } from "./types";
 
 
+const DRIVE_URL = "https://drive.google.com/drive/folders/1_GB18CPhfYZQt06orG1pIgbGffUk8dXA?usp=sharing";
+
 export function UploadModal({ onClose }: { onClose: () => void }) {
   const { lang, dir } = useI18n();
   const isAr = lang === "ar";
