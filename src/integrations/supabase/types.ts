@@ -1565,6 +1565,41 @@ export type Database = {
         }
         Relationships: []
       }
+      trainee_notes: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          module_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content?: string
+          created_at?: string
+          id?: string
+          module_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          module_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trainee_notes_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "course_modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       trainer_permissions: {
         Row: {
           can_approve_enrollments: boolean
