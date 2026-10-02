@@ -205,6 +205,11 @@ function PortalPage() {
     return null;
   }, [trEnrollments, modules]);
 
+  useEffect(() => {
+    if (tab === "certificates" && alerts.certCount) alerts.markSeen("certs");
+    if (tab === "my-courses" && alerts.paymentCount) alerts.markSeen("payments");
+  }, [tab, alerts.certCount, alerts.paymentCount]);
+
   async function enroll(courseId: string, couponCode?: string) {
     if (!user) return;
     const { data, error } = await supabase
