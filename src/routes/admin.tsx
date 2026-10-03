@@ -54,6 +54,8 @@ import { BookingsPanel } from "@/components/admin/BookingsPanel";
 import { PackagesPanel } from "@/components/admin/PackagesPanel";
 import { InterviewsPanel } from "@/components/admin/InterviewsPanel";
 import { TrainingsPanel } from "@/components/admin/TrainingsPanel";
+import { AdminToolbar } from "@/components/admin/AdminToolbar";
+import { TraineeDrawer } from "@/components/admin/TraineeDrawer";
 
 
 type AdminSearch = {
@@ -194,6 +196,7 @@ function AdminPage() {
     [drawerId, enrollments],
   );
   const setDrawer = (v: EnrollmentRow | null) => setDrawerId(v ? v.id : null);
+  const [traineeId, setTraineeId] = useState<string | null>(null);
 
   const [editingCourseId, setEditingCourseId] = useState<string | null>(search.editCourse || null);
   const editingCourse = useMemo(
@@ -349,6 +352,13 @@ function AdminPage() {
           />
         </div>
 
+        <AdminToolbar
+          enrollments={enrollments}
+          courses={courses}
+          onTrainee={setTraineeId}
+          onCourse={(id) => { setTab("courses"); setEditingCourseId(id); }}
+        />
+
         {(() => {
           const groups: {
             id: string;
@@ -356,80 +366,47 @@ function AdminPage() {
             items: { id: string; label: string; icon: any; badge?: number | string }[];
           }[] = [
             {
-              id: "people",
-              label: t("الطلبات والمستخدمون", "Requests & Users"),
+              id: "learning",
+              label: t("التعليم والتدريب", "Learning & Training"),
               items: [
-                {
-                  id: "activations",
-                  label: t("تفعيل الحسابات", "Activations"),
-                  icon: ShieldCheck,
-                  badge: pendingActivations || undefined,
-                },
-                {
-                  id: "enrollments",
-                  label: t("طلبات وانضمامات", "Enrollments"),
-                  icon: Users,
-                  badge: enrollments.length || undefined,
-                },
-                {
-                  id: "banned",
-                  label: t("الموقوفون", "Banned"),
-                  icon: Archive,
-                  badge:
-                    enrollments.filter((e) => e.profiles?.account_blocked).length || undefined,
-                },
-              ],
-            },
-            {
-              id: "content",
-              label: t("المحتوى التعليمي", "Learning Content"),
-              items: [
-                {
-                  id: "courses",
-                  label: t("الكورسات", "Courses"),
-                  icon: BookOpen,
-                  badge: courses.length || undefined,
-                },
+                { id: "activations", label: t("تفعيل الحسابات", "Activations"), icon: ShieldCheck, badge: pendingActivations || undefined },
+                { id: "enrollments", label: t("طلبات وانضمامات", "Enrollments"), icon: Users, badge: enrollments.length || undefined },
+                { id: "courses", label: t("الكورسات", "Courses"), icon: BookOpen },
                 { id: "trainings", label: t("التدريبات", "Trainings"), icon: Layers },
-                { id: "snapshots", label: t("لحظات المسيرة", "Career moments"), icon: Camera },
-                { id: "additions", label: t("أحدث الإضافات", "Latest additions"), icon: Sparkles },
-              ],
-            },
-            {
-              id: "growth",
-              label: t("المبيعات والتسويق", "Sales & Marketing"),
-              items: [
-                { id: "leads", label: t("اهتمامات الكورسات", "Course leads"), icon: StickyNote },
-                { id: "coupons", label: t("كوبونات الخصم", "Coupons"), icon: Ticket },
-                { id: "testimonials", label: t("شهادات العملاء", "Testimonials"), icon: Star },
-                { id: "success_cases", label: t("حالات النجاح", "Success cases"), icon: Trophy },
-                { id: "partners", label: t("الشركاء", "Partners"), icon: Star },
-                { id: "contracts", label: t("عقود التميز", "Contracts"), icon: Trophy },
-              ],
-            },
-            {
-              id: "consult",
-              label: t("الاستشارات والمقابلات", "Consulting & Interviews"),
-              items: [
-                { id: "bookings", label: t("حجوزات الاستشارات", "Bookings"), icon: Calendar },
-                { id: "packages", label: t("باقات الاستشارات", "Packages"), icon: Layers },
-                { id: "interviews", label: t("المقابلات", "Interviews"), icon: Video },
-              ],
-            },
-            {
-              id: "ops",
-              label: t("الموقع والدعم", "Site & Support"),
-              items: [
-                { id: "site", label: t("إدارة الموقع", "Site management"), icon: Settings2 },
-                { id: "tickets", label: t("تذاكر الدعم", "Support tickets"), icon: LifeBuoy },
+                { id: "banned", label: t("الموقوفون", "Banned"), icon: Archive, badge: enrollments.filter((e) => e.profiles?.account_blocked).length || undefined },
               ],
             },
             {
               id: "finance",
-              label: t("المالية", "Finance"),
+              label: t("المالية والمبيعات", "Finance & Sales"),
               items: [
                 { id: "finance", label: t("المعاملات المالية", "Transactions"), icon: Wallet },
                 { id: "methods", label: t("طرق الدفع", "Payment methods"), icon: CreditCard },
+                { id: "coupons", label: t("كوبونات الخصم", "Coupons"), icon: Ticket },
+                { id: "leads", label: t("اهتمامات الكورسات", "Course leads"), icon: StickyNote },
+                { id: "packages", label: t("باقات الاستشارات", "Packages"), icon: Layers },
+                { id: "bookings", label: t("حجوزات الاستشارات", "Bookings"), icon: Calendar },
+              ],
+            },
+            {
+              id: "site",
+              label: t("الموقع والمحتوى", "Site & Content"),
+              items: [
+                { id: "additions", label: t("أحدث الإضافات", "Latest additions"), icon: Sparkles },
+                { id: "snapshots", label: t("لحظات المسيرة", "Career moments"), icon: Camera },
+                { id: "testimonials", label: t("شهادات العملاء", "Testimonials"), icon: Star },
+                { id: "success_cases", label: t("حالات النجاح", "Success cases"), icon: Trophy },
+                { id: "partners", label: t("الشركاء", "Partners"), icon: Star },
+                { id: "contracts", label: t("عقود التميز", "Contracts"), icon: Trophy },
+                { id: "interviews", label: t("المقابلات", "Interviews"), icon: Video },
+              ],
+            },
+            {
+              id: "settings",
+              label: t("الإعدادات والتواصل", "Settings & Communication"),
+              items: [
+                { id: "site", label: t("إدارة الموقع", "Site management"), icon: Settings2 },
+                { id: "tickets", label: t("تذاكر الدعم", "Support tickets"), icon: LifeBuoy },
               ],
             },
           ];
@@ -568,6 +545,15 @@ function AdminPage() {
 
       {drawer && (
         <EnrollmentDrawer enrollment={drawer} onClose={() => setDrawer(null)} refresh={refresh} />
+      )}
+      {traineeId && (
+        <TraineeDrawer
+          userId={traineeId}
+          enrollments={enrollments.filter((e) => e.user_id === traineeId)}
+          onClose={() => setTraineeId(null)}
+          onOpenEnrollment={(id) => { setTraineeId(null); setDrawerId(id); }}
+          refresh={refresh}
+        />
       )}
       {editingCourse && (
         <CourseEditor
