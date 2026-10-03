@@ -44,8 +44,8 @@ export function useAuth() {
       supabase.from("profiles").select("force_password_reset,activation_status").eq("id", uid).maybeSingle(),
     ]);
     setRole((roleRes.data?.role as Role) ?? "trainee");
-    setForcePasswordReset(Boolean((profRes.data as any)?.force_password_reset));
-    setActivationStatus(((profRes.data as any)?.activation_status as ActivationStatus) ?? "active");
+    setForcePasswordReset(Boolean(profRes.data?.force_password_reset));
+    setActivationStatus((profRes.data?.activation_status as ActivationStatus) ?? "active");
     setLoading(false);
   }
 

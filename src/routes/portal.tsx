@@ -90,7 +90,7 @@ function PortalPage() {
       supabase.from("enrollments").select("*, courses(*)").eq("user_id", user.id).order("created_at", { ascending: false }),
     ]);
     // Hard block: account disabled → force sign-out
-    if ((p.data as any)?.account_blocked) {
+    if (p.data?.account_blocked) {
       toast.error("تم إيقاف حسابك من قِبل الإدارة. للتواصل، يرجى مراسلة الإدارة.");
       await supabase.auth.signOut();
       nav({ to: "/auth" });

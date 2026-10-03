@@ -881,7 +881,7 @@ function BannedPanel({
     if (!confirm(t("إعادة تفعيل حساب هذا المتدرب؟", "Reactivate this trainee's account?"))) return;
     const { error } = await supabase
       .from("profiles")
-      .update({ account_blocked: false } as any)
+      .update({ account_blocked: false })
       .eq("id", userId);
     if (error) return toast.error(error.message);
     toast.success(t("تم إلغاء الحظر", "Account unbanned"));
@@ -2333,7 +2333,7 @@ function EnrollmentDrawer({
       .select("account_blocked")
       .eq("id", enrollment.user_id)
       .maybeSingle()
-      .then(({ data }) => setAccountBlocked(Boolean((data as any)?.account_blocked)));
+      .then(({ data }) => setAccountBlocked(Boolean(data?.account_blocked)));
   }, [enrollment.user_id]);
   async function toggleAccountBlocked() {
     const next = !accountBlocked;
@@ -2346,7 +2346,7 @@ function EnrollmentDrawer({
     if (!confirm(msg)) return;
     const { error } = await supabase
       .from("profiles")
-      .update({ account_blocked: next } as any)
+      .update({ account_blocked: next })
       .eq("id", enrollment.user_id);
     if (error) return toast.error(error.message);
     setAccountBlocked(next);
