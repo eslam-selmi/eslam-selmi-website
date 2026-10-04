@@ -121,6 +121,51 @@ export type Database = {
           },
         ]
       }
+      booking_settings: {
+        Row: {
+          break_end: string | null
+          break_start: string | null
+          buffer_minutes: number
+          default_meeting_url: string | null
+          end_time: string
+          id: string
+          singleton: boolean
+          slot_minutes: number
+          start_time: string
+          timezone: string
+          updated_at: string
+          work_days: number[]
+        }
+        Insert: {
+          break_end?: string | null
+          break_start?: string | null
+          buffer_minutes?: number
+          default_meeting_url?: string | null
+          end_time?: string
+          id?: string
+          singleton?: boolean
+          slot_minutes?: number
+          start_time?: string
+          timezone?: string
+          updated_at?: string
+          work_days?: number[]
+        }
+        Update: {
+          break_end?: string | null
+          break_start?: string | null
+          buffer_minutes?: number
+          default_meeting_url?: string | null
+          end_time?: string
+          id?: string
+          singleton?: boolean
+          slot_minutes?: number
+          start_time?: string
+          timezone?: string
+          updated_at?: string
+          work_days?: number[]
+        }
+        Relationships: []
+      }
       consultation_package_purchases: {
         Row: {
           admin_notes: string | null
@@ -221,11 +266,16 @@ export type Database = {
           booker_email: string | null
           booker_name: string | null
           booker_phone: string | null
+          cancel_reason: string | null
+          cancelled_at: string | null
           created_at: string
+          details: string | null
           duration_minutes: number
           id: string
+          meeting_url: string | null
           package_purchase_id: string | null
           starts_at: string
+          status: string
           topic: string | null
           updated_at: string
         }
@@ -236,11 +286,16 @@ export type Database = {
           booker_email?: string | null
           booker_name?: string | null
           booker_phone?: string | null
+          cancel_reason?: string | null
+          cancelled_at?: string | null
           created_at?: string
+          details?: string | null
           duration_minutes?: number
           id?: string
+          meeting_url?: string | null
           package_purchase_id?: string | null
           starts_at: string
+          status?: string
           topic?: string | null
           updated_at?: string
         }
@@ -251,11 +306,16 @@ export type Database = {
           booker_email?: string | null
           booker_name?: string | null
           booker_phone?: string | null
+          cancel_reason?: string | null
+          cancelled_at?: string | null
           created_at?: string
+          details?: string | null
           duration_minutes?: number
           id?: string
+          meeting_url?: string | null
           package_purchase_id?: string | null
           starts_at?: string
+          status?: string
           topic?: string | null
           updated_at?: string
         }
@@ -1796,9 +1856,24 @@ export type Database = {
       }
     }
     Functions: {
+      _cancel_slot: {
+        Args: {
+          _reason: string
+          _slot: Database["public"]["Tables"]["consultation_slots"]["Row"]
+        }
+        Returns: undefined
+      }
       apply_coupon_to_enrollment: {
         Args: { _code: string; _enrollment_id: string }
         Returns: Json
+      }
+      cancel_my_booking: {
+        Args: { _reason?: string; _slot_id: string }
+        Returns: Json
+      }
+      generate_booking_slots: {
+        Args: { _from: string; _to: string }
+        Returns: number
       }
       get_activation_contact: { Args: never; Returns: Json }
       has_role: {
@@ -1821,6 +1896,10 @@ export type Database = {
           _title: string
         }
         Returns: undefined
+      }
+      reschedule_my_booking: {
+        Args: { _new_slot_id: string; _slot_id: string }
+        Returns: Json
       }
       trainer_has_perm: {
         Args: { _course_id: string; _perm: string }
