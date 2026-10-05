@@ -506,3 +506,57 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 :root:not(.dark) .dash-shell [class*="divide-white/"] > * + * { border-color: oklch(0.20 0.06 260 / 0.10); }
 /* Gold CTAs keep their navy ink */
 :root:not(.dark) .dash-shell [class*="text-[#0b1736]"] { color: #0b1736; }
+
+/* Admin-only work surface: flat navy, silver signals, and clearer data density. */
+.admin-shell {
+  --gold: oklch(0.9 0.008 245);
+  --gold-soft: oklch(0.82 0.015 245);
+  --lavender: oklch(0.76 0.018 245);
+  --accent: oklch(0.79 0.018 245);
+  --foreground: oklch(0.96 0.007 245);
+  --muted-foreground: oklch(0.76 0.015 245);
+  --card: oklch(0.21 0.035 255);
+  --card-foreground: oklch(0.96 0.007 245);
+  --secondary: oklch(0.26 0.035 255);
+  --border: oklch(0.78 0.015 245 / 0.18);
+  --popover: oklch(0.20 0.038 255);
+  --popover-foreground: oklch(0.96 0.007 245);
+  --ring: oklch(0.9 0.008 245);
+}
+.admin-shell.dash-bg { background: oklch(0.16 0.04 255); }
+.admin-shell .dash-header { background: oklch(0.13 0.04 255 / 0.96); border-color: var(--border); }
+.admin-shell .dash-card {
+  background: var(--card);
+  border-color: var(--border);
+  box-shadow: 0 8px 24px -20px oklch(0.05 0.02 255 / .65);
+  border-radius: .5rem;
+}
+.admin-shell .dash-card-hover:hover { border-color: var(--accent); box-shadow: 0 8px 24px -20px oklch(0.05 0.02 255 / .65); }
+.admin-shell .admin-side-nav {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: .5rem;
+  padding: 1rem .75rem;
+}
+.admin-shell .admin-workspace table { border-collapse: collapse; }
+.admin-shell .admin-workspace thead { background: var(--secondary); color: var(--foreground); }
+.admin-shell .admin-workspace tbody tr { border-bottom: 1px solid var(--border); }
+.admin-shell .admin-workspace tbody tr:hover { background: var(--secondary); }
+.admin-shell .admin-workspace input,
+.admin-shell .admin-workspace select,
+.admin-shell .admin-workspace textarea { accent-color: var(--accent); }
+:root:not(.dark) .admin-shell {
+  --foreground: oklch(0.20 0.04 255);
+  --muted-foreground: oklch(0.43 0.025 250);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.20 0.04 255);
+  --secondary: oklch(0.94 0.009 245);
+  --border: oklch(0.20 0.04 255 / .15);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.20 0.04 255);
+  --accent: oklch(0.42 0.025 245);
+  --gold: oklch(0.20 0.04 255);
+}
+:root:not(.dark) .admin-shell.dash-bg { background: oklch(0.965 0.006 245); }
+:root:not(.dark) .admin-shell .dash-header { background: oklch(1 0 0 / .96); }
+:root:not(.dark) .admin-shell .dash-card { background: var(--card); border-color: var(--border); }
