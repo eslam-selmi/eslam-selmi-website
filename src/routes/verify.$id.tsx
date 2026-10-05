@@ -10,6 +10,10 @@ export const Route = createFileRoute("/verify/$id")({
     meta: [
       { title: "Certificate Verification — Eslam Selmi Academy" },
       { name: "description", content: "Verify the authenticity of a certificate issued by Eslam Selmi Academy." },
+      { property: "og:title", content: "Certificate Verification — Eslam Selmi" },
+      { property: "og:description", content: "Verify the authenticity of a certificate issued by Eslam Selmi." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
 });

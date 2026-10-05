@@ -40,6 +40,8 @@ export const Route = createFileRoute("/success-cases")({
         content:
           "Real-world L&D, Talent and Performance success cases — challenges, solutions, and measurable results.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
     links: [{ rel: "canonical", href: "https://eslam-selmi.lovable.app/success-cases" }],
   }),

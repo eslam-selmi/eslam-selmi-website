@@ -25,6 +25,8 @@ export const Route = createFileRoute("/library")({
           "Curated knowledge library on L&D, Talent Management, and Performance by Eslam Selmi.",
       },
       { property: "og:url", content: "https://eslam-selmi.lovable.app/library" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
     links: [{ rel: "canonical", href: "https://eslam-selmi.lovable.app/library" }],
   }),

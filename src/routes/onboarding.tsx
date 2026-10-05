@@ -11,6 +11,11 @@ export const Route = createFileRoute("/onboarding")({
   head: () => ({
     meta: [
       { title: "تفعيل الحساب · إسلام سلمي" },
+      { name: "description", content: "تفعيل حساب المتدرب في منصة إسلام سلمي." },
+      { property: "og:title", content: "تفعيل الحساب · إسلام سلمي" },
+      { property: "og:description", content: "تفعيل حساب المتدرب في منصة إسلام سلمي." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
     ],
   }),

@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { safeHref } from "@/lib/safe-url";
 import { X } from "lucide-react";
+import { useRouterState } from "@tanstack/react-router";
 
 type Popup = {
   id: string;
@@ -37,6 +38,7 @@ function shouldShow(p: Popup, shownAt: number | undefined): boolean {
 }
 
 export function SitePopup() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
   const { lang } = useI18n();
   const [popup, setPopup] = useState<Popup | null>(null);
   const [visible, setVisible] = useState(false);
@@ -64,7 +66,7 @@ export function SitePopup() {
     return () => { cancelled = true; if (timer) window.clearTimeout(timer); };
   }, []);
 
-  if (!popup || !visible) return null;
+  if (pathname.startsWith("/admin") || !popup || !visible) return null;
   const title = lang === "ar" ? popup.title_ar : (popup.title_en || popup.title_ar);
   const body = lang === "ar" ? popup.body_ar : (popup.body_en || popup.body_ar);
   const ctaLabel = lang === "ar" ? popup.cta_label_ar : (popup.cta_label_en || popup.cta_label_ar);

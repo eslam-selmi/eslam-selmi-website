@@ -40,6 +40,11 @@ export const Route = createFileRoute("/portal")({
   head: () => ({
     meta: [
       { title: "بوابة المتدرب · إسلام سلمي" },
+      { name: "description", content: "دوراتك وشهاداتك وجلساتك التدريبية في بوابة المتدرب." },
+      { property: "og:title", content: "بوابة المتدرب · إسلام سلمي" },
+      { property: "og:description", content: "دوراتك وشهاداتك وجلساتك التدريبية في بوابة المتدرب." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
     ],
   }),

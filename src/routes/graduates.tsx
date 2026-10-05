@@ -25,6 +25,8 @@ export const Route = createFileRoute("/graduates")({
           "Hands-on program preparing fresh graduates to master AI, Outlook, Canva, Trello and Google Sheets & Forms.",
       },
       { property: "og:url", content: "https://eslam-selmi.lovable.app/graduates" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
     links: [{ rel: "canonical", href: "https://eslam-selmi.lovable.app/graduates" }],
     scripts: [
