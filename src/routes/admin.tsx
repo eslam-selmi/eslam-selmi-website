@@ -292,7 +292,7 @@ function AdminPage() {
   if (loading || !user || role !== "admin") {
     return (
       <div className="min-h-screen bg-[#0b1736] flex items-center justify-center text-white">
-        <Loader2 className="w-8 h-8 animate-spin text-[var(--gold)]" />
+        <Loader2 className="w-8 h-8 animate-spin text-accent" />
       </div>
     );
   }
@@ -523,62 +523,6 @@ function AdminPage() {
   );
 }
 
-function StatCard({
-  icon: Icon,
-  label,
-  value,
-  color,
-}: {
-  icon: any;
-  label: string;
-  value: number;
-  color: string;
-}) {
-  const tone: Record<string, { text: string; ring: string; glow: string }> = {
-    amber: {
-      text: "text-amber-300",
-      ring: "bg-amber-300/10 border-amber-300/30",
-      glow: "from-amber-400/20",
-    },
-    emerald: {
-      text: "text-emerald-300",
-      ring: "bg-emerald-300/10 border-emerald-300/30",
-      glow: "from-emerald-400/20",
-    },
-    gold: {
-      text: "text-[var(--gold)]",
-      ring: "bg-[var(--gold)]/10 border-[var(--gold)]/30",
-      glow: "from-[var(--gold)]/25",
-    },
-    lavender: {
-      text: "text-[var(--lavender)]",
-      ring: "bg-[var(--lavender)]/10 border-[var(--lavender)]/30",
-      glow: "from-[var(--lavender)]/20",
-    },
-  };
-  const c = tone[color] ?? tone.gold;
-  return (
-    <div className="dash-card dash-card-hover relative overflow-hidden p-5">
-      <div
-        className={`pointer-events-none absolute -top-12 -end-12 w-32 h-32 rounded-full bg-gradient-to-br ${c.glow} to-transparent blur-2xl`}
-      />
-      <div className="relative flex items-start justify-between gap-3">
-        <div>
-          <p className="text-[11px] uppercase tracking-wider text-white/55 font-semibold">
-            {label}
-          </p>
-          <p className="text-3xl font-bold mt-2 leading-none">{value}</p>
-        </div>
-        <div
-          className={`w-11 h-11 rounded-2xl border ${c.ring} flex items-center justify-center shrink-0`}
-        >
-          <Icon className={`w-5 h-5 ${c.text}`} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function EnrollmentsTable({
   enrollments,
   courses,
@@ -762,29 +706,24 @@ function EnrollmentsTable({
                             )}
                           </td>
                           <td className="px-4 py-3">
-                            <div className="flex gap-1.5 flex-wrap">
+                            <div className="flex items-center gap-1.5 whitespace-nowrap">
                               {en.status === "pending" && (
                                 <>
-                                  <button
+                                  <Button size="sm" variant="secondary" title={t("قبول الطلب", "Approve request")}
                                     onClick={() => setStatus(en.id, "approved")}
-                                    className="text-xs px-2.5 h-8 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30"
+                                    className="h-8 px-2.5"
                                   >
-                                    {t("قبول", "Approve")}
-                                  </button>
-                                  <button
-                                    onClick={() => setStatus(en.id, "rejected")}
-                                    className="text-xs px-2.5 h-8 rounded-lg bg-rose-500/20 text-rose-300 border border-rose-500/30 hover:bg-rose-500/30"
-                                  >
-                                    {t("رفض", "Reject")}
-                                  </button>
+                                    <Check className="size-3.5" /> {t("قبول", "Approve")}
+                                  </Button>
                                 </>
                               )}
-                              <button
+                              <Button size="sm" variant="outline"
                                 onClick={() => onOpen(en)}
-                                className="text-xs px-2.5 h-8 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold"
+                                className="h-8 px-2.5"
                               >
-                                {t("إدارة", "Manage")}
-                              </button>
+                                {t("التفاصيل", "Details")}
+                              </Button>
+                              {en.status === "pending" && <details className="relative group"><summary aria-label={t("مزيد من الإجراءات", "More actions")} title={t("مزيد من الإجراءات", "More actions")} className="flex size-8 cursor-pointer list-none items-center justify-center rounded-md border border-border text-muted-foreground hover:bg-secondary [&::-webkit-details-marker]:hidden"><MoreHorizontal className="size-4" /></summary><div className="absolute end-0 top-full z-20 mt-1 min-w-28 rounded-md border border-border bg-popover p-1 shadow-lg"><Button size="sm" variant="ghost" className="w-full justify-start text-destructive" onClick={(event) => { event.currentTarget.closest("details")?.removeAttribute("open"); void setStatus(en.id, "rejected"); }}>{t("رفض الطلب", "Reject request")}</Button></div></details>}
                             </div>
                           </td>
                         </tr>
@@ -1106,17 +1045,16 @@ function CoursesPanel({
                       )}
                     </div>
                   </div>
-                  <div className="flex flex-col gap-1">
-                    <button
+                   <div className="flex shrink-0 items-center gap-1">
+                     <Button size="sm" variant="outline"
                       onClick={() => onEdit(c)}
-                      className="flex items-center gap-1.5 text-xs px-3 h-9 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold"
                     >
-                      <Settings2 className="w-3.5 h-3.5" /> {t("إدارة المحتوى", "Manage content")}
-                    </button>
-                    <div className="flex gap-1 justify-end">
-                      <button
+                       <Pencil className="w-3.5 h-3.5" /> {t("تعديل", "Edit")}
+                     </Button>
+                     <div className="flex gap-1 justify-end">
+                       <Button size="icon" variant="ghost"
                         onClick={() => toggleActive(c)}
-                        className="p-2 rounded-lg hover:bg-white/5"
+                        aria-label={c.active ? t("إيقاف", "Disable") : t("تفعيل", "Enable")}
                         title={c.active ? t("إيقاف", "Disable") : t("تفعيل", "Enable")}
                       >
                         {c.active ? (
@@ -1124,23 +1062,21 @@ function CoursesPanel({
                         ) : (
                           <ToggleLeft className="w-5 h-5 text-white/40" />
                         )}
-                      </button>
-                      <button
+                       </Button>
+                       <details className="relative group"><summary aria-label={t("مزيد من الإجراءات", "More actions")} title={t("مزيد من الإجراءات", "More actions")} className="flex size-9 cursor-pointer list-none items-center justify-center rounded-md text-muted-foreground hover:bg-secondary [&::-webkit-details-marker]:hidden"><MoreHorizontal className="size-4" /></summary><div className="absolute end-0 top-full z-20 min-w-36 rounded-md border border-border bg-popover p-1 shadow-lg"><Button size="sm" variant="ghost" className="w-full justify-start" 
                         onClick={() => del(c.id, Boolean((c as any).is_archived))}
-                        className="p-2 rounded-lg hover:bg-rose-500/10 text-rose-300"
                         title={
                           (c as any).is_archived ? t("استعادة", "Restore") : t("أرشفة", "Archive")
                         }
                       >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                      <button
+                         <Archive className="w-4 h-4" /> {(c as any).is_archived ? t("استعادة", "Restore") : t("أرشفة", "Archive")}
+                       </Button>
+                       <Button size="sm" variant="ghost" className="w-full justify-start text-destructive"
                         onClick={() => deleteCourseForever(c.id, c.title)}
-                        className="p-2 rounded-lg hover:bg-red-500/10 text-red-300"
                         title={t("حذف نهائي", "Delete forever")}
                       >
-                        <X className="w-4 h-4" />
-                      </button>
+                         <Trash2 className="w-4 h-4" /> {t("حذف نهائي", "Delete forever")}
+                       </Button></div></details>
                     </div>
                   </div>
                 </div>
