@@ -523,6 +523,13 @@ function AdminPage() {
   );
 }
 
+function StatCard({ icon: Icon, label, value }: { icon: typeof Users; label: string; value: number; color?: string }) {
+  return <div className="dash-card flex items-center justify-between gap-4 p-4">
+    <div><p className="text-xs text-muted-foreground">{label}</p><p className="mt-2 text-2xl font-bold text-foreground tabular-nums">{value.toLocaleString()}</p></div>
+    <Icon className="size-5 text-accent" />
+  </div>;
+}
+
 function EnrollmentsTable({
   enrollments,
   courses,
