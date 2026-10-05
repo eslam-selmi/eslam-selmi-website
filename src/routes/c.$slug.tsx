@@ -29,6 +29,10 @@ export const Route = createFileRoute("/c/$slug")({
     meta: [
       { title: `${params.slug} — Course` },
       { name: "description", content: `Dedicated learning page for ${params.slug}` },
+      { property: "og:title", content: `${params.slug} — Course | Eslam Selmi` },
+      { property: "og:description", content: `Dedicated learning page for ${params.slug}` },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   notFoundComponent: () => (

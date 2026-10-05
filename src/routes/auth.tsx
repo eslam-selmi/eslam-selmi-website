@@ -25,7 +25,7 @@ export const Route = createFileRoute("/auth")({
   }),
 
   head: () => ({
-    meta: [{ title: "تسجيل الدخول · إسلام سلمي" }, { name: "robots", content: "noindex" }],
+    meta: [{ title: "تسجيل الدخول · إسلام سلمي" }, { name: "description", content: "تسجيل الدخول إلى منصة إسلام سلمي للتدريب." }, { property: "og:title", content: "تسجيل الدخول · إسلام سلمي" }, { property: "og:description", content: "تسجيل الدخول إلى منصة إسلام سلمي للتدريب." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }],
   }),
   component: AuthPage,
 });

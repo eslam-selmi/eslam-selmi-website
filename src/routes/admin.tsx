@@ -41,6 +41,8 @@ import {
   Trophy,
   Video,
   ShieldCheck,
+  LayoutDashboard,
+  MoreHorizontal,
 } from "lucide-react";
 import { findCountry } from "@/lib/countries";
 import { safeHref } from "@/lib/safe-url";
@@ -56,10 +58,13 @@ import { InterviewsPanel } from "@/components/admin/InterviewsPanel";
 import { TrainingsPanel } from "@/components/admin/TrainingsPanel";
 import { AdminToolbar } from "@/components/admin/AdminToolbar";
 import { TraineeDrawer } from "@/components/admin/TraineeDrawer";
+import { ExecutiveOverview } from "@/components/admin/ExecutiveOverview";
+import { Button } from "@/components/ui/button";
 
 
 type AdminSearch = {
   tab?:
+    | "overview"
     | "enrollments"
     | "courses"
     | "coupons"
@@ -106,7 +111,7 @@ export const Route = createFileRoute("/admin")({
     return {};
   },
   head: () => ({
-    meta: [{ title: "لوحة الإدارة · إسلام سلمي" }, { name: "robots", content: "noindex" }],
+    meta: [{ title: "لوحة الإدارة · إسلام سلمي" }, { name: "description", content: "إدارة التدريب والحجوزات والطلبات والمحتوى من مكان واحد." }, { property: "og:title", content: "لوحة الإدارة · إسلام سلمي" }, { property: "og:description", content: "إدارة التدريب والحجوزات والطلبات والمحتوى من مكان واحد." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }, { name: "robots", content: "noindex" }],
   }),
   component: AdminPage,
 });
@@ -161,6 +166,7 @@ function AdminPage() {
   const nav = useNavigate();
   const search = Route.useSearch();
   const [tabState, setTabState] = useState<
+    | "overview"
     | "enrollments"
     | "courses"
     | "coupons"
@@ -181,7 +187,7 @@ function AdminPage() {
     | "snapshots"
     | "partners"
     | "contracts"
-  >(search.tab || "enrollments");
+  >(search.tab || "overview");
 
   const tab = tabState;
   const setTab = setTabState;
@@ -286,91 +292,30 @@ function AdminPage() {
   if (loading || !user || role !== "admin") {
     return (
       <div className="min-h-screen bg-[#0b1736] flex items-center justify-center text-white">
-        <Loader2 className="w-8 h-8 animate-spin text-[var(--gold)]" />
+        <Loader2 className="w-8 h-8 animate-spin text-accent" />
       </div>
     );
   }
 
   const pending = enrollments.filter((e) => e.status === "pending").length;
   const approved = enrollments.filter((e) => e.status === "approved").length;
-  const issued = enrollments.filter((e) => e.certificate_issued).length;
 
   return (
     <PortalShell userId={user.id} role="admin" userLabel={user.email}>
-      <div className="space-y-7">
-        {pending > 0 && (
-          <div className="rounded-2xl border border-amber-300/40 bg-amber-300/10 p-4 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-300/20 flex items-center justify-center">
-              <Users className="w-5 h-5 text-amber-300" />
-            </div>
-            <div className="flex-1">
-              <p className="font-bold text-amber-100">
-                {pending} {t("طلب", "request")}
-                {pending > 2 ? t("ات", "s") : ""}{" "}
-                {t("انضمام بانتظار مراجعتك", "enrollment(s) awaiting your review")}
-              </p>
-              <p className="text-xs text-amber-200/70">
-                {t(
-                  "راجع الطلبات الجديدة في تبويب طلبات الانضمام بالأسفل.",
-                  "Review new requests in the enrollments tab below.",
-                )}
-              </p>
-            </div>
-            <button
-              onClick={() => setTab("enrollments")}
-              className="text-xs px-3 h-9 rounded-lg bg-amber-300 text-amber-950 font-semibold"
-            >
-              {t("عرض", "View")}
-            </button>
-          </div>
-        )}
-
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <StatCard
-            icon={Users}
-            label={t("طلبات قيد المراجعة", "Pending requests")}
-            value={pending}
-            color="amber"
-          />
-          <StatCard
-            icon={CheckCircle2}
-            label={t("متدربون مقبولون", "Approved trainees")}
-            value={approved}
-            color="emerald"
-          />
-          <StatCard
-            icon={Award}
-            label={t("شهادات صادرة", "Certificates issued")}
-            value={issued}
-            color="gold"
-          />
-          <StatCard
-            icon={BookOpen}
-            label={t("إجمالي الكورسات", "Total courses")}
-            value={courses.length}
-            color="lavender"
-          />
-        </div>
-
-        <AdminToolbar
-          enrollments={enrollments}
-          courses={courses}
-          onTrainee={setTraineeId}
-          onCourse={(id) => { setTab("courses"); setEditingCourseId(id); }}
-        />
-
+      <div className="admin-workspace">
         {(() => {
           const groups: {
             id: string;
             label: string;
-            items: { id: string; label: string; icon: any; badge?: number | string }[];
+            items: { id: NonNullable<AdminSearch["tab"]>; label: string; icon: typeof Users; badge?: number | string }[];
           }[] = [
             {
-              id: "learning",
-              label: t("التعليم والتدريب", "Learning & Training"),
+              id: "students",
+              label: t("العمليات التعليمية والطلاب", "Learning & Students"),
               items: [
+                { id: "overview", label: t("نظرة عامة", "Overview"), icon: LayoutDashboard },
                 { id: "activations", label: t("تفعيل الحسابات", "Activations"), icon: ShieldCheck, badge: pendingActivations || undefined },
-                { id: "enrollments", label: t("طلبات وانضمامات", "Enrollments"), icon: Users, badge: enrollments.length || undefined },
+                { id: "enrollments", label: t("طلبات وانضمامات", "Enrollments"), icon: Users, badge: pending || undefined },
                 { id: "courses", label: t("الكورسات", "Courses"), icon: BookOpen },
                 { id: "trainings", label: t("التدريبات", "Trainings"), icon: Layers },
                 { id: "banned", label: t("الموقوفون", "Banned"), icon: Archive, badge: enrollments.filter((e) => e.profiles?.account_blocked).length || undefined },
@@ -378,19 +323,19 @@ function AdminPage() {
             },
             {
               id: "finance",
-              label: t("المالية والمبيعات", "Finance & Sales"),
+              label: t("الحجوزات والمالية", "Bookings & Finance"),
               items: [
+                { id: "bookings", label: t("حجوزات الاستشارات", "Bookings"), icon: Calendar },
                 { id: "finance", label: t("المعاملات المالية", "Transactions"), icon: Wallet },
                 { id: "methods", label: t("طرق الدفع", "Payment methods"), icon: CreditCard },
                 { id: "coupons", label: t("كوبونات الخصم", "Coupons"), icon: Ticket },
                 { id: "leads", label: t("اهتمامات الكورسات", "Course leads"), icon: StickyNote },
                 { id: "packages", label: t("باقات الاستشارات", "Packages"), icon: Layers },
-                { id: "bookings", label: t("حجوزات الاستشارات", "Bookings"), icon: Calendar },
               ],
             },
             {
               id: "site",
-              label: t("الموقع والمحتوى", "Site & Content"),
+              label: t("إدارة محتوى الموقع", "Site Content · CMS"),
               items: [
                 { id: "additions", label: t("أحدث الإضافات", "Latest additions"), icon: Sparkles },
                 { id: "snapshots", label: t("لحظات المسيرة", "Career moments"), icon: Camera },
@@ -403,7 +348,7 @@ function AdminPage() {
             },
             {
               id: "settings",
-              label: t("الإعدادات والتواصل", "Settings & Communication"),
+              label: t("الإعدادات والدعم", "Settings & Support"),
               items: [
                 { id: "site", label: t("إدارة الموقع", "Site management"), icon: Settings2 },
                 { id: "tickets", label: t("تذاكر الدعم", "Support tickets"), icon: LifeBuoy },
@@ -412,13 +357,14 @@ function AdminPage() {
           ];
 
           return (
-            <div className="flex flex-col lg:flex-row gap-6">
+            <div className="flex flex-col lg:flex-row gap-5">
               {/* Mobile grouped select */}
-              <div className="lg:hidden dash-card p-2">
+              <div className="lg:hidden border border-border bg-card p-2 rounded-md">
                 <select
                   value={tab}
-                  onChange={(e) => setTab(e.target.value as any)}
-                  className="w-full bg-[#0b1736] text-white text-sm font-semibold h-11 px-3 rounded-xl border border-white/10 focus:border-[var(--gold)] outline-none"
+                  onChange={(e) => setTab(e.target.value as NonNullable<AdminSearch["tab"]>)}
+                  aria-label={t("القسم", "Section")}
+                  className="w-full bg-background text-foreground text-sm font-semibold h-11 px-3 rounded-md border border-border focus:border-ring outline-none"
                 >
                   {groups.map((g) => (
                     <optgroup key={g.id} label={g.label}>
@@ -434,12 +380,12 @@ function AdminPage() {
               </div>
 
               {/* Desktop sidebar */}
-              <aside className="hidden lg:block w-64 shrink-0">
-                <nav className="dash-card p-3 sticky top-[4.5rem] h-[calc(100vh-6rem)] overflow-y-auto space-y-5 [scrollbar-width:thin]">
+              <aside className="hidden lg:block w-60 shrink-0">
+                <nav aria-label={t("أقسام الإدارة", "Administration sections")} className="admin-side-nav sticky top-20 h-[calc(100vh-6rem)] overflow-y-auto space-y-5 [scrollbar-width:thin]">
 
                   {groups.map((g) => (
                     <div key={g.id} className="space-y-1.5">
-                      <p className="px-2 text-[10px] uppercase tracking-[0.14em] text-white/40 font-bold">
+                      <p className="px-2 text-[11px] text-muted-foreground font-bold">
                         {g.label}
                       </p>
                       <ul className="space-y-1">
@@ -448,30 +394,32 @@ function AdminPage() {
                           const active = tab === it.id;
                           return (
                             <li key={it.id}>
-                              <button
-                                onClick={() => setTab(it.id as any)}
-                                className={`w-full group flex items-center gap-2.5 px-3 h-10 rounded-xl text-[13px] font-semibold transition text-start ${
+                              <Button
+                                type="button" variant="ghost"
+                                onClick={() => setTab(it.id)}
+                                aria-current={active ? "page" : undefined}
+                                className={`w-full group flex items-center justify-start gap-2.5 px-3 h-10 rounded-md text-[13px] font-semibold transition text-start ${
                                   active
-                                    ? "bg-gradient-to-b from-[var(--gold)] to-[#c89a3a] text-[#0b1736] shadow-[0_8px_24px_-10px_rgba(212,175,55,0.6)]"
-                                    : "text-white/70 hover:text-white hover:bg-white/5"
+                                    ? "bg-secondary text-foreground border-s-2 border-accent"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/70"
                                 }`}
                               >
                                 <Icon
-                                  className={`w-4 h-4 shrink-0 ${active ? "text-[#0b1736]" : "text-white/50 group-hover:text-white/80"}`}
+                                  className={`w-4 h-4 shrink-0 ${active ? "text-accent" : "text-muted-foreground"}`}
                                 />
                                 <span className="flex-1 truncate">{it.label}</span>
                                 {it.badge ? (
                                   <span
                                     className={`min-w-[22px] text-center text-[10px] font-bold px-1.5 h-5 leading-5 rounded-md ${
                                       active
-                                        ? "bg-[#0b1736]/20 text-[#0b1736]"
-                                        : "bg-white/10 text-white/80"
+                                        ? "bg-accent/20 text-foreground"
+                                        : "bg-secondary text-muted-foreground"
                                     }`}
                                   >
                                     {it.badge}
                                   </span>
                                 ) : null}
-                              </button>
+                              </Button>
                             </li>
                           );
                         })}
@@ -483,7 +431,16 @@ function AdminPage() {
 
               {/* Main content */}
               <div className="flex-1 min-w-0 space-y-6">
-                {tab === "activations" ? (
+                {tab !== "overview" && <div className="border-b border-border pb-4"><h1 className="text-xl font-bold text-foreground">{groups.flatMap((g) => g.items).find((item) => item.id === tab)?.label}</h1></div>}
+                <AdminToolbar
+                  enrollments={enrollments}
+                  courses={courses}
+                  onTrainee={setTraineeId}
+                  onCourse={(id) => { setTab("courses"); setEditingCourseId(id); }}
+                />
+                {tab === "overview" ? (
+                  <ExecutiveOverview pendingEnrollments={pending} pendingActivations={pendingActivations} approved={approved} courses={courses.length} onNavigate={setTab} />
+                ) : tab === "activations" ? (
                   <ActivationsPanel />
                 ) : tab === "enrollments" ? (
                   <EnrollmentsTable
@@ -566,60 +523,11 @@ function AdminPage() {
   );
 }
 
-function StatCard({
-  icon: Icon,
-  label,
-  value,
-  color,
-}: {
-  icon: any;
-  label: string;
-  value: number;
-  color: string;
-}) {
-  const tone: Record<string, { text: string; ring: string; glow: string }> = {
-    amber: {
-      text: "text-amber-300",
-      ring: "bg-amber-300/10 border-amber-300/30",
-      glow: "from-amber-400/20",
-    },
-    emerald: {
-      text: "text-emerald-300",
-      ring: "bg-emerald-300/10 border-emerald-300/30",
-      glow: "from-emerald-400/20",
-    },
-    gold: {
-      text: "text-[var(--gold)]",
-      ring: "bg-[var(--gold)]/10 border-[var(--gold)]/30",
-      glow: "from-[var(--gold)]/25",
-    },
-    lavender: {
-      text: "text-[var(--lavender)]",
-      ring: "bg-[var(--lavender)]/10 border-[var(--lavender)]/30",
-      glow: "from-[var(--lavender)]/20",
-    },
-  };
-  const c = tone[color] ?? tone.gold;
-  return (
-    <div className="dash-card dash-card-hover relative overflow-hidden p-5">
-      <div
-        className={`pointer-events-none absolute -top-12 -end-12 w-32 h-32 rounded-full bg-gradient-to-br ${c.glow} to-transparent blur-2xl`}
-      />
-      <div className="relative flex items-start justify-between gap-3">
-        <div>
-          <p className="text-[11px] uppercase tracking-wider text-white/55 font-semibold">
-            {label}
-          </p>
-          <p className="text-3xl font-bold mt-2 leading-none">{value}</p>
-        </div>
-        <div
-          className={`w-11 h-11 rounded-2xl border ${c.ring} flex items-center justify-center shrink-0`}
-        >
-          <Icon className={`w-5 h-5 ${c.text}`} />
-        </div>
-      </div>
-    </div>
-  );
+function StatCard({ icon: Icon, label, value }: { icon: typeof Users; label: string; value: number; color?: string }) {
+  return <div className="dash-card flex items-center justify-between gap-4 p-4">
+    <div><p className="text-xs text-muted-foreground">{label}</p><p className="mt-2 text-2xl font-bold text-foreground tabular-nums">{value.toLocaleString()}</p></div>
+    <Icon className="size-5 text-accent" />
+  </div>;
 }
 
 function EnrollmentsTable({
@@ -805,29 +713,24 @@ function EnrollmentsTable({
                             )}
                           </td>
                           <td className="px-4 py-3">
-                            <div className="flex gap-1.5 flex-wrap">
+                            <div className="flex items-center gap-1.5 whitespace-nowrap">
                               {en.status === "pending" && (
                                 <>
-                                  <button
+                                  <Button size="sm" variant="secondary" title={t("قبول الطلب", "Approve request")}
                                     onClick={() => setStatus(en.id, "approved")}
-                                    className="text-xs px-2.5 h-8 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30"
+                                    className="h-8 px-2.5"
                                   >
-                                    {t("قبول", "Approve")}
-                                  </button>
-                                  <button
-                                    onClick={() => setStatus(en.id, "rejected")}
-                                    className="text-xs px-2.5 h-8 rounded-lg bg-rose-500/20 text-rose-300 border border-rose-500/30 hover:bg-rose-500/30"
-                                  >
-                                    {t("رفض", "Reject")}
-                                  </button>
+                                    <Check className="size-3.5" /> {t("قبول", "Approve")}
+                                  </Button>
                                 </>
                               )}
-                              <button
+                              <Button size="sm" variant="outline"
                                 onClick={() => onOpen(en)}
-                                className="text-xs px-2.5 h-8 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold"
+                                className="h-8 px-2.5"
                               >
-                                {t("إدارة", "Manage")}
-                              </button>
+                                {t("التفاصيل", "Details")}
+                              </Button>
+                              {en.status === "pending" && <details className="relative group"><summary aria-label={t("مزيد من الإجراءات", "More actions")} title={t("مزيد من الإجراءات", "More actions")} className="flex size-8 cursor-pointer list-none items-center justify-center rounded-md border border-border text-muted-foreground hover:bg-secondary [&::-webkit-details-marker]:hidden"><MoreHorizontal className="size-4" /></summary><div className="absolute end-0 top-full z-20 mt-1 min-w-28 rounded-md border border-border bg-popover p-1 shadow-lg"><Button size="sm" variant="ghost" className="w-full justify-start text-destructive" onClick={(event) => { event.currentTarget.closest("details")?.removeAttribute("open"); void setStatus(en.id, "rejected"); }}>{t("رفض الطلب", "Reject request")}</Button></div></details>}
                             </div>
                           </td>
                         </tr>
@@ -1149,17 +1052,16 @@ function CoursesPanel({
                       )}
                     </div>
                   </div>
-                  <div className="flex flex-col gap-1">
-                    <button
+                   <div className="flex shrink-0 items-center gap-1">
+                     <Button size="sm" variant="outline"
                       onClick={() => onEdit(c)}
-                      className="flex items-center gap-1.5 text-xs px-3 h-9 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold"
                     >
-                      <Settings2 className="w-3.5 h-3.5" /> {t("إدارة المحتوى", "Manage content")}
-                    </button>
-                    <div className="flex gap-1 justify-end">
-                      <button
+                       <Pencil className="w-3.5 h-3.5" /> {t("تعديل", "Edit")}
+                     </Button>
+                     <div className="flex gap-1 justify-end">
+                       <Button size="icon" variant="ghost"
                         onClick={() => toggleActive(c)}
-                        className="p-2 rounded-lg hover:bg-white/5"
+                        aria-label={c.active ? t("إيقاف", "Disable") : t("تفعيل", "Enable")}
                         title={c.active ? t("إيقاف", "Disable") : t("تفعيل", "Enable")}
                       >
                         {c.active ? (
@@ -1167,23 +1069,21 @@ function CoursesPanel({
                         ) : (
                           <ToggleLeft className="w-5 h-5 text-white/40" />
                         )}
-                      </button>
-                      <button
+                       </Button>
+                       <details className="relative group"><summary aria-label={t("مزيد من الإجراءات", "More actions")} title={t("مزيد من الإجراءات", "More actions")} className="flex size-9 cursor-pointer list-none items-center justify-center rounded-md text-muted-foreground hover:bg-secondary [&::-webkit-details-marker]:hidden"><MoreHorizontal className="size-4" /></summary><div className="absolute end-0 top-full z-20 min-w-36 rounded-md border border-border bg-popover p-1 shadow-lg"><Button size="sm" variant="ghost" className="w-full justify-start" 
                         onClick={() => del(c.id, Boolean((c as any).is_archived))}
-                        className="p-2 rounded-lg hover:bg-rose-500/10 text-rose-300"
                         title={
                           (c as any).is_archived ? t("استعادة", "Restore") : t("أرشفة", "Archive")
                         }
                       >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                      <button
+                         <Archive className="w-4 h-4" /> {(c as any).is_archived ? t("استعادة", "Restore") : t("أرشفة", "Archive")}
+                       </Button>
+                       <Button size="sm" variant="ghost" className="w-full justify-start text-destructive"
                         onClick={() => deleteCourseForever(c.id, c.title)}
-                        className="p-2 rounded-lg hover:bg-red-500/10 text-red-300"
                         title={t("حذف نهائي", "Delete forever")}
                       >
-                        <X className="w-4 h-4" />
-                      </button>
+                         <Trash2 className="w-4 h-4" /> {t("حذف نهائي", "Delete forever")}
+                       </Button></div></details>
                     </div>
                   </div>
                 </div>

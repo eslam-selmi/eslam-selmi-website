@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Search, Download, User, BookOpen, X } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { Button } from "@/components/ui/button";
 
 type Prof = { full_name?: string | null; email?: string | null; phone?: string | null; country?: string | null } | null;
 export type ToolbarEnrollment = {
@@ -90,9 +91,9 @@ export function AdminToolbar({
           className="w-full h-11 ps-9 pe-9 rounded-xl bg-white/5 border border-white/10 focus:border-[var(--gold)] outline-none text-sm text-white placeholder:text-white/40"
         />
         {q && (
-          <button onClick={() => setQ("")} className="absolute top-1/2 -translate-y-1/2 end-3 text-white/40 hover:text-white" aria-label="clear">
+          <Button type="button" size="icon" variant="ghost" onClick={() => setQ("")} className="absolute top-1/2 -translate-y-1/2 end-1 h-9 w-9 text-muted-foreground" aria-label={t("مسح البحث", "Clear search")}>
             <X className="w-4 h-4" />
-          </button>
+          </Button>
         )}
         {open && q.trim().length >= 2 && (
           <div className="absolute z-40 mt-2 w-full rounded-xl border border-white/10 bg-[#0e1d44] shadow-2xl overflow-hidden max-h-96 overflow-y-auto">
@@ -125,13 +126,13 @@ export function AdminToolbar({
           </div>
         )}
       </div>
-      <button
+      <Button type="button" variant="outline"
         onClick={() => exportEnrollmentsCsv(enrollments)}
-        className="h-11 px-4 rounded-xl border border-[var(--gold)]/40 text-[var(--gold)] hover:bg-[var(--gold)]/10 text-sm font-semibold inline-flex items-center justify-center gap-2"
+        className="h-11 px-4 rounded-md border-border text-foreground text-sm font-semibold inline-flex items-center justify-center gap-2"
       >
         <Download className="w-4 h-4" />
         {t("تصدير CSV", "Export CSV")}
-      </button>
+      </Button>
     </div>
   );
 }

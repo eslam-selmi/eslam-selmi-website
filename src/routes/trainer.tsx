@@ -14,6 +14,11 @@ export const Route = createFileRoute("/trainer")({
   head: () => ({
     meta: [
       { title: "لوحة المدرّب · إسلام سلمي" },
+      { name: "description", content: "إدارة الدورات والمتدربين من لوحة المدرّب." },
+      { property: "og:title", content: "لوحة المدرّب · إسلام سلمي" },
+      { property: "og:description", content: "إدارة الدورات والمتدربين من لوحة المدرّب." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
     ],
   }),
