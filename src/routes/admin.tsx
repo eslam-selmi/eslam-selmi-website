@@ -59,6 +59,7 @@ import { TrainingsPanel } from "@/components/admin/TrainingsPanel";
 import { AdminToolbar } from "@/components/admin/AdminToolbar";
 import { TraineeDrawer } from "@/components/admin/TraineeDrawer";
 import { ExecutiveOverview } from "@/components/admin/ExecutiveOverview";
+import { CourseFeedbackPanel } from "@/components/admin/CourseFeedbackPanel";
 import { Button } from "@/components/ui/button";
 
 
@@ -73,6 +74,7 @@ type AdminSearch = {
     | "activations"
     | "finance"
     | "methods"
+    | "feedback"
     | "tickets"
     | "site"
     | "leads"
@@ -175,6 +177,7 @@ function AdminPage() {
     | "activations"
     | "finance"
     | "methods"
+    | "feedback"
     | "tickets"
     | "site"
     | "leads"
@@ -318,6 +321,7 @@ function AdminPage() {
                 { id: "enrollments", label: t("طلبات وانضمامات", "Enrollments"), icon: Users, badge: pending || undefined },
                 { id: "courses", label: t("الكورسات", "Courses"), icon: BookOpen },
                 { id: "trainings", label: t("التدريبات", "Trainings"), icon: Layers },
+                { id: "feedback", label: t("تقييمات الكورسات", "Course feedback"), icon: Star },
                 { id: "banned", label: t("الموقوفون", "Banned"), icon: Archive, badge: enrollments.filter((e) => e.profiles?.account_blocked).length || undefined },
               ],
             },
@@ -482,6 +486,8 @@ function AdminPage() {
                   <SiteManagementPanel />
                 ) : tab === "leads" ? (
                   <CourseLeadsPanel />
+                ) : tab === "feedback" ? (
+                  <CourseFeedbackPanel courses={courses} />
                 ) : tab === "tickets" ? (
                   user ? (
                     <AdminSupportPanel adminUserId={user.id} />
