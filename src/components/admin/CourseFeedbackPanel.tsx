@@ -10,7 +10,8 @@ type CourseLite = { id: string; title: string };
 const avg = (xs: number[]) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : 0);
 
 export function CourseFeedbackPanel({ courses }: { courses: CourseLite[] }) {
-  const { t } = useI18n();
+  const { lang } = useI18n();
+  const t = (ar: string, en: string) => (lang === "ar" ? ar : en);
   const [rows, setRows] = useState<Row[]>([]);
   const [names, setNames] = useState<Record<string, string>>({});
   const [courseId, setCourseId] = useState<string>("all");
