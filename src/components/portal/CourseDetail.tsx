@@ -19,6 +19,7 @@ import { AccountSettingsModal } from "@/components/AccountSettingsModal";
 import type { Course, Enrollment, Profile, ModuleRow } from "./types";
 import { AssignmentsSection } from "./Assignments";
 import { CertificatePanel } from "./CertificatePanel";
+import { CourseFeedbackForm } from "./CourseFeedbackForm";
 import { ProofUploader } from "./ProofUploader";
 import { ModuleNotes } from "./ModuleNotes";
 import { downloadSessionIcs } from "./ics";
@@ -284,6 +285,10 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
           onDownloadCert={onDownloadCert}
           onRefresh={onRefresh}
         />
+        {enrollment.status === "approved" && (modules.length === 0 || completedCount > 0) && (
+          <CourseFeedbackForm courseId={c.id} userId={enrollment.user_id} />
+        )}
+
       </section>
     </div>
   );

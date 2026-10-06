@@ -464,6 +464,56 @@ export type Database = {
         }
         Relationships: []
       }
+      course_feedback: {
+        Row: {
+          comments: string | null
+          content_rating: number
+          course_id: string
+          created_at: string
+          expectations_rating: number
+          id: string
+          pace: string
+          trainer_rating: number
+          updated_at: string
+          user_id: string
+          would_recommend: boolean
+        }
+        Insert: {
+          comments?: string | null
+          content_rating: number
+          course_id: string
+          created_at?: string
+          expectations_rating: number
+          id?: string
+          pace: string
+          trainer_rating: number
+          updated_at?: string
+          user_id: string
+          would_recommend: boolean
+        }
+        Update: {
+          comments?: string | null
+          content_rating?: number
+          course_id?: string
+          created_at?: string
+          expectations_rating?: number
+          id?: string
+          pace?: string
+          trainer_rating?: number
+          updated_at?: string
+          user_id?: string
+          would_recommend?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_feedback_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       course_interests: {
         Row: {
           admin_notes: string | null
