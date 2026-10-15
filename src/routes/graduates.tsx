@@ -6,7 +6,7 @@ import {
   WhatsAppFloat, AskSelmiFloat,
   CalendlyDialog,
   
-} from "./index";
+} from "@/components/home";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/graduates")({
