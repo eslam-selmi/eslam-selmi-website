@@ -7,5 +7,5 @@
 
 # Restore missing public homepage content
 
-- [ ] Correct visitor reads for active partners, career journey and published interviews without changing admin permissions.
-- [ ] Verify homepage sections as a signed-out visitor on desktop/mobile and both languages; add access regression checks.
+- [x] Correct visitor reads for active partners, career journey, published interviews, snapshots and trainings without changing admin permissions.
+- [x] Verify homepage sections as a signed-out visitor on desktop/mobile and both languages; add access regression checks (5 passing integration tests).
