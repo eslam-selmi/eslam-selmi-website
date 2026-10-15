@@ -1,5 +1,6 @@
 import { BookingDialog } from "@/components/booking/BookingDialog";
 import { TraineeReviews } from "@/components/TraineeReviews";
+import { TextEditLayer } from "@/components/home/TextEditLayer";
 import { createFileRoute, Link, useRouterState } from "@tanstack/react-router";
 import { motion, AnimatePresence, useScroll, useTransform, MotionConfig } from "motion/react";
 import { useEffect, useRef, useState } from "react";
@@ -207,6 +208,7 @@ function Portfolio() {
 
   return (
     <MotionConfig reducedMotion={isMobile ? "always" : "never"}>
+    <TextEditLayer>
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-accent/25">
       <Nav theme={theme as ThemeMode} onThemeToggle={toggle} />
       {isVisible("home.hero") && <Hero />}
@@ -240,6 +242,7 @@ function Portfolio() {
       <CalendlyDialog />
       
     </div>
+    </TextEditLayer>
     </MotionConfig>
   );
 }

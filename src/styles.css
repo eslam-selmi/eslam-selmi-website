@@ -675,3 +675,5 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 :root:not(.dark) .admin-shell .admin-workspace textarea { background-color: oklch(1 0 0 / 0.7); }
 :root:not(.dark) .admin-shell .admin-workspace select option { background: oklch(1 0 0); }
 :root:not(.dark) .admin-shell [role="tablist"] { background: oklch(1 0 0 / 0.55); }
+.text-edit-mode *:hover { outline: 1px dashed var(--accent); outline-offset: 2px; cursor: text; }
+.text-edit-mode [data-text-edit-ui] *:hover { outline: none; cursor: pointer; }
