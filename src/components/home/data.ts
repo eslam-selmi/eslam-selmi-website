@@ -101,7 +101,6 @@ import snap12Asset from "@/assets/snapshots/snap-12.jpg.asset.json";
 import snap13Asset from "@/assets/snapshots/snap-13.jpg.asset.json";
 import snap15Asset from "@/assets/snapshots/snap-15.jpg.asset.json";
 import snap16Asset from "@/assets/snapshots/snap-16.jpg.asset.json";
-import { Programs } from "@/components/home/AboutSections";
 
 export const headshot = headshotAsset.url;
 
