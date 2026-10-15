@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/portal-auth";
 import { PortalShell } from "@/components/PortalShell";
 import { toast } from "sonner";
 import { generateCertificatePdf } from "@/lib/certificate";
+import { readCertificateSettings } from "@/lib/certificate-settings";
 import { useI18n } from "@/lib/i18n";
 import {
   Plus,
@@ -180,6 +181,7 @@ export function EnrollmentDrawer({
         certificateId: enrollment.id,
         courseLogoUrl: (course as any).logo_url ?? null,
         courseBrandName: (course as any).brand_name ?? null,
+        settings: readCertificateSettings((await supabase.from("courses").select("certificate_settings").eq("id", enrollment.course_id).maybeSingle()).data?.certificate_settings),
       };
       // Sequential to avoid concurrent DOM/font contention (was causing EN failures)
       const pdfAr = await generateCertificatePdf({ ...common, lang: "ar", studentName: nameAr });
