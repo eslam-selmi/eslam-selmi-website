@@ -110,6 +110,7 @@ export function Nav({
   onThemeToggle,
 }: { theme?: ThemeMode; onThemeToggle?: () => void } = {}) {
   const { t, lang, setLang } = useI18n();
+  const { links } = useSiteProfile();
   const { theme: ctxTheme, toggle: ctxToggle } = useTheme();
   const { isVisible } = useSiteContent();
   const [open, setOpen] = useState(false);
@@ -237,7 +238,7 @@ export function Nav({
               </motion.div>
             </button>
             <a
-              href={LINKEDIN}
+              href={links.linkedin}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn"

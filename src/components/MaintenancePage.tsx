@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { KeyRound } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { useSiteProfile } from "@/lib/site-profile";
 import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
 const brandLogo = brandLogoAsset.url;
 type Props = {
@@ -23,6 +24,7 @@ function diff(target: number) {
 
 export function MaintenancePage({ message, until }: Props) {
   const { lang } = useI18n();
+  const { profile } = useSiteProfile();
   const t = (a: string, b: string) => (lang === "ar" ? a : b);
   const target = useMemo(() => (until ? new Date(until).getTime() : null), [until]);
   const [tick, setTick] = useState(() => (target ? diff(target) : null));
@@ -185,7 +187,7 @@ export function MaintenancePage({ message, until }: Props) {
 
           {/* Footer */}
           <div className="mt-8 pt-6 border-t border-white/10 text-[11px] text-white/40">
-            © {new Date().getFullYear()} Eslam Selmi · {t("شكراً لصبركم", "Thank you for your patience")}
+            {(lang === "ar" ? profile.footer_ar : profile.footer_en) || `© ${new Date().getFullYear()} Eslam Selmi · ${t("شكراً لصبركم", "Thank you for your patience")}`}
           </div>
         </div>
       </div>

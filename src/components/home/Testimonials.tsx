@@ -102,6 +102,7 @@ import snap13Asset from "@/assets/snapshots/snap-13.jpg.asset.json";
 import snap15Asset from "@/assets/snapshots/snap-15.jpg.asset.json";
 import snap16Asset from "@/assets/snapshots/snap-16.jpg.asset.json";
 import { TestimonialRow, WHATSAPP, fadeUp, openCalendly } from "@/components/home/data";
+import { useSiteProfile } from "@/lib/site-profile";
 import { Section } from "@/components/home/shared";
 
 export function Testimonials() {
@@ -288,6 +289,7 @@ export function TestimonialsScroller({ items, isAr }: { items: TestimonialRow[];
 
 export function BookCTA() {
   const { t } = useI18n();
+  const { links } = useSiteProfile();
   const steps = [
     { i: Target, t: t("book_step_1_t"), d: t("book_step_1_d") },
     { i: Lightbulb, t: t("book_step_2_t"), d: t("book_step_2_d") },
@@ -329,7 +331,7 @@ export function BookCTA() {
                 <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
               </button>
               <a
-                href={WHATSAPP}
+                href={links.whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 text-white px-6 py-3.5 text-sm font-bold hover:bg-white/20 transition"
