@@ -1,3 +1,4 @@
+import type { Tables } from "@/integrations/supabase/types";
 import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -62,22 +63,10 @@ import { CourseFeedbackPanel } from "@/components/admin/CourseFeedbackPanel";
 import { Button } from "@/components/ui/button";
 
 
-export type Course = {
-  id: string;
-  title: string;
-  description: string | null;
-  price: number | null;
-  currency: string;
-  active: boolean;
-  starts_at: string | null;
-  ends_at: string | null;
-  installments_count: number;
-  online_url: string | null;
-  cover_emoji: string | null;
-  total_hours: number | null;
-  course_goals?: string | null;
-  target_audience?: string | null;
-};
+export type Course = Pick<Tables<"courses">,
+  "id" | "title" | "description" | "price" | "currency" | "active" | "starts_at" | "ends_at" |
+  "installments_count" | "online_url" | "cover_emoji"
+> & { total_hours: number | null; course_goals?: string | null; target_audience?: string | null };
 
 export type EnrollmentRow = {
   id: string;
