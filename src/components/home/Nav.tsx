@@ -102,6 +102,7 @@ import snap13Asset from "@/assets/snapshots/snap-13.jpg.asset.json";
 import snap15Asset from "@/assets/snapshots/snap-15.jpg.asset.json";
 import snap16Asset from "@/assets/snapshots/snap-16.jpg.asset.json";
 import { LINKEDIN, NAV, NAV_FULL, ThemeMode, openCalendly } from "@/components/home/data";
+import { useSiteProfile } from "@/lib/site-profile";
 import { BrandMark } from "@/components/home/shared";
 
 export function Nav({
@@ -109,6 +110,7 @@ export function Nav({
   onThemeToggle,
 }: { theme?: ThemeMode; onThemeToggle?: () => void } = {}) {
   const { t, lang, setLang } = useI18n();
+  const { links } = useSiteProfile();
   const { theme: ctxTheme, toggle: ctxToggle } = useTheme();
   const { isVisible } = useSiteContent();
   const [open, setOpen] = useState(false);
@@ -236,7 +238,7 @@ export function Nav({
               </motion.div>
             </button>
             <a
-              href={LINKEDIN}
+              href={links.linkedin}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn"

@@ -104,6 +104,7 @@ import snap16Asset from "@/assets/snapshots/snap-16.jpg.asset.json";
 import { Programs } from "@/components/home/AboutSections";
 import { LINKEDIN, fadeUp } from "@/components/home/data";
 import { CompactStat, Section } from "@/components/home/shared";
+import { useSiteProfile } from "@/lib/site-profile";
 
 export function LeadForm() {
   const { t, lang } = useI18n();
@@ -200,6 +201,7 @@ export function LeadForm() {
 
 export function Contact() {
   const { t } = useI18n();
+  const { profile, links } = useSiteProfile();
   return (
     <Section id="contact" eyebrow={t("contact_eyebrow")} title={t("contact_title")}>
       <div className="grid gap-5 sm:grid-cols-2 max-w-3xl mx-auto">
@@ -216,9 +218,9 @@ export function Contact() {
                 alt="Saudi Arabia"
                 className="rounded-[3px] ring-1 ring-foreground/15 shadow-sm shrink-0"
               />
-              <span dir="ltr">+966 555 376 228</span>
+              <span dir="ltr">{profile.phone}</span>
             </span>,
-            <span key="eg" className="inline-flex items-center gap-2.5">
+            profile.secondary_phone ? <span key="eg" className="inline-flex items-center gap-2.5">
               <img
                 src="https://flagcdn.com/w40/eg.png"
                 srcSet="https://flagcdn.com/w80/eg.png 2x"
@@ -227,16 +229,16 @@ export function Contact() {
                 alt="Egypt"
                 className="rounded-[3px] ring-1 ring-foreground/15 shadow-sm shrink-0"
               />
-              <span dir="ltr">+20 10 9727 9900</span>
-            </span>,
+              <span dir="ltr">{profile.secondary_phone}</span>
+            </span> : null,
           ]}
-          href="tel:+966555376228"
+          href={links.phone}
         />
         <ContactCard
           icon={Linkedin}
           label={t("contact_linkedin")}
           lines={[t("contact_linkedin_line")]}
-          href={LINKEDIN}
+          href={links.linkedin}
         />
       </div>
     </Section>

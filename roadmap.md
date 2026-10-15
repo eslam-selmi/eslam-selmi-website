@@ -1,8 +1,5 @@
-# Administration and bilingual certificates
+# Public site profile settings
 
-- [x] Redesign administration for comfortable daily work in the site's identity.
-- [x] Fix the administration logo and website navigation; verified destination `/`.
-- [x] Replace both certificate designs and repair English PDF rendering; Arabic and repeated English exports verified.
-- [x] Verify final sidebar contrast, navigation, course tab and mobile layout.
-
-Existing trainee certificates have not been regenerated. Record updates and storage read-back were not exercised; verification covered PDF creation without changing trainee records.
+- [x] Add administration controls for portrait, contact phone/email/LinkedIn and arbitrary bilingual footer text.
+- [x] Wire shared public pages and contact actions to saved settings without changing login identity.
+- [x] Verify saving and reading settings through the public pages and image upload; restored original settings after temporary checks.

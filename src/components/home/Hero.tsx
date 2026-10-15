@@ -103,8 +103,10 @@ import snap15Asset from "@/assets/snapshots/snap-15.jpg.asset.json";
 import snap16Asset from "@/assets/snapshots/snap-16.jpg.asset.json";
 import { Podcast } from "@/components/home/Media";
 import { LINKEDIN, WHATSAPP, headshot, openCalendly } from "@/components/home/data";
+import { useSiteProfile } from "@/lib/site-profile";
 
 export function Hero() {
+  const { profile, links } = useSiteProfile();
   const { t, lang } = useI18n();
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
@@ -227,7 +229,7 @@ export function Hero() {
               <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
             </button>
             <a
-              href={WHATSAPP}
+              href={links.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-xl border border-foreground/15 bg-card px-7 py-4 text-sm font-bold text-foreground hover:border-foreground/30 hover:bg-foreground/[0.03] transition"
@@ -259,7 +261,7 @@ export function Hero() {
             className="flex items-center gap-3 pt-3"
           >
             <a
-              href={LINKEDIN}
+              href={links.linkedin}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn"
@@ -268,7 +270,7 @@ export function Hero() {
               <Linkedin className="size-4" />
             </a>
             <a
-              href={WHATSAPP}
+              href={links.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="WhatsApp"
@@ -277,7 +279,7 @@ export function Hero() {
               <MessageCircle className="size-4" />
             </a>
             <a
-              href="mailto:eslam.selmi@example.com"
+              href={links.email}
               aria-label="Email"
               className="size-10 rounded-full border border-foreground/15 grid place-items-center text-foreground/70 hover:text-foreground hover:border-foreground/30 transition"
             >
@@ -319,7 +321,7 @@ export function Hero() {
             >
               <div className="relative aspect-[4/5] w-full">
                 <img
-                  src={headshot}
+                  src={profile.portrait}
                   alt="Eslam Selmi"
                   width={1024}
                   height={1024}

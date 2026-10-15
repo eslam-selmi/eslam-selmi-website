@@ -103,9 +103,11 @@ import snap15Asset from "@/assets/snapshots/snap-15.jpg.asset.json";
 import snap16Asset from "@/assets/snapshots/snap-16.jpg.asset.json";
 import { LINKEDIN, WHATSAPP } from "@/components/home/data";
 import { BrandMark } from "@/components/home/shared";
+import { useSiteProfile } from "@/lib/site-profile";
 
 export function Footer() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
+  const { profile, links } = useSiteProfile();
   return (
     <footer className="border-t border-foreground/10 mt-10 bg-foreground/[0.025] backdrop-blur-xl">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -117,7 +119,7 @@ export function Footer() {
         </div>
         <div className="flex items-center gap-3">
           <a
-            href={LINKEDIN}
+            href={links.linkedin}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn"
@@ -126,14 +128,14 @@ export function Footer() {
             <Linkedin className="size-4" />
           </a>
           <a
-            href="mailto:eslam.m.selmi@gmail.com"
+            href={links.email}
             aria-label="Email"
             className="size-9 grid place-items-center rounded-full border border-foreground/15 hover:bg-foreground/5 transition"
           >
             <Mail className="size-4" />
           </a>
           <a
-            href={WHATSAPP}
+            href={links.whatsapp}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="WhatsApp"
@@ -143,7 +145,7 @@ export function Footer() {
           </a>
         </div>
         <div className="text-xs text-muted-foreground">
-          © {new Date().getFullYear()} · {t("footer_rights")}
+          {(lang === "ar" ? profile.footer_ar : profile.footer_en) || `© ${new Date().getFullYear()} · ${t("footer_rights")}`}
         </div>
       </div>
     </footer>

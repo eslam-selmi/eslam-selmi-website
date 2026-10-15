@@ -8,3 +8,4 @@
 - Homepage text edits are stored as per-language overrides keyed by the original text in site_content `home.text_overrides` and applied to rendered text by `TextEditLayer`; this lets the admin change any text without wiring each string.
 
 - Arabic and English certificates share a fixed-size document in `components/certificates`; the export utility embeds local fonts and media before capture to eliminate network/font races.
+- Public portrait, contact links and footer copy come from `site_content` under `site.profile` through a shared query-backed hook; keeping them separate from auth identity prevents website edits from changing login credentials.

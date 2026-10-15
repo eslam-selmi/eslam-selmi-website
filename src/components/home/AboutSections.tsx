@@ -104,6 +104,7 @@ import snap16Asset from "@/assets/snapshots/snap-16.jpg.asset.json";
 import { Footer } from "@/components/home/Footer";
 import { JOURNEY, JourneyItem, PILLARS, PROGRAMS, SERVICES, fadeUp, waServiceLink } from "@/components/home/data";
 import { Section } from "@/components/home/shared";
+import { useSiteProfile } from "@/lib/site-profile";
 
 export function Pillars() {
   const { t } = useI18n();
@@ -241,6 +242,7 @@ export function Journey() {
 
 export function Services() {
   const { t, lang } = useI18n();
+  const { links } = useSiteProfile();
   return (
     <Section id="services" eyebrow={t("services_eyebrow")} title={t("services_title")}>
       <p className="-mt-6 mb-10 text-center text-base text-muted-foreground max-w-2xl mx-auto">
@@ -261,7 +263,7 @@ export function Services() {
             <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.desc[lang]}</p>
             <div className="mt-auto pt-5">
               <a
-                href={waServiceLink(s.title.en, lang)}
+                href={`${links.whatsapp}?text=${encodeURIComponent(lang === "ar" ? `مرحبًا إسلام، أرغب في طلب خدمة: ${s.title.ar}. هل يمكننا التحدث؟` : `Hi Eslam, I'd like to request the "${s.title.en}" service. Can we chat?`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group/btn relative inline-flex w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold overflow-hidden transition-all duration-300 hover:translate-y-[-1px]"
