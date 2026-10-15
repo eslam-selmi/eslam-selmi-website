@@ -7,6 +7,28 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { useRouterState } from "@tanstack/react-router";
+import { translateTexts } from "@/lib/translate.functions";
+
+const PRIVATE = ["/admin", "/portal", "/trainer", "/account", "/auth", "/onboarding", "/verify"];
+
+/** Path of child indexes from root to a text node, so the same spot can be found after a language switch. */
+function nodePath(root: Node, n: Node): number[] | null {
+  const path: number[] = [];
+  let cur: Node | null = n;
+  while (cur && cur !== root) {
+    const p: Node | null = cur.parentNode;
+    if (!p) return null;
+    path.unshift(Array.prototype.indexOf.call(p.childNodes, cur));
+    cur = p;
+  }
+  return cur === root ? path : null;
+}
+function nodeAt(root: Node, path: number[]): Node | null {
+  let cur: Node | null = root;
+  for (const i of path) { cur = cur?.childNodes[i] ?? null; if (!cur) return null; }
+  return cur;
+}
 
 const KEY = "home.text_overrides";
 type Overrides = { ar: Record<string, string>; en: Record<string, string> };
@@ -16,15 +38,22 @@ type Overrides = { ar: Record<string, string>; en: Record<string, string> };
  * original text per language and applied to rendered text nodes (re-applied on re-render).
  */
 export function TextEditLayer({ children }: { children: ReactNode }) {
+  const pathname = useRouterState({ select: (st) => st.location.pathname });
+  if (PRIVATE.some((p) => pathname.startsWith(p))) return <>{children}</>;
+  return <TextEditInner>{children}</TextEditInner>;
+}
+
+function TextEditInner({ children }: { children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
-  const { lang } = useI18n();
+  const { lang, setLang } = useI18n();
   const { get } = useSiteContent();
   const overrides = get<Overrides>(KEY, { ar: {}, en: {} });
   const map: Record<string, string> = (overrides[lang as "ar" | "en"] as Record<string, string>) || {};
   const originals = useRef(new WeakMap<Text, string>());
   const [isAdmin, setIsAdmin] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [target, setTarget] = useState<{ original: string; value: string } | null>(null);
+  const [target, setTarget] = useState<{ original: string; value: string; path: number[] | null } | null>(null);
+  const [saving, setSaving] = useState(false);
   const [listOpen, setListOpen] = useState(false);
 
   useEffect(() => {
@@ -86,15 +115,15 @@ export function TextEditLayer({ children }: { children: ReactNode }) {
       e.preventDefault();
       e.stopPropagation();
       const original = (originals.current.get(textNode) ?? textNode.data).trim();
-      setTarget({ original, value: map[original] ?? original });
+      setTarget({ original, value: map[original] ?? original, path: nodePath(root, textNode) });
     };
     root.addEventListener("click", onClick, true);
     root.classList.add("text-edit-mode");
     return () => { root.removeEventListener("click", onClick, true); root.classList.remove("text-edit-mode"); };
   }, [editing, mapJson]);
 
-  const persist = async (next: Record<string, string>) => {
-    const content = { ...overrides, [lang]: next };
+  const persist = async (next: Record<string, string>, other?: { lang: "ar" | "en"; map: Record<string, string> }) => {
+    const content = { ...overrides, [lang]: next, ...(other ? { [other.lang]: other.map } : {}) };
     const { data: row } = await supabase.from("site_content").select("id").eq("section_key", KEY).maybeSingle();
     const res = row
       ? await supabase.from("site_content").update({ content }).eq("id", row.id)
@@ -104,17 +133,45 @@ export function TextEditLayer({ children }: { children: ReactNode }) {
     toast.success(lang === "ar" ? "تم الحفظ" : "Saved");
   };
 
+  const ar = lang === "ar";
   const save = async () => {
     if (!target) return;
     const next = { ...map };
     const v = target.value.trim();
     if (!v || v === target.original) delete next[target.original];
     else next[target.original] = v;
-    await persist(next);
-    setTarget(null);
+    setSaving(true);
+    try {
+      // Find the same text in the other language by switching briefly, then auto-translate.
+      const otherLang: "ar" | "en" = lang === "ar" ? "en" : "ar";
+      let other: { lang: "ar" | "en"; map: Record<string, string> } | undefined;
+      const root = ref.current;
+      if (root && target.path) {
+        setLang(otherLang);
+        await new Promise((r) => setTimeout(r, 400));
+        const n = nodeAt(root, target.path);
+        const otherOrig = n && n.nodeType === 3 ? (originals.current.get(n as Text) ?? (n as Text).data).trim() : "";
+        setLang(lang);
+        await new Promise((r) => setTimeout(r, 100));
+        if (otherOrig && otherOrig !== target.original) {
+          const otherMap = { ...((overrides[otherLang] as Record<string, string>) || {}) };
+          if (!v || v === target.original) delete otherMap[otherOrig];
+          else {
+            const res = await translateTexts({ data: { texts: [v], target: otherLang } }).catch(() => null);
+            const tr = res?.translations?.[0];
+            if (tr && !res?.error) otherMap[otherOrig] = tr;
+          }
+          other = { lang: otherLang, map: otherMap };
+        }
+      }
+      await persist(next, other);
+      if (!other) toast.message(ar ? "لم يتم العثور على النص المقابل في اللغة الأخرى" : "Matching text in the other language not found");
+    } finally {
+      setSaving(false);
+      setTarget(null);
+    }
   };
 
-  const ar = lang === "ar";
   const entries = Object.entries(map);
 
   return (
@@ -140,13 +197,13 @@ export function TextEditLayer({ children }: { children: ReactNode }) {
           <p className="text-xs text-muted-foreground">{ar ? "النص الأصلي:" : "Original:"} {target?.original}</p>
           <Textarea rows={4} value={target?.value ?? ""} onChange={(e) => setTarget((t) => t && { ...t, value: e.target.value })} />
           <p className="text-xs text-muted-foreground">
-            {ar ? "التعديل يخص اللغة الحالية فقط. غيّر اللغة لتعديل النسخة الأخرى." : "Applies to the current language only."}
+            {ar ? "سيتم ترجمة التعديل تلقائياً للغة الأخرى." : "The edit is auto-translated to the other language."}
           </p>
           <div className="flex justify-between gap-2">
             <Button variant="outline" onClick={() => target && setTarget({ ...target, value: target.original })}>
               <RotateCcw className="size-4" /> {ar ? "استرجاع الأصلي" : "Restore original"}
             </Button>
-            <Button onClick={save}><Save className="size-4" /> {ar ? "حفظ" : "Save"}</Button>
+            <Button onClick={save} disabled={saving}><Save className="size-4" /> {ar ? "حفظ" : "Save"}</Button>
           </div>
         </DialogContent>
       </Dialog>

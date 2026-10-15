@@ -17,6 +17,7 @@ import { MotionConfig } from "motion/react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { MaintenanceGate } from "@/components/MaintenanceGate";
 import { SitePopup } from "@/components/SitePopup";
+import { TextEditLayer } from "@/components/home/TextEditLayer";
 
 function NotFoundComponent() {
   return (
@@ -146,7 +147,9 @@ function RootComponent() {
           <MotionConfig reducedMotion={isMobile ? "always" : "never"}>
             <main>
               <MaintenanceGate>
-                <Outlet />
+                <TextEditLayer>
+                  <Outlet />
+                </TextEditLayer>
                 <SitePopup />
               </MaintenanceGate>
             </main>
