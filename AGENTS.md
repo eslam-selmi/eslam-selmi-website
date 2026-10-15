@@ -5,3 +5,4 @@
 - Route files hold only route config and page assembly; home sections live in `src/components/home/` and admin panels in `src/components/admin/panels/`, keeping routes small and builds fast.
 - New or touched data reads use `@tanstack/react-query` with explicit query keys and staleTime; realtime events invalidate those keys instead of refetching manually.
 - Hand-written row types derive from the generated `Tables<...>` types (Pick/extend) so they track schema changes.
+- Homepage text edits are stored as per-language overrides keyed by the original text in site_content `home.text_overrides` and applied to rendered text by `TextEditLayer`; this lets the admin change any text without wiring each string.
