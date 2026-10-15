@@ -28,9 +28,12 @@ export function CourseCertificateSettings({ course }: { course: { id: string; ti
   const setText = (lang: "ar" | "en", k: CertTextKey, v: string) => setS((p) => ({ ...p, [lang]: { ...p[lang], [k]: v } }));
 
   async function translateAll(): Promise<CertificateSettings> {
-    const keys = CERT_TEXT_FIELDS.map((f) => f[0]).filter((k) => s.ar[k]?.trim());
+    const keys: CertTextKey[] = CERT_TEXT_FIELDS.map((f) => f[0]).filter((k) => s.ar[k]?.trim());
+    const texts = keys.map((k) => s.ar[k]!.trim());
+    // English certificate shows the course name in English too, unless set manually
+    if (!s.ar.courseTitle?.trim() && !s.en.courseTitle?.trim() && /[\u0600-\u06FF]/.test(course.title)) { keys.push("courseTitle"); texts.push(course.title); }
     if (!keys.length) return s;
-    const { translations, error } = await translateTexts({ data: { texts: keys.map((k) => s.ar[k]!.trim()), target: "en" } });
+    const { translations, error } = await translateTexts({ data: { texts, target: "en" } });
     if (error) toast.error("تعذرت الترجمة التلقائية، راجع النصوص الإنجليزية يدوياً");
     const en = { ...s.en };
     keys.forEach((k, i) => { en[k] = translations[i]; });
