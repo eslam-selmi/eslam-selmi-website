@@ -24,7 +24,7 @@ import { StatCard } from "@/components/portal/StatCard";
 import { MyCertificatesSection } from "@/components/portal/MyCertificatesSection";
 import { UploadModal } from "@/components/portal/UploadModal";
 import { EnrollModal } from "@/components/portal/EnrollModal";
-import { PersonalMessage, useWelcomeGreeting } from "@/components/portal/PersonalMessage";
+import { PersonalMessage, timeGreeting, useWelcomeGreeting } from "@/components/portal/PersonalMessage";
 import { PortalAlerts, ContinueLearningCard, usePortalAlerts } from "@/components/portal/OverviewExtras";
 
 
@@ -267,9 +267,7 @@ function PortalPage() {
   }
 
   const hour = new Date().getHours();
-  const greeting = lang === "ar"
-    ? (hour < 5 ? "ليلة هادئة" : hour < 12 ? "صباح الخير" : hour < 17 ? "طاب يومك" : hour < 21 ? "مساء الخير" : "مساء النور")
-    : (hour < 5 ? "Quiet night" : hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : hour < 21 ? "Good evening" : "Good night");
+  const greeting = timeGreeting(lang, hour);
   const firstName = (profile?.full_name || "").trim().split(/\s+/)[0] || (lang === "ar" ? "متدرب جديد" : "there");
   const welcomeLine = lang === "ar"
     ? (hour < 5 ? `${firstName}، شغف التعلّم لا ينام — خُذ راحتك واستكمل من حيث توقفت.`
