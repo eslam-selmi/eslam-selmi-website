@@ -1,7 +1,6 @@
-# Admin workspace redesign
+# Administration and bilingual certificates
 
-- [x] Organize the admin navigation into four functional groups and preserve mobile navigation.
-- [x] Make an executive overview the first screen, showing pending work and key counts.
-- [x] Give admin surfaces clearer navy-and-silver contrast and simpler card and table styling.
-- [x] Reduce enrollment and course action clutter without changing their behavior.
-- [x] Check signed-in desktop and mobile administration flows.
+- [ ] Redesign administration for comfortable daily work in the site's identity.
+- [ ] Fix the administration logo and website navigation.
+- [ ] Replace both certificate designs and repair English PDF export.
+- [ ] Verify signed-in administration, navigation and both exported certificates.
