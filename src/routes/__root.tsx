@@ -18,6 +18,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { MaintenanceGate } from "@/components/MaintenanceGate";
 import { SitePopup } from "@/components/SitePopup";
 import { TextEditLayer } from "@/components/home/TextEditLayer";
+import { SiteBranding } from "@/components/SiteBranding";
 
 function NotFoundComponent() {
   return (
@@ -144,6 +145,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <I18nProvider>
+          <SiteBranding />
           <MotionConfig reducedMotion={isMobile ? "always" : "never"}>
             <main>
               <MaintenanceGate>

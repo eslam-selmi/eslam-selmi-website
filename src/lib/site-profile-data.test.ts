@@ -3,6 +3,9 @@ import { strict as assert } from "node:assert";
 import { profileLinks, readSiteProfile } from "./site-profile-data";
 
 describe("editable public site profile", () => {
+  test("administrator-selected logo replaces the site logo", () => {
+    assert.equal(readSiteProfile({ logo: "/updated-logo.png" }).logo, "/updated-logo.png");
+  });
   test("saved phone updates phone and WhatsApp destinations", () => {
     const links = profileLinks(readSiteProfile({ phone: "+20 100 123 4567" }));
     assert.equal(links.phone, "tel:+201001234567");
