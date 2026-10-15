@@ -20,7 +20,7 @@ export function useWelcomeGreeting(userId: string | undefined, firstName: string
     const k = `portal-greeted-${userId}`;
     if (sessionStorage.getItem(k)) return;
     sessionStorage.setItem(k, "1");
-    const t = setTimeout(() => toast(`${timeGreeting(lang)} يا ${firstName} 👋`.replace(" يا ", lang === "ar" ? " يا " : ", "), {
+    const t = setTimeout(() => toast(lang === "ar" ? `${timeGreeting(lang)} يا ${firstName} 👋` : `${timeGreeting(lang)}, ${firstName} 👋`, {
       description: lang === "ar" ? "سعيدين برجوعك، يلا نكمل رحلة التعلّم." : "Great to see you again — let's keep learning.",
     }), 600);
     return () => clearTimeout(t);

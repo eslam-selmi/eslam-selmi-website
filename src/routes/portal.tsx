@@ -24,7 +24,7 @@ import { StatCard } from "@/components/portal/StatCard";
 import { MyCertificatesSection } from "@/components/portal/MyCertificatesSection";
 import { UploadModal } from "@/components/portal/UploadModal";
 import { EnrollModal } from "@/components/portal/EnrollModal";
-import { PersonalMessage, timeGreeting, useWelcomeGreeting } from "@/components/portal/PersonalMessage";
+import { PersonalMessage, useWelcomeGreeting } from "@/components/portal/PersonalMessage";
 import { PortalAlerts, ContinueLearningCard, usePortalAlerts } from "@/components/portal/OverviewExtras";
 
 
@@ -216,6 +216,8 @@ function PortalPage() {
     if (tab === "my-courses" && alerts.paymentCount) alerts.markSeen("payments");
   }, [tab, alerts.certCount, alerts.paymentCount]);
 
+  useWelcomeGreeting(user?.id, (profile?.full_name || "").trim().split(/\s+/)[0] || undefined, lang);
+
   async function enroll(courseId: string, couponCode?: string) {
     if (!user) return;
     const { data, error } = await supabase
@@ -280,8 +282,6 @@ function PortalPage() {
       : hour < 17 ? `Hi ${firstName} — a quick look at your courses and progress.`
       : hour < 21 ? `Good evening ${firstName} — a great time to review today's progress.`
       : `${firstName}, a calm late-night session? Your content is ready.`);
-
-  useWelcomeGreeting(user?.id, (profile?.full_name || "").trim().split(/\s+/)[0] || undefined, lang);
 
   const navItems: { id: string; label: string; icon: any; badge?: number; to?: string; alert?: boolean }[] = [
     { id: "overview", label: lang === "ar" ? "نظرة عامة" : "Overview", icon: Sparkles },
