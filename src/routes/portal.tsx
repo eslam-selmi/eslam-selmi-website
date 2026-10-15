@@ -24,6 +24,7 @@ import { StatCard } from "@/components/portal/StatCard";
 import { MyCertificatesSection } from "@/components/portal/MyCertificatesSection";
 import { UploadModal } from "@/components/portal/UploadModal";
 import { EnrollModal } from "@/components/portal/EnrollModal";
+import { PersonalMessage, timeGreeting, useWelcomeGreeting } from "@/components/portal/PersonalMessage";
 import { PortalAlerts, ContinueLearningCard, usePortalAlerts } from "@/components/portal/OverviewExtras";
 
 
@@ -215,6 +216,8 @@ function PortalPage() {
     if (tab === "my-courses" && alerts.paymentCount) alerts.markSeen("payments");
   }, [tab, alerts.certCount, alerts.paymentCount]);
 
+  useWelcomeGreeting(user?.id, (profile?.full_name || "").trim().split(/\s+/)[0] || undefined, lang);
+
   async function enroll(courseId: string, couponCode?: string) {
     if (!user) return;
     const { data, error } = await supabase
@@ -264,9 +267,7 @@ function PortalPage() {
   }
 
   const hour = new Date().getHours();
-  const greeting = lang === "ar"
-    ? (hour < 5 ? "ليلة هادئة" : hour < 12 ? "صباح الخير" : hour < 17 ? "طاب يومك" : hour < 21 ? "مساء الخير" : "مساء النور")
-    : (hour < 5 ? "Quiet night" : hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : hour < 21 ? "Good evening" : "Good night");
+  const greeting = timeGreeting(lang, hour);
   const firstName = (profile?.full_name || "").trim().split(/\s+/)[0] || (lang === "ar" ? "متدرب جديد" : "there");
   const welcomeLine = lang === "ar"
     ? (hour < 5 ? `${firstName}، شغف التعلّم لا ينام — خُذ راحتك واستكمل من حيث توقفت.`
@@ -301,7 +302,7 @@ function PortalPage() {
               return (
                 <button key={it.id} onClick={() => setTab(it.id as TabId)}
                   className={`relative flex items-center gap-1.5 px-3.5 h-10 rounded-xl text-xs font-semibold whitespace-nowrap transition border ${tab === it.id ? "bg-[var(--gold)]/15 text-[var(--gold)] border-[var(--gold)]/40" : "text-white/70 border-white/10 bg-white/[0.03]"}`}>
-                  <Icon className="w-3.5 h-3.5" /> {it.label}
+                  <Icon className={`w-3.5 h-3.5 ${it.id === "certificates" && alerts.certCount ? "cert-glow" : ""}`} /> {it.label}
                   {it.badge ? <span className={`ms-1 min-w-[18px] h-[18px] leading-[18px] text-[10px] rounded-md px-1 ${it.alert ? "bg-[var(--gold)] text-[#0b1736]" : "bg-white/10"}`}>{it.badge}</span> : null}
                 </button>
               );
@@ -331,7 +332,7 @@ function PortalPage() {
                         onClick={() => { if (it.id === "account") { setAccountOpen(true); return; } if (it.to) { nav({ to: it.to }); return; } setTab(it.id as TabId); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                         className={`w-full group flex items-center gap-2.5 px-3 h-10 rounded-xl text-[13px] font-semibold transition text-start ${tab === it.id ? "bg-[var(--gold)]/15 text-[var(--gold)] border border-[var(--gold)]/30" : "text-white/70 hover:text-white hover:bg-white/5 border border-transparent"}`}
                       >
-                        <Icon className="w-4 h-4 shrink-0 text-white/50 group-hover:text-[var(--gold)]" />
+                        <Icon className={`w-4 h-4 shrink-0 text-white/50 group-hover:text-[var(--gold)] ${it.id === "certificates" && alerts.certCount ? "cert-glow" : ""}`} />
                         <span className="flex-1 truncate">{it.label}</span>
                         {it.badge ? (
                           <span className={`min-w-[22px] text-center text-[10px] font-bold px-1.5 h-5 leading-5 rounded-md ${it.alert ? "bg-[var(--gold)] text-[#0b1736] animate-pulse" : "bg-white/10 text-white/80"}`}>{it.badge}</span>
@@ -401,6 +402,8 @@ function PortalPage() {
           <StatCard icon={Award} label={lang === "ar" ? "شهادات صادرة" : "Certificates"} value={stats.certs} accent="gold" />
         </section>
 
+        <PersonalMessage lang={lang} firstName={firstName} enrollments={trEnrollments} continueTarget={continueTarget} newCerts={alerts.certCount}
+          onGo={(t) => setTab(t)} onOpenCourse={(en) => setViewing(en)} />
         <ContinueLearningCard target={continueTarget} hasCourses={enrollments.length > 0} lang={lang}
           onOpen={(en) => setViewing(en)} onBrowse={() => setTab("available")} />
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
