@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ShieldCheck, GraduationCap, ArrowLeft } from "lucide-react";
+import { KeyRound } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
 const brandLogo = brandLogoAsset.url;
