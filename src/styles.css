@@ -618,3 +618,13 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 .certificate-export-host { position:fixed; top:0; left:-20000px; width:1600px; height:1131px; pointer-events:none; }
 .text-edit-mode *:hover { outline: 1px dashed var(--accent); outline-offset: 2px; cursor: text; }
 .text-edit-mode [data-text-edit-ui] *:hover { outline: none; cursor: pointer; }
+/* Sidebar contrast must not inherit the light workspace's muted ink. */
+.admin-shell .admin-side-nav .text-muted-foreground { color:color-mix(in oklab,var(--admin-nav-ink) 78%,transparent); }
+.admin-shell .admin-side-nav button[aria-current="page"] .text-muted-foreground { color:var(--admin-nav); }
+.admin-shell .admin-side-nav p.text-muted-foreground { color:color-mix(in oklab,var(--admin-nav-ink) 60%,transparent); }
+.admin-shell .admin-side-nav button:not([aria-current="page"]) .bg-secondary { background:color-mix(in oklab,var(--admin-nav-ink) 12%,transparent); }
+.certificate-main { top:225px; }
+.certificate-rule { margin:28px auto 28px; }
+.certificate-sheet .certificate-student { padding:16px 0 12px; }
+.certificate-sheet .certificate-course { margin-top:22px; }
+.certificate-hours { margin-top:24px!important; }
