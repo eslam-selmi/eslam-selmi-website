@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { invalidateSiteContent } from "@/lib/site-content";
+import { SiteProfilePanel } from "@/components/admin/SiteProfilePanel";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Eye, EyeOff, Save, Plus, Trash2, Pencil, X, Calendar, Clock, Link as LinkIcon, Wrench, Power } from "lucide-react";
 
@@ -30,28 +32,25 @@ type Popup = {
 export function SiteManagementPanel() {
   const { lang } = useI18n();
   const t = (a: string, b: string) => (lang === "ar" ? a : b);
-  const [sub, setSub] = useState<"content" | "popups" | "maintenance">("content");
+  const [sub, setSub] = useState<"profile" | "content" | "popups" | "maintenance">("profile");
 
   return (
     <div className="space-y-4">
       <div className="dash-card p-1.5 inline-flex gap-1 flex-wrap">
         {[
+          { id: "profile", label: t("الصورة والتواصل والحقوق", "Portrait, contact & footer") },
           { id: "content", label: t("محتوى الموقع", "Site content") },
           { id: "popups", label: t("النوافذ المنبثقة", "Popups") },
           { id: "maintenance", label: t("وضع الصيانة", "Maintenance") },
         ].map((x) => (
-          <button
+          <Button type="button" variant={sub === x.id ? "default" : "ghost"}
             key={x.id}
             onClick={() => setSub(x.id as any)}
-            className={`px-4 h-9 rounded-lg text-sm font-semibold transition ${
-              sub === x.id
-                ? "bg-gradient-to-b from-[var(--gold)] to-[#c89a3a] text-[#0b1736]"
-                : "text-white/65 hover:text-white hover:bg-white/5"
-            }`}
-          >{x.label}</button>
+            className="px-4 h-9 rounded-md text-sm font-semibold"
+          >{x.label}</Button>
         ))}
       </div>
-      {sub === "content" ? <ContentPanel /> : sub === "popups" ? <PopupsPanel /> : <MaintenancePanel />}
+      {sub === "profile" ? <SiteProfilePanel /> : sub === "content" ? <ContentPanel /> : sub === "popups" ? <PopupsPanel /> : <MaintenancePanel />}
     </div>
   );
 }
