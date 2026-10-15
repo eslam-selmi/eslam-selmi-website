@@ -466,43 +466,49 @@ export type Database = {
       }
       course_feedback: {
         Row: {
+          answers: Json
           comments: string | null
-          content_rating: number
+          content_rating: number | null
           course_id: string
           created_at: string
-          expectations_rating: number
+          expectations_rating: number | null
           id: string
-          pace: string
-          trainer_rating: number
+          is_featured: boolean
+          pace: string | null
+          trainer_rating: number | null
           updated_at: string
           user_id: string
-          would_recommend: boolean
+          would_recommend: boolean | null
         }
         Insert: {
+          answers?: Json
           comments?: string | null
-          content_rating: number
+          content_rating?: number | null
           course_id: string
           created_at?: string
-          expectations_rating: number
+          expectations_rating?: number | null
           id?: string
-          pace: string
-          trainer_rating: number
+          is_featured?: boolean
+          pace?: string | null
+          trainer_rating?: number | null
           updated_at?: string
           user_id: string
-          would_recommend: boolean
+          would_recommend?: boolean | null
         }
         Update: {
+          answers?: Json
           comments?: string | null
-          content_rating?: number
+          content_rating?: number | null
           course_id?: string
           created_at?: string
-          expectations_rating?: number
+          expectations_rating?: number | null
           id?: string
-          pace?: string
-          trainer_rating?: number
+          is_featured?: boolean
+          pace?: string | null
+          trainer_rating?: number | null
           updated_at?: string
           user_id?: string
-          would_recommend?: boolean
+          would_recommend?: boolean | null
         }
         Relationships: [
           {
@@ -902,6 +908,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      feedback_questions: {
+        Row: {
+          created_at: string
+          id: string
+          is_default: boolean
+          is_required: boolean
+          is_visible: boolean
+          key: string | null
+          kind: string
+          label_ar: string
+          label_en: string
+          options: Json
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          is_required?: boolean
+          is_visible?: boolean
+          key?: string | null
+          kind: string
+          label_ar: string
+          label_en: string
+          options?: Json
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          is_required?: boolean
+          is_visible?: boolean
+          key?: string | null
+          kind?: string
+          label_ar?: string
+          label_en?: string
+          options?: Json
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
       }
       installments: {
         Row: {
@@ -1926,6 +1977,17 @@ export type Database = {
         Returns: number
       }
       get_activation_contact: { Args: never; Returns: Json }
+      get_featured_feedback: {
+        Args: never
+        Returns: {
+          comments: string
+          course_title: string
+          created_at: string
+          id: string
+          rating: number
+          trainee_name: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
