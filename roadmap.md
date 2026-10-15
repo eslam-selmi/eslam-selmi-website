@@ -1,5 +1,5 @@
-# Public site profile settings
+# Match administration to trainee portal
 
-- [x] Add administration controls for portrait, contact phone/email/LinkedIn and arbitrary bilingual footer text.
-- [x] Wire shared public pages and contact actions to saved settings without changing login identity.
-- [x] Verify saving and reading settings through the public pages and image upload; restored original settings after temporary checks.
+- [ ] Remove the independent admin palette and restore shared dashboard backgrounds, glass cards and light/dark appearance.
+- [ ] Match admin navigation, overview cards, toolbar and controls to trainee styling without changing admin workflows.
+- [ ] Verify signed-in navigation and desktop/mobile layouts in both themes.
