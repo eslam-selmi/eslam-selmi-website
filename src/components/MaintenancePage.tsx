@@ -160,23 +160,27 @@ export function MaintenancePage({ message, until }: Props) {
             </>
           ) : null}
 
-          {/* Access shortcuts */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-2.5">
-            {[
-              { search: { role: "admin" }, Icon: ShieldCheck, title: t("دخول الإدارة", "Admin login") },
-              { search: { role: "trainee" }, Icon: GraduationCap, title: t("دخول المتدرب", "Trainee login") },
-            ].map(({ search, Icon, title }, i) => (
-              <Link
-                key={i}
-                to="/auth"
-                search={search}
-                className="group inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.05] px-4 py-2 text-[12.5px] font-semibold text-white/80 backdrop-blur-sm transition hover:border-white/30 hover:bg-white/[0.09] hover:text-white"
-              >
-                <Icon className="w-3.5 h-3.5 opacity-70 group-hover:opacity-100" />
-                {title}
-                <ArrowLeft className="w-3.5 h-3.5 opacity-40 transition group-hover:opacity-90 rtl-flip" />
-              </Link>
-            ))}
+          {/* Access shortcut — same lock icon as the main site */}
+          <div className="mt-8 flex flex-col items-center gap-2.5">
+            <Link
+              to="/auth"
+              aria-label={t("بوابة الدخول", "Portal access")}
+              title={t("بوابة الدخول", "Portal access")}
+              className="group relative inline-flex size-11 items-center justify-center rounded-full transition-all hover:scale-105"
+              style={{
+                background:
+                  "linear-gradient(135deg, oklch(0.75 0.13 85 / 0.18), oklch(0.75 0.13 85 / 0.04))",
+                border: "1.5px solid oklch(0.75 0.13 85 / 0.55)",
+                boxShadow: "0 6px 20px -8px oklch(0.75 0.13 85 / 0.55)",
+              }}
+            >
+              <KeyRound className="size-[17px]" style={{ color: "oklch(0.85 0.14 90)" }} />
+              <span
+                className="absolute -top-0.5 -end-0.5 size-2 rounded-full"
+                style={{ background: "oklch(0.85 0.14 90)", boxShadow: "0 0 8px oklch(0.85 0.14 90)" }}
+              />
+            </Link>
+            <span className="text-[11px] text-white/40">{t("بوابة الدخول", "Portal access")}</span>
           </div>
 
           {/* Footer */}
