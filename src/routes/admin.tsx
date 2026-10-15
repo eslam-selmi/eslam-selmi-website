@@ -328,9 +328,9 @@ function AdminPage() {
           ];
 
           return (
-            <div className="flex flex-col lg:flex-row gap-5">
+            <div className="flex flex-col lg:flex-row gap-6">
               {/* Mobile grouped select */}
-              <div className="lg:hidden border border-border bg-card p-2 rounded-md">
+              <div className="lg:hidden dash-card p-2 rounded-xl">
                 <select
                   value={tab}
                   onChange={(e) => setTab(e.target.value as NonNullable<AdminSearch["tab"]>)}
@@ -351,8 +351,8 @@ function AdminPage() {
               </div>
 
               {/* Desktop sidebar */}
-              <aside className="hidden lg:block w-60 shrink-0">
-                <nav aria-label={t("أقسام الإدارة", "Administration sections")} className="admin-side-nav sticky top-20 h-[calc(100vh-6rem)] overflow-y-auto space-y-5 [scrollbar-width:thin]">
+              <aside className="hidden lg:block w-64 shrink-0">
+                <nav aria-label={t("أقسام الإدارة", "Administration sections")} className="admin-side-nav dash-card p-3 sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto space-y-4 [scrollbar-width:thin]">
 
                   {groups.map((g) => (
                     <div key={g.id} className="space-y-1.5">
@@ -369,23 +369,15 @@ function AdminPage() {
                                 type="button" variant="ghost"
                                 onClick={() => setTab(it.id)}
                                 aria-current={active ? "page" : undefined}
-                                className={`w-full group flex items-center justify-start gap-2.5 px-3 h-10 rounded-md text-[13px] font-semibold transition text-start ${
-                                  active
-                                    ? "bg-secondary text-foreground border-s-2 border-accent"
-                                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/70"
-                                }`}
+                                className="dashboard-nav-item w-full group flex items-center justify-start gap-2.5 px-3 h-10 text-[13px] font-semibold transition text-start"
                               >
                                 <Icon
-                                  className={`w-4 h-4 shrink-0 ${active ? "text-accent" : "text-muted-foreground"}`}
+                                  className={`w-4 h-4 shrink-0 ${active ? "text-gold" : "text-muted-foreground group-hover:text-gold"}`}
                                 />
                                 <span className="flex-1 truncate">{it.label}</span>
                                 {it.badge ? (
                                   <span
-                                    className={`min-w-[22px] text-center text-[10px] font-bold px-1.5 h-5 leading-5 rounded-md ${
-                                      active
-                                        ? "bg-accent/20 text-foreground"
-                                        : "bg-secondary text-muted-foreground"
-                                    }`}
+                                    className="dashboard-nav-badge min-w-[22px] text-center text-[10px] font-bold px-1.5 h-5 leading-5 rounded-md"
                                   >
                                     {it.badge}
                                   </span>
