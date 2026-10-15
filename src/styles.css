@@ -76,6 +76,12 @@
   --glass-strong: oklch(1 0 0 / 0.92);
   --glass-border: oklch(0.18 0.04 252 / 0.08);
   --shadow-glass: 0 22px 60px -28px oklch(0.20 0.06 260 / 0.24);
+  --notification-success: oklch(0.48 0.13 162);
+  --notification-warning: oklch(0.52 0.13 70);
+  --notification-error: var(--destructive);
+  --notification-info: oklch(0.50 0.11 220);
+  --notification-surface: color-mix(in oklab, var(--card) 82%, transparent);
+  --notification-highlight: oklch(1 0 0 / 0.26);
 
   --font-heading-en: 'Sora', ui-sans-serif, system-ui, sans-serif;
   --font-body-en: 'Manrope', ui-sans-serif, system-ui, sans-serif;
@@ -114,6 +120,71 @@
   --glass-strong: oklch(0.18 0.04 252 / 0.92);
   --glass-border: oklch(1 0 0 / 0.10);
   --shadow-glass: 0 28px 80px -36px oklch(0 0 0 / 0.6);
+  --notification-success: oklch(0.79 0.14 162);
+  --notification-warning: oklch(0.84 0.12 80);
+  --notification-error: oklch(0.78 0.14 25);
+  --notification-info: var(--accent);
+  --notification-highlight: oklch(1 0 0 / 0.09);
+}
+
+/* Shared notification surface; scoped selectors override Sonner's injected defaults. */
+[data-sonner-toaster].site-toaster {
+  font-family: var(--font-body-en);
+  letter-spacing: 0;
+}
+[data-sonner-toaster].site-toaster [data-sonner-toast].site-toast {
+  --notification-tone: var(--accent);
+  background: linear-gradient(135deg, var(--notification-highlight), transparent 65%), var(--notification-surface) !important;
+  color: var(--foreground) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-inline-start: 3px solid color-mix(in oklab, var(--notification-tone) 65%, transparent) !important;
+  border-radius: 8px !important;
+  box-shadow: var(--shadow-glass), inset 0 1px 0 var(--notification-highlight) !important;
+  backdrop-filter: blur(24px) saturate(150%);
+  padding: 18px !important;
+  padding-inline-end: 48px !important;
+  gap: 14px !important;
+  align-items: center;
+  font-family: var(--font-body-en);
+  text-align: start;
+  letter-spacing: 0;
+}
+[data-sonner-toaster].site-toaster .site-toast[data-type="success"] { --notification-tone: var(--notification-success); }
+[data-sonner-toaster].site-toaster .site-toast[data-type="error"] { --notification-tone: var(--notification-error); }
+[data-sonner-toaster].site-toaster .site-toast[data-type="warning"] { --notification-tone: var(--notification-warning); }
+[data-sonner-toaster].site-toaster .site-toast[data-type="info"] { --notification-tone: var(--notification-info); }
+[data-sonner-toaster].site-toaster .site-toast [data-icon] {
+  width: 36px; height: 36px; margin: 0;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 8px;
+  color: var(--notification-tone);
+  background: color-mix(in oklab, var(--notification-tone) 12%, transparent);
+  border: 1px solid color-mix(in oklab, var(--notification-tone) 18%, transparent);
+}
+[data-sonner-toaster].site-toaster .site-toast [data-icon] svg { margin: 0; }
+[data-sonner-toaster].site-toaster .site-toast [data-content] { min-width: 0; flex: 1; gap: 4px; overflow-wrap: anywhere; }
+[data-sonner-toaster].site-toaster .site-toast [data-title] {
+  font-family: var(--font-heading-en); font-size: 14px; font-weight: 600; line-height: 1.65; letter-spacing: 0;
+}
+[data-sonner-toaster].site-toaster .site-toast [data-description] {
+  color: var(--muted-foreground) !important; font-size: 13px; line-height: 1.75;
+}
+[data-sonner-toaster].site-toaster .site-toast [data-close-button] {
+  inset: 10px 10px auto auto; transform: none; width: 26px; height: 26px;
+  background: color-mix(in oklab, var(--foreground) 5%, transparent);
+  border: 1px solid var(--glass-border); color: var(--muted-foreground); border-radius: 6px;
+}
+[data-sonner-toaster].site-toaster[dir="rtl"] .site-toast [data-close-button] { right: auto; left: 10px; }
+[data-sonner-toaster].site-toaster .site-toast [data-close-button]:hover {
+  background: var(--secondary); color: var(--foreground); border-color: var(--border);
+}
+[data-sonner-toaster].site-toaster .site-toast [data-button] {
+  background: var(--primary); color: var(--primary-foreground); border-radius: 6px;
+  font-family: inherit; height: auto; min-height: 30px; white-space: normal; text-align: center;
+}
+[data-sonner-toaster].site-toaster .site-toast [data-cancel] { background: var(--secondary); color: var(--secondary-foreground); }
+@media (prefers-reduced-motion: reduce) {
+  [data-sonner-toaster].site-toaster, [data-sonner-toaster].site-toaster * { animation-duration: 0s !important; transition-duration: 0s !important; }
 }
 
 html[lang="ar"] {

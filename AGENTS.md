@@ -1,5 +1,7 @@
 # Project rules
 
+- Keep popup notification presentation in the shared Sonner wrapper and scoped global CSS tokens so admin and trainee notifications share site fonts, RTL and both themes without changing notification data workflows.
+
 - Keep administration within the existing `/admin` route and use the shared trainee dashboard surfaces and controls rather than an independent admin theme; this preserves tab links and data workflows while keeping both workspaces visually aligned.
 - Keep the executive overview's attention counts in a focused admin component using the signed-in browser client; existing row-level permissions continue to govern access to the data.
 - Route files hold only route config and page assembly; home sections live in `src/components/home/` and admin panels in `src/components/admin/panels/`, keeping routes small and builds fast.
