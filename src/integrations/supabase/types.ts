@@ -1980,6 +1980,20 @@ export type Database = {
         Returns: number
       }
       get_activation_contact: { Args: never; Returns: Json }
+      get_course_featured_reviews: {
+        Args: never
+        Returns: {
+          comments: string
+          content_rating: number
+          course_id: string
+          created_at: string
+          id: string
+          rating: number
+          trainee_name: string
+          trainer_rating: number
+          would_recommend: boolean
+        }[]
+      }
       get_featured_feedback: {
         Args: never
         Returns: {

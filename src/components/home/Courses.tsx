@@ -101,6 +101,7 @@ import snap12Asset from "@/assets/snapshots/snap-12.jpg.asset.json";
 import snap13Asset from "@/assets/snapshots/snap-13.jpg.asset.json";
 import snap15Asset from "@/assets/snapshots/snap-15.jpg.asset.json";
 import snap16Asset from "@/assets/snapshots/snap-16.jpg.asset.json";
+import { CourseReviewsButton, CourseReviewsModal, useCourseReviews } from "@/components/home/CourseReviews";
 import { Programs } from "@/components/home/AboutSections";
 import { PublicCourse } from "@/components/home/data";
 import { Section, isEmpowermentCourse } from "@/components/home/shared";
@@ -113,6 +114,9 @@ export function CurrentCourses() {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<PublicCourse | null>(null);
   const [interest, setInterest] = useState<PublicCourse | null>(null);
+  const [reviewsFor, setReviewsFor] = useState<PublicCourse | null>(null);
+  const reviews = useCourseReviews().data ?? [];
+  const reviewsOf = (id: string) => reviews.filter((r) => r.course_id === id);
 
   useEffect(() => {
     (async () => {
@@ -172,7 +176,7 @@ export function CurrentCourses() {
               </h3>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {current.map((c) => (
-                  <CourseCard key={c.id} c={c} onOpen={() => setSelected(c)} isAr={isAr} />
+                  <div key={c.id} className="flex flex-col"><CourseCard c={c} onOpen={() => setSelected(c)} isAr={isAr} /><CourseReviewsButton reviews={reviewsOf(c.id)} isAr={isAr} onOpen={() => setReviewsFor(c)} /></div>
                 ))}
               </div>
             </>
@@ -189,7 +193,7 @@ export function CurrentCourses() {
               </h3>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {upcoming.map((c) => (
-                  <CourseCard key={c.id} c={c} onOpen={() => setSelected(c)} isAr={isAr} upcoming />
+                  <div key={c.id} className="flex flex-col"><CourseCard c={c} onOpen={() => setSelected(c)} isAr={isAr} upcoming /><CourseReviewsButton reviews={reviewsOf(c.id)} isAr={isAr} onOpen={() => setReviewsFor(c)} /></div>
                 ))}
               </div>
             </div>
@@ -208,6 +212,10 @@ export function CurrentCourses() {
             setSelected(null);
           }}
         />
+      )}
+
+      {reviewsFor && (
+        <CourseReviewsModal title={reviewsFor.title} reviews={reviewsOf(reviewsFor.id)} isAr={isAr} onClose={() => setReviewsFor(null)} />
       )}
 
       {interest && (

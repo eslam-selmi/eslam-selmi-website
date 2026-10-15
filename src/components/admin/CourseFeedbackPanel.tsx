@@ -159,9 +159,9 @@ export function CourseFeedbackPanel({ courses }: { courses: CourseLite[] }) {
             <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
               <span className="font-semibold text-foreground">{names[r.user_id] ?? "—"} · {courseTitle(r.course_id)}</span>
               <span className="flex items-center gap-2">{new Date(r.created_at).toLocaleDateString()}
-                {r.comments && <Button size="sm" variant={r.is_featured ? "default" : "outline"} onClick={() => toggleFeatured(r)}>
+                <Button size="sm" variant={r.is_featured ? "default" : "outline"} onClick={() => toggleFeatured(r)}>
                   <Sparkles className="size-3.5" /> {r.is_featured ? t("معروض في الرئيسية", "On homepage") : t("اعرض في الرئيسية", "Feature")}
-                </Button>}
+                </Button>
               </span>
             </div>
             <div className="flex flex-wrap gap-2 text-xs">
