@@ -128,7 +128,7 @@ export function AdminToolbar({
       </div>
       <Button type="button" variant="outline"
         onClick={() => exportEnrollmentsCsv(enrollments)}
-        className="h-11 px-4 rounded-md border-border text-foreground text-sm font-semibold inline-flex items-center justify-center gap-2"
+        className="h-11 px-4 rounded-xl border-white/15 bg-white/5 text-foreground text-sm font-semibold inline-flex items-center justify-center gap-2 hover:bg-white/10 hover:border-white/25 backdrop-blur-sm"
       >
         <Download className="w-4 h-4" />
         {t("تصدير CSV", "Export CSV")}

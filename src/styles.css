@@ -507,81 +507,52 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 /* Gold CTAs keep their navy ink */
 :root:not(.dark) .dash-shell [class*="text-[#0b1736]"] { color: #0b1736; }
 
-/* Admin-only work surface: vivid glass on brand navy, cyan/sky signals matching the main site. */
+/* Admin work surface: identical to the trainee portal — same navy, gold, glass. */
 .admin-shell {
-  --admin-cyan: oklch(0.80 0.13 200);
-  --admin-sky: oklch(0.72 0.15 240);
-  --admin-violet: oklch(0.72 0.14 285);
+  --admin-gold: var(--gold);
   --admin-success: oklch(0.80 0.16 160);
   --admin-warning: oklch(0.84 0.14 80);
   --admin-danger: oklch(0.72 0.18 20);
   --admin-info: oklch(0.78 0.13 230);
-  --admin-glow: linear-gradient(135deg, var(--admin-cyan), var(--admin-sky) 55%, var(--admin-violet));
-  --gold: var(--admin-cyan);
-  --gold-soft: oklch(0.88 0.08 200);
-  --lavender: var(--admin-cyan);
-  --accent: var(--admin-cyan);
+  --admin-glow: linear-gradient(135deg, var(--gold), var(--gold-soft));
+  --accent: var(--gold);
   --accent-foreground: oklch(0.18 0.05 252);
-  --primary: oklch(0.78 0.14 210);
+  --primary: var(--gold);
   --primary-foreground: oklch(0.16 0.05 252);
   --foreground: oklch(0.985 0.005 230);
   --muted-foreground: oklch(0.84 0.03 230);
-  --card: oklch(1 0 0 / 0.08);
+  --card: oklch(0.18 0.05 252 / 0.55);
   --card-foreground: oklch(0.985 0.005 230);
-  --secondary: oklch(1 0 0 / 0.10);
-  --muted: oklch(1 0 0 / 0.08);
-  --border: oklch(1 0 0 / 0.16);
-  --input: oklch(1 0 0 / 0.20);
-  --popover: oklch(0.30 0.08 252 / 0.92);
+  --secondary: oklch(1 0 0 / 0.08);
+  --muted: oklch(1 0 0 / 0.06);
+  --border: oklch(1 0 0 / 0.10);
+  --input: oklch(1 0 0 / 0.14);
+  --popover: oklch(0.20 0.05 252 / 0.95);
   --popover-foreground: oklch(0.985 0.005 230);
-  --ring: oklch(0.80 0.13 200 / 0.7);
+  --ring: oklch(0.82 0.14 80 / 0.7);
   font-feature-settings: "tnum" 1;
 }
-.admin-shell.dash-bg {
-  background:
-    radial-gradient(800px 520px at 90% -5%, oklch(0.70 0.16 200 / 0.45), transparent 60%),
-    radial-gradient(700px 500px at 5% 15%, oklch(0.60 0.18 285 / 0.35), transparent 60%),
-    radial-gradient(900px 600px at 50% 110%, oklch(0.62 0.16 240 / 0.40), transparent 60%),
-    linear-gradient(160deg, oklch(0.32 0.09 252), oklch(0.26 0.08 260));
-  background-attachment: fixed;
-}
-.admin-shell .dash-header {
-  background: oklch(1 0 0 / 0.08);
-  backdrop-filter: blur(20px) saturate(170%);
-  border-color: var(--border);
-}
-.admin-shell .dash-card {
-  background: linear-gradient(145deg, oklch(1 0 0 / 0.14), oklch(1 0 0 / 0.05));
-  backdrop-filter: blur(18px) saturate(160%);
-  border: 1px solid oklch(1 0 0 / 0.18);
-  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.22), 0 18px 40px -22px oklch(0.15 0.08 260 / 0.7);
-  border-radius: 1.25rem;
-}
-.admin-shell .dash-card-hover { transition: transform .2s, box-shadow .2s, border-color .2s; }
-.admin-shell .dash-card-hover:hover {
-  transform: translateY(-2px);
-  border-color: oklch(0.80 0.13 200 / 0.55);
-  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.25), 0 22px 44px -20px oklch(0.70 0.16 210 / 0.55);
-}
 .admin-shell .admin-side-nav {
-  background: linear-gradient(170deg, oklch(1 0 0 / 0.14), oklch(1 0 0 / 0.05));
-  backdrop-filter: blur(18px) saturate(160%);
-  border: 1px solid oklch(1 0 0 / 0.18);
+  background:
+    linear-gradient(155deg, oklch(1 0 0 / 0.06), oklch(1 0 0 / 0.015) 55%, transparent),
+    oklch(0.18 0.05 252 / 0.55);
+  backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid oklch(1 0 0 / 0.08);
   border-radius: 1.25rem;
   padding: 1rem .75rem;
-  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.2);
+  box-shadow: 0 24px 60px -28px oklch(0 0 0 / 0.6), inset 0 1px 0 oklch(1 0 0 / 0.08);
 }
 .admin-shell .admin-side-nav button { border-radius: .75rem; transition: background .15s, color .15s; }
-.admin-shell .admin-side-nav button:hover { background: oklch(1 0 0 / 0.10); }
+.admin-shell .admin-side-nav button:hover { background: oklch(1 0 0 / 0.06); }
 .admin-shell .admin-side-nav button[aria-current="page"],
 .admin-shell .admin-side-nav button[data-active="true"] {
-  background: var(--admin-glow);
+  background: linear-gradient(135deg, var(--gold), var(--gold-soft));
   color: oklch(0.16 0.05 252);
   font-weight: 600;
-  box-shadow: 0 8px 20px -10px oklch(0.75 0.15 210 / 0.8);
+  box-shadow: 0 8px 20px -10px oklch(0.78 0.14 80 / 0.6);
 }
 .admin-shell [role="tablist"] {
-  background: oklch(1 0 0 / 0.08);
+  background: oklch(1 0 0 / 0.05);
   backdrop-filter: blur(14px);
   border: 1px solid var(--border);
   border-radius: 999px;
@@ -590,53 +561,50 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 }
 .admin-shell [role="tab"] { border-radius: 999px; }
 .admin-shell [role="tab"][data-state="active"] {
-  background: var(--admin-glow);
+  background: linear-gradient(135deg, var(--gold), var(--gold-soft));
   color: oklch(0.16 0.05 252);
-  box-shadow: 0 6px 16px -8px oklch(0.75 0.15 210 / 0.8);
+  box-shadow: 0 6px 16px -8px oklch(0.78 0.14 80 / 0.6);
 }
 .admin-shell .admin-workspace { display: flex; flex-direction: column; gap: 1.25rem; }
 .admin-shell .admin-workspace table { border-collapse: separate; border-spacing: 0; width: 100%; }
-.admin-shell .admin-workspace thead { background: oklch(1 0 0 / 0.10); color: var(--foreground); }
+.admin-shell .admin-workspace thead { background: oklch(1 0 0 / 0.05); color: var(--foreground); }
 .admin-shell .admin-workspace thead th { font-size: .78rem; font-weight: 600; padding: .8rem 1rem; border-bottom: 1px solid var(--border); }
 .admin-shell .admin-workspace tbody td { padding: .8rem 1rem; }
-.admin-shell .admin-workspace tbody tr + tr td { border-top: 1px solid oklch(1 0 0 / 0.08); }
+.admin-shell .admin-workspace tbody tr + tr td { border-top: 1px solid oklch(1 0 0 / 0.06); }
 .admin-shell .admin-workspace tbody tr { transition: background .15s; }
-.admin-shell .admin-workspace tbody tr:hover { background: oklch(0.80 0.13 200 / 0.10); }
+.admin-shell .admin-workspace tbody tr:hover { background: oklch(0.82 0.14 80 / 0.08); }
 .admin-shell .admin-workspace input,
 .admin-shell .admin-workspace select,
 .admin-shell .admin-workspace textarea {
-  accent-color: var(--admin-cyan);
-  background-color: oklch(1 0 0 / 0.08);
+  accent-color: var(--gold);
+  background-color: oklch(1 0 0 / 0.05);
   border-color: var(--input);
   border-radius: .75rem;
   transition: border-color .15s, box-shadow .15s;
 }
-.admin-shell .admin-workspace select option { background: oklch(0.28 0.08 252); }
+.admin-shell .admin-workspace select option { background: oklch(0.20 0.05 252); }
 .admin-shell .admin-workspace input:focus-visible,
 .admin-shell .admin-workspace select:focus-visible,
 .admin-shell .admin-workspace textarea:focus-visible {
   outline: none;
-  border-color: var(--admin-cyan);
-  box-shadow: 0 0 0 4px oklch(0.80 0.13 200 / 0.22);
+  border-color: var(--gold);
+  box-shadow: 0 0 0 4px oklch(0.82 0.14 80 / 0.20);
 }
 .admin-shell .badge-success, .admin-shell [data-status="approved"], .admin-shell [data-status="paid"], .admin-shell [data-status="completed"] {
-  background: oklch(0.80 0.16 160 / 0.20); color: var(--admin-success); border: 1px solid oklch(0.80 0.16 160 / 0.4);
+  background: oklch(0.80 0.16 160 / 0.16); color: var(--admin-success); border: 1px solid oklch(0.80 0.16 160 / 0.35);
 }
 .admin-shell .badge-warning, .admin-shell [data-status="pending"], .admin-shell [data-status="booked"] {
-  background: oklch(0.84 0.14 80 / 0.20); color: var(--admin-warning); border: 1px solid oklch(0.84 0.14 80 / 0.4);
+  background: oklch(0.84 0.14 80 / 0.16); color: var(--admin-warning); border: 1px solid oklch(0.84 0.14 80 / 0.35);
 }
 .admin-shell .badge-danger, .admin-shell [data-status="rejected"], .admin-shell [data-status="cancelled"] {
-  background: oklch(0.72 0.18 20 / 0.20); color: var(--admin-danger); border: 1px solid oklch(0.72 0.18 20 / 0.4);
+  background: oklch(0.72 0.18 20 / 0.16); color: var(--admin-danger); border: 1px solid oklch(0.72 0.18 20 / 0.35);
 }
 .admin-shell .badge-info, .admin-shell [data-status="open"] {
-  background: oklch(0.78 0.13 230 / 0.20); color: var(--admin-info); border: 1px solid oklch(0.78 0.13 230 / 0.4);
+  background: oklch(0.78 0.13 230 / 0.16); color: var(--admin-info); border: 1px solid oklch(0.78 0.13 230 / 0.35);
 }
 .admin-shell [role="dialog"], .admin-shell [data-radix-popper-content-wrapper] > * {
-  backdrop-filter: blur(22px) saturate(170%);
+  backdrop-filter: blur(22px) saturate(150%);
 }
-.admin-shell [class*="text-[#d4af37]"], .admin-shell [class*="text-gold"] { color: var(--admin-cyan) !important; }
-.admin-shell [class*="bg-[#d4af37]"] { background: var(--admin-glow) !important; color: oklch(0.16 0.05 252) !important; }
-.admin-shell [class*="border-[#d4af37]"] { border-color: oklch(0.80 0.13 200 / 0.45) !important; }
 
 :root:not(.dark) .admin-shell {
   --foreground: oklch(0.22 0.06 252);
@@ -645,35 +613,26 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
   --card-foreground: oklch(0.22 0.06 252);
   --secondary: oklch(1 0 0 / 0.55);
   --muted: oklch(1 0 0 / 0.5);
-  --border: oklch(1 0 0 / 0.7);
+  --border: oklch(0.20 0.06 260 / 0.10);
   --input: oklch(0.22 0.06 252 / 0.16);
-  --popover: oklch(1 0 0 / 0.92);
+  --popover: oklch(1 0 0 / 0.95);
   --popover-foreground: oklch(0.22 0.06 252);
-  --accent: oklch(0.55 0.14 215);
-  --primary: oklch(0.55 0.15 225);
-  --primary-foreground: oklch(0.99 0 0);
-  --gold: oklch(0.55 0.14 215);
+  --accent: oklch(0.62 0.13 80);
+  --primary: oklch(0.62 0.13 80);
+  --primary-foreground: oklch(0.16 0.05 252);
 }
-:root:not(.dark) .admin-shell.dash-bg {
-  background:
-    radial-gradient(800px 520px at 90% -5%, oklch(0.85 0.10 200 / 0.75), transparent 60%),
-    radial-gradient(700px 500px at 5% 15%, oklch(0.85 0.09 285 / 0.6), transparent 60%),
-    radial-gradient(900px 600px at 50% 110%, oklch(0.86 0.09 240 / 0.7), transparent 60%),
-    oklch(0.97 0.01 230);
-}
-:root:not(.dark) .admin-shell .dash-header { background: oklch(1 0 0 / 0.55); }
-:root:not(.dark) .admin-shell .dash-card,
 :root:not(.dark) .admin-shell .admin-side-nav {
-  background: linear-gradient(145deg, oklch(1 0 0 / 0.75), oklch(1 0 0 / 0.45));
-  border-color: oklch(1 0 0 / 0.8);
-  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.9), 0 18px 40px -24px oklch(0.40 0.10 250 / 0.35);
+  background: linear-gradient(155deg, #ffffff, #fdfefe 60%, #fbfcfe);
+  border-color: oklch(0.20 0.06 260 / 0.09);
+  box-shadow: 0 18px 44px -30px oklch(0.20 0.06 260 / 0.35), inset 0 1px 0 #fff;
 }
-:root:not(.dark) .admin-shell .admin-workspace thead { background: oklch(1 0 0 / 0.6); }
+:root:not(.dark) .admin-shell .admin-workspace thead { background: oklch(0.20 0.06 260 / 0.04); }
 :root:not(.dark) .admin-shell .admin-workspace tbody tr + tr td { border-top-color: oklch(0.22 0.06 252 / 0.07); }
+:root:not(.dark) .admin-shell .admin-workspace tbody tr:hover { background: oklch(0.62 0.13 80 / 0.08); }
 :root:not(.dark) .admin-shell .admin-workspace input,
 :root:not(.dark) .admin-shell .admin-workspace select,
-:root:not(.dark) .admin-shell .admin-workspace textarea { background-color: oklch(1 0 0 / 0.7); }
+:root:not(.dark) .admin-shell .admin-workspace textarea { background-color: oklch(0.20 0.06 260 / 0.03); }
 :root:not(.dark) .admin-shell .admin-workspace select option { background: oklch(1 0 0); }
-:root:not(.dark) .admin-shell [role="tablist"] { background: oklch(1 0 0 / 0.55); }
+:root:not(.dark) .admin-shell [role="tablist"] { background: oklch(0.20 0.06 260 / 0.04); }
 .text-edit-mode *:hover { outline: 1px dashed var(--accent); outline-offset: 2px; cursor: text; }
 .text-edit-mode [data-text-edit-ui] *:hover { outline: none; cursor: pointer; }
