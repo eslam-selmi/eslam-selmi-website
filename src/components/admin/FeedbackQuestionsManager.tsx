@@ -36,10 +36,17 @@ export function FeedbackQuestionsManager() {
   }
   async function move(i: number, d: -1 | 1) {
     const a = qs[i], b = qs[i + d]; if (!b) return;
-    await Promise.all([
-      supabase.from("feedback_questions").update({ sort_order: b.sort_order }).eq("id", a.id),
-      supabase.from("feedback_questions").update({ sort_order: a.sort_order }).eq("id", b.id),
-    ]);
+    // Sequential swap through a temporary slot so the two rows never share a number.
+    const temp = Math.max(...qs.map((q) => q.sort_order)) + 1000;
+    const steps = [
+      { id: a.id, sort_order: temp },
+      { id: b.id, sort_order: a.sort_order },
+      { id: a.id, sort_order: b.sort_order },
+    ];
+    for (const s of steps) {
+      const { error } = await supabase.from("feedback_questions").update({ sort_order: s.sort_order }).eq("id", s.id);
+      if (error) { toast.error(error.message); break; }
+    }
     void load();
   }
   async function remove(q: Q) {

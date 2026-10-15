@@ -1,6 +1,6 @@
 import { BookingDialog } from "@/components/booking/BookingDialog";
 import { TraineeReviews } from "@/components/TraineeReviews";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouterState } from "@tanstack/react-router";
 import { motion, AnimatePresence, useScroll, useTransform, MotionConfig } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -721,7 +721,7 @@ export function Nav({
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
   const handleThemeToggle = onThemeToggle ?? ctxToggle;
-  const pathname = typeof window !== "undefined" ? window.location.pathname : "/";
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isHome = pathname === "/";
   const hashHref = (id: string) => (isHome ? `#${id}` : `/#${id}`);
   return (

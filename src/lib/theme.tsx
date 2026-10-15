@@ -14,7 +14,7 @@ function readInitial(): Theme {
 function applyTheme(t: Theme) {
   const el = document.documentElement;
   el.classList.toggle("dark", t === "dark");
-  el.style.backgroundColor = t === "dark" ? "#0b1736" : "#f5f7fb";
+  el.style.removeProperty("background-color");
   el.style.colorScheme = t;
 }
 

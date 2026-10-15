@@ -2,7 +2,7 @@ import { createFileRoute, Link, type ErrorComponentProps } from "@tanstack/react
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/portal-auth";
-import { useEffect, useState } from "react";
+import { useI18n } from "@/lib/i18n";
 
 type Course = {
   id: string;
@@ -51,7 +51,7 @@ export const Route = createFileRoute("/c/$slug")({
 function WhiteLabelCoursePage() {
   const { slug } = Route.useParams();
   const { user } = useAuth();
-  const [lang, setLang] = useState<"ar" | "en">("ar");
+  const { lang, setLang } = useI18n();
 
   const { data: course, isLoading } = useQuery({
     queryKey: ["wl-course", slug],
@@ -69,10 +69,6 @@ function WhiteLabelCoursePage() {
       return data as Course | null;
     },
   });
-
-  useEffect(() => {
-    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
-  }, [lang]);
 
   const t = (ar: string, en: string) => (lang === "ar" ? ar : en);
   const accent = course?.brand_primary_color || "#0b1736";

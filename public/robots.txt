@@ -3,5 +3,8 @@ Allow: /
 Disallow: /admin
 Disallow: /portal
 Disallow: /auth
+Disallow: /trainer
+Disallow: /onboarding
+Disallow: /account
 
 Sitemap: https://eslam-selmi.lovable.app/sitemap.xml
