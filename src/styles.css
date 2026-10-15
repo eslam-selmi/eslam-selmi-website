@@ -507,62 +507,24 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 /* Gold CTAs keep their navy ink */
 :root:not(.dark) .dash-shell [class*="text-[#0b1736]"] { color: #0b1736; }
 
-/* Administration has its own always-light work surface, independent of public theme. */
-.admin-shell {
-  --background: oklch(0.97 0.006 230); --foreground: oklch(0.25 0.045 252);
-  --card: oklch(1 0 0); --card-foreground: var(--foreground);
-  --primary: oklch(0.38 0.09 240); --primary-foreground: oklch(1 0 0);
-  --accent: oklch(0.55 0.105 210); --accent-foreground: oklch(1 0 0);
-  --gold: var(--accent); --gold-soft: oklch(0.74 0.07 205); --admin-gold: var(--accent);
-  --secondary: oklch(0.94 0.014 230); --secondary-foreground: var(--foreground);
-  --muted: var(--secondary); --muted-foreground: oklch(0.48 0.025 245);
-  --border: oklch(0.88 0.012 230); --input: var(--border); --ring: var(--accent);
-  --popover: var(--card); --popover-foreground: var(--foreground);
-  --admin-nav: oklch(0.23 0.05 252); --admin-nav-ink: oklch(0.97 0.005 230);
-  --admin-success: oklch(0.43 0.11 160); --admin-warning: oklch(0.48 0.11 70);
-  --admin-danger: oklch(0.5 0.17 25); --admin-info: oklch(0.48 0.11 235);
-  --admin-shadow: 0 4px 18px oklch(0.22 0.04 250 / 0.05);
-  background: var(--background); color: var(--foreground); font-feature-settings: "tnum" 1;
-}
-.admin-shell > .dash-grid, .admin-shell > .bg-aurora { display:none; }
-.admin-shell .dash-header { background: var(--card); border-color:var(--border); backdrop-filter:none; }
-.admin-shell .dash-header > .absolute { display:none; }
-.admin-shell [class*="text-white"] { color:var(--foreground); }
-.admin-shell [class*="text-white/"] { color:var(--muted-foreground); }
-.admin-shell [class*="border-white/"] { border-color:var(--border); }
-.admin-shell [class*="bg-white/"] { background-color:var(--secondary); }
-.admin-shell [class*="divide-white/"] > * + * { border-color:var(--border); }
-.admin-shell .dash-card { background:var(--card); border:1px solid var(--border); border-radius:8px; box-shadow:var(--admin-shadow); backdrop-filter:none; }
-.admin-shell .dash-card::before, .admin-shell .dash-card::after { display:none; }
-.admin-shell .admin-side-nav { background:var(--admin-nav); color:var(--admin-nav-ink); border:0; border-radius:8px; padding:20px 12px; box-shadow:none; }
-.admin-shell .admin-side-nav [class*="text-white"] { color:var(--admin-nav-ink); }
-.admin-shell .admin-side-nav [class*="text-white/"] { color:color-mix(in oklab,var(--admin-nav-ink) 65%,transparent); }
-.admin-shell .admin-side-nav button { border-radius:6px; background:transparent; }
-.admin-shell .admin-side-nav button:hover { background:color-mix(in oklab,var(--admin-nav-ink) 10%,transparent); }
-.admin-shell .admin-side-nav button[aria-current="page"], .admin-shell .admin-side-nav button[data-active="true"] { background:var(--admin-nav-ink); color:var(--admin-nav); box-shadow:none; font-weight:600; }
-.admin-shell .admin-side-nav button[aria-current="page"] * { color:inherit; }
-.admin-shell .admin-workspace { display:flex; flex-direction:column; gap:24px; }
-.admin-shell [role="tablist"] { background:var(--secondary); border-radius:6px; padding:4px; gap:4px; }
-.admin-shell [role="tab"] { border-radius:4px; color:var(--muted-foreground); }
-.admin-shell [role="tab"][data-state="active"] { background:var(--card); color:var(--primary); box-shadow:var(--admin-shadow); }
+/* Administration inherits the trainee dashboard theme and glass surfaces. */
+.admin-workspace { display:flex; flex-direction:column; gap:24px; }
+.dashboard-nav-item { border:1px solid transparent; border-radius:12px; color:color-mix(in oklab,var(--foreground) 70%,transparent); background:transparent; }
+.dashboard-nav-item:hover { background:color-mix(in oklab,var(--foreground) 5%,transparent); color:var(--foreground); }
+.dashboard-nav-item[aria-current="page"] { background:color-mix(in oklab,var(--gold) 15%,transparent); color:var(--gold); border-color:color-mix(in oklab,var(--gold) 30%,transparent); }
+.dashboard-nav-badge { background:color-mix(in oklab,var(--foreground) 10%,transparent); color:color-mix(in oklab,var(--foreground) 80%,transparent); }
 .admin-shell table { width:100%; border-collapse:separate; border-spacing:0; }
-.admin-shell thead { background:var(--secondary); color:var(--muted-foreground); }
-.admin-shell th { font-size:12px; font-weight:600; padding:14px 16px; border-bottom:1px solid var(--border); }
+.admin-shell th { font-size:12px; font-weight:600; padding:14px 16px; border-bottom:1px solid var(--border); color:var(--muted-foreground); }
 .admin-shell td { padding:16px; }
 .admin-shell tbody tr + tr td { border-top:1px solid var(--border); }
-.admin-shell tbody tr:hover { background:var(--secondary); }
-.admin-shell input, .admin-shell select, .admin-shell textarea { background:var(--card); color:var(--foreground); border-color:var(--input); border-radius:6px; accent-color:var(--accent); }
-.admin-shell select option { background:var(--card); color:var(--foreground); }
-.admin-shell input:focus-visible, .admin-shell textarea:focus-visible, .admin-shell select:focus-visible { outline:2px solid var(--ring); outline-offset:2px; }
-.admin-shell .badge-success { color:var(--admin-success); background:color-mix(in oklab,var(--admin-success) 10%,var(--card)); }
-.admin-shell .badge-warning { color:var(--admin-warning); background:color-mix(in oklab,var(--admin-warning) 10%,var(--card)); }
-.admin-shell .badge-danger { color:var(--admin-danger); background:color-mix(in oklab,var(--admin-danger) 10%,var(--card)); }
-.admin-shell .badge-info { color:var(--admin-info); background:color-mix(in oklab,var(--admin-info) 10%,var(--card)); }
-:root:not(.dark) .admin-shell { color:var(--foreground); }
-:root:not(.dark) .admin-shell [class*="text-white"] { color:var(--foreground); }
-:root:not(.dark) .admin-shell [class*="text-white/"] { color:var(--muted-foreground); }
-:root:not(.dark) .admin-shell .admin-side-nav [class*="text-white"] { color:var(--admin-nav-ink); }
-.admin-shell .premium-dialog { background:var(--card); color:var(--foreground); border-color:var(--border); }
+.admin-shell tbody tr:hover { background:color-mix(in oklab,var(--foreground) 4%,transparent); }
+.admin-shell input:not([type="checkbox"]):not([type="radio"]):not([type="file"]), .admin-shell select, .admin-shell textarea { background:color-mix(in oklab,var(--foreground) 3%,transparent); color:var(--foreground); border-color:var(--input); border-radius:12px; }
+.admin-shell select option { background:var(--popover); color:var(--popover-foreground); }
+.admin-shell [role="tablist"] { background:color-mix(in oklab,var(--foreground) 3%,transparent); border:1px solid var(--border); border-radius:12px; }
+.admin-shell [role="tab"][data-state="active"] { background:color-mix(in oklab,var(--gold) 15%,transparent); color:var(--gold); border:1px solid color-mix(in oklab,var(--gold) 30%,transparent); box-shadow:none; }
+.dashboard-search { background:color-mix(in oklab,var(--foreground) 3%,transparent); }
+.dashboard-outline { background:color-mix(in oklab,var(--foreground) 3%,transparent); border-color:var(--input); color:var(--foreground); border-radius:12px; }
+.dashboard-outline:hover { background:color-mix(in oklab,var(--foreground) 10%,transparent); border-color:color-mix(in oklab,var(--gold) 40%,transparent); }
 
 /* Fixed-format print document. All colours are document-specific semantic tokens. */
 .certificate-sheet {
@@ -618,11 +580,6 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 .certificate-export-host { position:fixed; top:0; left:-20000px; width:1600px; height:1131px; pointer-events:none; }
 .text-edit-mode *:hover { outline: 1px dashed var(--accent); outline-offset: 2px; cursor: text; }
 .text-edit-mode [data-text-edit-ui] *:hover { outline: none; cursor: pointer; }
-/* Sidebar contrast must not inherit the light workspace's muted ink. */
-.admin-shell .admin-side-nav .text-muted-foreground { color:color-mix(in oklab,var(--admin-nav-ink) 78%,transparent); }
-.admin-shell .admin-side-nav button[aria-current="page"] .text-muted-foreground { color:var(--admin-nav); }
-.admin-shell .admin-side-nav p.text-muted-foreground { color:color-mix(in oklab,var(--admin-nav-ink) 60%,transparent); }
-.admin-shell .admin-side-nav button:not([aria-current="page"]) .bg-secondary { background:color-mix(in oklab,var(--admin-nav-ink) 12%,transparent); }
 .certificate-main { top:225px; }
 .certificate-rule { margin:28px auto 28px; }
 .certificate-sheet .certificate-student { padding:16px 0 12px; }
