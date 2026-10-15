@@ -11,3 +11,4 @@
 
 - Arabic and English certificates share a fixed-size document in `components/certificates`; the export utility embeds local fonts and media before capture to eliminate network/font races.
 - Site logo, public portrait, contact links and footer copy come from `site_content` under `site.profile` through shared query options; all displayed branding and new certificate exports consume that setting without changing login identity or existing issued PDFs.
+- Public CMS read policies use separate anon visibility-only and authenticated admin-aware scopes; anonymous policies must not call authenticated-only role functions, so published content remains accessible to signed-out visitors.
