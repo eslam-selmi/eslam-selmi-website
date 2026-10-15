@@ -718,6 +718,7 @@ export type Database = {
           brand_primary_color: string | null
           brand_tagline_ar: string | null
           brand_tagline_en: string | null
+          certificate_settings: Json
           course_goals: string | null
           cover_emoji: string | null
           created_at: string
@@ -745,6 +746,7 @@ export type Database = {
           brand_primary_color?: string | null
           brand_tagline_ar?: string | null
           brand_tagline_en?: string | null
+          certificate_settings?: Json
           course_goals?: string | null
           cover_emoji?: string | null
           created_at?: string
@@ -772,6 +774,7 @@ export type Database = {
           brand_primary_color?: string | null
           brand_tagline_ar?: string | null
           brand_tagline_en?: string | null
+          certificate_settings?: Json
           course_goals?: string | null
           cover_emoji?: string | null
           created_at?: string
