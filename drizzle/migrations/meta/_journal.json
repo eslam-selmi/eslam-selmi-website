@@ -15,6 +15,13 @@
       "when": 1792067304715,
       "tag": "0001_course_featured_reviews",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792095595172,
+      "tag": "0002_restore_public_homepage_content_access",
+      "breakpoints": true
     }
   ]
 }
