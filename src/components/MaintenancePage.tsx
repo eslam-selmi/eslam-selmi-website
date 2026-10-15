@@ -92,7 +92,7 @@ export function MaintenancePage({ message, until }: Props) {
                   "0 0 0 1px oklch(0.78 0.14 90 / 0.35), 0 0 40px -6px oklch(0.78 0.14 90 / 0.55)",
               }}
             >
-              <img src={brandLogo} alt="Eslam Selmi" width={96} height={96} className="w-full h-full object-contain p-3" />
+              <img src={profile.logo} alt="Eslam Selmi" width={96} height={96} className="w-full h-full object-contain p-3" />
             </div>
           </div>
 

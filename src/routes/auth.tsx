@@ -11,6 +11,7 @@ import {
   validatePhoneForCountry,
 } from "@/lib/countries";
 import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
+import { useSiteProfile } from "@/lib/site-profile";
 const brandLogo = brandLogoAsset.url;
 async function fetchAdminWhatsApp(): Promise<string> {
   const { data } = await supabase.rpc("get_activation_contact");
@@ -31,6 +32,7 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthPage() {
+  const { profile: siteProfile } = useSiteProfile();
   const search = Route.useSearch();
   const [authRole, setAuthRole] = useState<"admin" | "trainee">(
     search.role === "admin" ? "admin" : "trainee",
@@ -216,7 +218,7 @@ function AuthPage() {
             {/* Brand */}
             <div className="flex flex-col items-center text-center mb-8">
               <div className="h-14 w-14 rounded-xl border border-white/12 bg-white/[0.04] flex items-center justify-center mb-4">
-                <img src={brandLogo} alt="" className="h-9 w-auto opacity-90" />
+                <img src={siteProfile.logo} alt="" className="h-9 w-auto opacity-90" />
               </div>
               <h1 className="font-semibold tracking-tight text-white text-[21px] sm:text-[23px]">
                 {isAdminView ? "لوحة التحكم" : mode === "login" ? "تسجيل الدخول" : "إنشاء حساب"}
