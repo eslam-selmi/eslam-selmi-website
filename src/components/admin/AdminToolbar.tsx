@@ -88,7 +88,7 @@ export function AdminToolbar({
           onChange={(e) => { setQ(e.target.value); setOpen(true); }}
           onFocus={() => setOpen(true)}
           placeholder={t("ابحث عن متدرب (الاسم، البريد، الهاتف) أو كورس…", "Search trainees (name, email, phone) or courses…")}
-          className="w-full h-11 ps-9 pe-9 rounded-xl bg-white/5 border border-white/10 focus:border-[var(--gold)] outline-none text-sm text-white placeholder:text-white/40"
+          className="w-full h-11 ps-9 pe-9 rounded-md bg-card border border-input focus:border-ring outline-none text-sm text-foreground placeholder:text-muted-foreground"
         />
         {q && (
           <Button type="button" size="icon" variant="ghost" onClick={() => setQ("")} className="absolute top-1/2 -translate-y-1/2 end-1 h-9 w-9 text-muted-foreground" aria-label={t("مسح البحث", "Clear search")}>
@@ -96,7 +96,7 @@ export function AdminToolbar({
           </Button>
         )}
         {open && q.trim().length >= 2 && (
-          <div className="absolute z-40 mt-2 w-full rounded-xl border border-white/10 bg-[#0e1d44] shadow-2xl overflow-hidden max-h-96 overflow-y-auto">
+          <div className="absolute z-40 mt-2 w-full rounded-md border border-border bg-popover text-popover-foreground shadow-lg overflow-hidden max-h-96 overflow-y-auto">
             {!has && <p className="p-4 text-sm text-white/50">{t("لا توجد نتائج", "No results")}</p>}
             {results.trainees.length > 0 && (
               <p className="px-3 pt-3 pb-1 text-[10px] uppercase tracking-widest text-white/40 font-bold">{t("المتدربون", "Trainees")}</p>
@@ -128,7 +128,7 @@ export function AdminToolbar({
       </div>
       <Button type="button" variant="outline"
         onClick={() => exportEnrollmentsCsv(enrollments)}
-        className="h-11 px-4 rounded-xl border-white/15 bg-white/5 text-foreground text-sm font-semibold inline-flex items-center justify-center gap-2 hover:bg-white/10 hover:border-white/25 backdrop-blur-sm"
+        className="h-11 px-4 rounded-md border-border bg-card text-foreground text-sm font-semibold inline-flex items-center justify-center gap-2 hover:bg-secondary"
       >
         <Download className="w-4 h-4" />
         {t("تصدير CSV", "Export CSV")}

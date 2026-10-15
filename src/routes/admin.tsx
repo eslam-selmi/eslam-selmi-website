@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/portal-auth";
 import { PortalShell } from "@/components/PortalShell";
@@ -131,6 +131,8 @@ function AdminPage() {
 
   const { user, role, loading } = useAuth();
   const nav = useNavigate();
+  const navigation = useRef(nav);
+  navigation.current = nav;
   const search = Route.useSearch();
   const [tabState, setTabState] = useState<
     | "overview"
@@ -180,7 +182,7 @@ function AdminPage() {
   const setEditingCourse = (v: Course | null) => setEditingCourseId(v ? v.id : null);
 
   useEffect(() => {
-    nav({
+    navigation.current({
       to: "/admin",
       search: {
         tab: tabState,
@@ -189,7 +191,7 @@ function AdminPage() {
       },
       replace: true,
     });
-  }, [tabState, drawerId, editingCourseId, nav]);
+  }, [tabState, drawerId, editingCourseId]);
 
   useEffect(() => {
     if (!loading && !user) nav({ to: "/auth" });
