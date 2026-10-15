@@ -1,22 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/lib/portal-auth";
-import { PortalShell } from "@/components/PortalShell";
 import { useI18n } from "@/lib/i18n";
-import { useTranslatedTexts } from "@/lib/useTranslatedTexts";
-import { toast } from "sonner";
-import { findCountry } from "@/lib/countries";
-import { safeHref } from "@/lib/safe-url";
-import { Clock, CheckCircle2, XCircle, Download, Upload, BookOpen, Wallet, Loader2,
-  ExternalLink, Sparkles, ArrowRight, Calendar, Layers, StickyNote, Link as LinkIcon,
-  Paperclip, Check, ChevronLeft, PlayCircle, PhoneOutgoing, Award, GraduationCap, Hourglass,
-  FileText, Send, AlertCircle, X, Star, UserCog, Camera, Save } from "lucide-react";
-import { MediaViewerModal, type MediaItem } from "@/components/MediaViewerModal";
-import { TraineeSupportButton } from "@/components/SupportTickets";
-import { TraineePackagesSection } from "@/components/TraineePackagesSection";
-import { AccountSettingsModal } from "@/components/AccountSettingsModal";
-import type { Course, Enrollment, Profile, ModuleRow } from "./types";
+import { Loader2, Check, AlertCircle, X } from "lucide-react";
+import type { Course } from "./types";
 
 
 export function EnrollModal({ course, onClose, onConfirm }: { course: Course; onClose: () => void; onConfirm: (code?: string) => void }) {
