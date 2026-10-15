@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import QRCode from "qrcode";
 import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
 import { useSiteProfile } from "@/lib/site-profile";
+import { certText, defaultCertificateSettings, type CertTextKey, type CertificateSettings } from "@/lib/certificate-settings";
 import "@fontsource/ibm-plex-sans-arabic/arabic-400.css";
 import "@fontsource/ibm-plex-sans-arabic/arabic-600.css";
 import "@fontsource/manrope/latin-400.css";
@@ -22,6 +23,7 @@ export type CertificatePayload = {
   signerTitle?: string;
   courseLogoUrl?: string | null;
   courseBrandName?: string | null;
+  settings?: CertificateSettings;
 };
 export const CERTIFICATE_WIDTH = 1600;
 export const CERTIFICATE_HEIGHT = 1131;
@@ -31,33 +33,36 @@ export function CertificateDocument({ payload: p, qr, logo = brandLogoAsset.url,
   payload: CertificatePayload; qr?: string; logo?: string; courseLogo?: string;
 }) {
   const ar = p.lang === "ar";
+  const s = p.settings ?? defaultCertificateSettings;
+  const tx = (k: CertTextKey) => certText(s, p.lang, k);
+  const on = s.toggles;
   const date = p.issueDate.toLocaleDateString(ar ? "ar-EG" : "en-GB", { year: "numeric", month: "long", day: "numeric" });
-  return <article className={`certificate-sheet ${ar ? "certificate-ar" : "certificate-en"}`} dir={ar ? "rtl" : "ltr"} aria-label={ar ? "شهادة إتمام التدريب" : "Certificate of completion"}>
-    <div className="certificate-spine" aria-hidden="true"><span>ESLAM SELMI</span><span>TRAINING & DEVELOPMENT</span></div>
-    <svg className="certificate-lines" viewBox="0 0 1600 1131" aria-hidden="true">
+  const style = { "--certificate-paper": s.colors.paper, "--certificate-ink": s.colors.ink, "--certificate-accent": s.colors.accent, "--certificate-line": s.colors.line } as CSSProperties;
+  return <article className={`certificate-sheet ${ar ? "certificate-ar" : "certificate-en"}`} style={style} dir={ar ? "rtl" : "ltr"} aria-label={tx("title")}>
+    {on.showSpine && <div className="certificate-spine" aria-hidden="true"><span>{certText(s, "en", "brandName")}</span><span>{certText(s, "en", "brandTagline")}</span></div>}
+    {on.showLines && <svg className="certificate-lines" viewBox="0 0 1600 1131" aria-hidden="true">
       {Array.from({ length: 24 }, (_, i) => <path key={i} d={`M${1110+i*19} 0 Q${880+i*21} 180 ${1200+i*16} 360 T${1440+i*12} 1131`} fill="none" stroke="currentColor" strokeWidth="1" />)}
-    </svg>
-    <div className="certificate-inner-frame" aria-hidden="true" />
+    </svg>}
+    {on.showFrame && <div className="certificate-inner-frame" aria-hidden="true" />}
     <header className="certificate-header">
-      <div className="certificate-brand"><img src={logo} alt="" /><div><strong>{ar ? "إسلام سلمي" : "ESLAM SELMI"}</strong><span>{ar ? "التدريب والتطوير" : "TRAINING & DEVELOPMENT"}</span></div></div>
-      <div className="certificate-number"><span>{ar ? "رقم الشهادة" : "CREDENTIAL ID"}</span><b dir="ltr">{p.certificateId}</b></div>
+      {on.showBrand && <div className="certificate-brand"><img src={logo} alt="" /><div><strong>{tx("brandName")}</strong><span>{tx("brandTagline")}</span></div></div>}
     </header>
     <main className="certificate-main">
-      <p className="certificate-eyebrow">{ar ? "تقديرٌ للإنجاز · استثمارٌ في المستقبل" : "RECOGNISING ACHIEVEMENT"}</p>
-      <h1>{ar ? "شهادة إتمام" : "CERTIFICATE"}</h1>
-      <p className="certificate-subtitle">{ar ? "برنامج تدريبي" : "OF COMPLETION"}</p>
+      <p className="certificate-eyebrow">{tx("eyebrow")}</p>
+      <h1 style={{ fontSize: `${(ar ? 86 : 76) * s.titleScale / 100}px` }}>{tx("title")}</h1>
+      <p className="certificate-subtitle">{tx("subtitle")}</p>
       <div className="certificate-rule" />
-      <p className="certificate-intro">{ar ? "تُمنح هذه الشهادة إلى" : "THIS CERTIFICATE IS AWARDED TO"}</p>
-      <h2 className="certificate-student">{p.studentName.replace(/"/g, "")}</h2>
-      <p className="certificate-bridge">{ar ? "لإتمام البرنامج التدريبي بنجاح" : "For successfully completing the training programme"}</p>
-      <h3 className="certificate-course">{p.courseTitle}</h3>
-      {Number(p.totalHours) > 0 && <p className="certificate-hours"><strong>{p.totalHours}</strong><span>{ar ? "ساعة تدريبية" : "TRAINING HOURS"}</span></p>}
-      {p.courseBrandName && <div className="certificate-partner">{courseLogo && <img src={courseLogo} alt="" />}<span>{p.courseBrandName}</span></div>}
+      <p className="certificate-intro">{tx("intro")}</p>
+      <h2 className="certificate-student" style={{ fontSize: `${49 * s.nameScale / 100}px` }}>{p.studentName.replace(/"/g, "")}</h2>
+      <p className="certificate-bridge">{tx("bridge")}</p>
+      <h3 className="certificate-course">{s[p.lang].courseTitle?.trim() || p.courseTitle}</h3>
+      {on.showHours && Number(p.totalHours) > 0 && <p className="certificate-hours"><strong>{p.totalHours}</strong><span>{tx("hoursLabel")}</span></p>}
+      {on.showPartner && p.courseBrandName && <div className="certificate-partner">{courseLogo && <img src={courseLogo} alt="" />}<span>{p.courseBrandName}</span></div>}
     </main>
     <footer className="certificate-footer">
-      <div className="certificate-date"><span>{ar ? "تاريخ الإصدار" : "DATE OF ISSUE"}</span><strong>{date}</strong><p>eslam-selmi.com</p></div>
-      <div className="certificate-signature"><div className="certificate-signature-mark">Eslam Selmi</div><strong>{p.signerName || (ar ? "م. إسلام سلمي" : "Eng. Eslam Selmi")}</strong><span>{p.signerTitle || (ar ? "المؤسس والمدرب" : "Founder & Trainer")}</span></div>
-      <div className="certificate-verification">{qr && <img src={qr} alt={ar ? "رمز التحقق من الشهادة" : "Certificate verification QR code"} />}<div><strong>{ar ? "التحقق من الشهادة" : "VERIFY CREDENTIAL"}</strong><span>{ar ? "امسح الرمز للتحقق من الأصالة" : "Scan to verify authenticity"}</span></div></div>
+      <div className="certificate-date">{on.showDate && <><span>{tx("dateLabel")}</span><strong>{date}</strong></>}<p>{tx("website")}</p></div>
+      <div className="certificate-signature">{on.showSignature && <><div className="certificate-signature-mark">{tx("signatureMark")}</div><strong>{p.signerName || tx("signerName")}</strong><span>{p.signerTitle || tx("signerTitle")}</span></>}</div>
+      <div className="certificate-verification">{on.showQr && <>{qr && <img src={qr} alt={tx("verifyTitle")} />}<div><strong>{tx("verifyTitle")}</strong><span>{tx("verifyHint")}</span></div></>}</div>
     </footer>
   </article>;
 }

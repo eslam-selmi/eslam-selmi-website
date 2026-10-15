@@ -61,7 +61,7 @@ export async function generateCertificatePdf(p: CertificatePayload): Promise<Blo
     const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4", compress: true });
     pdf.setProperties({ title: `${p.lang === "ar" ? "شهادة إتمام" : "Certificate of completion"} — ${p.studentName}`, author: "Eslam Selmi", subject: p.courseTitle });
     pdf.addImage(image, "PNG", 0, 0, 297, 210, undefined, "FAST");
-    pdf.link(p.lang === "ar" ? 20 : 235, 162, 52, 38, { url: verificationUrl(p.certificateId) });
+    if (p.settings?.toggles.showQr !== false) pdf.link(p.lang === "ar" ? 20 : 235, 162, 52, 38, { url: verificationUrl(p.certificateId) });
     return pdf.output("blob");
   } catch (error) {
     throw new Error(`Certificate render failed (${p.lang}): ${error instanceof Error ? error.message : String(error)}`);

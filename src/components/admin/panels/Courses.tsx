@@ -60,6 +60,7 @@ import { TraineeDrawer } from "@/components/admin/TraineeDrawer";
 import { ExecutiveOverview } from "@/components/admin/ExecutiveOverview";
 import { CourseFeedbackPanel } from "@/components/admin/CourseFeedbackPanel";
 import { Button } from "@/components/ui/button";
+import { CourseCertificateSettings } from "./CourseCertificateSettings";
 import { CourseAssignmentsAdmin } from "@/components/admin/panels/CourseAssignments";
 import { CourseContent, CourseSessions, CourseSettings } from "@/components/admin/panels/CourseContent";
 import { Course, EnrollmentRow } from "@/components/admin/panels/types";
@@ -410,7 +411,7 @@ export function CourseEditor({
   const { lang } = useI18n();
   const t = (a: string, b: string) => (lang === "ar" ? a : b);
 
-  const [section, setSection] = useState<"content" | "assignments" | "sessions" | "settings">(
+  const [section, setSection] = useState<"content" | "assignments" | "sessions" | "settings" | "certificate">(
     "content",
   );
   return (
@@ -440,6 +441,7 @@ export function CourseEditor({
               icon: Calendar,
             },
             { id: "settings", label: t("إعدادات", "Settings"), icon: Settings2 },
+            { id: "certificate", label: t("إعدادات الشهادة", "Certificate"), icon: Settings2 },
           ].map((tb) => (
             <button
               key={tb.id}
@@ -459,6 +461,7 @@ export function CourseEditor({
           {section === "content" && <CourseContent courseId={course.id} />}
           {section === "assignments" && <CourseAssignmentsAdmin courseId={course.id} />}
           {section === "sessions" && <CourseSessions courseId={course.id} />}
+          {section === "certificate" && <CourseCertificateSettings course={course} />}
           {section === "settings" && (
             <CourseSettings
               course={course}
