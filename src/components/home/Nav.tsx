@@ -102,6 +102,7 @@ import snap13Asset from "@/assets/snapshots/snap-13.jpg.asset.json";
 import snap15Asset from "@/assets/snapshots/snap-15.jpg.asset.json";
 import snap16Asset from "@/assets/snapshots/snap-16.jpg.asset.json";
 import { LINKEDIN, NAV, NAV_FULL, ThemeMode, openCalendly } from "@/components/home/data";
+import { useSiteProfile } from "@/lib/site-profile";
 import { BrandMark } from "@/components/home/shared";
 
 export function Nav({
