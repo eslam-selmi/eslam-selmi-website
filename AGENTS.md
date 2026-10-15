@@ -6,3 +6,5 @@
 - New or touched data reads use `@tanstack/react-query` with explicit query keys and staleTime; realtime events invalidate those keys instead of refetching manually.
 - Hand-written row types derive from the generated `Tables<...>` types (Pick/extend) so they track schema changes.
 - Homepage text edits are stored as per-language overrides keyed by the original text in site_content `home.text_overrides` and applied to rendered text by `TextEditLayer`; this lets the admin change any text without wiring each string.
+
+- Arabic and English certificates share a fixed-size document in `components/certificates`; the export utility embeds local fonts and media before capture to eliminate network/font races.
