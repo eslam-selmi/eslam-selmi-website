@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
-import { Nav, Footer, type ThemeMode } from "@/routes/index";
+import { Nav, Footer, type ThemeMode } from "@/components/home";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
   GraduationCap,

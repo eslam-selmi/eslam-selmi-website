@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowUpLeft, CalendarDays, CircleAlert, Clock3, ShieldCheck, TicketCheck, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -15,28 +16,31 @@ export function ExecutiveOverview({ pendingEnrollments, pendingActivations, appr
 }) {
   const { lang } = useI18n();
   const t = (ar: string, en: string) => lang === "ar" ? ar : en;
-  const [bookings, setBookings] = useState<number | null>(null);
-  const [tickets, setTickets] = useState<number | null>(null);
-  const [error, setError] = useState(false);
-
-  const load = useCallback(async () => {
-    const [b, s] = await Promise.all([
-      supabase.from("consultation_slots").select("id", { count: "exact", head: true }).eq("status", "booked").gte("starts_at", new Date().toISOString()),
-      supabase.from("support_tickets").select("id", { count: "exact", head: true }).in("status", ["open", "pending_admin"]),
-    ]);
-    setError(Boolean(b.error || s.error));
-    setBookings(b.error ? null : b.count ?? 0);
-    setTickets(s.error ? null : s.count ?? 0);
-  }, []);
+  const queryClient = useQueryClient();
+  const counts = useQuery({
+    queryKey: ["admin", "overview-counts"],
+    staleTime: 30_000,
+    queryFn: async () => {
+      const [b, s] = await Promise.all([
+        supabase.from("consultation_slots").select("id", { count: "exact", head: true }).eq("status", "booked").gte("starts_at", new Date().toISOString()),
+        supabase.from("support_tickets").select("id", { count: "exact", head: true }).in("status", ["open", "pending_admin"]),
+      ]);
+      return { bookings: b.error ? null : b.count ?? 0, tickets: s.error ? null : s.count ?? 0, error: Boolean(b.error || s.error) };
+    },
+  });
+  const bookings = counts.data?.bookings ?? null;
+  const tickets = counts.data?.tickets ?? null;
+  const error = counts.isError || Boolean(counts.data?.error);
+  const load = () => counts.refetch();
 
   useEffect(() => {
-    void load();
+    const refresh = () => { void queryClient.invalidateQueries({ queryKey: ["admin", "overview-counts"] }); };
     const channel = supabase.channel("admin-overview-live")
-      .on("postgres_changes", { event: "*", schema: "public", table: "consultation_slots" }, () => { void load(); })
-      .on("postgres_changes", { event: "*", schema: "public", table: "support_tickets" }, () => { void load(); })
+      .on("postgres_changes", { event: "*", schema: "public", table: "consultation_slots" }, refresh)
+      .on("postgres_changes", { event: "*", schema: "public", table: "support_tickets" }, refresh)
       .subscribe();
     return () => { void supabase.removeChannel(channel); };
-  }, [load]);
+  }, [queryClient]);
 
   const tasks = [
     { key: "enrollments" as const, icon: Users, label: t("طلبات الانضمام", "Enrollment requests"), detail: t("بانتظار المراجعة", "Awaiting review"), count: pendingEnrollments },
