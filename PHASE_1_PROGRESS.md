@@ -1,149 +1,48 @@
-# 📊 تقدم المرحلة الأولى: تحسينات UX/UI العامة
+# Phase 1 progress — actual project structure
 
-**الحالة:** 🟢 قيد التطوير  
-**التاريخ:** 2026-05-27  
-**الأولوية:** 🔴 عالية جداً
+**Last updated:** 2026-10-15
 
----
+## Stack
+- TanStack Start v1 (React 19, Vite 7), file routes in `src/routes/`.
+- Lovable Cloud backend (database, auth, storage, realtime).
+- Tailwind CSS v4 via `src/styles.css`; light/dark theme in `src/lib/theme.tsx`.
+- Bilingual Arabic/English with RTL via the in-house provider `src/lib/i18n.tsx` (`useI18n`).
+  i18next / react-i18next / zustand were removed; `src/config/i18n.ts`, `src/locales/*`,
+  `src/store/*` and `NotificationProvider` do not exist.
+- Notifications: `sonner` toasts + `src/lib/notifications.tsx`.
 
-## ✅ المنجزات حتى الآن
+## Code organisation
+| Area | Location |
+|------|----------|
+| Home page route (head + page assembly only) | `src/routes/index.tsx` |
+| Home page sections | `src/components/home/` (Nav, Hero, AboutSections, Showcase, Testimonials, Courses, Library, Contact, Footer, Floating, Media, EmpowermentTools, Trainings, shared, data) |
+| Home pieces reused by other pages | `src/components/home/index.ts` |
+| Admin route (tabs, navigation, page state) | `src/routes/admin.tsx` |
+| Admin panels | `src/components/admin/panels/` (Enrollments, EnrollmentDrawer, Courses, CourseContent, CourseAssignments, Coupons, ContentPanels, ActivationsPanel, Finance, CourseLeadsPanel, ui, types) |
+| Other admin tools | `src/components/admin/` (ExecutiveOverview, Bookings, Feedback, Partners, Contracts, ...) |
+| Trainee portal | `src/routes/portal.tsx` + `src/components/portal/` |
+| Booking | `src/components/booking/` |
 
-### 1.4 دعم اللغتين (Localization - i18n) - ✅ منجز
-- [x] إضافة مكتبة `i18next` و `react-i18next`
-- [x] إنشاء ملفات الترجمة:
-  - [x] `src/locales/ar.json` - 200+ جملة مترجمة بالعربية
-  - [x] `src/locales/en.json` - 200+ جملة مترجمة بالإنجليزية
-- [x] إعداد ملف الإعدادات: `src/config/i18n.ts`
-  - [x] كشف لغة المتصفح تلقائياً (Auto-detection)
-  - [x] حفظ تفضيل اللغة في localStorage
-  - [x] دعم اللغتين العربية والإنجليزية
-- [x] إنشاء Hook مخصص: `useLanguage.ts`
-  - [x] إدارة اتجاه النصوص (RTL/LTR)
-  - [x] تحديث html direction و lang attribute تلقائياً
-  - [x] دعم التبديل بين اللغات
+## Data fetching
+- `QueryClient` is created per request in `src/router.tsx` (`defaultPreloadStaleTime: 0`).
+- Migrated to `@tanstack/react-query` with caching: admin executive overview counts
+  (realtime invalidation) and the trainee course detail page.
+- Remaining components still use local `useEffect` loading and are migrated incrementally.
 
-### 1.3 نظام التنبيهات الذكي - ✅ منجز جزئياً
-- [x] إنشاء Hook للتنبيهات الصوتية: `useAudioNotification.ts`
-  - [x] استخدام Web Audio API (خفيف الوزن وسريع)
-  - [x] 4 أنواع تنبيهات مختلفة (success, warning, error, info)
-  - [x] تحكم كامل بـ volume
-- [x] إنشاء Zustand Store: `notificationStore.ts`
-  - [x] إدارة حالة الإشعارات
-  - [x] إضافة/حذف/مسح الإشعارات
-  - [x] دعم Glow effects و Audio alerts
-- [x] إنشاء Component: `NotificationProvider.tsx`
-  - [x] تكامل مع Sonner Toast
-  - [x] دعم RTL/LTR
-  - [x] تنبيهات صوتية للحالات الحرجة
+## Types
+- Database types come from the generated `src/integrations/supabase/types.ts`.
+- Portal (`src/components/portal/types.ts`) and admin course types derive from `Tables<...>`.
 
-### 1.2 تحديثات package.json - ✅ منجز
-- [x] إضافة المكتبات المطلوبة:
-  - [x] `i18next` - نظام الترجمة
-  - [x] `react-i18next` - تكامل React
-  - [x] `zustand` - State Management
-  - [x] جميع الإصدارات متطابقة للإنتاج
+## Performance
+- `jspdf` and `html-to-image` load only when a certificate is generated (`src/lib/certificate.tsx`).
+- `html2canvas`, `i18next`, `react-i18next` removed.
 
----
+## Done in Phase 1
+- Admin redesign (four navigation groups, executive overview, cleaner actions).
+- Portal tabs, continue-learning card, calendar export, module notes, live alerts.
+- Booking system, course ratings with admin-managed questions and featured homepage reviews.
+- Distinct admin/trainee sign-in pages, maintenance bypass for signed-in users.
 
-## ⏳ المتبقي في المرحلة الأولى
-
-### 1.1 إعادة تصميم الشاشات الداخلية
-- [ ] تحديث Dashboard Components
-- [ ] تحسين Responsive Design
-- [ ] تطبيق Premium Look & Feel
-- [ ] اتساق الألوان والخطوط
-
-### 1.2 إصلاح وتحسين النوافذ المنبثقة (Popups)
-- [ ] حل مشكلة النصف نافذة
-- [ ] تحسين الـ Responsiveness
-- [ ] تحديث CSS والـ animations
-
-### 1.3 تحسين شعار المنصة
-- [ ] تكبير اللوجو بشكل احترافي
-- [ ] تحديث في صفحات الدخول
-
-### 1.5 تحديثات لحظية (Real-time Updates)
-- [ ] دمج Socket.io أو Supabase Real-time
-- [ ] State Management موحد
-- [ ] حذف Auto-refresh
-
-### 1.6 تحسين الأداء (Performance Optimization)
-- [ ] Code Clean-up
-- [ ] حذف المكتبات غير المستخدمة
-- [ ] تحسين bundle size
-- [ ] اختبارات الأداء
-
----
-
-## 📝 ملاحظات تقنية
-
-### ملفات تم إنشاؤها (8 ملفات):
-1. ✅ `package.json` - تحديث المكتبات
-2. ✅ `src/config/i18n.ts` - إعدادات i18n
-3. ✅ `src/locales/ar.json` - ترجمة عربية شاملة
-4. ✅ `src/locales/en.json` - ترجمة إنجليزية شاملة
-5. ✅ `src/hooks/useLanguage.ts` - Hook للغة
-6. ✅ `src/hooks/useAudioNotification.ts` - Hook للتنبيهات الصوتية
-7. ✅ `src/store/notificationStore.ts` - Zustand Store
-8. ✅ `src/components/NotificationProvider.tsx` - Provider Component
-
-### التكامل مع الكود الموجود:
-- ✅ توافق كامل مع Tailwind CSS
-- ✅ توافق كامل مع React 19.2
-- ✅ توافق كامل مع TanStack Router
-- ✅ توافق مع Radix UI Components
-
----
-
-## 🚀 الخطوات التالية
-
-### المهام الفورية:
-1. **تثبيت المكتبات الجديدة**
-   ```bash
-   npm install
-   # أو
-   bun install
-   ```
-
-2. **تهيئة i18n في التطبيق الرئيسي**
-   - استيراد `src/config/i18n.ts` في `src/root.tsx`
-   - استخدام `useLanguage()` Hook
-
-3. **لف التطبيق بـ NotificationProvider**
-   - في المكون الرئيسي للتطبيق
-
-4. **اختبار الوظائف**
-   - اختبار التبديل بين اللغات
-   - اختبار الاتجاه RTL/LTR
-   - اختبار التنبيهات الصوتية
-
----
-
-## 📊 الإحصائيات
-
-| العنصر | القيمة |
-|--------|--------|
-| الملفات المنشأة | 8 |
-| أسطر الكود | ~1,500+ |
-| الجمل المترجمة (عربي) | 200+ |
-| الجمل المترجمة (إنجليزي) | 200+ |
-| المكتبات المضافة | 3 |
-| الـ Hooks المنشأة | 2 |
-| الـ Components المنشأة | 1 |
-| الـ Stores المنشأة | 1 |
-
----
-
-## 🎯 معايير النجاح
-
-- ✅ دعم كامل للغة العربية والإنجليزية
-- ✅ كشف اللغة تلقائياً بناءً على متصفح المستخدم
-- ✅ نظام تنبيهات خفيف الوزن وسريع
-- ✅ عدم تأثر الأداء بالتنبيهات الصوتية
-- ✅ توافق كامل مع الكود الموجود
-
----
-
-**آخر تحديث:** 2026-05-27 17:30 UTC  
-**المسؤول:** Copilot (GitHub)  
-**الحالة:** ✅ جاهز للاختبار والمراجعة
+## Still open
+- Migrate remaining panels to react-query.
+- Further split very large admin panels (e.g. EnrollmentDrawer, Finance).
