@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { CheckCircle2, ShieldCheck, XCircle, Loader2, Award, Clock, Calendar, ArrowLeft } from "lucide-react";
 import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
+import { useSiteProfile } from "@/lib/site-profile";
 const brandLogo = brandLogoAsset.url;
 export const Route = createFileRoute("/verify/$id")({
   component: VerifyPage,
@@ -23,6 +24,7 @@ type VerifyResult =
   | { ok: false; error: string };
 
 function VerifyPage() {
+  const { profile } = useSiteProfile();
   const { id } = Route.useParams();
   const [state, setState] = useState<{ loading: boolean; data: VerifyResult | null; err: string | null }>({ loading: true, data: null, err: null });
 
@@ -44,7 +46,7 @@ function VerifyPage() {
 
       <header className="relative z-10 max-w-3xl mx-auto px-6 py-6 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3">
-          <img src={brandLogo} alt="" className="h-10 w-auto" />
+          <img src={profile.logo} alt="" className="h-10 w-auto" />
           <span className="text-sm tracking-widest text-white/70 uppercase">Eslam Selmi Academy</span>
         </Link>
         <Link to="/" className="text-xs text-white/60 hover:text-white flex items-center gap-1">

@@ -329,25 +329,14 @@ function AdminPage() {
 
           return (
             <div className="flex flex-col lg:flex-row gap-6">
-              {/* Mobile grouped select */}
-              <div className="lg:hidden dash-card p-2 rounded-xl">
-                <select
-                  value={tab}
-                  onChange={(e) => setTab(e.target.value as NonNullable<AdminSearch["tab"]>)}
-                  aria-label={t("القسم", "Section")}
-                  className="w-full bg-background text-foreground text-sm font-semibold h-11 px-3 rounded-md border border-border focus:border-ring outline-none"
-                >
-                  {groups.map((g) => (
-                    <optgroup key={g.id} label={g.label}>
-                      {g.items.map((it) => (
-                        <option key={it.id} value={it.id}>
-                          {it.label}
-                          {it.badge ? ` (${it.badge})` : ""}
-                        </option>
-                      ))}
-                    </optgroup>
-                  ))}
-                </select>
+              {/* Same scrolling mobile navigation as the trainee portal. */}
+              <div className="lg:hidden -mx-4 px-4 overflow-x-auto sticky top-16 z-30 py-2 dash-header backdrop-blur-xl">
+                <nav aria-label={t("أقسام الإدارة", "Administration sections")} className="flex gap-2 w-max">
+                  {groups.flatMap(g => g.items).map(item => {
+                    const Icon = item.icon;
+                    return <Button key={item.id} variant="ghost" onClick={() => setTab(item.id)} aria-current={tab === item.id ? "page" : undefined} className="dashboard-nav-item h-10 gap-1.5 px-3.5 text-xs whitespace-nowrap"><Icon className="size-3.5" />{item.label}{item.badge ? <span className="dashboard-nav-badge rounded-md px-1 text-[10px]">{item.badge}</span> : null}</Button>;
+                  })}
+                </nav>
               </div>
 
               {/* Desktop sidebar */}
