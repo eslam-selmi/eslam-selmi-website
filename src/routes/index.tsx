@@ -1,4 +1,5 @@
 import { BookingDialog } from "@/components/booking/BookingDialog";
+import { TraineeReviews } from "@/components/TraineeReviews";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion, AnimatePresence, useScroll, useTransform, MotionConfig } from "motion/react";
 import { useEffect, useRef, useState } from "react";
@@ -637,6 +638,7 @@ function Portfolio() {
       {isVisible("home.clients") && <Clients />}
       {isVisible("home.snapshots") && <Snapshots />}
       {isVisible("home.testimonials") && <Testimonials />}
+      {isVisible("home.trainee_reviews", false) && <TraineeReviews />}
       {isVisible("home.cta") && <BookCTA />}
       {isVisible("home.contact") && <Contact />}
       {isVisible("home.footer") && <Footer />}
