@@ -656,3 +656,8 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 .certificate-sheet .certificate-student { padding:16px 0 12px; }
 .certificate-sheet .certificate-course { margin-top:22px; }
 .certificate-hours { margin-top:24px!important; }
+
+/* Pulsing glow for a newly issued certificate until the trainee opens it */
+@keyframes cert-glow { 0%,100% { opacity:1; filter:drop-shadow(0 0 0 transparent); } 50% { opacity:.35; filter:drop-shadow(0 0 10px var(--gold)); } }
+.cert-glow { animation: cert-glow 1.4s ease-in-out infinite; color: var(--gold) !important; }
+@media (prefers-reduced-motion: reduce) { .cert-glow { animation: none; filter: drop-shadow(0 0 8px var(--gold)); } }
