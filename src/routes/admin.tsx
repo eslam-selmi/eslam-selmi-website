@@ -328,31 +328,20 @@ function AdminPage() {
           ];
 
           return (
-            <div className="flex flex-col lg:flex-row gap-5">
-              {/* Mobile grouped select */}
-              <div className="lg:hidden border border-border bg-card p-2 rounded-md">
-                <select
-                  value={tab}
-                  onChange={(e) => setTab(e.target.value as NonNullable<AdminSearch["tab"]>)}
-                  aria-label={t("القسم", "Section")}
-                  className="w-full bg-background text-foreground text-sm font-semibold h-11 px-3 rounded-md border border-border focus:border-ring outline-none"
-                >
-                  {groups.map((g) => (
-                    <optgroup key={g.id} label={g.label}>
-                      {g.items.map((it) => (
-                        <option key={it.id} value={it.id}>
-                          {it.label}
-                          {it.badge ? ` (${it.badge})` : ""}
-                        </option>
-                      ))}
-                    </optgroup>
-                  ))}
-                </select>
+            <div className="flex flex-col lg:flex-row gap-6">
+              {/* Same scrolling mobile navigation as the trainee portal. */}
+              <div className="lg:hidden -mx-4 px-4 overflow-x-auto sticky top-16 z-30 py-2 dash-header backdrop-blur-xl">
+                <nav aria-label={t("أقسام الإدارة", "Administration sections")} className="flex gap-2 w-max">
+                  {groups.flatMap(g => g.items).map(item => {
+                    const Icon = item.icon;
+                    return <Button key={item.id} variant="ghost" onClick={() => setTab(item.id)} aria-current={tab === item.id ? "page" : undefined} className="dashboard-nav-item h-10 gap-1.5 px-3.5 text-xs whitespace-nowrap"><Icon className="size-3.5" />{item.label}{item.badge ? <span className="dashboard-nav-badge rounded-md px-1 text-[10px]">{item.badge}</span> : null}</Button>;
+                  })}
+                </nav>
               </div>
 
               {/* Desktop sidebar */}
-              <aside className="hidden lg:block w-60 shrink-0">
-                <nav aria-label={t("أقسام الإدارة", "Administration sections")} className="admin-side-nav sticky top-20 h-[calc(100vh-6rem)] overflow-y-auto space-y-5 [scrollbar-width:thin]">
+              <aside className="hidden lg:block w-64 shrink-0">
+                <nav aria-label={t("أقسام الإدارة", "Administration sections")} className="admin-side-nav dash-card p-3 sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto space-y-4 [scrollbar-width:thin]">
 
                   {groups.map((g) => (
                     <div key={g.id} className="space-y-1.5">
@@ -369,23 +358,15 @@ function AdminPage() {
                                 type="button" variant="ghost"
                                 onClick={() => setTab(it.id)}
                                 aria-current={active ? "page" : undefined}
-                                className={`w-full group flex items-center justify-start gap-2.5 px-3 h-10 rounded-md text-[13px] font-semibold transition text-start ${
-                                  active
-                                    ? "bg-secondary text-foreground border-s-2 border-accent"
-                                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/70"
-                                }`}
+                                className="dashboard-nav-item w-full group flex items-center justify-start gap-2.5 px-3 h-10 text-[13px] font-semibold transition text-start"
                               >
                                 <Icon
-                                  className={`w-4 h-4 shrink-0 ${active ? "text-accent" : "text-muted-foreground"}`}
+                                  className={`w-4 h-4 shrink-0 ${active ? "text-gold" : "text-muted-foreground group-hover:text-gold"}`}
                                 />
                                 <span className="flex-1 truncate">{it.label}</span>
                                 {it.badge ? (
                                   <span
-                                    className={`min-w-[22px] text-center text-[10px] font-bold px-1.5 h-5 leading-5 rounded-md ${
-                                      active
-                                        ? "bg-accent/20 text-foreground"
-                                        : "bg-secondary text-muted-foreground"
-                                    }`}
+                                    className="dashboard-nav-badge min-w-[22px] text-center text-[10px] font-bold px-1.5 h-5 leading-5 rounded-md"
                                   >
                                     {it.badge}
                                   </span>

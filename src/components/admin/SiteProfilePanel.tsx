@@ -20,7 +20,7 @@ export function SiteProfilePanel() {
   const [saving, setSaving] = useState(false);
   useEffect(() => { if (!dirty && query.isSuccess) setDraft(query.profile); }, [query.data, query.isSuccess, dirty]);
   function set(key: keyof SiteProfile, value: string) { setDirty(true); setDraft(prev => ({ ...prev, [key]: value })); }
-  async function upload(file: File | undefined) {
+  async function upload(file: File | undefined, target: "portrait" | "logo" = "portrait") {
     if (!file) return;
     if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) return toast.error(t("اختر صورة JPG أو PNG أو WebP", "Choose a JPG, PNG or WebP image"));
     setUploading(true);
@@ -31,7 +31,7 @@ export function SiteProfilePanel() {
       if (error) throw error;
       const { data, error: urlError } = await supabase.storage.from("public-uploads").createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
       if (urlError || !data?.signedUrl) throw urlError || new Error("Image URL unavailable");
-      set("portrait", data.signedUrl);
+      set(target, data.signedUrl);
     } catch (error) { toast.error(error instanceof Error ? error.message : t("تعذر رفع الصورة", "Image upload failed")); }
     finally { setUploading(false); }
   }
@@ -55,6 +55,13 @@ export function SiteProfilePanel() {
   if (query.isError) return <div role="alert" className="text-destructive">{t("تعذر تحميل البيانات", "Could not load details")} <Button variant="outline" onClick={() => void query.refetch()}>{t("إعادة المحاولة", "Retry")}</Button></div>;
   return <form onSubmit={save} className="space-y-6">
     <h2 className="text-xl font-semibold text-foreground">{t("الصورة وبيانات التواصل", "Portrait & contact details")}</h2>
+    <div className="flex flex-wrap items-center gap-5 border-b border-border pb-6">
+      <img src={draft.logo} alt={t("معاينة لوجو الموقع", "Site logo preview")} className="size-24 rounded-xl object-contain bg-secondary p-3" />
+      <div className="space-y-3">
+        <Button type="button" variant="outline" asChild><label className="cursor-pointer"><Camera className="size-4" />{uploading ? t("جارٍ الرفع…", "Uploading…") : t("تغيير لوجو الموقع", "Change site logo")}<input aria-label={t("رفع لوجو الموقع", "Upload site logo")} type="file" accept="image/jpeg,image/png,image/webp" disabled={uploading || saving} className="sr-only" onChange={e => { void upload(e.target.files?.[0], "logo"); e.target.value = ""; }} /></label></Button>
+        <Button type="button" variant="ghost" onClick={() => set("logo", siteProfileDefaults.logo)}>{t("استعادة اللوجو الأصلي", "Restore original logo")}</Button>
+      </div>
+    </div>
     <div className="flex flex-wrap items-center gap-5 border-b border-border pb-6">
       <img src={draft.portrait} alt={t("معاينة الصورة الرئيسية", "Main portrait preview")} className="h-36 w-28 rounded-md object-cover object-top bg-secondary" />
       <div className="space-y-3">

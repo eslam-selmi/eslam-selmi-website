@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
 import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
+import { useSiteProfile } from "@/lib/site-profile";
 import "@fontsource/ibm-plex-sans-arabic/arabic-400.css";
 import "@fontsource/ibm-plex-sans-arabic/arabic-600.css";
 import "@fontsource/manrope/latin-400.css";
@@ -62,6 +63,7 @@ export function CertificateDocument({ payload: p, qr, logo = brandLogoAsset.url,
 }
 
 export function CertificatePreview({ payload }: { payload: CertificatePayload }) {
+  const { profile } = useSiteProfile();
   const wrapper = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0);
   const [qr, setQr] = useState<string>();
@@ -77,5 +79,5 @@ export function CertificatePreview({ payload }: { payload: CertificatePayload })
     QRCode.toDataURL(verificationUrl(payload.certificateId), { width: 240, margin: 0 }).then(url => { if (!cancelled) setQr(url); });
     return () => { cancelled = true; };
   }, [payload.certificateId]);
-  return <div ref={wrapper} className="certificate-preview"><div className="certificate-preview-content" style={{ transform: `scale(${scale})` }}><CertificateDocument payload={payload} qr={qr} /></div></div>;
+  return <div ref={wrapper} className="certificate-preview"><div className="certificate-preview-content" style={{ transform: `scale(${scale})` }}><CertificateDocument payload={payload} qr={qr} logo={profile.logo} /></div></div>;
 }

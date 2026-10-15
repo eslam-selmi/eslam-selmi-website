@@ -6,6 +6,7 @@ import { Loader2, MessageCircle, Clock3, LogOut, CheckCircle2, XCircle } from "l
 import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
 const brandLogo = brandLogoAsset.url;
 import { useI18n } from "@/lib/i18n";
+import { useSiteProfile } from "@/lib/site-profile";
 
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
@@ -29,6 +30,7 @@ type Settings = {
 };
 
 function OnboardingPage() {
+  const { profile: siteProfile } = useSiteProfile();
   const { user, loading, activationStatus } = useAuth();
   const { lang } = useI18n();
   const isAr = lang === "ar";
@@ -93,7 +95,7 @@ function OnboardingPage() {
 
       <div className="relative w-full max-w-lg">
         <div className="flex flex-col items-center mb-6">
-          <Link to="/"><img src={brandLogo} alt="Eslam Selmi" className="h-16 w-16 rounded-2xl object-contain bg-white/10 p-2 border border-white/15" /></Link>
+          <Link to="/"><img src={siteProfile.logo} alt="Eslam Selmi" className="h-16 w-16 rounded-2xl object-contain bg-white/10 p-2 border border-white/15" /></Link>
           <p className="mt-3 text-[11px] tracking-[0.3em] text-white/60">ESLAM SELMI ACADEMY</p>
         </div>
 

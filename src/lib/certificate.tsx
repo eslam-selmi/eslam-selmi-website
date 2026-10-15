@@ -2,6 +2,9 @@ import { createRoot } from "react-dom/client";
 import { flushSync } from "react-dom";
 import QRCode from "qrcode";
 import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
+import { QueryClient } from "@tanstack/react-query";
+import { siteProfileOptions } from "@/lib/site-profile";
+import { readSiteProfile } from "@/lib/site-profile-data";
 import arabicRegular from "@fontsource/ibm-plex-sans-arabic/files/ibm-plex-sans-arabic-arabic-400-normal.woff2?url";
 import arabicBold from "@fontsource/ibm-plex-sans-arabic/files/ibm-plex-sans-arabic-arabic-600-normal.woff2?url";
 import bodyRegular from "@fontsource/manrope/files/manrope-latin-400-normal.woff2?url";
@@ -41,8 +44,9 @@ export async function generateCertificatePdf(p: CertificatePayload): Promise<Blo
   document.body.appendChild(host);
   const root = createRoot(host);
   try {
+    const site = await new QueryClient().fetchQuery(siteProfileOptions);
     const [fontEmbedCSS, logo, qr, courseLogo] = await Promise.all([
-      embeddedFonts(), asDataUrl(brandLogoAsset.url),
+      embeddedFonts(), asDataUrl(readSiteProfile(site?.content ?? null).logo),
       QRCode.toDataURL(verificationUrl(p.certificateId), { errorCorrectionLevel: "M", width: 240, margin: 0 }),
       p.courseLogoUrl ? asDataUrl(p.courseLogoUrl).catch(() => undefined) : Promise.resolve(undefined),
     ]);

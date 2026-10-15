@@ -88,7 +88,7 @@ export function AdminToolbar({
           onChange={(e) => { setQ(e.target.value); setOpen(true); }}
           onFocus={() => setOpen(true)}
           placeholder={t("ابحث عن متدرب (الاسم، البريد، الهاتف) أو كورس…", "Search trainees (name, email, phone) or courses…")}
-          className="w-full h-11 ps-9 pe-9 rounded-md bg-card border border-input focus:border-ring outline-none text-sm text-foreground placeholder:text-muted-foreground"
+          className="dashboard-search w-full h-11 ps-9 pe-9 rounded-xl border border-input focus:border-gold outline-none text-sm text-foreground placeholder:text-muted-foreground"
         />
         {q && (
           <Button type="button" size="icon" variant="ghost" onClick={() => setQ("")} className="absolute top-1/2 -translate-y-1/2 end-1 h-9 w-9 text-muted-foreground" aria-label={t("مسح البحث", "Clear search")}>
@@ -128,7 +128,7 @@ export function AdminToolbar({
       </div>
       <Button type="button" variant="outline"
         onClick={() => exportEnrollmentsCsv(enrollments)}
-        className="h-11 px-4 rounded-md border-border bg-card text-foreground text-sm font-semibold inline-flex items-center justify-center gap-2 hover:bg-secondary"
+        className="dashboard-outline h-11 px-4 text-sm font-semibold inline-flex items-center justify-center gap-2"
       >
         <Download className="w-4 h-4" />
         {t("تصدير CSV", "Export CSV")}

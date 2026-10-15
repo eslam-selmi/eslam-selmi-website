@@ -102,6 +102,7 @@ import snap13Asset from "@/assets/snapshots/snap-13.jpg.asset.json";
 import snap15Asset from "@/assets/snapshots/snap-15.jpg.asset.json";
 import snap16Asset from "@/assets/snapshots/snap-16.jpg.asset.json";
 import { PILLARS, WHATSAPP, brandLogo, fadeUp } from "@/components/home/data";
+import { useSiteProfile } from "@/lib/site-profile";
 
 export function CalendlyDialog() {
   return <BookingDialog />;
@@ -111,11 +112,12 @@ export function CalendlyDialog() {
 
 export function BrandMark({ size = 62 }: { size?: number }) {
   const { lang } = useI18n();
+  const { profile } = useSiteProfile();
   const displayName = lang === "ar" ? "إسلام سلمي" : "Eslam Selmi";
   return (
     <div className="flex items-center gap-2">
       <img
-        src={brandLogo}
+        src={profile.logo}
         alt={displayName}
         width={size}
         height={size}
