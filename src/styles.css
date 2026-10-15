@@ -507,56 +507,154 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 /* Gold CTAs keep their navy ink */
 :root:not(.dark) .dash-shell [class*="text-[#0b1736]"] { color: #0b1736; }
 
-/* Admin-only work surface: flat navy, silver signals, and clearer data density. */
+/* Admin-only work surface: Modern Slate Dark — deep slate/zinc, soft borders, light glass, indigo signals. */
 .admin-shell {
-  --gold: oklch(0.9 0.008 245);
-  --gold-soft: oklch(0.82 0.015 245);
-  --lavender: oklch(0.76 0.018 245);
-  --accent: oklch(0.79 0.018 245);
-  --foreground: oklch(0.96 0.007 245);
-  --muted-foreground: oklch(0.76 0.015 245);
-  --card: oklch(0.21 0.035 255);
-  --card-foreground: oklch(0.96 0.007 245);
-  --secondary: oklch(0.26 0.035 255);
-  --border: oklch(0.78 0.015 245 / 0.18);
-  --popover: oklch(0.20 0.038 255);
-  --popover-foreground: oklch(0.96 0.007 245);
-  --ring: oklch(0.9 0.008 245);
+  --admin-indigo: oklch(0.68 0.16 270);
+  --admin-indigo-soft: oklch(0.68 0.16 270 / 0.14);
+  --admin-success: oklch(0.74 0.14 160);
+  --admin-warning: oklch(0.80 0.13 80);
+  --admin-danger: oklch(0.68 0.18 22);
+  --admin-info: oklch(0.72 0.12 235);
+  --gold: oklch(0.74 0.14 270);
+  --gold-soft: oklch(0.80 0.10 270);
+  --lavender: oklch(0.74 0.10 270);
+  --accent: oklch(0.72 0.15 270);
+  --primary: oklch(0.62 0.17 270);
+  --primary-foreground: oklch(0.98 0.005 270);
+  --foreground: oklch(0.97 0.003 286);
+  --muted-foreground: oklch(0.71 0.012 286);
+  --card: oklch(0.22 0.008 286 / 0.72);
+  --card-foreground: oklch(0.97 0.003 286);
+  --secondary: oklch(0.27 0.01 286 / 0.8);
+  --muted: oklch(0.25 0.008 286);
+  --border: oklch(1 0 0 / 0.08);
+  --input: oklch(1 0 0 / 0.10);
+  --popover: oklch(0.20 0.008 286 / 0.96);
+  --popover-foreground: oklch(0.97 0.003 286);
+  --ring: oklch(0.68 0.16 270 / 0.6);
+  font-feature-settings: "tnum" 1;
 }
-.admin-shell.dash-bg { background: oklch(0.16 0.04 255); }
-.admin-shell .dash-header { background: oklch(0.13 0.04 255 / 0.96); border-color: var(--border); }
+.admin-shell.dash-bg {
+  background:
+    radial-gradient(900px 500px at 85% -10%, oklch(0.45 0.14 270 / 0.14), transparent 60%),
+    radial-gradient(700px 400px at 0% 100%, oklch(0.40 0.08 250 / 0.10), transparent 60%),
+    oklch(0.165 0.006 286);
+  background-attachment: fixed;
+}
+.admin-shell .dash-header {
+  background: oklch(0.17 0.006 286 / 0.72);
+  backdrop-filter: blur(16px) saturate(140%);
+  border-color: var(--border);
+}
 .admin-shell .dash-card {
   background: var(--card);
-  border-color: var(--border);
-  box-shadow: 0 8px 24px -20px oklch(0.05 0.02 255 / .65);
-  border-radius: .5rem;
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.04), 0 10px 30px -18px oklch(0 0 0 / 0.6);
+  border-radius: .875rem;
 }
-.admin-shell .dash-card-hover:hover { border-color: var(--accent); box-shadow: 0 8px 24px -20px oklch(0.05 0.02 255 / .65); }
+.admin-shell .dash-card-hover { transition: border-color .2s, transform .2s, box-shadow .2s; }
+.admin-shell .dash-card-hover:hover {
+  border-color: oklch(0.68 0.16 270 / 0.4);
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.05), 0 14px 34px -18px oklch(0.45 0.16 270 / 0.45);
+}
 .admin-shell .admin-side-nav {
   background: var(--card);
+  backdrop-filter: blur(12px);
   border: 1px solid var(--border);
-  border-radius: .5rem;
-  padding: 1rem .75rem;
+  border-radius: .875rem;
+  padding: .875rem .625rem;
 }
-.admin-shell .admin-workspace table { border-collapse: collapse; }
-.admin-shell .admin-workspace thead { background: var(--secondary); color: var(--foreground); }
-.admin-shell .admin-workspace tbody tr { border-bottom: 1px solid var(--border); }
-.admin-shell .admin-workspace tbody tr:hover { background: var(--secondary); }
+.admin-shell .admin-side-nav button { border-radius: .5rem; transition: background .15s, color .15s; }
+.admin-shell .admin-side-nav button[aria-current="page"],
+.admin-shell .admin-side-nav button[data-active="true"] {
+  background: var(--admin-indigo-soft);
+  color: var(--foreground);
+  box-shadow: inset 2px 0 0 var(--admin-indigo);
+}
+.admin-shell [role="tablist"] {
+  background: oklch(0.20 0.006 286 / 0.6);
+  border: 1px solid var(--border);
+  border-radius: .75rem;
+  padding: .25rem;
+  gap: .25rem;
+}
+.admin-shell [role="tab"][data-state="active"] {
+  background: var(--admin-indigo-soft);
+  color: var(--foreground);
+  box-shadow: inset 0 0 0 1px oklch(0.68 0.16 270 / 0.35);
+}
+.admin-shell .admin-workspace { display: flex; flex-direction: column; gap: 1.25rem; }
+.admin-shell .admin-workspace table { border-collapse: separate; border-spacing: 0; width: 100%; }
+.admin-shell .admin-workspace thead { background: oklch(0.24 0.008 286 / 0.7); color: var(--muted-foreground); }
+.admin-shell .admin-workspace thead th {
+  font-size: .72rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+  padding: .75rem 1rem; border-bottom: 1px solid var(--border);
+}
+.admin-shell .admin-workspace tbody td { padding: .75rem 1rem; }
+.admin-shell .admin-workspace tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
+.admin-shell .admin-workspace tbody tr + tr td { border-top: 1px solid var(--border); }
+.admin-shell .admin-workspace tbody tr:hover { background: oklch(1 0 0 / 0.03); }
 .admin-shell .admin-workspace input,
 .admin-shell .admin-workspace select,
-.admin-shell .admin-workspace textarea { accent-color: var(--accent); }
-:root:not(.dark) .admin-shell {
-  --foreground: oklch(0.20 0.04 255);
-  --muted-foreground: oklch(0.43 0.025 250);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.20 0.04 255);
-  --secondary: oklch(0.94 0.009 245);
-  --border: oklch(0.20 0.04 255 / .15);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.20 0.04 255);
-  --accent: oklch(0.42 0.025 245);
-  --gold: oklch(0.20 0.04 255);
+.admin-shell .admin-workspace textarea {
+  accent-color: var(--admin-indigo);
+  border-color: var(--input);
+  border-radius: .5rem;
+  transition: border-color .15s, box-shadow .15s;
 }
-:root:not(.dark) .admin-shell.dash-bg { background: oklch(0.965 0.006 245); }
-:root:not(.dark) .admin-shell .dash-header { background: oklch(1 0 0 / .96); }
-:root:not(.dark) .admin-shell .dash-card { background: var(--card); border-color: var(--border); }
+.admin-shell .admin-workspace input:focus-visible,
+.admin-shell .admin-workspace select:focus-visible,
+.admin-shell .admin-workspace textarea:focus-visible {
+  outline: none;
+  border-color: oklch(0.68 0.16 270 / 0.6);
+  box-shadow: 0 0 0 3px oklch(0.68 0.16 270 / 0.18);
+}
+/* Status badges: soft tinted pills */
+.admin-shell .badge-success, .admin-shell [data-status="approved"], .admin-shell [data-status="paid"], .admin-shell [data-status="completed"] {
+  background: oklch(0.74 0.14 160 / 0.12); color: var(--admin-success); border: 1px solid oklch(0.74 0.14 160 / 0.25);
+}
+.admin-shell .badge-warning, .admin-shell [data-status="pending"], .admin-shell [data-status="booked"] {
+  background: oklch(0.80 0.13 80 / 0.12); color: var(--admin-warning); border: 1px solid oklch(0.80 0.13 80 / 0.25);
+}
+.admin-shell .badge-danger, .admin-shell [data-status="rejected"], .admin-shell [data-status="cancelled"] {
+  background: oklch(0.68 0.18 22 / 0.12); color: var(--admin-danger); border: 1px solid oklch(0.68 0.18 22 / 0.25);
+}
+.admin-shell .badge-info, .admin-shell [data-status="open"] {
+  background: oklch(0.72 0.12 235 / 0.12); color: var(--admin-info); border: 1px solid oklch(0.72 0.12 235 / 0.25);
+}
+/* Dialogs / popovers rendered inside the admin get glass too */
+.admin-shell [role="dialog"], .admin-shell [data-radix-popper-content-wrapper] > * {
+  backdrop-filter: blur(18px) saturate(140%);
+}
+/* Remap legacy gold utility classes inside the admin to indigo */
+.admin-shell [class*="text-[#d4af37]"], .admin-shell [class*="text-gold"] { color: var(--accent) !important; }
+.admin-shell [class*="bg-[#d4af37]"] { background-color: var(--primary) !important; color: var(--primary-foreground) !important; }
+.admin-shell [class*="border-[#d4af37]"] { border-color: oklch(0.68 0.16 270 / 0.35) !important; }
+
+:root:not(.dark) .admin-shell {
+  --foreground: oklch(0.21 0.006 286);
+  --muted-foreground: oklch(0.47 0.012 286);
+  --card: oklch(1 0 0 / 0.78);
+  --card-foreground: oklch(0.21 0.006 286);
+  --secondary: oklch(0.955 0.004 286);
+  --muted: oklch(0.955 0.004 286);
+  --border: oklch(0.21 0.006 286 / 0.09);
+  --input: oklch(0.21 0.006 286 / 0.14);
+  --popover: oklch(1 0 0 / 0.97);
+  --popover-foreground: oklch(0.21 0.006 286);
+  --accent: oklch(0.50 0.19 270);
+  --primary: oklch(0.52 0.19 270);
+  --gold: oklch(0.50 0.19 270);
+  --admin-indigo-soft: oklch(0.52 0.19 270 / 0.10);
+}
+:root:not(.dark) .admin-shell.dash-bg {
+  background:
+    radial-gradient(900px 500px at 85% -10%, oklch(0.75 0.10 270 / 0.18), transparent 60%),
+    oklch(0.975 0.003 286);
+}
+:root:not(.dark) .admin-shell .dash-header { background: oklch(1 0 0 / 0.75); }
+:root:not(.dark) .admin-shell .dash-card { box-shadow: 0 1px 2px oklch(0 0 0 / 0.04), 0 10px 30px -20px oklch(0.3 0.05 270 / 0.25); }
+:root:not(.dark) .admin-shell .admin-workspace thead { background: oklch(0.965 0.004 286); }
+:root:not(.dark) .admin-shell .admin-workspace tbody tr:hover { background: oklch(0.21 0.006 286 / 0.025); }
+:root:not(.dark) .admin-shell [role="tablist"] { background: oklch(0.955 0.004 286); }
