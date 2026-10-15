@@ -1,11 +1,13 @@
-import { useEffect, useState, useMemo } from "react";
+import { useState, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { useTranslatedTexts } from "@/lib/useTranslatedTexts";
 import { safeHref } from "@/lib/safe-url";
 import { Clock, Wallet, ExternalLink, Calendar, Layers, StickyNote, Link as LinkIcon, Paperclip, Check, ChevronLeft, PlayCircle } from "lucide-react";
 import { MediaViewerModal, type MediaItem } from "@/components/MediaViewerModal";
-import type { Course, Enrollment } from "./types";
+import type { Enrollment } from "./types";
+import type { Tables } from "@/integrations/supabase/types";
 import { AssignmentsSection } from "./Assignments";
 import { CertificatePanel } from "./CertificatePanel";
 import { CourseFeedbackForm } from "./CourseFeedbackForm";
@@ -17,36 +19,33 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
   const { lang } = useI18n();
   const isAr = lang === "ar";
   const c = enrollment.courses!;
-  const [modules, setModules] = useState<any[]>([]);
-  const [items, setItems] = useState<Record<string, any[]>>({});
-  const [sessions, setSessions] = useState<any[]>([]);
-  const [payments, setPayments] = useState<any[]>([]);
-  const [installments, setInstallments] = useState<any[]>([]);
   const [viewItem, setViewItem] = useState<MediaItem | null>(null);
 
-
-
-
-  async function load() {
-    const [mRes, sRes, pRes, iRes] = await Promise.all([
-      supabase.from("course_modules").select("*").eq("course_id", c.id).order("order_index"),
-      supabase.from("course_sessions").select("*").eq("course_id", c.id).order("starts_at"),
-      supabase.from("payments").select("*").eq("enrollment_id", enrollment.id).order("paid_at"),
-      supabase.from("installments").select("*").eq("enrollment_id", enrollment.id).order("due_date"),
-    ]);
-    const mods = mRes.data ?? [];
-    setModules(mods);
-    setSessions(sRes.data ?? []);
-    setPayments(pRes.data ?? []);
-    setInstallments(iRes.data ?? []);
-    if (mods.length) {
-      const { data: its } = await supabase.from("module_items").select("*").in("module_id", mods.map((m: any) => m.id)).order("order_index");
-      const grouped: Record<string, any[]> = {};
-      (its ?? []).forEach((it: any) => { (grouped[it.module_id] ||= []).push(it); });
-      setItems(grouped);
-    }
-  }
-  useEffect(() => { load(); }, [c.id, enrollment.id]);
+  const detail = useQuery({
+    queryKey: ["portal", "course-detail", c.id, enrollment.id],
+    staleTime: 60_000,
+    queryFn: async () => {
+      const [mRes, sRes, pRes, iRes] = await Promise.all([
+        supabase.from("course_modules").select("*").eq("course_id", c.id).order("order_index"),
+        supabase.from("course_sessions").select("*").eq("course_id", c.id).order("starts_at"),
+        supabase.from("payments").select("*").eq("enrollment_id", enrollment.id).order("paid_at"),
+        supabase.from("installments").select("*").eq("enrollment_id", enrollment.id).order("due_date"),
+      ]);
+      const modules = mRes.data ?? [];
+      const items: Record<string, Tables<"module_items">[]> = {};
+      if (modules.length) {
+        const { data: its } = await supabase.from("module_items").select("*").in("module_id", modules.map((m) => m.id)).order("order_index");
+        (its ?? []).forEach((it) => { (items[it.module_id] ||= []).push(it); });
+      }
+      return { modules, items, sessions: sRes.data ?? [], payments: pRes.data ?? [], installments: iRes.data ?? [] };
+    },
+  });
+  const modules = detail.data?.modules ?? [];
+  const items = detail.data?.items ?? {};
+  const sessions = detail.data?.sessions ?? [];
+  const payments = detail.data?.payments ?? [];
+  const installments = detail.data?.installments ?? [];
+  const load = () => { void detail.refetch(); };
 
   const totalPaid = payments.filter((p) => p.status !== "rejected" && p.status !== "pending").reduce((s, p) => s + Number(p.amount), 0);
   const coursePrice = Number(c.price ?? 0);
