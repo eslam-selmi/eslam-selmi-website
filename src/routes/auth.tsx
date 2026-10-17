@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Tables } from "@/integrations/supabase/types";
 import { useAuth } from "@/lib/portal-auth";
 import { toast } from "sonner";
 import { Loader2, ArrowLeft, ShieldCheck } from "lucide-react";
@@ -43,7 +45,15 @@ function AuthPage() {
   const [fullName, setFullName] = useState("");
   const [countryCode, setCountryCode] = useState("EG");
   const [otherCountryName, setOtherCountryName] = useState("");
-  const [customCountries, setCustomCountries] = useState<Array<{ id: string; name_ar: string; name_en: string; dial: string | null; flag: string | null }>>([]);
+  const { data: customCountries = [], refetch: refreshCustomCountries } = useQuery({
+    queryKey: ["custom-countries", "public-options"],
+    staleTime: 60_000,
+    queryFn: async (): Promise<Array<Pick<Tables<"custom_countries">, "id" | "name_ar" | "name_en" | "dial" | "flag">>> => {
+      const { data, error } = await supabase.rpc("get_public_custom_countries");
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
   const [phone, setPhone] = useState("");
   const [phoneError, setPhoneError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -68,12 +78,6 @@ function AuthPage() {
       nav({ to: role === "admin" ? "/admin" : role === "trainer" ? "/trainer" : "/portal" });
     }
   }, [user, role, loading, activationStatus, nav]);
-
-  // Load admin-added countries
-  useEffect(() => {
-    supabase.from("custom_countries").select("id,name_ar,name_en,dial,flag").order("name_ar")
-      .then(({ data }) => setCustomCountries(((data as any) || [])));
-  }, []);
 
   const normalizeCountry = (s: string) => s.trim().toLowerCase().replace(/\s+/g, " ");
 
@@ -113,7 +117,7 @@ function AuthPage() {
               throw new Error("تعذّر إضافة الدولة: " + (err?.message || "خطأ غير معروف"));
             }
             // Refresh local list
-            setCustomCountries((prev) => [...prev, { id: customId!, name_ar: nm, name_en: nm, dial: null, flag: null }]);
+            await refreshCustomCountries();
           }
           countryCodeFinal = `CUST:${customId}`;
           countryNameAr = nm;

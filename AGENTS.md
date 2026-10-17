@@ -12,6 +12,8 @@
 - Arabic and English certificates share a fixed-size document in `components/certificates`; the export utility embeds local fonts and media before capture to eliminate network/font races.
 - Site logo, public portrait, contact links and footer copy come from `site_content` under `site.profile` through shared query options; all displayed branding and new certificate exports consume that setting without changing login identity or existing issued PDFs.
 - Public CMS read policies use separate anon visibility-only and authenticated admin-aware scopes; anonymous policies must not call authenticated-only role functions, so published content remains accessible to signed-out visitors.
+- Public country choices use `get_public_custom_countries` with only display fields; section visibility uses `get_public_site_visibility` with flags only, so hidden content and country creator metadata remain protected while public controls keep working.
+- Latest-addition reads follow the homepage section visibility; private `public-uploads` reads require ownership or administrator access, while public images retain administrator-issued signed links.
 - Below-fold homepage sections use intersection-gated lazy modules with hash-link activation so their code, reads and media do not compete with the first screen.
 - Site fonts are local Fontsource subsets with swap behavior and essential weights only; certificate exports still embed their own fonts to avoid external render-blocking requests.
 - Known portrait and snapshot originals use immutable optimized asset variants for display, while administrator replacements and full-size lightbox originals remain unchanged.
