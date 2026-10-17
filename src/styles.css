@@ -1,6 +1,14 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@import "@fontsource/ibm-plex-sans-arabic/arabic-400.css";
+@import "@fontsource/ibm-plex-sans-arabic/arabic-600.css";
+@import "@fontsource/ibm-plex-sans-arabic/arabic-700.css";
+@import "@fontsource/manrope/latin-400.css";
+@import "@fontsource/manrope/latin-600.css";
+@import "@fontsource/manrope/latin-800.css";
+@import "@fontsource/sora/latin-600.css";
+@import "@fontsource/sora/latin-800.css";
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
@@ -487,7 +495,7 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
    Whitelisted: marquee tracks for companies (Clients) + snapshots
    ("لحظات شكّلت المسيرة") which must keep scrolling.
    ============================================================ */
-/* Mobile-only kill switch: disable all animations/transitions except marquees and <img> elements */
+/* Mobile: native swipe rails replace continuously composited marquee loops. */
 @media (max-width: 767px) {
   *:not(.marquee-track):not(.marquee-track-reverse):not(.marquee-track-rtl):not(.animate-marquee):not(.animate-marquee-slow):not(.animate-marquee-rtl):not(.animate-marquee-x):not(.animate-marquee-x-reverse):not(img),
   *::before,
@@ -498,6 +506,41 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
     transition-duration: 0s !important;
     transition-delay: 0s !important;
   }
+  .home-page .mobile-swipe-rail {
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .home-page .marquee-track,
+  .home-page .marquee-track-reverse,
+  .home-page .marquee-track-rtl {
+    animation: none !important;
+    transform: none !important;
+    will-change: auto;
+  }
+  .home-page .mobile-swipe-rail [aria-hidden="true"] { display: none; }
+  .home-page .marquee-mask { -webkit-mask-image: none; mask-image: none; }
+  .home-page .mobile-rail-fade { display: none; }
+  .home-page :is(.glass, .glass-strong, .glass-panel, [class*="backdrop-blur"]) {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background-color: var(--glass-strong);
+  }
+  .home-page :is(.blur-3xl, .blur-2xl) { display: none; }
+}
+
+.home-section-placeholder { min-height: 420px; scroll-margin-top: 110px; }
+.home-page section[id] { scroll-margin-top: 110px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .marquee-track, .marquee-track-reverse, .marquee-track-rtl,
+  .animate-marquee, .animate-marquee-slow, .animate-marquee-rtl {
+    animation: none !important;
+  }
+  .mobile-swipe-rail { overflow-x: auto; }
+  .mobile-swipe-rail [aria-hidden="true"] { display: none; }
 }
 
 /* Mobile: neutralize framer-motion inline opacity/transform so nothing fades in or slides in on phones */

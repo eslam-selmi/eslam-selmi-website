@@ -12,3 +12,7 @@
 - Arabic and English certificates share a fixed-size document in `components/certificates`; the export utility embeds local fonts and media before capture to eliminate network/font races.
 - Site logo, public portrait, contact links and footer copy come from `site_content` under `site.profile` through shared query options; all displayed branding and new certificate exports consume that setting without changing login identity or existing issued PDFs.
 - Public CMS read policies use separate anon visibility-only and authenticated admin-aware scopes; anonymous policies must not call authenticated-only role functions, so published content remains accessible to signed-out visitors.
+- Below-fold homepage sections use intersection-gated lazy modules with hash-link activation so their code, reads and media do not compete with the first screen.
+- Site fonts are local Fontsource subsets with swap behavior and essential weights only; certificate exports still embed their own fonts to avoid external render-blocking requests.
+- Known portrait and snapshot originals use immutable optimized asset variants for display, while administrator replacements and full-size lightbox originals remain unchanged.
+- Mobile homepage marquees use native swipe rails without repeated copies or background blur; desktop keeps its existing presentation.

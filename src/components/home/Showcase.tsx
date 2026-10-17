@@ -1,108 +1,12 @@
-import { BookingDialog } from "@/components/booking/BookingDialog";
-import { TraineeReviews } from "@/components/TraineeReviews";
-import { createFileRoute, Link, useRouterState } from "@tanstack/react-router";
-import { motion, AnimatePresence, useScroll, useTransform, MotionConfig } from "motion/react";
-import { useEffect, useRef, useState } from "react";
-import {
-  Sparkles,
-  Globe2,
-  Layers,
-  MessageCircle,
-  Mail,
-  Linkedin,
-  Phone,
-  ArrowRight,
-  CheckCircle2,
-  Menu,
-  X,
-  Calendar,
-  Target,
-  Lightbulb,
-  HeartHandshake,
-  GraduationCap,
-  Award,
-  Users,
-  TrendingUp,
-  BarChart3,
-  UserCheck,
-  Languages,
-  ArrowUp,
-  Loader2,
-  Briefcase,
-  BadgeCheck,
-  
-  Presentation,
-  Moon,
-  Sun,
-  Mic,
-  BookOpen,
-  Library as LibraryIcon,
-  FileText,
-  Download,
-  ExternalLink,
-  Rocket,
-  Wand2,
-  Mail as MailIcon,
-  Palette,
-  Trello,
-  Table2,
-  Bot,
-  Quote,
-  ShieldCheck,
-  KeyRound,
-  LogIn,
-  Clock,
-  User as UserIcon,
-  MessageSquare,
-  Check,
-  Video,
-  PlayCircle,
-} from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import { useEffect, useState } from "react";
+import { Globe2, X } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import { useI18n, type Lang } from "@/lib/i18n";
-import { useTheme } from "@/lib/theme";
-import { LatestAdditionsSection } from "@/components/LatestAdditions";
-import { useSiteContent } from "@/lib/site-content";
-import { SitePopup } from "@/components/SitePopup";
-import { UniversalEmbedModal } from "@/components/UniversalEmbedModal";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import {
-  COUNTRIES as PHONE_COUNTRIES,
-  findCountry as findDialCountry,
-  sanitizeNationalNumber,
-  validatePhoneForCountry,
-} from "@/lib/countries";
-import headshotAsset from "@/assets/portfolio/headshot-cutout.png.asset.json";
-import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
-import snap1Asset from "@/assets/snapshots/snap-1.jpg.asset.json";
-import snap2Asset from "@/assets/snapshots/snap-2.jpg.asset.json";
-import snap3Asset from "@/assets/snapshots/snap-3.jpg.asset.json";
-import snap4Asset from "@/assets/snapshots/snap-4.jpg.asset.json";
-import snap5Asset from "@/assets/snapshots/snap-5.jpg.asset.json";
-import snap6Asset from "@/assets/snapshots/snap-6.jpg.asset.json";
-import snap7Asset from "@/assets/snapshots/snap-7.jpg.asset.json";
-import etecLicenseAsset from "@/assets/etec-license.png.asset.json";
-import snap8Asset from "@/assets/snapshots/snap-8.jpg.asset.json";
-import logoAramexAsset from "@/assets/clients/aramex.jpg.asset.json";
-import logoG4sAsset from "@/assets/clients/g4s.jpg.asset.json";
-import logoAllerAquaAsset from "@/assets/clients/aller-aqua.jpg.asset.json";
-import logoEvnoAsset from "@/assets/clients/evno.jpg.asset.json";
-import logoBadreldinAsset from "@/assets/clients/badreldin.jpg.asset.json";
-import logoAmazonEgAsset from "@/assets/clients/amazon-eg.jpg.asset.json";
-import logoAlmajarahAsset from "@/assets/clients/almajarah.jpg.asset.json";
-import logoImtenanAsset from "@/assets/clients/imtenan.jpg.asset.json";
-import logoDaralnokbaAsset from "@/assets/clients/daralnokba.jpg.asset.json";
-import logoMallOfEgyptAsset from "@/assets/clients/mall-of-egypt.jpg.asset.json";
-import logoNewBrandAsset from "@/assets/clients/new-brand.jpg.asset.json";
-import snap10Asset from "@/assets/snapshots/snap-10.jpg.asset.json";
-import snap11Asset from "@/assets/snapshots/snap-11.jpg.asset.json";
-import snap12Asset from "@/assets/snapshots/snap-12.jpg.asset.json";
-import snap13Asset from "@/assets/snapshots/snap-13.jpg.asset.json";
-import snap15Asset from "@/assets/snapshots/snap-15.jpg.asset.json";
-import snap16Asset from "@/assets/snapshots/snap-16.jpg.asset.json";
-import { BRANDS, COUNTRIES, SNAPSHOTS, fadeUp } from "@/components/home/data";
+import { useI18n } from "@/lib/i18n";
+import { COUNTRIES, SNAPSHOTS, fadeUp } from "@/components/home/data";
 import { CompactStat, Section } from "@/components/home/shared";
+import { snapshotThumbnail } from "@/lib/optimized-images";
 
 export function Clients() {
   const { t, lang } = useI18n();
@@ -155,28 +59,20 @@ export function Clients() {
 
 export function Brands() {
   const { t, lang } = useI18n();
-  const [brands, setBrands] = useState<typeof BRANDS>([]);
-  useEffect(() => {
-    supabase
-      .from("partners" as any)
-      .select("*")
-      .eq("is_active", true)
-      .order("display_order", { ascending: true })
-      .then(({ data, error }) => {
-        if (error || !data) return;
-        setBrands(
-          (data as any[])
-            .filter((r) => r.logo_url)
-            .map((r) => ({
-              src: r.logo_url,
-              name: r.name_en || r.name_ar,
-              nameAr: r.name_ar,
-              specEn: r.industry_en || r.industry_ar || "",
-              specAr: r.industry_ar || "",
-            })),
-        );
-      });
-  }, []);
+  const { data: brands = [] } = useQuery({
+    queryKey: ["home", "active-partners"],
+    staleTime: 300_000,
+    queryFn: async () => {
+      const { data, error } = await supabase.from("partners")
+        .select("logo_url,name_en,name_ar,industry_en,industry_ar")
+        .eq("is_active", true).order("display_order", { ascending: true });
+      if (error) throw error;
+      return (data ?? []).filter(r => r.logo_url).map(r => ({
+        src: r.logo_url ?? "", name: r.name_en || r.name_ar, nameAr: r.name_ar,
+        specEn: r.industry_en || r.industry_ar || "", specAr: r.industry_ar || "",
+      }));
+    },
+  });
   const row1 = brands;
   const row2 = [...brands].reverse();
 
@@ -228,11 +124,11 @@ export function Brands() {
 
       <div className="relative -mx-4 sm:-mx-6 lg:-mx-8 py-2">
         {/* edge fades */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-24 z-10 bg-gradient-to-r from-background to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-24 z-10 bg-gradient-to-l from-background to-transparent" />
+        <div className="mobile-rail-fade pointer-events-none absolute inset-y-0 left-0 w-24 z-10 bg-gradient-to-r from-background to-transparent" />
+        <div className="mobile-rail-fade pointer-events-none absolute inset-y-0 right-0 w-24 z-10 bg-gradient-to-l from-background to-transparent" />
 
         {/* row 1 */}
-        <div className="overflow-hidden" dir="ltr">
+        <div className="mobile-swipe-rail overflow-hidden" dir="ltr">
           <div className="flex w-max gap-8 marquee-track py-2" style={{ animationDuration: "45s" }}>
             {[0, 1, 2].map((copy) => (
               <div key={`r1-copy-${copy}`} className="flex shrink-0 gap-8" aria-hidden={copy > 0}>
@@ -245,7 +141,7 @@ export function Brands() {
         </div>
 
         {/* row 2 — opposite direction */}
-        <div className="overflow-hidden mt-4" dir="ltr">
+        <div className="mobile-swipe-rail overflow-hidden mt-4" dir="ltr">
           <div
             className="flex w-max gap-8 marquee-track-reverse py-2"
             style={{ animationDuration: "55s" }}
@@ -267,24 +163,18 @@ export function Brands() {
 /* ---------- SNAPSHOTS w/ LIGHTBOX ---------- */
 
 export function Snapshots() {
-  const [dbShots, setDbShots] = useState<string[] | null>(null);
-  useEffect(() => {
-    let alive = true;
-    supabase
-      .from("snapshots" as any)
-      .select("image_url,display_order,created_at,is_visible")
-      .eq("is_visible", true)
-      .order("display_order", { ascending: true })
-      .order("created_at", { ascending: false })
-      .then(({ data }) => {
-        if (!alive) return;
-        const rows = (data as any[]) || [];
-        if (rows.length > 0) setDbShots(rows.map((r) => r.image_url).filter(Boolean));
-        else setDbShots([]);
-      });
-    return () => { alive = false; };
-  }, []);
-  const shots = dbShots && dbShots.length > 0 ? dbShots : SNAPSHOTS;
+  const { data: dbShots = [] } = useQuery({
+    queryKey: ["home", "visible-snapshots"],
+    staleTime: 300_000,
+    queryFn: async () => {
+      const { data, error } = await supabase.from("snapshots")
+        .select("image_url").eq("is_visible", true)
+        .order("display_order", { ascending: true }).order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data ?? []).map(r => r.image_url).filter(Boolean);
+    },
+  });
+  const shots = dbShots.length > 0 ? dbShots : SNAPSHOTS;
   const { t, dir } = useI18n();
   const [active, setActive] = useState<number | null>(null);
 
@@ -299,7 +189,7 @@ export function Snapshots() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [active]);
+  }, [active, shots.length]);
 
   // Split snapshots across two tracks so the rows don't show the same images
   const half = Math.ceil(shots.length / 2);
@@ -319,7 +209,7 @@ export function Snapshots() {
       aria-label={`Open snapshot ${originalIndex + 1}`}
     >
       <img
-        src={src}
+        src={snapshotThumbnail(src)}
         alt={`Snapshot ${originalIndex + 1}`}
         loading="lazy"
         decoding="async"
@@ -337,7 +227,7 @@ export function Snapshots() {
   return (
     <Section id="snapshots" eyebrow={t("snapshots_eyebrow")} title={t("snapshots_title")}>
       <div className="space-y-6 marquee-mask">
-        <div className="overflow-hidden" dir="ltr">
+        <div className="mobile-swipe-rail overflow-hidden" dir="ltr">
           <div
             className={`flex gap-7 w-max ${marqueeClass} hover:[animation-play-state:paused]`}
             style={{ animationDuration: "34s" }}
@@ -347,7 +237,7 @@ export function Snapshots() {
                 {set.map((src, idx) => (
                   <Card
                     key={`a-${copy}-${idx}`}
-                    src={src}
+                    src={snapshotThumbnail(src)}
                     i={idx}
                     originalIndex={shots.indexOf(src)}
                   />
@@ -356,7 +246,7 @@ export function Snapshots() {
             ))}
           </div>
         </div>
-        <div className="overflow-hidden" dir="ltr">
+        <div className="mobile-swipe-rail overflow-hidden" dir="ltr">
           <div
             className={`flex gap-7 w-max ${marqueeSlowClass} hover:[animation-play-state:paused]`}
             style={{ animationDuration: "44s" }}
@@ -366,7 +256,7 @@ export function Snapshots() {
                 {set.map((src, idx) => (
                   <Card
                     key={`b-${copy}-${idx}`}
-                    src={src}
+                    src={snapshotThumbnail(src)}
                     i={idx}
                     originalIndex={shots.indexOf(src)}
                   />

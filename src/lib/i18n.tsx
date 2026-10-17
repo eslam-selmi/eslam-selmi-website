@@ -421,21 +421,22 @@ interface I18nCtx {
 const Ctx = createContext<I18nCtx | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  // SYNC initial read so client + SSR render the same dir/lang and we avoid a flash.
-  const [lang, setLangState] = useState<Lang>(() => {
-    if (typeof window === "undefined") return "ar";
+  // Match the server's first render; restore the preference after hydration
+  // rather than forcing React to discard and rebuild the whole English page.
+  const [lang, setLangState] = useState<Lang>("ar");
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
     const saved = window.localStorage.getItem("lang");
-    if (saved === "ar" || saved === "en") return saved;
-    // Fallback to whatever the inline head script already wrote to <html lang>.
     const htmlLang = document.documentElement.getAttribute("lang");
-    return htmlLang === "en" ? "en" : "ar";
-  });
+    setLangState(saved === "ar" || saved === "en" ? saved : htmlLang === "en" ? "en" : "ar");
+    setHydrated(true);
+  }, []);
 
   useEffect(() => {
-    if (typeof document === "undefined") return;
+    if (!hydrated) return;
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
-  }, [lang]);
+  }, [lang, hydrated]);
 
   // React to changes made in other tabs / windows so the preference truly persists.
   useEffect(() => {
