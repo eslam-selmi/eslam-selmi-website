@@ -2005,6 +2005,23 @@ export type Database = {
           trainee_name: string
         }[]
       }
+      get_public_custom_countries: {
+        Args: never
+        Returns: {
+          dial: string
+          flag: string
+          id: string
+          name_ar: string
+          name_en: string
+        }[]
+      }
+      get_public_site_visibility: {
+        Args: never
+        Returns: {
+          is_visible: boolean
+          section_key: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
