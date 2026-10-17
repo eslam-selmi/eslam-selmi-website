@@ -45,7 +45,7 @@ function AuthPage() {
   const [fullName, setFullName] = useState("");
   const [countryCode, setCountryCode] = useState("EG");
   const [otherCountryName, setOtherCountryName] = useState("");
-  const { data: customCountries = [] } = useQuery({
+  const { data: customCountries = [], refetch: refreshCustomCountries } = useQuery({
     queryKey: ["custom-countries", "public-options"],
     staleTime: 60_000,
     queryFn: async (): Promise<Array<Pick<Tables<"custom_countries">, "id" | "name_ar" | "name_en" | "dial" | "flag">>> => {
@@ -117,7 +117,7 @@ function AuthPage() {
               throw new Error("تعذّر إضافة الدولة: " + (err?.message || "خطأ غير معروف"));
             }
             // Refresh local list
-            setCustomCountries((prev) => [...prev, { id: customId!, name_ar: nm, name_en: nm, dial: null, flag: null }]);
+            await refreshCustomCountries();
           }
           countryCodeFinal = `CUST:${customId}`;
           countryNameAr = nm;
