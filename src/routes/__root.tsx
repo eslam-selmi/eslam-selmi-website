@@ -93,8 +93,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:title", content: "Eslam Selmi" },
       { name: "twitter:description", content: "Let’s Build an Exceptional Learning Experience" },
 
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/0986072b-52b5-4474-bc91-50bf3c05bf57" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/0986072b-52b5-4474-bc91-50bf3c05bf57" },
     ],
     links: [
       { rel: "icon", type: "image/png", href: "/favicon.png" },
@@ -119,14 +117,8 @@ function RootShell({ children }: { children: React.ReactNode }) {
     <html lang="ar" dir="rtl" style={{ backgroundColor: "#0b1736" }} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: NO_FLASH_SCRIPT }} />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link rel="preconnect" href="https://flagcdn.com" crossOrigin="" />
         <link rel="dns-prefetch" href="https://i.ytimg.com" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Amiri:wght@400;700&family=Cinzel:wght@500;600;700;800&display=swap"
-          rel="stylesheet"
-        />
         <HeadContent />
       </head>
       <body style={{ backgroundColor: "#0b1736" }}>
@@ -146,7 +138,7 @@ function RootComponent() {
       <ThemeProvider>
         <I18nProvider>
           <SiteBranding />
-          <MotionConfig reducedMotion={isMobile ? "always" : "never"}>
+          <MotionConfig reducedMotion={isMobile ? "always" : "user"}>
             <main>
               <MaintenanceGate>
                 <TextEditLayer>

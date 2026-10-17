@@ -1,119 +1,30 @@
-import { BookingDialog } from "@/components/booking/BookingDialog";
-import { TraineeReviews } from "@/components/TraineeReviews";
-import { createFileRoute, Link, useRouterState } from "@tanstack/react-router";
-import { motion, AnimatePresence, useScroll, useTransform, MotionConfig } from "motion/react";
-import { useEffect, useRef, useState } from "react";
-import {
-  Sparkles,
-  Globe2,
-  Layers,
-  MessageCircle,
-  Mail,
-  Linkedin,
-  Phone,
-  ArrowRight,
-  CheckCircle2,
-  Menu,
-  X,
-  Calendar,
-  Target,
-  Lightbulb,
-  HeartHandshake,
-  GraduationCap,
-  Award,
-  Users,
-  TrendingUp,
-  BarChart3,
-  UserCheck,
-  Languages,
-  ArrowUp,
-  Loader2,
-  Briefcase,
-  BadgeCheck,
-  
-  Presentation,
-  Moon,
-  Sun,
-  Mic,
-  BookOpen,
-  Library as LibraryIcon,
-  FileText,
-  Download,
-  ExternalLink,
-  Rocket,
-  Wand2,
-  Mail as MailIcon,
-  Palette,
-  Trello,
-  Table2,
-  Bot,
-  Quote,
-  ShieldCheck,
-  KeyRound,
-  LogIn,
-  Clock,
-  User as UserIcon,
-  MessageSquare,
-  Check,
-  Video,
-  PlayCircle,
-} from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import { useI18n, type Lang } from "@/lib/i18n";
+import { createFileRoute } from "@tanstack/react-router";
+import { MotionConfig } from "motion/react";
+import { lazy, useEffect, useState } from "react";
 import { useTheme } from "@/lib/theme";
-import { LatestAdditionsSection } from "@/components/LatestAdditions";
 import { useSiteContent } from "@/lib/site-content";
-import { SitePopup } from "@/components/SitePopup";
-import { UniversalEmbedModal } from "@/components/UniversalEmbedModal";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import {
-  COUNTRIES as PHONE_COUNTRIES,
-  findCountry as findDialCountry,
-  sanitizeNationalNumber,
-  validatePhoneForCountry,
-} from "@/lib/countries";
-import headshotAsset from "@/assets/portfolio/headshot-cutout.png.asset.json";
-import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
-import snap1Asset from "@/assets/snapshots/snap-1.jpg.asset.json";
-import snap2Asset from "@/assets/snapshots/snap-2.jpg.asset.json";
-import snap3Asset from "@/assets/snapshots/snap-3.jpg.asset.json";
-import snap4Asset from "@/assets/snapshots/snap-4.jpg.asset.json";
-import snap5Asset from "@/assets/snapshots/snap-5.jpg.asset.json";
-import snap6Asset from "@/assets/snapshots/snap-6.jpg.asset.json";
-import snap7Asset from "@/assets/snapshots/snap-7.jpg.asset.json";
-import etecLicenseAsset from "@/assets/etec-license.png.asset.json";
-import snap8Asset from "@/assets/snapshots/snap-8.jpg.asset.json";
-import logoAramexAsset from "@/assets/clients/aramex.jpg.asset.json";
-import logoG4sAsset from "@/assets/clients/g4s.jpg.asset.json";
-import logoAllerAquaAsset from "@/assets/clients/aller-aqua.jpg.asset.json";
-import logoEvnoAsset from "@/assets/clients/evno.jpg.asset.json";
-import logoBadreldinAsset from "@/assets/clients/badreldin.jpg.asset.json";
-import logoAmazonEgAsset from "@/assets/clients/amazon-eg.jpg.asset.json";
-import logoAlmajarahAsset from "@/assets/clients/almajarah.jpg.asset.json";
-import logoImtenanAsset from "@/assets/clients/imtenan.jpg.asset.json";
-import logoDaralnokbaAsset from "@/assets/clients/daralnokba.jpg.asset.json";
-import logoMallOfEgyptAsset from "@/assets/clients/mall-of-egypt.jpg.asset.json";
-import logoNewBrandAsset from "@/assets/clients/new-brand.jpg.asset.json";
-import snap10Asset from "@/assets/snapshots/snap-10.jpg.asset.json";
-import snap11Asset from "@/assets/snapshots/snap-11.jpg.asset.json";
-import snap12Asset from "@/assets/snapshots/snap-12.jpg.asset.json";
-import snap13Asset from "@/assets/snapshots/snap-13.jpg.asset.json";
-import snap15Asset from "@/assets/snapshots/snap-15.jpg.asset.json";
-import snap16Asset from "@/assets/snapshots/snap-16.jpg.asset.json";
-import { Journey, Pillars, Programs, Services } from "@/components/home/AboutSections";
-import { Contact } from "@/components/home/Contact";
-import { CurrentCourses } from "@/components/home/Courses";
-import { ScrollTop } from "@/components/home/Floating";
-import { Footer } from "@/components/home/Footer";
 import { Hero } from "@/components/home/Hero";
-import { Interviews, Podcast } from "@/components/home/Media";
 import { Nav } from "@/components/home/Nav";
-import { Brands, Clients, Snapshots } from "@/components/home/Showcase";
-import { BookCTA, Testimonials } from "@/components/home/Testimonials";
-import { Trainings } from "@/components/home/Trainings";
-import { ThemeMode, headshot } from "@/components/home/data";
+import { ScrollTop } from "@/components/home/Floating";
 import { CalendlyDialog } from "@/components/home/shared";
+import { DeferredSection } from "@/components/home/DeferredSection";
+import type { ThemeMode } from "@/components/home/data";
+const Journey = lazy(() => import("@/components/home/AboutSections").then(m => ({ default: m.Journey })));
+const Pillars = lazy(() => import("@/components/home/AboutSections").then(m => ({ default: m.Pillars })));
+const Programs = lazy(() => import("@/components/home/AboutSections").then(m => ({ default: m.Programs })));
+const Services = lazy(() => import("@/components/home/AboutSections").then(m => ({ default: m.Services })));
+const Contact = lazy(() => import("@/components/home/Contact").then(m => ({ default: m.Contact })));
+const CurrentCourses = lazy(() => import("@/components/home/Courses").then(m => ({ default: m.CurrentCourses })));
+const Footer = lazy(() => import("@/components/home/Footer").then(m => ({ default: m.Footer })));
+const Interviews = lazy(() => import("@/components/home/Media").then(m => ({ default: m.Interviews })));
+const Podcast = lazy(() => import("@/components/home/Media").then(m => ({ default: m.Podcast })));
+const Brands = lazy(() => import("@/components/home/Showcase").then(m => ({ default: m.Brands })));
+const Clients = lazy(() => import("@/components/home/Showcase").then(m => ({ default: m.Clients })));
+const Snapshots = lazy(() => import("@/components/home/Showcase").then(m => ({ default: m.Snapshots })));
+const BookCTA = lazy(() => import("@/components/home/Testimonials").then(m => ({ default: m.BookCTA })));
+const Testimonials = lazy(() => import("@/components/home/Testimonials").then(m => ({ default: m.Testimonials })));
+const TraineeReviews = lazy(() => import("@/components/TraineeReviews").then(m => ({ default: m.TraineeReviews })));
+const LatestAdditionsSection = lazy(() => import("@/components/LatestAdditions").then(m => ({ default: m.LatestAdditionsSection })));
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -132,7 +43,6 @@ export const Route = createFileRoute("/")({
     ],
     links: [
       { rel: "canonical", href: "https://eslam-selmi.lovable.app/" },
-      { rel: "preload", as: "image", href: headshot, fetchPriority: "high" },
     ],
     scripts: [
       {
@@ -206,35 +116,35 @@ function Portfolio() {
   }, []);
 
   return (
-    <MotionConfig reducedMotion={isMobile ? "always" : "never"}>
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-accent/25">
+    <MotionConfig reducedMotion={isMobile ? "always" : "user"}>
+    <div className="home-page min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-accent/25">
       <Nav theme={theme as ThemeMode} onThemeToggle={toggle} />
       {isVisible("home.hero") && <Hero />}
       
-      {isVisible("home.pillars") && <Pillars />}
-      {isVisible("home.journey") && <Journey />}
-      {isVisible("home.brands") && <Brands />}
-      {isVisible("home.services") && <Services />}
-      {isVisible("home.programs") && <Programs />}
+      {isVisible("home.pillars") && <DeferredSection id="pillars"><Pillars /></DeferredSection>}
+      {isVisible("home.journey") && <DeferredSection id="journey"><Journey /></DeferredSection>}
+      {isVisible("home.brands") && <DeferredSection id="brands"><Brands /></DeferredSection>}
+      {isVisible("home.services") && <DeferredSection id="services"><Services /></DeferredSection>}
+      {isVisible("home.programs") && <DeferredSection id="programs"><Programs /></DeferredSection>}
 
       {isVisible("home.latest_additions") && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-5 py-12">
+        <DeferredSection id="latest-additions"><div className="max-w-7xl mx-auto px-4 sm:px-5 py-12">
           <LatestAdditionsSection />
-        </div>
+        </div></DeferredSection>
       )}
 
-      {isVisible("home.current_courses") && <CurrentCourses />}
+      {isVisible("home.current_courses") && <DeferredSection id="current-courses"><CurrentCourses /></DeferredSection>}
 
-      {isVisible("home.podcast") && <Podcast />}
-      {isVisible("home.interviews") && <Interviews />}
+      {isVisible("home.podcast") && <DeferredSection id="podcast"><Podcast /></DeferredSection>}
+      {isVisible("home.interviews") && <DeferredSection id="interviews"><Interviews /></DeferredSection>}
       {/* Trainings moved to dedicated /trainings page */}
-      {isVisible("home.clients") && <Clients />}
-      {isVisible("home.snapshots") && <Snapshots />}
-      {isVisible("home.testimonials") && <Testimonials />}
-      {isVisible("home.trainee_reviews", false) && <TraineeReviews />}
-      {isVisible("home.cta") && <BookCTA />}
-      {isVisible("home.contact") && <Contact />}
-      {isVisible("home.footer") && <Footer />}
+      {isVisible("home.clients") && <DeferredSection id="clients"><Clients /></DeferredSection>}
+      {isVisible("home.snapshots") && <DeferredSection id="snapshots"><Snapshots /></DeferredSection>}
+      {isVisible("home.testimonials") && <DeferredSection id="testimonials"><Testimonials /></DeferredSection>}
+      {isVisible("home.trainee_reviews", false) && <DeferredSection id="trainee-reviews"><TraineeReviews /></DeferredSection>}
+      {isVisible("home.cta") && <DeferredSection id="book"><BookCTA /></DeferredSection>}
+      {isVisible("home.contact") && <DeferredSection id="contact"><Contact /></DeferredSection>}
+      {isVisible("home.footer") && <DeferredSection id="footer"><Footer /></DeferredSection>}
       
       <ScrollTop />
       <CalendlyDialog />
