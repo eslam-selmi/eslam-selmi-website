@@ -28,14 +28,14 @@ export function Hero() {
     <section
       id="home"
       ref={ref}
-      className="relative min-h-screen pt-28 pb-16 lg:pt-32 overflow-hidden"
+      className="relative pt-28 pb-20 lg:pt-36 lg:pb-28 overflow-hidden"
     >
       {/* Soft background wash */}
       <div
         className="pointer-events-none absolute inset-0 -z-10"
         style={{
           background:
-            "radial-gradient(ellipse 60% 50% at 85% 12%, oklch(0.72 0.13 180 / 0.18), transparent 60%), radial-gradient(ellipse 50% 40% at 5% 90%, oklch(0.22 0.06 252 / 0.10), transparent 60%)",
+            "radial-gradient(ellipse 45% 55% at 20% 30%, color-mix(in oklab, var(--accent) 22%, transparent), transparent 65%), radial-gradient(ellipse 40% 40% at 90% 85%, color-mix(in oklab, var(--accent) 12%, transparent), transparent 60%)",
         }}
       />
       <div
@@ -191,6 +191,24 @@ export function Hero() {
             >
               <Mail className="size-4" />
             </a>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+            className="grid max-w-xl grid-cols-3 divide-x divide-foreground/10 rtl:divide-x-reverse rounded-2xl border border-foreground/10 bg-card/50 py-4"
+          >
+            {[
+              ["+9", lang === "ar" ? "سنوات خبرة" : "Years experience"],
+              ["12", lang === "ar" ? "دولة" : "Countries"],
+              ["+5K", lang === "ar" ? "متدرب" : "Trainees"],
+            ].map(([n, l]) => (
+              <div key={l} className="px-3 text-center">
+                <div className="font-display text-2xl sm:text-3xl font-extrabold text-accent">{n}</div>
+                <div className="mt-1 text-[11px] sm:text-xs text-muted-foreground">{l}</div>
+              </div>
+            ))}
           </motion.div>
         </motion.div>
 
