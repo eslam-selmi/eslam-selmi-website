@@ -41,6 +41,7 @@
   --color-gold: var(--gold);
   --color-gold-soft: var(--gold-soft);
   --color-navy: var(--navy);
+  --color-consultation-surface: var(--consultation-surface);
   --color-lavender: var(--lavender);
   --color-lavender-soft: var(--lavender-soft);
   --color-lavender-deep: var(--lavender-deep);
@@ -72,6 +73,7 @@
   --gold: oklch(0.78 0.14 78);
   --gold-soft: oklch(0.88 0.09 82);
   --navy: oklch(0.22 0.06 252);
+  --consultation-surface: oklch(0.20 0.05 252);
   --navy-deep: oklch(0.14 0.05 252);
   --steel: oklch(0.62 0.04 240);
 

@@ -302,7 +302,7 @@ export function BookCTA() {
     <section id="book" className="px-4 sm:px-6 py-16">
       <motion.div
         {...fadeUp}
-        className="relative mx-auto max-w-6xl overflow-hidden bg-navy text-primary-foreground"
+        className="relative mx-auto max-w-6xl overflow-hidden bg-consultation-surface text-primary-foreground"
       >
         <img src={mediaImage(media?.media ?? {}, "consultation", consultationImage)} alt={t("book_title_1")} width={1536} height={864} loading="lazy" decoding="async" className="w-full aspect-video lg:aspect-[21/9] object-cover" />
         <div className="relative grid lg:grid-cols-[1.4fr_1fr] gap-10 items-center p-8 sm:p-12 lg:p-16">

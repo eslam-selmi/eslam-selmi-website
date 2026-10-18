@@ -2,9 +2,9 @@
 
 # Program, course and consultation images
 
-- [ ] Add images above programs and courses and a consultation banner.
-- [ ] Add administrator image upload, preview and save controls.
-- [ ] Verify saved replacements on public pages and mobile.
+- [x] Add images above programs and courses and a consultation banner.
+- [x] Add administrator image upload, preview and save controls.
+- [x] Verify saved replacements on public pages and mobile; restore defaults after testing.
 
 - [x] Remove the independent admin palette and restore shared dashboard backgrounds, glass cards and light/dark appearance.
 - [x] Match admin navigation, overview cards, toolbar and controls to trainee styling without changing admin workflows.
