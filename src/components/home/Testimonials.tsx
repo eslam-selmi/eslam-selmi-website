@@ -104,8 +104,7 @@ import snap16Asset from "@/assets/snapshots/snap-16.jpg.asset.json";
 import { TestimonialRow, WHATSAPP, fadeUp, openCalendly } from "@/components/home/data";
 import { useSiteProfile } from "@/lib/site-profile";
 import { Section } from "@/components/home/shared";
-import { useSiteMedia } from "@/lib/site-media";
-import { consultationImage, mediaImage } from "@/lib/site-media-data";
+import { Button } from "@/components/ui/button";
 
 export function Testimonials() {
   const { lang } = useI18n();
@@ -291,73 +290,38 @@ export function TestimonialsScroller({ items, isAr }: { items: TestimonialRow[];
 
 export function BookCTA() {
   const { t } = useI18n();
-  const { data: media } = useSiteMedia();
   const { links } = useSiteProfile();
   const steps = [
-    { i: Target, t: t("book_step_1_t"), d: t("book_step_1_d") },
-    { i: Lightbulb, t: t("book_step_2_t"), d: t("book_step_2_d") },
-    { i: HeartHandshake, t: t("book_step_3_t"), d: t("book_step_3_d") },
+    { icon: Target, title: t("book_step_1_t"), description: t("book_step_1_d") },
+    { icon: Lightbulb, title: t("book_step_2_t"), description: t("book_step_2_d") },
+    { icon: HeartHandshake, title: t("book_step_3_t"), description: t("book_step_3_d") },
   ];
   return (
-    <section id="book" className="px-4 sm:px-6 py-16">
-      <motion.div
-        {...fadeUp}
-        className="relative mx-auto max-w-6xl overflow-hidden bg-consultation-surface text-primary-foreground"
-      >
-        <img src={mediaImage(media?.media ?? {}, "consultation", consultationImage)} alt={t("book_title_1")} width={1536} height={864} loading="lazy" decoding="async" className="w-full aspect-video lg:aspect-[21/9] object-cover" />
-        <div className="relative grid lg:grid-cols-[1.4fr_1fr] gap-10 items-center p-8 sm:p-12 lg:p-16">
+    <section id="book" className="booking-editorial relative border-y border-border bg-card py-16 sm:py-24">
+      <div className="mx-auto max-w-6xl px-6 sm:px-8">
+        <motion.div {...fadeUp} className="grid gap-12 lg:grid-cols-[1.2fr_1fr] lg:gap-20 items-center">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.25em] text-white">
-              <Sparkles className="size-3.5" /> {t("book_badge")}
-            </div>
-            <h2 className="mt-5 font-display font-extrabold text-balance leading-[1.05] text-white text-[clamp(2.25rem,5vw,3.75rem)]">
-              {t("book_title_1")}{" "}
-              <span style={{ color: "var(--accent)" }}>{t("book_title_2")}</span>{" "}
-              {t("book_title_3")}
+            <div className="flex items-center gap-3 text-sm font-semibold text-muted-foreground"><span className="h-px w-10 bg-accent" /><Clock className="size-4 text-accent" />{t("book_badge")}</div>
+            <h2 className="mt-6 font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-foreground">
+              {t("book_title_1")}<br /><span className="text-accent">{t("book_title_2")}</span><br />{t("book_title_3")}
             </h2>
-            <p className="mt-5 text-white/90 max-w-xl leading-relaxed text-base">
-              {t("book_desc")}
-            </p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <button
-                onClick={openCalendly}
-                className="group inline-flex items-center gap-2 rounded-full bg-white text-[#0b1736] px-6 py-3.5 text-sm font-bold hover:bg-white/95 transition shadow-lg cursor-pointer"
-              >
-                <Calendar className="size-4" /> {t("book_cta")}
-                <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
-              </button>
-              <a
-                href={links.whatsapp}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 text-white px-6 py-3.5 text-sm font-bold hover:bg-white/20 transition"
-              >
-                <MessageCircle className="size-4" /> {t("book_btn_whatsapp")}
-              </a>
+            <p className="mt-6 max-w-lg text-base leading-relaxed text-muted-foreground">{t("book_desc")}</p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Button onClick={openCalendly} size="lg" className="h-12 rounded-md px-5 bg-primary text-primary-foreground group"><Calendar className="size-4" />{t("book_cta")}<ArrowRight className="size-4 rtl-flip motion-safe:group-hover:translate-x-1 transition-transform" /></Button>
+              <Button variant="outline" size="lg" asChild className="h-12 rounded-md px-5"><a href={links.whatsapp} target="_blank" rel="noopener noreferrer"><MessageCircle className="size-4" />{t("book_btn_whatsapp")}</a></Button>
             </div>
           </div>
-          <div className="grid gap-3">
-            {steps.map(({ i: Icon, t: tt, d }, idx) => (
-              <div
-                key={tt}
-                className="rounded-2xl border border-white/25 bg-white/10 p-4 flex items-start gap-3 backdrop-blur-xl"
-              >
-                <span className="size-10 rounded-xl bg-white text-[#0b1736] grid place-items-center shrink-0 font-display font-extrabold text-sm">
-                  0{idx + 1}
-                </span>
-                <div className="min-w-0">
-                  <div className="font-semibold text-sm flex items-center gap-2 text-white">
-                    <Icon className="size-3.5" /> {tt}
-                  </div>
-                  <div className="text-xs text-white/85 mt-1 leading-relaxed">{d}</div>
-                </div>
+          <div className="relative border-s border-border ps-6 sm:ps-10">
+            <div aria-hidden="true" className="mb-8 flex items-end gap-3 text-accent"><span className="font-display text-7xl sm:text-8xl font-semibold leading-none">30</span><Clock className="size-8 mb-2" /></div>
+            {steps.map(({ icon: Icon, title, description }, index) => (
+              <div key={title} className="group relative grid grid-cols-[2rem_1fr] gap-4 border-t border-border py-6">
+                <span className="font-display text-sm text-muted-foreground pt-1">0{index + 1}</span>
+                <div><h3 className="flex items-center gap-3 text-lg font-semibold text-foreground"><Icon className="size-5 text-accent shrink-0" />{title}</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p></div>
               </div>
             ))}
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
     </section>
   );
 }
-
-/* ---------- CURRENT COURSES (live from DB) ---------- */
