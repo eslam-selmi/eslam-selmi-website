@@ -2,9 +2,9 @@
 
 # Booking and contact redesign
 
-- [ ] Remove the consultation photo and redesign the free-session section.
-- [ ] Redesign the impact/contact section while preserving contact links.
-- [ ] Verify both sections and booking interaction on desktop/mobile.
+- [x] Remove the consultation photo and redesign the free-session section.
+- [x] Redesign the impact/contact section while preserving contact links.
+- [x] Verify both sections and booking interaction on desktop/mobile.
 
 # Program, course and consultation images
 
