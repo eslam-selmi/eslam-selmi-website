@@ -1,5 +1,11 @@
 # Match administration to trainee portal
 
+# Program, course and consultation images
+
+- [ ] Add images above programs and courses and a consultation banner.
+- [ ] Add administrator image upload, preview and save controls.
+- [ ] Verify saved replacements on public pages and mobile.
+
 - [x] Remove the independent admin palette and restore shared dashboard backgrounds, glass cards and light/dark appearance.
 - [x] Match admin navigation, overview cards, toolbar and controls to trainee styling without changing admin workflows.
 - [x] Verify signed-in navigation and desktop/mobile layouts in both themes.
