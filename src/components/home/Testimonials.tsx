@@ -297,28 +297,31 @@ export function BookCTA() {
     { icon: HeartHandshake, title: t("book_step_3_t"), description: t("book_step_3_d") },
   ];
   return (
-    <section id="book" className="booking-editorial relative border-y border-border bg-card py-16 sm:py-24">
+    <section id="book" className="cta-glass-band py-14 sm:py-20">
       <div className="mx-auto max-w-6xl px-6 sm:px-8">
-        <motion.div {...fadeUp} className="grid gap-12 lg:grid-cols-[1.2fr_1fr] lg:gap-20 items-center">
+        <motion.div {...fadeUp} className="grid gap-10 lg:grid-cols-[1.2fr_1fr] lg:gap-16 items-center">
           <div>
-            <div className="flex items-center gap-3 text-sm font-semibold text-muted-foreground"><span className="h-px w-10 bg-accent" /><Clock className="size-4 text-accent" />{t("book_badge")}</div>
+            <div className="cta-glass-item inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold text-foreground"><Sparkles className="size-4 text-accent" />{t("book_badge")}</div>
             <h2 className="mt-6 font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-foreground">
               {t("book_title_1")}<br /><span className="text-accent">{t("book_title_2")}</span><br />{t("book_title_3")}
             </h2>
             <p className="mt-6 max-w-lg text-base leading-relaxed text-muted-foreground">{t("book_desc")}</p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Button onClick={openCalendly} size="lg" className="h-12 rounded-md px-5 bg-primary text-primary-foreground group"><Calendar className="size-4" />{t("book_cta")}<ArrowRight className="size-4 rtl-flip motion-safe:group-hover:translate-x-1 transition-transform" /></Button>
-              <Button variant="outline" size="lg" asChild className="h-12 rounded-md px-5"><a href={links.whatsapp} target="_blank" rel="noopener noreferrer"><MessageCircle className="size-4" />{t("book_btn_whatsapp")}</a></Button>
+              <Button onClick={openCalendly} size="lg" className="h-14 rounded-full px-6 bg-primary text-primary-foreground group"><Calendar className="size-4" />{t("book_cta")}<ArrowRight className="size-4 rtl-flip motion-safe:group-hover:translate-x-1 transition-transform" /></Button>
+              <Button variant="outline" size="lg" asChild className="cta-glass-item h-14 rounded-full px-6"><a href={links.whatsapp} target="_blank" rel="noopener noreferrer"><MessageCircle className="size-4" />{t("book_btn_whatsapp")}</a></Button>
             </div>
           </div>
-          <div className="relative border-s border-border ps-6 sm:ps-10">
-            <div aria-hidden="true" className="mb-8 flex items-end gap-3 text-accent"><span className="font-display text-7xl sm:text-8xl font-semibold leading-none">30</span><Clock className="size-8 mb-2" /></div>
+          <div className="relative">
+            <div aria-hidden="true" className="cta-clock relative mx-auto mb-7 grid size-40 place-content-center text-center text-accent"><Clock className="size-5 mx-auto mb-1" /><span className="font-display text-6xl font-semibold leading-none">30</span></div>
+            <div className="grid gap-3">
             {steps.map(({ icon: Icon, title, description }, index) => (
-              <div key={title} className="group relative grid grid-cols-[2rem_1fr] gap-4 border-t border-border py-6">
-                <span className="font-display text-sm text-muted-foreground pt-1">0{index + 1}</span>
-                <div><h3 className="flex items-center gap-3 text-lg font-semibold text-foreground"><Icon className="size-5 text-accent shrink-0" />{title}</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p></div>
+              <div key={title} className={`cta-glass-item group relative flex items-start gap-4 rounded-[1.5rem] p-5 transition-transform motion-safe:hover:-translate-y-1 ${index === 1 ? "lg:ms-8" : "lg:me-8"}`}>
+                <span className="grid size-11 shrink-0 place-items-center rounded-full bg-accent/10 text-accent"><Icon className="size-5" /></span>
+                <div className="min-w-0 flex-1"><h3 className="text-base font-semibold text-foreground">{title}</h3><p className="mt-1 text-sm leading-relaxed text-muted-foreground">{description}</p></div>
+                <span className="font-display text-xs text-accent/70 pt-1">0{index + 1}</span>
               </div>
             ))}
+            </div>
           </div>
         </motion.div>
       </div>

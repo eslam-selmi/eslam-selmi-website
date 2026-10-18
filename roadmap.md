@@ -2,6 +2,8 @@
 
 # Booking and contact redesign
 
+- [ ] Replace plain layouts with curved glass styling for booking and contact; verify both themes and mobile.
+
 - [x] Remove the consultation photo and redesign the free-session section.
 - [x] Redesign the impact/contact section while preserving contact links.
 - [x] Verify both sections and booking interaction on desktop/mobile.

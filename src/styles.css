@@ -137,6 +137,65 @@
   --notification-highlight: oklch(1 0 0 / 0.09);
 }
 
+.cta-glass-band {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-block: 1px solid var(--glass-border);
+  border-radius: 64px 64px 0 0;
+  background: linear-gradient(125deg, color-mix(in oklab, var(--accent) 13%, var(--background)), var(--background) 55%, color-mix(in oklab, var(--foreground) 5%, var(--background)));
+}
+.cta-glass-band::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 18px -10% auto;
+  height: 420px;
+  border-radius: 50%;
+  border-top: 1px solid color-mix(in oklab, var(--accent) 30%, transparent);
+  transform: rotate(-12deg);
+  pointer-events: none;
+}
+.cta-glass-band::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: auto -15% -220px;
+  height: 440px;
+  border-radius: 50%;
+  border: 1px solid var(--glass-border);
+  background: linear-gradient(145deg, color-mix(in oklab, var(--accent) 8%, transparent), transparent 65%);
+  pointer-events: none;
+}
+.cta-glass-item {
+  border: 1px solid var(--glass-border);
+  background: linear-gradient(140deg, color-mix(in oklab, var(--foreground) 5%, var(--glass)), var(--glass));
+  box-shadow: inset 0 1px 0 var(--notification-highlight), var(--shadow-glass);
+  backdrop-filter: blur(16px) saturate(125%);
+}
+.cta-clock {
+  border: 1px solid color-mix(in oklab, var(--accent) 35%, var(--border));
+  background: linear-gradient(140deg, color-mix(in oklab, var(--accent) 12%, var(--glass)), var(--glass));
+  box-shadow: inset 0 2px 0 var(--notification-highlight), var(--shadow-glass);
+  border-radius: 50% 50% 42% 42%;
+}
+.cta-clock::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border: 1px dashed color-mix(in oklab, var(--accent) 35%, transparent);
+  border-radius: inherit;
+  pointer-events: none;
+}
+.contact-glass-band {
+  border-radius: 0 0 64px 64px;
+}
+@media (max-width: 767px) {
+  .cta-glass-band { border-radius: 32px 32px 0 0; }
+  .contact-glass-band { border-radius: 0 0 32px 32px; }
+  .cta-glass-item { backdrop-filter: blur(6px); }
+}
+
 /* Shared notification surface; scoped selectors override Sonner's injected defaults. */
 [data-sonner-toaster].site-toaster {
   font-family: var(--font-body-en);
