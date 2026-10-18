@@ -1,5 +1,11 @@
 # Match administration to trainee portal
 
+# Booking and contact redesign
+
+- [ ] Remove the consultation photo and redesign the free-session section.
+- [ ] Redesign the impact/contact section while preserving contact links.
+- [ ] Verify both sections and booking interaction on desktop/mobile.
+
 # Program, course and consultation images
 
 - [x] Add images above programs and courses and a consultation banner.
