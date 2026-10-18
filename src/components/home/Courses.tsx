@@ -365,6 +365,7 @@ export function CourseDetailsModal({
         className="relative w-full max-w-2xl max-h-[90vh] overflow-auto rounded-3xl bg-card shadow-2xl border border-foreground/10"
         onClick={(e) => e.stopPropagation()}
       >
+        <CourseCover id={course.id} title={course.title} />
         <div
           className="relative p-7 sm:p-10"
           style={{
