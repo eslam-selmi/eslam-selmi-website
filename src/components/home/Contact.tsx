@@ -105,6 +105,7 @@ import { Programs } from "@/components/home/AboutSections";
 import { LINKEDIN, fadeUp } from "@/components/home/data";
 import { CompactStat, Section } from "@/components/home/shared";
 import { useSiteProfile } from "@/lib/site-profile";
+import { Button } from "@/components/ui/button";
 
 export function LeadForm() {
   const { t, lang } = useI18n();
@@ -200,82 +201,35 @@ export function LeadForm() {
 /* ---------- CONTACT ---------- */
 
 export function Contact() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { profile, links } = useSiteProfile();
+  const channels = [
+    { icon: Phone, label: t("contact_mobile"), detail: profile.phone, href: links.phone, ltr: true },
+    ...(profile.secondary_phone ? [{ icon: Phone, label: lang === "ar" ? "رقم إضافي" : "Additional phone", detail: profile.secondary_phone, href: `tel:${profile.secondary_phone.replace(/[^+0-9]/g, "")}`, ltr: true }] : []),
+    { icon: Mail, label: lang === "ar" ? "البريد الإلكتروني" : "Email", detail: profile.email, href: links.email, ltr: true },
+    { icon: Linkedin, label: t("contact_linkedin"), detail: t("contact_linkedin_line"), href: links.linkedin, ltr: false },
+  ];
   return (
-    <Section id="contact" eyebrow={t("contact_eyebrow")} title={t("contact_title")}>
-      <div className="grid gap-5 sm:grid-cols-2 max-w-3xl mx-auto">
-        <ContactCard
-          icon={Phone}
-          label={t("contact_mobile")}
-          lines={[
-            <span key="sa" className="inline-flex items-center gap-2.5">
-              <img
-                src="https://flagcdn.com/w40/sa.png"
-                srcSet="https://flagcdn.com/w80/sa.png 2x"
-                width={22}
-                height={16}
-                alt="Saudi Arabia"
-                className="rounded-[3px] ring-1 ring-foreground/15 shadow-sm shrink-0"
-              />
-              <span dir="ltr">{profile.phone}</span>
-            </span>,
-            profile.secondary_phone ? <span key="eg" className="inline-flex items-center gap-2.5">
-              <img
-                src="https://flagcdn.com/w40/eg.png"
-                srcSet="https://flagcdn.com/w80/eg.png 2x"
-                width={22}
-                height={16}
-                alt="Egypt"
-                className="rounded-[3px] ring-1 ring-foreground/15 shadow-sm shrink-0"
-              />
-              <span dir="ltr">{profile.secondary_phone}</span>
-            </span> : null,
-          ]}
-          href={links.phone}
-        />
-        <ContactCard
-          icon={Linkedin}
-          label={t("contact_linkedin")}
-          lines={[t("contact_linkedin_line")]}
-          href={links.linkedin}
-        />
-      </div>
-    </Section>
-  );
-}
-
-export function ContactCard({
-  icon: Icon,
-  label,
-  lines,
-  href,
-}: {
-  icon: any;
-  label: string;
-  lines: React.ReactNode[];
-  href: string;
-}) {
-  return (
-    <motion.a
-      {...fadeUp}
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="glass-panel rounded-3xl p-6 transition hover:-translate-y-1 group block"
-    >
-      <Icon className="size-6 text-gold" />
-      <div className="mt-3 text-sm text-muted-foreground">{label}</div>
-      {lines.map((l, i) => (
-        <div key={i} className="font-medium mt-1">
-          {l}
+    <section id="contact" className="relative py-16 sm:py-24 bg-background">
+      <div className="mx-auto max-w-6xl px-6 sm:px-8">
+        <motion.div {...fadeUp} className="flex items-center gap-3 text-sm font-semibold text-accent"><HeartHandshake className="size-5" />{t("contact_eyebrow")}<span className="h-px flex-1 bg-border" /></motion.div>
+        <div className="mt-10 grid lg:grid-cols-[1fr_1.1fr] gap-12 lg:gap-20">
+          <motion.div {...fadeUp}>
+            <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-foreground">{t("contact_title")}</h2>
+            <div className="mt-8 h-1 w-16 bg-accent" />
+            <Button asChild size="lg" className="mt-8 h-12 rounded-md bg-primary text-primary-foreground"><a href={links.whatsapp} target="_blank" rel="noopener noreferrer"><MessageCircle className="size-4" />{t("book_btn_whatsapp")}<ArrowRight className="size-4 rtl-flip" /></a></Button>
+          </motion.div>
+          <div className="border-t border-border">
+            {channels.map(({ icon: Icon, label, detail, href, ltr }) => (
+              <motion.a {...fadeUp} key={href} href={href} target={href.startsWith("https:") ? "_blank" : undefined} rel="noopener noreferrer" className="group flex items-center gap-4 sm:gap-5 border-b border-border py-6 text-foreground transition-colors hover:bg-accent/5 focus-visible:outline focus-visible:outline-ring">
+                <span className="grid size-12 shrink-0 place-items-center rounded-full border border-border text-accent transition-colors group-hover:bg-accent group-hover:text-accent-foreground"><Icon className="size-5" /></span>
+                <span className="flex-1 min-w-0"><span className="block text-xs font-semibold text-muted-foreground">{label}</span><span dir={ltr ? "ltr" : undefined} className="mt-1 block w-fit max-w-full break-words text-sm sm:text-base font-semibold">{detail}</span></span>
+                <ArrowRight className="size-5 shrink-0 text-muted-foreground rtl-flip transition-transform motion-safe:group-hover:translate-x-1" />
+              </motion.a>
+            ))}
+          </div>
         </div>
-      ))}
-      <div className="mt-4 inline-flex items-center gap-1 text-xs text-gold group-hover:gap-2 transition-all">
-        Open <ArrowRight className="size-3 rtl-flip" />
       </div>
-    </motion.a>
+    </section>
   );
 }
-
-/* ---------- FOOTER ---------- */
