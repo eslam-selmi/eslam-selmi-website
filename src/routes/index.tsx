@@ -10,6 +10,7 @@ import { CalendlyDialog } from "@/components/home/shared";
 import { DeferredSection } from "@/components/home/DeferredSection";
 import type { ThemeMode } from "@/components/home/data";
 const Journey = lazy(() => import("@/components/home/AboutSections").then(m => ({ default: m.Journey })));
+const HowItWorks = lazy(() => import("@/components/home/HowItWorks").then(m => ({ default: m.HowItWorks })));
 const Pillars = lazy(() => import("@/components/home/AboutSections").then(m => ({ default: m.Pillars })));
 const Programs = lazy(() => import("@/components/home/AboutSections").then(m => ({ default: m.Programs })));
 const Services = lazy(() => import("@/components/home/AboutSections").then(m => ({ default: m.Services })));
@@ -120,6 +121,8 @@ function Portfolio() {
     <div className="home-page min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-accent/25">
       <Nav theme={theme as ThemeMode} onThemeToggle={toggle} />
       {isVisible("home.hero") && <Hero />}
+      <DeferredSection id="how-it-works"><HowItWorks /></DeferredSection>
+
       
       {isVisible("home.pillars") && <DeferredSection id="pillars"><Pillars /></DeferredSection>}
       {isVisible("home.journey") && <DeferredSection id="journey"><Journey /></DeferredSection>}
