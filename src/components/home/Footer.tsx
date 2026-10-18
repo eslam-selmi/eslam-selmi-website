@@ -110,6 +110,7 @@ export function Footer() {
   const { profile, links } = useSiteProfile();
   return (
     <footer className="border-t border-foreground/10 mt-10 bg-foreground/[0.025] backdrop-blur-xl">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 pt-16 grid grid-cols-2 md:grid-cols-4 gap-10">{[["nav_services", "services"], ["nav_programs", "programs"], ["nav_podcast", "podcast"], ["nav_contact", "contact"]].map(([key, id]) => <div key={id} className="flex flex-col gap-4"><a href={`#${id}`} className="font-display text-lg font-bold hover:text-accent">{t(key)}</a><span className="h-px bg-border" /><a href={id === "contact" ? links.email : `#${id}`} className="text-sm text-muted-foreground hover:text-accent">{t("footer_tag")}</a></div>)}</div>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <BrandMark size={36} />

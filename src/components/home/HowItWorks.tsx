@@ -1,5 +1,6 @@
 import { Search, SlidersHorizontal, GraduationCap, ArrowRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { SectionHeader } from "@/components/home/shared";
 import { openCalendly } from "@/components/home/data";
 
 export function HowItWorks() {
@@ -11,24 +12,19 @@ export function HowItWorks() {
     { icon: GraduationCap, t: ar ? "التطبيق والاعتماد" : "Implement & certify", d: ar ? "يطبّق فريقك المعرفة ويطوّر المهارة ويحصل على شهادة معتمدة قابلة للتحقق." : "Your team applies the skill and earns a verifiable certificate to prove it." },
   ];
   return (
-    <section className="py-20 sm:py-28">
+    <section className="editorial-section process-section">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="text-center">
-          <p className="text-xs font-bold uppercase tracking-[0.3em] text-accent">{ar ? "كيف نعمل" : "How it works"}</p>
-          <h2 className="mt-4 font-display text-[clamp(1.9rem,4vw,3.25rem)] font-extrabold leading-[1.05] tracking-tight text-foreground text-balance">
-            {ar ? "من الاحتياج التدريبي إلى شهادة معتمدة." : "From training need to recognized credential."}
-          </h2>
-        </div>
+        <SectionHeader eyebrow={ar ? "كيف نعمل" : "How it works"} title={ar ? "من الاحتياج التدريبي إلى شهادة معتمدة." : "From training need to recognized credential."} />
         <div className="relative mt-16 grid gap-12 md:grid-cols-3">
           <div className="pointer-events-none absolute inset-x-[16%] top-10 hidden border-t-2 border-dashed border-foreground/10 md:block" aria-hidden />
           {steps.map((s, i) => (
-            <div key={s.t} className="relative text-center">
-              <div className="relative mx-auto grid size-20 place-items-center rounded-3xl border border-accent/25 bg-card shadow-[0_20px_40px_-24px_color-mix(in_oklab,var(--navy-deep)_45%,transparent)]">
+            <div key={s.t} className="process-card relative text-start">
+              <div className="relative grid size-20 place-items-center rounded-3xl border border-accent/25 bg-card shadow-[0_20px_40px_-24px_color-mix(in_oklab,var(--navy-deep)_45%,transparent)]">
                 <s.icon className="size-7 text-accent" />
-                <span className="absolute -top-3 -end-3 grid size-8 place-items-center rounded-full bg-accent text-xs font-bold text-accent-foreground ring-4 ring-background">{i + 1}</span>
+                <span className="absolute -top-3 -end-3 grid size-8 place-items-center rounded-full bg-accent text-xs font-bold text-accent-foreground ring-4 ring-background">{String(i + 1).padStart(2, "0")}</span>
               </div>
               <h3 className="mt-6 font-display text-xl font-bold text-foreground">{s.t}</h3>
-              <p className="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">{s.d}</p>
+              <p className="mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">{s.d}</p>
             </div>
           ))}
         </div>

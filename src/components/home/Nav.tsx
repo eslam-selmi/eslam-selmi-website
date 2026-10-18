@@ -157,10 +157,10 @@ export function Nav({
                 "group relative inline-flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-extrabold rounded-full transition-all hover:-translate-y-0.5 cursor-pointer";
               const highlightStyle = {
                 background:
-                  "linear-gradient(135deg, color-mix(in oklab, var(--gold) 22%, transparent), color-mix(in oklab, var(--gold) 8%, transparent))",
-                border: "1.5px solid color-mix(in oklab, var(--gold) 55%, transparent)",
+                  "linear-gradient(135deg, color-mix(in oklab, var(--accent) 22%, transparent), color-mix(in oklab, var(--accent) 8%, transparent))",
+                border: "1.5px solid color-mix(in oklab, var(--accent) 55%, transparent)",
                 color: "var(--accent)",
-                boxShadow: "0 0 0 3px color-mix(in oklab, var(--gold) 10%, transparent)",
+                boxShadow: "0 0 0 3px color-mix(in oklab, var(--accent) 10%, transparent)",
               } as const;
               if (n.action === "book") {
                 return (
@@ -195,8 +195,8 @@ export function Nav({
                 borderColor: "var(--accent)",
                 color: "var(--accent)",
                 background:
-                  "linear-gradient(135deg, oklch(0.75 0.13 85 / 0.10), oklch(0.75 0.13 85 / 0.02))",
-                boxShadow: "0 0 0 3px oklch(0.75 0.13 85 / 0.08)",
+                  "linear-gradient(135deg, oklch(0.75 0.13 185 / 0.10), oklch(0.75 0.13 185 / 0.02))",
+                boxShadow: "0 0 0 3px oklch(0.75 0.13 185 / 0.08)",
               }}
             >
               <Rocket className="size-3.5" />
@@ -221,20 +221,17 @@ export function Nav({
               aria-label="Toggle theme"
               className="relative inline-flex size-9 items-center justify-center rounded-full border border-foreground/10 bg-white/5 backdrop-blur-md hover:bg-white/10 hover:border-foreground/20 hover:shadow-lg hover:shadow-primary/5 transition-all overflow-hidden group glass"
             >
-              <div className="absolute inset-0 bg-gradient-to-tr from-gold/10 to-lavender/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute inset-0 bg-gradient-to-tr from-accent/10 to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity" />
               <motion.div
-                key={activeTheme}
+                key="theme-icon"
                 initial={{ y: 12, rotate: 45, opacity: 0 }}
                 animate={{ y: 0, rotate: 0, opacity: 1, scale: 1 }}
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
                 className="relative z-10 flex items-center justify-center"
               >
-                {activeTheme === "dark" ? (
-                  <Sun className="size-4 text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
-                ) : (
-                  <Moon className="size-4 text-indigo-400 drop-shadow-[0_0_8px_rgba(129,140,248,0.6)]" />
-                )}
+                <Sun className="size-4 text-accent hidden dark:block" />
+                <Moon className="size-4 text-foreground dark:hidden" />
               </motion.div>
             </button>
             <a
@@ -256,10 +253,10 @@ export function Nav({
                 className="relative inline-flex size-9 items-center justify-center rounded-full transition-all group"
                 style={{
                   background:
-                    "linear-gradient(135deg, oklch(0.75 0.13 85 / 0.18), oklch(0.75 0.13 85 / 0.04))",
-                  border: "1.5px solid oklch(0.75 0.13 85 / 0.55)",
+                    "linear-gradient(135deg, oklch(0.75 0.13 185 / 0.18), oklch(0.75 0.13 185 / 0.04))",
+                  border: "1.5px solid oklch(0.75 0.13 185 / 0.55)",
                   boxShadow: portalOpen
-                    ? "0 0 0 4px oklch(0.75 0.13 85 / 0.18), 0 6px 20px -8px oklch(0.75 0.13 85 / 0.55)"
+                    ? "0 0 0 4px oklch(0.75 0.13 185 / 0.18), 0 6px 20px -8px oklch(0.75 0.13 185 / 0.55)"
                     : "0 0 0 0 transparent",
                 }}
               >
@@ -279,19 +276,19 @@ export function Nav({
                     className="absolute end-0 mt-3 w-64 rounded-2xl overflow-hidden z-50"
                     style={{
                       background: "rgba(11,23,54,0.96)",
-                      border: "1px solid oklch(0.75 0.13 85 / 0.35)",
+                      border: "1px solid oklch(0.75 0.13 185 / 0.35)",
                       boxShadow:
-                        "0 20px 50px -12px rgba(0,0,0,0.5), 0 0 0 1px oklch(0.75 0.13 85 / 0.12)",
+                        "0 20px 50px -12px rgba(0,0,0,0.5), 0 0 0 1px oklch(0.75 0.13 185 / 0.12)",
                       backdropFilter: "blur(16px)",
                     }}
                   >
                     <div
                       className="px-4 py-3 border-b text-[11px] font-bold tracking-[0.18em] uppercase"
                       style={{
-                        borderColor: "oklch(0.75 0.13 85 / 0.18)",
-                        color: "oklch(0.75 0.13 85)",
+                        borderColor: "oklch(0.75 0.13 185 / 0.18)",
+                        color: "oklch(0.75 0.13 185)",
                         background:
-                          "linear-gradient(90deg, oklch(0.75 0.13 85 / 0.10), transparent)",
+                          "linear-gradient(90deg, oklch(0.75 0.13 185 / 0.10), transparent)",
                       }}
                     >
                       {lang === "ar" ? "بوابة الدخول" : "Access Portal"}
@@ -303,7 +300,7 @@ export function Nav({
                       className="flex items-center gap-3 px-4 py-3 transition-colors group"
                       style={{ color: "white" }}
                       onMouseEnter={(e) =>
-                        (e.currentTarget.style.background = "oklch(0.75 0.13 85 / 0.10)")
+                        (e.currentTarget.style.background = "oklch(0.75 0.13 185 / 0.10)")
                       }
                       onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                     >
@@ -311,8 +308,8 @@ export function Nav({
                         className="size-9 grid place-items-center rounded-xl shrink-0"
                         style={{
                           background:
-                            "linear-gradient(135deg, oklch(0.75 0.13 85 / 0.25), oklch(0.75 0.13 85 / 0.08))",
-                          border: "1px solid oklch(0.75 0.13 85 / 0.40)",
+                            "linear-gradient(135deg, oklch(0.75 0.13 185 / 0.25), oklch(0.75 0.13 185 / 0.08))",
+                          border: "1px solid oklch(0.75 0.13 185 / 0.40)",
                         }}
                       >
                         <ShieldCheck className="size-4" style={{ color: "var(--accent)" }} />
@@ -332,9 +329,9 @@ export function Nav({
                       search={{ role: "trainee" }}
                       onClick={() => setPortalOpen(false)}
                       className="flex items-center gap-3 px-4 py-3 transition-colors group border-t"
-                      style={{ color: "white", borderColor: "oklch(0.75 0.13 85 / 0.12)" }}
+                      style={{ color: "white", borderColor: "oklch(0.75 0.13 185 / 0.12)" }}
                       onMouseEnter={(e) =>
-                        (e.currentTarget.style.background = "oklch(0.75 0.13 85 / 0.10)")
+                        (e.currentTarget.style.background = "oklch(0.75 0.13 185 / 0.10)")
                       }
                       onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                     >
@@ -342,8 +339,8 @@ export function Nav({
                         className="size-9 grid place-items-center rounded-xl shrink-0"
                         style={{
                           background:
-                            "linear-gradient(135deg, oklch(0.75 0.13 85 / 0.25), oklch(0.75 0.13 85 / 0.08))",
-                          border: "1px solid oklch(0.75 0.13 85 / 0.40)",
+                            "linear-gradient(135deg, oklch(0.75 0.13 185 / 0.25), oklch(0.75 0.13 185 / 0.08))",
+                          border: "1px solid oklch(0.75 0.13 185 / 0.40)",
                         }}
                       >
                         <GraduationCap className="size-4" style={{ color: "var(--accent)" }} />
@@ -383,17 +380,17 @@ export function Nav({
                     className="my-1 inline-flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-extrabold tracking-tight transition-all"
                     style={{
                       background:
-                        "linear-gradient(135deg, color-mix(in oklab, var(--gold) 22%, transparent), color-mix(in oklab, var(--gold) 6%, transparent))",
-                      border: "1.5px solid color-mix(in oklab, var(--gold) 55%, transparent)",
+                        "linear-gradient(135deg, color-mix(in oklab, var(--accent) 22%, transparent), color-mix(in oklab, var(--accent) 6%, transparent))",
+                      border: "1.5px solid color-mix(in oklab, var(--accent) 55%, transparent)",
                       color: "var(--accent)",
-                      boxShadow: "0 0 0 3px color-mix(in oklab, var(--gold) 10%, transparent)",
+                      boxShadow: "0 0 0 3px color-mix(in oklab, var(--accent) 10%, transparent)",
                     }}
                   >
                     <span
                       className="size-7 grid place-items-center rounded-lg"
                       style={{
-                        background: "color-mix(in oklab, var(--gold) 18%, transparent)",
-                        border: "1px solid color-mix(in oklab, var(--gold) 40%, transparent)",
+                        background: "color-mix(in oklab, var(--accent) 18%, transparent)",
+                        border: "1px solid color-mix(in oklab, var(--accent) 40%, transparent)",
                       }}
                     >
                       <Calendar className="size-3.5" />
@@ -414,8 +411,8 @@ export function Nav({
                       borderColor: "var(--accent)",
                       color: "var(--accent)",
                       background:
-                        "linear-gradient(135deg, oklch(0.75 0.13 85 / 0.12), oklch(0.75 0.13 85 / 0.03))",
-                      boxShadow: "0 0 0 3px oklch(0.75 0.13 85 / 0.08)",
+                        "linear-gradient(135deg, oklch(0.75 0.13 185 / 0.12), oklch(0.75 0.13 185 / 0.03))",
+                      boxShadow: "0 0 0 3px oklch(0.75 0.13 185 / 0.08)",
                     }}
                   >
                     <span className="size-7 grid place-items-center rounded-lg bg-[var(--accent)]/15 border border-[var(--accent)]/30">
@@ -435,17 +432,17 @@ export function Nav({
                     className="my-1 inline-flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-extrabold tracking-tight transition-all"
                     style={{
                       background:
-                        "linear-gradient(135deg, color-mix(in oklab, var(--gold) 22%, transparent), color-mix(in oklab, var(--gold) 6%, transparent))",
-                      border: "1.5px solid color-mix(in oklab, var(--gold) 55%, transparent)",
+                        "linear-gradient(135deg, color-mix(in oklab, var(--accent) 22%, transparent), color-mix(in oklab, var(--accent) 6%, transparent))",
+                      border: "1.5px solid color-mix(in oklab, var(--accent) 55%, transparent)",
                       color: "var(--accent)",
-                      boxShadow: "0 0 0 3px color-mix(in oklab, var(--gold) 10%, transparent)",
+                      boxShadow: "0 0 0 3px color-mix(in oklab, var(--accent) 10%, transparent)",
                     }}
                   >
                     <span
                       className="size-7 grid place-items-center rounded-lg"
                       style={{
-                        background: "color-mix(in oklab, var(--gold) 18%, transparent)",
-                        border: "1px solid color-mix(in oklab, var(--gold) 40%, transparent)",
+                        background: "color-mix(in oklab, var(--accent) 18%, transparent)",
+                        border: "1px solid color-mix(in oklab, var(--accent) 40%, transparent)",
                       }}
                     >
                       <Sparkles className="size-3.5" />
@@ -492,8 +489,8 @@ export function Nav({
                 className="inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition"
                 style={{
                   background:
-                    "linear-gradient(135deg, oklch(0.75 0.13 85 / 0.18), oklch(0.75 0.13 85 / 0.05))",
-                  border: "1px solid oklch(0.75 0.13 85 / 0.45)",
+                    "linear-gradient(135deg, oklch(0.75 0.13 185 / 0.18), oklch(0.75 0.13 185 / 0.05))",
+                  border: "1px solid oklch(0.75 0.13 185 / 0.45)",
                   color: "var(--accent)",
                 }}
               >
@@ -507,8 +504,8 @@ export function Nav({
                 className="inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition"
                 style={{
                   background:
-                    "linear-gradient(135deg, oklch(0.75 0.13 85 / 0.18), oklch(0.75 0.13 85 / 0.05))",
-                  border: "1px solid oklch(0.75 0.13 85 / 0.45)",
+                    "linear-gradient(135deg, oklch(0.75 0.13 185 / 0.18), oklch(0.75 0.13 185 / 0.05))",
+                  border: "1px solid oklch(0.75 0.13 185 / 0.45)",
                   color: "var(--accent)",
                 }}
               >

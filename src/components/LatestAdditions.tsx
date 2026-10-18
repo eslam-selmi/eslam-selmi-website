@@ -99,18 +99,18 @@ export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
   return (
     <section
       id="latest-additions"
-      className="rounded-3xl border border-[var(--gold)]/25 bg-gradient-to-br from-[var(--gold)]/[0.07] via-white/[0.02] to-transparent p-6 sm:p-8"
+      className="rounded-3xl border border-[var(--accent)]/25 bg-gradient-to-br from-[var(--accent)]/[0.07] via-white/[0.02] to-transparent p-6 sm:p-8"
     >
       <div className="flex items-start justify-between gap-4 mb-5 flex-wrap">
         <div>
-          <h2 className="text-2xl sm:text-3xl font-bold">{title}</h2>
-          {subtitle && <p className="text-sm text-white/60 mt-1.5 max-w-xl">{subtitle}</p>}
+          <h2 className="section-title">{title}</h2>
+          {subtitle && <p className="text-sm text-muted-foreground mt-1.5 max-w-xl">{subtitle}</p>}
         </div>
 
       </div>
 
       {items.length === 0 ? (
-        <p className="text-sm text-white/40 text-center py-6">
+        <p className="text-sm text-muted-foreground text-center py-6">
           {isAr ? "لا توجد إضافات بعد." : "No additions yet."}
         </p>
       ) : (
@@ -133,20 +133,20 @@ export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
                     isStoragePath: isStorage,
                   })
                 }
-                className="group text-start rounded-2xl border border-white/10 bg-white/[0.04] p-4 hover:border-[var(--gold)]/45 hover:bg-white/[0.06] transition-all hover:-translate-y-0.5"
+                className="group text-start rounded-2xl border border-border bg-card p-4 hover:border-[var(--accent)]/45 hover:bg-white/[0.06] transition-all hover:-translate-y-0.5"
               >
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[var(--gold)]/15 border border-[var(--gold)]/30 flex items-center justify-center shrink-0">
-                    <Icon className="w-4 h-4 text-[var(--gold)]" />
+                  <div className="w-10 h-10 rounded-xl bg-[var(--accent)]/15 border border-[var(--accent)]/30 flex items-center justify-center shrink-0">
+                    <Icon className="w-4 h-4 text-[var(--accent)]" />
                   </div>
                   <div className="flex-1 min-w-0">
                     {it.custom_label && (
-                      <p className="text-[10px] text-[var(--gold)]/80 uppercase tracking-wider mb-0.5">
+                      <p className="text-[10px] text-[var(--accent)]/80 uppercase tracking-wider mb-0.5">
                         {it.custom_label}
                       </p>
                     )}
                     <p className="font-bold text-sm leading-tight truncate">{t}</p>
-                    {sub && <p className="text-xs text-white/55 mt-1 line-clamp-2">{sub}</p>}
+                    {sub && <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{sub}</p>}
                   </div>
                 </div>
               </button>
