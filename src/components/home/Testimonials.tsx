@@ -289,40 +289,20 @@ export function TestimonialsScroller({ items, isAr }: { items: TestimonialRow[];
 /* ---------- BOOK CTA ---------- */
 
 export function BookCTA() {
-  const { t } = useI18n();
-  const { links } = useSiteProfile();
-  const steps = [
-    { icon: Target, title: t("book_step_1_t"), description: t("book_step_1_d") },
-    { icon: Lightbulb, title: t("book_step_2_t"), description: t("book_step_2_d") },
-    { icon: HeartHandshake, title: t("book_step_3_t"), description: t("book_step_3_d") },
-  ];
+  const { lang } = useI18n();
   return (
-    <section id="book" className="cta-glass-band py-14 sm:py-20">
-      <div className="mx-auto max-w-6xl px-6 sm:px-8">
-        <motion.div {...fadeUp} className="grid gap-10 lg:grid-cols-[1.2fr_1fr] lg:gap-16 items-center">
-          <div>
-            <div className="cta-glass-item inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold text-foreground"><Sparkles className="size-4 text-accent" />{t("book_badge")}</div>
-            <h2 className="mt-6 font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-foreground">
-              {t("book_title_1")}<br /><span className="text-accent">{t("book_title_2")}</span><br />{t("book_title_3")}
-            </h2>
-            <p className="mt-6 max-w-lg text-base leading-relaxed text-muted-foreground">{t("book_desc")}</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button onClick={openCalendly} size="lg" className="h-14 rounded-full px-6 bg-primary text-primary-foreground group"><Calendar className="size-4" />{t("book_cta")}<ArrowRight className="size-4 rtl-flip motion-safe:group-hover:translate-x-1 transition-transform" /></Button>
-              <Button variant="outline" size="lg" asChild className="cta-glass-item h-14 rounded-full px-6"><a href={links.whatsapp} target="_blank" rel="noopener noreferrer"><MessageCircle className="size-4" />{t("book_btn_whatsapp")}</a></Button>
-            </div>
+    <section id="book" className="booking-reference-section px-4 py-12 sm:py-16">
+      <div className="mx-auto max-w-[1400px]">
+        <motion.div {...fadeUp} className="booking-reference-banner relative isolate grid min-h-[292px] items-center gap-8 overflow-hidden rounded-[48px] border px-7 py-10 sm:px-12 lg:grid-cols-[1fr_210px] lg:gap-14 lg:px-[70px] lg:py-14">
+          <span aria-hidden="true" dir="ltr" className="booking-reference-watermark pointer-events-none absolute bottom-[-82px] left-5 -z-10 select-none font-display text-[260px] font-extrabold leading-none">1:1</span>
+          <div className="min-w-0">
+            <p className="booking-reference-muted text-sm font-semibold">{lang === "ar" ? "مجانًا · بدون التزام" : "Free · No commitment"}</p>
+            <h2 className="mt-4 font-display text-3xl font-extrabold leading-tight sm:text-4xl lg:text-5xl">{lang === "ar" ? "احجز جلسة استشارية مجانية الآن." : "Book your free consultation now."}</h2>
+            <p className="booking-reference-muted mt-5 text-base font-semibold leading-relaxed lg:text-lg">{lang === "ar" ? "دقائق قليلة نتحدث فيها عن فريقك وأهدافك، لنخرج بخطة تدريب واضحة قبل أن تنفق أي شيء." : "A few minutes to discuss your team and goals, and create a clear training plan before you spend anything."}</p>
           </div>
-          <div className="relative">
-            <div aria-hidden="true" className="cta-clock relative mx-auto mb-7 grid size-40 place-content-center text-center text-accent"><Clock className="size-5 mx-auto mb-1" /><span className="font-display text-6xl font-semibold leading-none">30</span></div>
-            <div className="grid gap-3">
-            {steps.map(({ icon: Icon, title, description }, index) => (
-              <div key={title} className={`cta-glass-item group relative flex items-start gap-4 rounded-[1.5rem] p-5 transition-transform motion-safe:hover:-translate-y-1 ${index === 1 ? "lg:ms-8" : "lg:me-8"}`}>
-                <span className="grid size-11 shrink-0 place-items-center rounded-full bg-accent/10 text-accent"><Icon className="size-5" /></span>
-                <div className="min-w-0 flex-1"><h3 className="text-base font-semibold text-foreground">{title}</h3><p className="mt-1 text-sm leading-relaxed text-muted-foreground">{description}</p></div>
-                <span className="font-display text-xs text-accent/70 pt-1">0{index + 1}</span>
-              </div>
-            ))}
-            </div>
-          </div>
+          <Button onClick={openCalendly} size="lg" className="booking-reference-button group h-16 w-[174px] justify-center gap-3 rounded-full text-base font-bold lg:justify-self-end">
+            {lang === "ar" ? "احجز الآن" : "Book now"}<ArrowRight className="size-5 rtl-flip transition-transform motion-safe:group-hover:translate-x-1" />
+          </Button>
         </motion.div>
       </div>
     </section>

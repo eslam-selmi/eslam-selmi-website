@@ -137,6 +137,35 @@
   --notification-highlight: oklch(1 0 0 / 0.09);
 }
 
+:root {
+  --booking-surface: oklch(0.145 0.035 245);
+  --booking-foreground: oklch(0.97 0.012 230);
+  --booking-muted: oklch(0.76 0.02 230);
+  --booking-cyan: oklch(0.76 0.11 195);
+  --booking-button-foreground: oklch(0.17 0.04 245);
+  --booking-border: oklch(0.76 0.11 195 / 0.30);
+  --booking-dot: oklch(0.76 0.11 195 / 0.18);
+  --booking-shadow: 0 32px 70px -30px oklch(0.76 0.11 195 / 0.30);
+}
+.booking-reference-banner {
+  color: var(--booking-foreground);
+  border-color: var(--booking-border);
+  background-color: var(--booking-surface);
+  background-image: radial-gradient(circle, var(--booking-dot) 1px, transparent 1.5px), radial-gradient(ellipse at 100% 0%, color-mix(in oklab, var(--booking-cyan) 30%, transparent), transparent 42%);
+  background-size: 28px 28px, 100% 100%;
+  box-shadow: var(--booking-shadow);
+}
+.booking-reference-muted { color: var(--booking-muted); }
+.booking-reference-watermark { color: color-mix(in oklab, var(--booking-cyan) 11%, transparent); }
+.booking-reference-button {
+  background: var(--booking-cyan);
+  color: var(--booking-button-foreground);
+}
+.booking-reference-button:hover { background: color-mix(in oklab, var(--booking-cyan) 88%, var(--booking-foreground)); }
+@media (max-width: 767px) {
+  .booking-reference-banner { border-radius: 32px; }
+  .booking-reference-watermark { font-size: 210px; bottom: -55px; }
+}
 .cta-glass-band {
   position: relative;
   isolation: isolate;
