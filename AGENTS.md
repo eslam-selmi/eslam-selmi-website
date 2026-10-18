@@ -18,3 +18,4 @@
 - Site fonts are local Fontsource subsets with swap behavior and essential weights only; certificate exports still embed their own fonts to avoid external render-blocking requests.
 - Known portrait and snapshot originals use immutable optimized asset variants for display, while administrator replacements and full-size lightbox originals remain unchanged.
 - Mobile homepage marquees use native swipe rails without repeated copies or background blur; desktop keeps its existing presentation.
+- Program, course and consultation covers use shared `site.media` CMS query options and stable program/course keys; administrator uploads retain the existing signed-link storage workflow without altering course records or permissions.
