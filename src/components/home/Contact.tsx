@@ -210,21 +210,20 @@ export function Contact() {
     { icon: Linkedin, label: t("contact_linkedin"), detail: t("contact_linkedin_line"), href: links.linkedin, ltr: false },
   ];
   return (
-    <section id="contact" className="relative py-16 sm:py-24 bg-background">
+    <section id="contact" className="cta-glass-band contact-glass-band py-14 sm:py-20">
       <div className="mx-auto max-w-6xl px-6 sm:px-8">
-        <motion.div {...fadeUp} className="flex items-center gap-3 text-sm font-semibold text-accent"><HeartHandshake className="size-5" />{t("contact_eyebrow")}<span className="h-px flex-1 bg-border" /></motion.div>
-        <div className="mt-10 grid lg:grid-cols-[1fr_1.1fr] gap-12 lg:gap-20">
+        <motion.div {...fadeUp} className="flex items-center gap-3 text-sm font-semibold text-accent"><span className="cta-glass-item grid size-10 place-items-center rounded-full"><HeartHandshake className="size-5" /></span>{t("contact_eyebrow")}<span className="h-px flex-1 bg-border" /></motion.div>
+        <div className="mt-10 grid lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-16 items-center">
           <motion.div {...fadeUp}>
             <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-foreground">{t("contact_title")}</h2>
-            <div className="mt-8 h-1 w-16 bg-accent" />
-            <Button asChild size="lg" className="mt-8 h-12 rounded-md bg-primary text-primary-foreground"><a href={links.whatsapp} target="_blank" rel="noopener noreferrer"><MessageCircle className="size-4" />{t("book_btn_whatsapp")}<ArrowRight className="size-4 rtl-flip" /></a></Button>
+            <div className="mt-6 flex items-center gap-2" aria-hidden="true"><span className="h-1 w-16 rounded-full bg-accent" /><span className="size-1 rounded-full bg-accent/40" /><span className="size-1 rounded-full bg-accent/20" /></div>
+            <Button asChild size="lg" className="mt-8 h-14 rounded-full px-6 bg-primary text-primary-foreground"><a href={links.whatsapp} target="_blank" rel="noopener noreferrer"><MessageCircle className="size-4" />{t("book_btn_whatsapp")}<ArrowRight className="size-4 rtl-flip" /></a></Button>
           </motion.div>
-          <div className="border-t border-border">
+          <div className="grid gap-4 sm:grid-cols-2">
             {channels.map(({ icon: Icon, label, detail, href, ltr }) => (
-              <motion.a {...fadeUp} key={href} href={href} target={href.startsWith("https:") ? "_blank" : undefined} rel="noopener noreferrer" className="group flex items-center gap-4 sm:gap-5 border-b border-border py-6 text-foreground transition-colors hover:bg-accent/5 focus-visible:outline focus-visible:outline-ring">
-                <span className="grid size-12 shrink-0 place-items-center rounded-full border border-border text-accent transition-colors group-hover:bg-accent group-hover:text-accent-foreground"><Icon className="size-5" /></span>
-                <span className="flex-1 min-w-0"><span className="block text-xs font-semibold text-muted-foreground">{label}</span><span dir={ltr ? "ltr" : undefined} className="mt-1 block w-fit max-w-full break-words text-sm sm:text-base font-semibold">{detail}</span></span>
-                <ArrowRight className="size-5 shrink-0 text-muted-foreground rtl-flip transition-transform motion-safe:group-hover:translate-x-1" />
+              <motion.a {...fadeUp} key={href} href={href} target={href.startsWith("https:") ? "_blank" : undefined} rel="noopener noreferrer" className="cta-glass-item group relative min-w-0 flex flex-col gap-5 rounded-[2rem] p-5 sm:p-6 text-foreground transition-transform motion-safe:hover:-translate-y-1 focus-visible:outline focus-visible:outline-ring">
+                <span className="flex items-center justify-between"><span className="grid size-12 shrink-0 place-items-center rounded-[1rem] border border-border text-accent transition-colors group-hover:bg-accent group-hover:text-accent-foreground"><Icon className="size-5" /></span><ArrowRight className="size-5 text-muted-foreground rtl-flip transition-transform motion-safe:group-hover:translate-x-1" /></span>
+                <span className="min-w-0"><span className="block text-xs font-semibold text-muted-foreground">{label}</span><span dir={ltr ? "ltr" : undefined} className="mt-2 block w-fit max-w-full break-all text-sm font-semibold">{detail}</span></span>
               </motion.a>
             ))}
           </div>
