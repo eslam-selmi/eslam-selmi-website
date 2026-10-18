@@ -2,7 +2,7 @@
 
 # Booking and contact redesign
 
-- [ ] Match free booking banner to the supplied reference and verify booking opens.
+- [x] Match free booking banner to the supplied reference and verify booking opens.
 
 - [x] Replace plain layouts with curved glass styling for booking and contact; verify both themes and mobile.
 
