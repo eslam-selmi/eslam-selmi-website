@@ -28,14 +28,14 @@ export function Hero() {
     <section
       id="home"
       ref={ref}
-      className="editorial-hero relative pt-32 pb-16 lg:pt-44 lg:pb-24 overflow-hidden"
+      className="relative min-h-screen pt-28 pb-16 lg:pt-32 overflow-hidden"
     >
       {/* Soft background wash */}
       <div
         className="pointer-events-none absolute inset-0 -z-10"
         style={{
           background:
-            "radial-gradient(ellipse 45% 55% at 20% 30%, color-mix(in oklab, var(--accent) 22%, transparent), transparent 65%), radial-gradient(ellipse 40% 40% at 90% 85%, color-mix(in oklab, var(--accent) 12%, transparent), transparent 60%)",
+            "radial-gradient(ellipse 60% 50% at 85% 12%, oklch(0.72 0.13 180 / 0.18), transparent 60%), radial-gradient(ellipse 50% 40% at 5% 90%, oklch(0.22 0.06 252 / 0.10), transparent 60%)",
         }}
       />
       <div
@@ -48,13 +48,14 @@ export function Hero() {
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 grid lg:grid-cols-12 gap-10 lg:gap-14 items-center">
         {/* Left: Copy */}
-        <motion.div style={{ y: isMobile || reduceMotion ? 0 : y }} className="lg:col-span-7 order-1 space-y-7">
+        <motion.div style={{ y: isMobile || reduceMotion ? 0 : y }} className="lg:col-span-7 order-2 lg:order-1 space-y-7">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 rounded-full border border-foreground/10 bg-card px-4 py-2 text-[11px] sm:text-xs font-bold uppercase tracking-[0.25em] text-accent shadow-sm"
+            className="inline-flex items-center gap-2 text-[11px] sm:text-xs font-bold uppercase tracking-[0.28em]"
+            style={{ color: "var(--accent)" }}
           >
-            <span className="size-2 rounded-full bg-accent animate-pulse" />
+            <span className="h-px w-8" style={{ background: "var(--accent)" }} />
             {lang === "ar" ? "حلول مبتكرة لبناء القدرات" : "Innovative Solutions for Building"}
           </motion.div>
 
@@ -62,16 +63,16 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.7 }}
-            className="font-display font-extrabold tracking-tight text-balance leading-[1.02] text-[clamp(2.8rem,6.4vw,5.6rem)] text-foreground"
+            className="font-display font-extrabold text-balance leading-[1.05] text-[clamp(2rem,4.6vw,4.25rem)] text-foreground"
           >
             {lang === "ar" ? (
               <>
-                إطلاق إمكانات المواهب مع <span className="text-accent">{nameAr}</span>
+                إطلاق إمكانات المواهب مع <span style={{ color: "var(--accent)" }}>{nameAr}</span>
               </>
             ) : (
               <>
                 Unlocking Talent Potential With{" "}
-                <span className="text-accent">{nameEn}</span>
+                <span style={{ color: "var(--accent)" }}>{nameEn}</span>
               </>
             )}
           </motion.h1>
@@ -92,9 +93,9 @@ export function Hero() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.38 }}
-            className="group inline-flex items-center gap-2.5 rounded-full border border-foreground/10 bg-card/60 backdrop-blur-sm px-3.5 py-2 w-fit cursor-pointer hover:border-[var(--accent)]/50 hover:shadow-[0_10px_30px_-12px_var(--accent)] transition"
+            className="group inline-flex items-center gap-2.5 rounded-full border border-foreground/10 bg-card/60 backdrop-blur-sm px-3.5 py-2 w-fit cursor-pointer hover:border-[var(--gold)]/50 hover:shadow-[0_10px_30px_-12px_var(--gold)] transition"
           >
-            <span className="inline-flex items-center justify-center rounded-full bg-gradient-to-br from-[var(--accent)] to-[var(--accent)] p-1.5 shadow">
+            <span className="inline-flex items-center justify-center rounded-full bg-gradient-to-br from-[var(--gold)] to-[var(--gold-soft)] p-1.5 shadow">
               <Award className="size-4 text-accent-foreground" />
             </span>
             <span className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-foreground">
@@ -107,7 +108,7 @@ export function Hero() {
               {lang === "ar"
                 ? "مدرب معتمد من هيئة تقويم التعليم والتدريب بالمملكة العربية السعودية"
                 : "Certified Trainer by ETEC, Saudi Arabia"}
-              <ExternalLink className="size-3.5 text-muted-foreground group-hover:text-[var(--accent)] transition" />
+              <ExternalLink className="size-3.5 text-muted-foreground group-hover:text-[var(--gold)] transition" />
             </span>
           </motion.button>
 
@@ -129,7 +130,7 @@ export function Hero() {
           >
             <button
               onClick={openCalendly}
-              className="group inline-flex items-center gap-2 rounded-full bg-primary px-7 py-4 text-sm font-bold text-primary-foreground shadow-[0_18px_40px_-14px_oklch(0.22_0.06_252/0.5)] hover:translate-y-[-2px] transition cursor-pointer"
+              className="group inline-flex items-center gap-2 rounded-xl bg-primary px-7 py-4 text-sm font-bold text-primary-foreground shadow-[0_18px_40px_-14px_oklch(0.22_0.06_252/0.5)] hover:translate-y-[-2px] transition cursor-pointer"
             >
               <Calendar className="size-4" /> {t("hero_btn_book")}
               <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
@@ -138,14 +139,14 @@ export function Hero() {
               href={links.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-card px-7 py-4 text-sm font-bold text-foreground hover:border-foreground/30 hover:bg-foreground/[0.03] transition"
+              className="inline-flex items-center gap-2 rounded-xl border border-foreground/15 bg-card px-7 py-4 text-sm font-bold text-foreground hover:border-foreground/30 hover:bg-foreground/[0.03] transition"
             >
               <MessageCircle className="size-4" /> WhatsApp
             </a>
             <a
               href="#podcast"
               aria-label="Listen to the L&D Podcast"
-              className="group relative inline-flex items-center gap-2 rounded-full px-7 py-4 text-sm font-bold text-white overflow-hidden shadow-[0_18px_40px_-14px_oklch(0.55_0.2_290/0.55)] hover:translate-y-[-2px] transition"
+              className="group relative inline-flex items-center gap-2 rounded-xl px-7 py-4 text-sm font-bold text-white overflow-hidden shadow-[0_18px_40px_-14px_oklch(0.55_0.2_290/0.55)] hover:translate-y-[-2px] transition"
               style={{
                 background: "linear-gradient(135deg, oklch(0.32 0.13 280), oklch(0.55 0.18 200))",
               }}
@@ -192,46 +193,44 @@ export function Hero() {
               <Mail className="size-4" />
             </a>
           </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
-            className="hero-stats grid max-w-xl grid-cols-1 divide-x divide-foreground/10 rtl:divide-x-reverse rounded-2xl border border-foreground/10 bg-card/50 py-4"
-          >
-            {[
-              ["12", lang === "ar" ? "دولة" : "Countries"],
-            ].map(([n, l]) => (
-              <div key={l} className="px-3 text-center">
-                <div className="font-display text-2xl sm:text-3xl font-extrabold text-accent">{n}</div>
-                <div className="mt-1 text-[11px] sm:text-xs text-muted-foreground">{l}</div>
-              </div>
-            ))}
-          </motion.div>
         </motion.div>
 
-        {/* Right: Portrait — squircle with floating status cards */}
+        {/* Right: Portrait — editorial squircle with offset accents */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="lg:col-span-5 order-2 relative"
+          className="lg:col-span-5 order-1 lg:order-2 relative"
         >
-          <div className="relative mx-auto w-full max-w-[380px] sm:max-w-[440px] lg:max-w-[520px]">
-            <div className="pointer-events-none absolute -end-6 -top-6 size-40 rounded-full border-2 border-dashed border-accent/40" aria-hidden />
-            <div className="pointer-events-none absolute inset-0 translate-x-3 translate-y-3 rounded-[3rem] border border-accent/40" aria-hidden />
+          <div className="relative mx-auto w-full max-w-[400px] sm:max-w-[440px] lg:max-w-[500px]">
+            {/* soft ambient light behind the frame */}
             <div
-              className="relative overflow-hidden rounded-[3rem] rounded-tr-[7rem]"
+              className="pointer-events-none absolute -inset-8 -z-10 rounded-[999px] blur-3xl opacity-70"
               style={{
-                background: "linear-gradient(165deg, var(--navy), var(--navy-deep))",
-                boxShadow: "0 50px 100px -40px color-mix(in oklab, var(--navy-deep) 70%, transparent)",
+                background:
+                  "radial-gradient(ellipse 60% 55% at 50% 40%, color-mix(in oklab, var(--accent) 22%, transparent), transparent 70%)",
+              }}
+              aria-hidden
+            />
+            {/* offset editorial frame */}
+            <div
+              className="pointer-events-none absolute inset-0 translate-x-4 translate-y-4 rounded-[2.5rem] border border-foreground/12 sm:translate-x-5 sm:translate-y-5"
+              aria-hidden
+            />
+
+            <div
+              className="relative overflow-hidden rounded-[2.5rem] ring-1 ring-foreground/10"
+              style={{
+                background:
+                  "linear-gradient(165deg, color-mix(in oklab, var(--navy) 92%, transparent), color-mix(in oklab, var(--navy-deep) 96%, transparent))",
+                boxShadow: "0 40px 90px -40px color-mix(in oklab, var(--navy-deep) 65%, transparent)",
               }}
             >
               <div className="relative aspect-[4/5] w-full">
                 <img
                   src={portrait.src}
                   srcSet={portrait.srcSet}
-                  sizes="(min-width: 1024px) 520px, (min-width: 640px) 440px, 380px"
+                  sizes="(min-width: 1024px) 500px, (min-width: 640px) 440px, 400px"
                   loading="eager"
                   alt="Eslam Selmi"
                   width={1024}
@@ -240,21 +239,21 @@ export function Hero() {
                   decoding="async"
                   className="absolute inset-0 h-full w-full scale-[1.04] object-cover object-top"
                 />
+                {/* gentle top light + bottom depth so the frame reads premium */}
+                <div
+                  className="pointer-events-none absolute inset-0"
+                  style={{
+                    background:
+                      "linear-gradient(to top, color-mix(in oklab, var(--navy-deep) 55%, transparent) 0%, transparent 42%), radial-gradient(ellipse 70% 40% at 50% 0%, oklch(1 0 0 / 0.14), transparent 70%)",
+                  }}
+                  aria-hidden
+                />
+                <div
+                  className="pointer-events-none absolute inset-0 rounded-[2.5rem]"
+                  style={{ boxShadow: "inset 0 1px 0 oklch(1 0 0 / 0.16)" }}
+                  aria-hidden
+                />
               </div>
-            </div>
-            <div className="absolute -start-4 top-[52%] flex items-center gap-3 rounded-2xl border border-foreground/10 bg-card px-4 py-3 shadow-xl sm:-start-10">
-              <span className="grid size-9 place-items-center rounded-xl bg-accent/15"><Calendar className="size-4 text-accent" /></span>
-              <span className="text-start leading-tight">
-                <span className="block text-xs font-bold text-foreground">{lang === "ar" ? "جلسة 1:1 مجانية" : "Free 1:1 session"}</span>
-                <span className="block text-[11px] text-muted-foreground">{lang === "ar" ? "احجز موعدك اليوم" : "Book your slot today"}</span>
-              </span>
-            </div>
-            <div className="absolute -end-3 bottom-8 flex items-center gap-3 rounded-2xl border border-foreground/10 bg-card px-4 py-3 shadow-xl sm:-end-8">
-              <span className="grid size-9 place-items-center rounded-xl bg-primary/10"><Award className="size-4 text-primary" /></span>
-              <span className="text-start leading-tight">
-                <span className="block text-xs font-bold text-foreground">{lang === "ar" ? "شهادة معتمدة" : "Certificate issued"}</span>
-                <span className="block text-[11px] text-muted-foreground">{lang === "ar" ? "قابلة للتحقق بمسح واحد" : "Verifiable with one scan"}</span>
-              </span>
             </div>
           </div>
         </motion.div>

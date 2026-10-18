@@ -152,7 +152,7 @@ export function LeadForm() {
               maxLength={320}
               required
               dir={lang === "ar" ? "rtl" : "ltr"}
-              className="flex-1 rounded-full glass-panel px-5 py-3 text-sm outline-none focus:border-[var(--accent)] transition placeholder:text-muted-foreground"
+              className="flex-1 rounded-full glass-panel px-5 py-3 text-sm outline-none focus:border-[var(--gold)] transition placeholder:text-muted-foreground"
             />
             <button
               type="submit"
@@ -168,7 +168,7 @@ export function LeadForm() {
             </button>
           </form>
           <div className="mt-3 min-h-[1.5rem] text-sm">
-            {state === "success" && <span className="text-accent">✓ {t("lead_success")}</span>}
+            {state === "success" && <span className="text-gold">✓ {t("lead_success")}</span>}
             {state === "error" && <span className="text-destructive">{t("lead_error")}</span>}
             {state === "invalid" && <span className="text-amber-400">{t("lead_invalid")}</span>}
           </div>
@@ -204,7 +204,7 @@ export function Contact() {
   const { profile, links } = useSiteProfile();
   return (
     <Section id="contact" eyebrow={t("contact_eyebrow")} title={t("contact_title")}>
-      <div className="contact-grid grid gap-5 sm:grid-cols-2">
+      <div className="grid gap-5 sm:grid-cols-2 max-w-3xl mx-auto">
         <ContactCard
           icon={Phone}
           label={t("contact_mobile")}
@@ -264,14 +264,14 @@ export function ContactCard({
       rel="noopener noreferrer"
       className="glass-panel rounded-3xl p-6 transition hover:-translate-y-1 group block"
     >
-      <Icon className="size-6 text-accent" />
+      <Icon className="size-6 text-gold" />
       <div className="mt-3 text-sm text-muted-foreground">{label}</div>
       {lines.map((l, i) => (
         <div key={i} className="font-medium mt-1">
           {l}
         </div>
       ))}
-      <div className="mt-4 inline-flex items-center gap-1 text-xs text-accent group-hover:gap-2 transition-all">
+      <div className="mt-4 inline-flex items-center gap-1 text-xs text-gold group-hover:gap-2 transition-all">
         Open <ArrowRight className="size-3 rtl-flip" />
       </div>
     </motion.a>

@@ -170,7 +170,7 @@ export function CurrentCourses() {
             <>
               <h3
                 className="text-xs uppercase tracking-[0.3em] font-bold mb-4"
-                style={{ color: "var(--accent)" }}
+                style={{ color: "var(--gold)" }}
               >
                 {tt("دورات مباشرة · سجل اليوم", "Live courses · enroll today")}
               </h3>
@@ -253,21 +253,20 @@ export function CourseCard({
     <button
       type="button"
       onClick={onOpen}
-      className="group relative text-start rounded-[2rem] border border-border bg-card backdrop-blur-xl p-0 overflow-hidden shadow-[0_20px_60px_-30px_rgba(0,0,0,0.45)] md:transition-all md:duration-300 md:hover:-translate-y-1.5 md:hover:scale-[1.02] md:hover:border-white/25 md:hover:shadow-[0_36px_80px_-30px_color-mix(in_oklab,var(--accent)_55%,transparent)]"
+      className="group relative text-start rounded-[2rem] border border-white/15 bg-white/[0.06] backdrop-blur-xl p-0 overflow-hidden shadow-[0_20px_60px_-30px_rgba(0,0,0,0.45)] md:transition-all md:duration-300 md:hover:-translate-y-1.5 md:hover:scale-[1.02] md:hover:border-white/25 md:hover:shadow-[0_36px_80px_-30px_color-mix(in_oklab,var(--accent)_55%,transparent)]"
     >
-      <div className="relative h-44 overflow-hidden"><img src={snap3Asset.url} alt={c.title} loading="lazy" className="h-full w-full object-cover" /><div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" /></div>
       <div
-        className={`absolute inset-x-0 top-0 h-1.5 ${upcoming ? "bg-gradient-to-r from-[var(--accent)] via-[var(--lavender)] to-[var(--accent)]" : "bg-gradient-to-r from-[var(--accent)] via-[var(--accent)] to-[var(--accent)]"}`}
+        className={`absolute inset-x-0 top-0 h-1.5 ${upcoming ? "bg-gradient-to-r from-[var(--accent)] via-[var(--lavender)] to-[var(--gold)]" : "bg-gradient-to-r from-[var(--gold)] via-[var(--accent)] to-[var(--gold)]"}`}
       />
-      <div className="absolute -end-20 -top-20 size-44 rounded-full bg-[var(--accent)]/15 blur-3xl md:opacity-0 md:group-hover:opacity-100 md:transition" />
+      <div className="absolute -end-20 -top-20 size-44 rounded-full bg-[var(--gold)]/15 blur-3xl md:opacity-0 md:group-hover:opacity-100 md:transition" />
       <div className="relative p-5 sm:p-6">
         <div className="flex items-start justify-between gap-4">
           <div className="relative size-16 rounded-2xl border border-white/20 bg-white/10 backdrop-blur grid place-items-center text-4xl shrink-0">
             <span>{c.cover_emoji || "🎓"}</span>
-            <span className="absolute -bottom-1 -end-1 size-5 rounded-full border border-card bg-[var(--accent)]" />
+            <span className="absolute -bottom-1 -end-1 size-5 rounded-full border border-card bg-[var(--gold)]" />
           </div>
           <span
-            className={`inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] font-bold rounded-full px-2.5 py-1 border backdrop-blur ${upcoming ? "bg-[var(--accent)]/15 text-[var(--accent)] border-[var(--accent)]/40" : "bg-[var(--accent)]/15 text-[var(--accent)] border-[var(--accent)]/40"}`}
+            className={`inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] font-bold rounded-full px-2.5 py-1 border backdrop-blur ${upcoming ? "bg-[var(--accent)]/15 text-[var(--accent)] border-[var(--accent)]/40" : "bg-[var(--gold)]/15 text-[var(--gold)] border-[var(--gold)]/40"}`}
           >
             {upcoming ? <Calendar className="size-3" /> : <Sparkles className="size-3" />}
             {upcoming ? tt("قريباً", "Soon") : tt("مباشر", "Live")}
@@ -306,7 +305,7 @@ export function CourseCard({
                 <div className="text-[10px] uppercase tracking-[0.18em] font-bold text-muted-foreground">
                   {tt("قيمة الاستثمار", "Investment value")}
                 </div>
-                <div className="font-display font-extrabold text-lg mt-0.5" style={{ color: "var(--accent)" }}>
+                <div className="font-display font-extrabold text-lg mt-0.5" style={{ color: "var(--gold)" }}>
                   {c.price} {c.currency}
                 </div>
               </div>
@@ -511,7 +510,7 @@ export function DetailStat({ icon: Icon, label, value }: { icon: any; label: str
 export function CourseInfoBlock({ icon: Icon, title, body }: { icon: any; title: string; body: string }) {
   return (
     <div className="rounded-2xl bg-foreground/[0.04] border border-foreground/10 p-4">
-      <div className="flex items-center gap-2 text-xs font-bold" style={{ color: "var(--accent)" }}>
+      <div className="flex items-center gap-2 text-xs font-bold" style={{ color: "var(--gold)" }}>
         <Icon className="size-4" /> {title}
       </div>
       <p className="mt-2 text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
@@ -654,7 +653,7 @@ export function InterestFormModal({
                   setPhoneError(null);
                 }}
                 required
-                className="w-full h-11 px-4 rounded-xl bg-foreground/[0.04] border border-foreground/10 text-foreground focus:outline-none focus:border-[var(--accent)]/60"
+                className="w-full h-11 px-4 rounded-xl bg-foreground/[0.04] border border-foreground/10 text-foreground focus:outline-none focus:border-[var(--gold)]/60"
               >
                 {PHONE_COUNTRIES.map((c) => (
                   <option key={c.code} value={c.code} className="bg-background">

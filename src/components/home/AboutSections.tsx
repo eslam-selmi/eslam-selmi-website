@@ -110,7 +110,7 @@ export function Pillars() {
   const { t } = useI18n();
   return (
     <Section id="pillars" eyebrow={t("pillars_eyebrow")} title={t("pillars_title")}>
-      <div className="pillar-bento grid md:grid-cols-3 gap-5">
+      <div className="grid md:grid-cols-3 gap-5">
         {PILLARS.map((p, i) => (
           <motion.div
             key={p.key}
@@ -122,7 +122,7 @@ export function Pillars() {
               className={`absolute -top-20 -end-20 size-48 rounded-full bg-gradient-to-br ${p.color} blur-3xl opacity-60 group-hover:opacity-100 transition`}
             />
             <div className="relative">
-              <div className="size-14 rounded-2xl bg-gradient-to-br from-[var(--accent)] to-[var(--accent)] grid place-items-center text-accent-foreground shadow-lg">
+              <div className="size-14 rounded-2xl bg-gradient-to-br from-[var(--gold)] to-[var(--gold-soft)] grid place-items-center text-accent-foreground shadow-lg">
                 <p.icon className="size-7" />
               </div>
               <h3 className="mt-5 font-display text-2xl font-bold">{t(`pillar_${p.key}`)}</h3>
@@ -185,7 +185,7 @@ export function Journey() {
               <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[var(--accent)] via-[var(--accent)]/40 to-transparent opacity-70" />
               <div className="flex items-center justify-between mb-5">
                 <span
-                  className="year-chip font-display text-lg font-extrabold tracking-tight"
+                  className="font-display text-3xl font-extrabold tracking-tight"
                   style={{ color: "var(--accent)" }}
                 >
                   {j.current ? (lang === "ar" ? "حالياً" : "Present") : j.year[lang]}
@@ -207,7 +207,7 @@ export function Journey() {
                 </div>
                 <div
                   className="text-[11px] uppercase tracking-[0.18em] font-bold mt-1.5"
-                  style={{ color: "var(--accent)" }}
+                  style={{ color: "var(--gold)" }}
                 >
                   {j.industry[lang]}
                 </div>
@@ -222,7 +222,7 @@ export function Journey() {
         const firstRow = items.slice(0, 3);
         const secondRow = items.slice(3);
         return (
-          <div className="journey-timeline space-y-5">
+          <div className="space-y-5">
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {firstRow.map((j, i) => renderCard(j, i))}
             </div>
@@ -248,7 +248,7 @@ export function Services() {
       <p className="-mt-6 mb-10 text-center text-base text-muted-foreground max-w-2xl mx-auto">
         {t("services_subtitle")}
       </p>
-      <div className="service-bento grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {SERVICES.map((s, i) => (
           <motion.div
             key={s.key}
@@ -256,8 +256,8 @@ export function Services() {
             transition={{ delay: i * 0.08, duration: 0.6 }}
             className="relative glass-panel rounded-3xl p-6 group overflow-hidden transition hover:-translate-y-1 flex flex-col"
           >
-            <div className="absolute -top-12 -end-12 size-32 rounded-full bg-[var(--accent)]/20 blur-2xl opacity-0 group-hover:opacity-100 transition" />
-            <s.icon className="size-7 text-accent" />
+            <div className="absolute -top-12 -end-12 size-32 rounded-full bg-[var(--gold)]/20 blur-2xl opacity-0 group-hover:opacity-100 transition" />
+            <s.icon className="size-7 text-gold" />
             <div className="mt-4 text-xs text-muted-foreground font-mono">0{i + 1}</div>
             <h3 className="mt-1 font-semibold text-lg leading-tight">{s.title[lang]}</h3>
             <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.desc[lang]}</p>
@@ -270,10 +270,10 @@ export function Services() {
                 style={{
                   background:
                     "linear-gradient(135deg, rgba(11,23,54,0.95) 0%, rgba(20,35,80,0.95) 100%)",
-                  color: "var(--accent)",
-                  border: "1px solid color-mix(in oklab, var(--accent) 45%, transparent)",
+                  color: "var(--gold)",
+                  border: "1px solid color-mix(in oklab, var(--gold) 45%, transparent)",
                   boxShadow:
-                    "0 10px 30px -14px color-mix(in oklab, var(--accent) 60%, transparent), inset 0 1px 0 color-mix(in oklab, var(--accent) 20%, transparent)",
+                    "0 10px 30px -14px color-mix(in oklab, var(--gold) 60%, transparent), inset 0 1px 0 color-mix(in oklab, var(--gold) 20%, transparent)",
                 }}
                 aria-label={`${t("svc_request_btn")} — ${s.title[lang]}`}
               >
@@ -281,14 +281,14 @@ export function Services() {
                   className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"
                   style={{
                     background:
-                      "linear-gradient(135deg, color-mix(in oklab, var(--accent) 18%, transparent), transparent 60%)",
+                      "linear-gradient(135deg, color-mix(in oklab, var(--gold) 18%, transparent), transparent 60%)",
                   }}
                 />
                 <span
                   className="absolute -inset-px rounded-full opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500 pointer-events-none"
                   style={{
                     background:
-                      "radial-gradient(120px 40px at 50% 0%, color-mix(in oklab, var(--accent) 35%, transparent), transparent 70%)",
+                      "radial-gradient(120px 40px at 50% 0%, color-mix(in oklab, var(--gold) 35%, transparent), transparent 70%)",
                   }}
                 />
                 <Rocket className="relative size-4" />
@@ -322,41 +322,40 @@ export function Programs() {
               className={`group relative flex flex-col rounded-[2.25rem] overflow-hidden border transition-all duration-500 hover:-translate-y-2
                 ${
                   isFeatured
-                    ? "lg:row-span-1 border-[#35cbbb]/55 bg-gradient-to-br from-[#35cbbb]/[0.14] via-[#35cbbb]/[0.05] to-background shadow-[0_24px_70px_-30px_rgba(53,203,187,0.55)]"
-                    : "border-foreground/10 bg-gradient-to-br from-background to-foreground/[0.025] hover:border-[var(--accent)]/30"
+                    ? "lg:row-span-1 border-[#CD853F]/55 bg-gradient-to-br from-[#CD853F]/[0.14] via-[#8B4513]/[0.05] to-background shadow-[0_24px_70px_-30px_rgba(205,133,63,0.55)]"
+                    : "border-foreground/10 bg-gradient-to-br from-background to-foreground/[0.025] hover:border-[var(--gold)]/30"
                 }`}
             >
-              <div className="program-image relative h-48 overflow-hidden"><img src={[snap1Asset.url, snap3Asset.url, snap4Asset.url][i]} alt={p.track[lang]} loading="lazy" className="h-full w-full object-cover" /><div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" /></div>
               {/* Top accent bar — peru tones for the Educational Tracks flagship */}
               <div
-                className={`h-1.5 w-full ${isFeatured ? "bg-gradient-to-r from-[#35cbbb] via-[#35cbbb] to-[#35cbbb]" : "bg-gradient-to-r from-foreground/10 via-[var(--accent)]/40 to-foreground/10"}`}
+                className={`h-1.5 w-full ${isFeatured ? "bg-gradient-to-r from-[#CD853F] via-[#E8A87C] to-[#8B4513]" : "bg-gradient-to-r from-foreground/10 via-[var(--gold)]/40 to-foreground/10"}`}
               />
 
               {/* Decorative glow */}
               <div
-                className={`pointer-events-none absolute -top-24 -right-24 size-64 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition duration-700 ${isFeatured ? "bg-[#35cbbb]/20" : "bg-[var(--accent)]/10"}`}
+                className={`pointer-events-none absolute -top-24 -right-24 size-64 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition duration-700 ${isFeatured ? "bg-[#CD853F]/20" : "bg-[var(--gold)]/10"}`}
               />
 
               <div className="relative p-7 lg:p-8 flex flex-col flex-1">
                 {/* Header: icon + track number */}
                 <div className="flex items-start justify-between gap-3">
                   <div
-                    className={`size-14 grid place-items-center rounded-2xl border ${isFeatured ? "bg-gradient-to-br from-[#35cbbb]/35 to-[#35cbbb]/25 border-[#35cbbb]/50 text-[#35cbbb]" : "bg-foreground/[0.04] border-foreground/10 text-foreground/70"}`}
+                    className={`size-14 grid place-items-center rounded-2xl border ${isFeatured ? "bg-gradient-to-br from-[#CD853F]/35 to-[#8B4513]/25 border-[#CD853F]/50 text-[#E8A87C]" : "bg-foreground/[0.04] border-foreground/10 text-foreground/70"}`}
                   >
                     <Icon className="size-7" strokeWidth={1.6} />
                   </div>
                   <div className="text-right rtl:text-left">
                     <div
-                      className={`text-[10px] font-bold uppercase tracking-[0.22em] ${isFeatured ? "text-[#35cbbb]" : "text-muted-foreground"}`}
+                      className={`text-[10px] font-bold uppercase tracking-[0.22em] ${isFeatured ? "text-[#CD853F]" : "text-muted-foreground"}`}
                     >
                       {t("programs_track")}
                     </div>
                     <div
-                      className={`font-display text-3xl font-extrabold leading-none mt-1 ${isFeatured ? "" : "text-accent"}`}
+                      className={`font-display text-3xl font-extrabold leading-none mt-1 ${isFeatured ? "" : "text-gradient-gold"}`}
                       style={
                         isFeatured
                           ? {
-                              background: "linear-gradient(110deg, #35cbbb, #35cbbb, #35cbbb)",
+                              background: "linear-gradient(110deg, #CD853F, #E8A87C, #8B4513)",
                               WebkitBackgroundClip: "text",
                               backgroundClip: "text",
                               color: "transparent",
@@ -381,7 +380,7 @@ export function Programs() {
                   {/* connector line */}
                   {p.items.length > 1 && (
                     <span
-                      className={`absolute top-3 bottom-3 start-[14px] w-px bg-gradient-to-b ${isFeatured ? "from-[#35cbbb]/65 via-[#35cbbb]/25" : "from-[var(--accent)]/50 via-foreground/15"} to-transparent`}
+                      className={`absolute top-3 bottom-3 start-[14px] w-px bg-gradient-to-b ${isFeatured ? "from-[#CD853F]/65 via-[#8B4513]/25" : "from-[var(--gold)]/50 via-foreground/15"} to-transparent`}
                       aria-hidden
                     />
                   )}
@@ -389,7 +388,7 @@ export function Programs() {
                     <li key={it.name.en} className="relative ps-10">
                       <span
                         className={`absolute start-0 top-1 size-7 grid place-items-center rounded-full text-[11px] font-extrabold ring-4 ring-background
-                        ${isFeatured ? "bg-[#35cbbb] text-background shadow-[0_6px_18px_-6px_rgba(53,203,187,0.85)]" : "bg-foreground/10 text-foreground/80"}`}
+                        ${isFeatured ? "bg-[#CD853F] text-background shadow-[0_6px_18px_-6px_rgba(205,133,63,0.85)]" : "bg-foreground/10 text-foreground/80"}`}
                       >
                         {idx + 1}
                       </span>

@@ -180,7 +180,7 @@ export function TestimonialsScroller({ items, isAr }: { items: TestimonialRow[];
   }
 
   return (
-    <div className="quote-wall relative -mx-4 sm:-mx-6">
+    <div className="relative -mx-4 sm:-mx-6">
       {/* Arrow controls (desktop) */}
       <div className="hidden md:flex absolute inset-y-0 start-2 z-10 items-center">
         <button
@@ -209,7 +209,7 @@ export function TestimonialsScroller({ items, isAr }: { items: TestimonialRow[];
         onMouseMove={onMouseMove}
         onMouseLeave={endDrag}
         onMouseUp={endDrag}
-        className="quote-grid flex gap-6 overflow-x-auto px-4 sm:px-12 pb-6 pt-2 snap-x snap-mandatory cursor-grab select-none scroll-smooth"
+        className="flex gap-6 overflow-x-auto px-4 sm:px-12 pb-6 pt-2 snap-x snap-mandatory cursor-grab select-none scroll-smooth"
         style={{
           scrollbarWidth: "none",
           WebkitOverflowScrolling: "touch",
@@ -224,25 +224,25 @@ export function TestimonialsScroller({ items, isAr }: { items: TestimonialRow[];
           <article
             key={it.id}
             onDragStart={(e) => e.preventDefault()}
-            className="group relative w-[300px] sm:w-[360px] lg:w-[400px] shrink-0 snap-center flex flex-col rounded-[2rem] overflow-hidden border border-foreground/10 bg-gradient-to-br from-card via-card to-card/80 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.55)] transition-all duration-500 md:hover:-translate-y-2 md:hover:border-[var(--accent)]/45 md:hover:shadow-[0_40px_100px_-40px_color-mix(in_oklab,var(--accent)_45%,transparent)]"
+            className="group relative w-[300px] sm:w-[360px] lg:w-[400px] shrink-0 snap-center flex flex-col rounded-[2rem] overflow-hidden border border-foreground/10 bg-gradient-to-br from-card via-card to-card/80 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.55)] transition-all duration-500 md:hover:-translate-y-2 md:hover:border-[var(--gold)]/45 md:hover:shadow-[0_40px_100px_-40px_color-mix(in_oklab,var(--gold)_45%,transparent)]"
           >
-            <div className="h-[3px] w-full bg-gradient-to-r from-[var(--accent)] via-[#35cbbb] to-[var(--accent)]" />
-            <div className="pointer-events-none absolute -top-24 -end-24 size-64 rounded-full blur-3xl bg-[var(--accent)]/12 opacity-0 md:group-hover:opacity-100 transition duration-700" />
+            <div className="h-[3px] w-full bg-gradient-to-r from-[var(--gold)] via-[#E8C77C] to-[var(--gold)]" />
+            <div className="pointer-events-none absolute -top-24 -end-24 size-64 rounded-full blur-3xl bg-[var(--gold)]/12 opacity-0 md:group-hover:opacity-100 transition duration-700" />
 
             <div className="relative p-7 lg:p-8 flex flex-col flex-1">
               <div className="flex items-center justify-between">
                 <div
-                  className="size-12 grid place-items-center rounded-2xl border border-[var(--accent)]/30 bg-[var(--accent)]/10"
+                  className="size-12 grid place-items-center rounded-2xl border border-[var(--gold)]/30 bg-[var(--gold)]/10"
                   aria-hidden
                 >
-                  <Quote className="size-5" style={{ color: "var(--accent)" }} />
+                  <Quote className="size-5" style={{ color: "var(--gold)" }} />
                 </div>
                 {it.rating != null && it.rating > 0 && (
                   <div className="flex items-center gap-0.5" aria-label={`${it.rating}/5`}>
                     {Array.from({ length: 5 }).map((_, i) => (
                       <span
                         key={i}
-                        className={`text-xs ${i < (it.rating ?? 0) ? "text-[var(--accent)]" : "text-foreground/15"}`}
+                        className={`text-xs ${i < (it.rating ?? 0) ? "text-[var(--gold)]" : "text-foreground/15"}`}
                       >
                         ★
                       </span>
@@ -262,10 +262,10 @@ export function TestimonialsScroller({ items, isAr }: { items: TestimonialRow[];
                     alt={it.name}
                     loading="lazy"
                     draggable={false}
-                    className="size-12 rounded-full object-cover border border-[var(--accent)]/30 shadow"
+                    className="size-12 rounded-full object-cover border border-[var(--gold)]/30 shadow"
                   />
                 ) : (
-                  <div className="size-12 rounded-full bg-gradient-to-br from-[var(--accent)]/40 to-[var(--accent)]/30 grid place-items-center font-display font-bold text-base text-foreground border border-[var(--accent)]/30">
+                  <div className="size-12 rounded-full bg-gradient-to-br from-[var(--gold)]/40 to-[var(--accent)]/30 grid place-items-center font-display font-bold text-base text-foreground border border-[var(--gold)]/30">
                     {it.name.charAt(0)}
                   </div>
                 )}

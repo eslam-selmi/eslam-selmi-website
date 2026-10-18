@@ -14,7 +14,7 @@ export function Clients() {
     <Section id="clients" eyebrow={t("clients_eyebrow")} title={t("clients_title")}>
       <div className="grid lg:grid-cols-2 gap-10 items-center">
         <motion.div {...fadeUp}>
-          <div className="font-display text-[8rem] lg:text-[10rem] leading-none font-bold text-accent">
+          <div className="font-display text-[8rem] lg:text-[10rem] leading-none font-bold text-gradient-gold">
             12
           </div>
           <p className="text-xl font-medium mt-2">{t("clients_sub")}</p>
@@ -24,7 +24,7 @@ export function Clients() {
             <CompactStat n="15+" l={t("stat_programs")} />
           </div>
           <div className="mt-6 inline-flex items-center gap-2 text-sm text-muted-foreground">
-            <Globe2 className="size-4 text-accent" />
+            <Globe2 className="size-4 text-gold" />
             Egypt · KSA · UAE · Levant · North Africa
           </div>
         </motion.div>
@@ -113,7 +113,7 @@ export function Brands() {
       <div className="grid lg:grid-cols-[1fr_auto] gap-8 items-end mb-10">
         <p className="text-muted-foreground max-w-2xl">{t("brands_desc")}</p>
         <div className="flex items-center gap-3 text-sm">
-          <span className="font-display text-4xl font-bold text-accent leading-none">
+          <span className="font-display text-4xl font-bold text-gradient-gold leading-none">
             {brands.length}+
           </span>
           <span className="text-muted-foreground uppercase tracking-widest text-xs leading-tight">
