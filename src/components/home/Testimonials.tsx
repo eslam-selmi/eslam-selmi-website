@@ -104,6 +104,8 @@ import snap16Asset from "@/assets/snapshots/snap-16.jpg.asset.json";
 import { TestimonialRow, WHATSAPP, fadeUp, openCalendly } from "@/components/home/data";
 import { useSiteProfile } from "@/lib/site-profile";
 import { Section } from "@/components/home/shared";
+import { useSiteMedia } from "@/lib/site-media";
+import { consultationImage, mediaImage } from "@/lib/site-media-data";
 
 export function Testimonials() {
   const { lang } = useI18n();
@@ -289,6 +291,7 @@ export function TestimonialsScroller({ items, isAr }: { items: TestimonialRow[];
 
 export function BookCTA() {
   const { t } = useI18n();
+  const { data: media } = useSiteMedia();
   const { links } = useSiteProfile();
   const steps = [
     { i: Target, t: t("book_step_1_t"), d: t("book_step_1_d") },
@@ -299,17 +302,10 @@ export function BookCTA() {
     <section id="book" className="px-4 sm:px-6 py-16">
       <motion.div
         {...fadeUp}
-        className="relative mx-auto max-w-6xl rounded-[2.25rem] p-8 sm:p-12 lg:p-16 overflow-hidden bg-[#0b1736] text-white shadow-[0_40px_80px_-40px_rgba(11,23,54,0.6)]"
+        className="relative mx-auto max-w-6xl overflow-hidden bg-consultation-surface text-primary-foreground"
       >
-        <div
-          className="absolute inset-0 opacity-40"
-          style={{
-            background:
-              "radial-gradient(ellipse 60% 50% at 85% 10%, oklch(0.72 0.13 180 / 0.55), transparent 60%), radial-gradient(ellipse 50% 50% at 10% 90%, oklch(0.55 0.2 290 / 0.35), transparent 65%)",
-          }}
-        />
-        <div className="absolute inset-0 grain opacity-30" />
-        <div className="relative grid lg:grid-cols-[1.4fr_1fr] gap-10 items-center">
+        <img src={mediaImage(media?.media ?? {}, "consultation", consultationImage)} alt={t("book_title_1")} width={1536} height={864} loading="lazy" decoding="async" className="w-full aspect-video lg:aspect-[21/9] object-cover" />
+        <div className="relative grid lg:grid-cols-[1.4fr_1fr] gap-10 items-center p-8 sm:p-12 lg:p-16">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.25em] text-white">
               <Sparkles className="size-3.5" /> {t("book_badge")}

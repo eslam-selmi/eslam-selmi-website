@@ -105,6 +105,8 @@ import { Footer } from "@/components/home/Footer";
 import { JOURNEY, JourneyItem, PILLARS, PROGRAMS, SERVICES, fadeUp, waServiceLink } from "@/components/home/data";
 import { Section } from "@/components/home/shared";
 import { useSiteProfile } from "@/lib/site-profile";
+import { useSiteMedia } from "@/lib/site-media";
+import { programMedia, mediaImage } from "@/lib/site-media-data";
 
 export function Pillars() {
   const { t } = useI18n();
@@ -307,6 +309,7 @@ export function Services() {
 
 export function Programs() {
   const { t, lang } = useI18n();
+  const { data: media } = useSiteMedia();
   const trackIcons = [GraduationCap, UserCheck, Sparkles];
   return (
     <Section id="programs" eyebrow={t("programs_eyebrow")} title={t("programs_title")}>
@@ -327,6 +330,7 @@ export function Programs() {
                 }`}
             >
               {/* Top accent bar — peru tones for the Educational Tracks flagship */}
+              <img src={mediaImage(media?.media ?? {}, `program:${programMedia[i]?.key}`, programMedia[i]?.image ?? programMedia[0].image)} alt={p.track[lang]} width={1280} height={720} loading="lazy" decoding="async" className="aspect-video w-full object-cover" />
               <div
                 className={`h-1.5 w-full ${isFeatured ? "bg-gradient-to-r from-[#CD853F] via-[#E8A87C] to-[#8B4513]" : "bg-gradient-to-r from-foreground/10 via-[var(--gold)]/40 to-foreground/10"}`}
               />

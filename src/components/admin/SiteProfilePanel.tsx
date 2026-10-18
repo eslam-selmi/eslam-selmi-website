@@ -8,6 +8,7 @@ import { useI18n } from "@/lib/i18n";
 import { siteProfileKey, useSiteProfile } from "@/lib/site-profile";
 import { siteProfileDefaults, type SiteProfile } from "@/lib/site-profile-data";
 import { invalidateSiteContent } from "@/lib/site-content";
+import { SiteMediaPanel } from "./SiteMediaPanel";
 
 export function SiteProfilePanel() {
   const { lang } = useI18n();
@@ -53,7 +54,7 @@ export function SiteProfilePanel() {
   }
   if (query.isPending) return <Loader2 className="size-5 animate-spin text-accent" />;
   if (query.isError) return <div role="alert" className="text-destructive">{t("تعذر تحميل البيانات", "Could not load details")} <Button variant="outline" onClick={() => void query.refetch()}>{t("إعادة المحاولة", "Retry")}</Button></div>;
-  return <form onSubmit={save} className="space-y-6">
+  return <div className="space-y-10"><form onSubmit={save} className="space-y-6">
     <h2 className="text-xl font-semibold text-foreground">{t("الصورة وبيانات التواصل", "Portrait & contact details")}</h2>
     <div className="flex flex-wrap items-center gap-5 border-b border-border pb-6">
       <img src={draft.logo} alt={t("معاينة لوجو الموقع", "Site logo preview")} className="size-24 rounded-xl object-contain bg-secondary p-3" />
@@ -82,5 +83,5 @@ export function SiteProfilePanel() {
       <label className="space-y-2 text-sm"><span className="block">{t("النص أسفل الموقع — إنجليزي", "Footer text — English")}</span><textarea dir="ltr" rows={3} value={draft.footer_en} placeholder="© 2026 · All rights reserved." onChange={e => set("footer_en", e.target.value)} className="w-full rounded-md border border-input bg-card p-3" /></label>
     </div>
     <Button type="submit" disabled={!dirty || saving || uploading}><Save className="size-4" />{saving ? t("جارٍ الحفظ…", "Saving…") : t("حفظ بيانات الموقع", "Save site details")}</Button>
-  </form>;
+  </form><div className="border-t border-border pt-8"><SiteMediaPanel /></div></div>;
 }
