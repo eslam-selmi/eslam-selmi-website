@@ -28,7 +28,7 @@ export function Hero() {
     <section
       id="home"
       ref={ref}
-      className="relative pt-28 pb-20 lg:pt-36 lg:pb-28 overflow-hidden"
+      className="editorial-hero relative pt-32 pb-16 lg:pt-44 lg:pb-24 overflow-hidden"
     >
       {/* Soft background wash */}
       <div
@@ -48,7 +48,7 @@ export function Hero() {
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 grid lg:grid-cols-12 gap-10 lg:gap-14 items-center">
         {/* Left: Copy */}
-        <motion.div style={{ y: isMobile || reduceMotion ? 0 : y }} className="lg:col-span-7 order-2 lg:order-1 space-y-7">
+        <motion.div style={{ y: isMobile || reduceMotion ? 0 : y }} className="lg:col-span-7 order-1 space-y-7">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -62,7 +62,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.7 }}
-            className="font-display font-extrabold tracking-tight text-balance leading-[1.02] text-[clamp(2.4rem,6vw,5rem)] text-foreground"
+            className="font-display font-extrabold tracking-tight text-balance leading-[1.02] text-[clamp(2.8rem,6.4vw,5.6rem)] text-foreground"
           >
             {lang === "ar" ? (
               <>
@@ -92,9 +92,9 @@ export function Hero() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.38 }}
-            className="group inline-flex items-center gap-2.5 rounded-full border border-foreground/10 bg-card/60 backdrop-blur-sm px-3.5 py-2 w-fit cursor-pointer hover:border-[var(--gold)]/50 hover:shadow-[0_10px_30px_-12px_var(--gold)] transition"
+            className="group inline-flex items-center gap-2.5 rounded-full border border-foreground/10 bg-card/60 backdrop-blur-sm px-3.5 py-2 w-fit cursor-pointer hover:border-[var(--accent)]/50 hover:shadow-[0_10px_30px_-12px_var(--accent)] transition"
           >
-            <span className="inline-flex items-center justify-center rounded-full bg-gradient-to-br from-[var(--gold)] to-[var(--gold-soft)] p-1.5 shadow">
+            <span className="inline-flex items-center justify-center rounded-full bg-gradient-to-br from-[var(--accent)] to-[var(--accent)] p-1.5 shadow">
               <Award className="size-4 text-accent-foreground" />
             </span>
             <span className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-foreground">
@@ -107,7 +107,7 @@ export function Hero() {
               {lang === "ar"
                 ? "مدرب معتمد من هيئة تقويم التعليم والتدريب بالمملكة العربية السعودية"
                 : "Certified Trainer by ETEC, Saudi Arabia"}
-              <ExternalLink className="size-3.5 text-muted-foreground group-hover:text-[var(--gold)] transition" />
+              <ExternalLink className="size-3.5 text-muted-foreground group-hover:text-[var(--accent)] transition" />
             </span>
           </motion.button>
 
@@ -197,12 +197,10 @@ export function Hero() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
-            className="grid max-w-xl grid-cols-3 divide-x divide-foreground/10 rtl:divide-x-reverse rounded-2xl border border-foreground/10 bg-card/50 py-4"
+            className="hero-stats grid max-w-xl grid-cols-1 divide-x divide-foreground/10 rtl:divide-x-reverse rounded-2xl border border-foreground/10 bg-card/50 py-4"
           >
             {[
-              ["+9", lang === "ar" ? "سنوات خبرة" : "Years experience"],
               ["12", lang === "ar" ? "دولة" : "Countries"],
-              ["+5K", lang === "ar" ? "متدرب" : "Trainees"],
             ].map(([n, l]) => (
               <div key={l} className="px-3 text-center">
                 <div className="font-display text-2xl sm:text-3xl font-extrabold text-accent">{n}</div>
@@ -217,7 +215,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="lg:col-span-5 order-1 lg:order-2 relative"
+          className="lg:col-span-5 order-2 relative"
         >
           <div className="relative mx-auto w-full max-w-[380px] sm:max-w-[440px] lg:max-w-[520px]">
             <div className="pointer-events-none absolute -end-6 -top-6 size-40 rounded-full border-2 border-dashed border-accent/40" aria-hidden />

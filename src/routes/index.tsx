@@ -121,17 +121,18 @@ function Portfolio() {
     <div className="home-page min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-accent/25">
       <Nav theme={theme as ThemeMode} onThemeToggle={toggle} />
       {isVisible("home.hero") && <Hero />}
+      {isVisible("home.brands") && <DeferredSection id="brands"><Brands /></DeferredSection>}
+      <main>
       <DeferredSection id="how-it-works"><HowItWorks /></DeferredSection>
 
       
       {isVisible("home.pillars") && <DeferredSection id="pillars"><Pillars /></DeferredSection>}
       {isVisible("home.journey") && <DeferredSection id="journey"><Journey /></DeferredSection>}
-      {isVisible("home.brands") && <DeferredSection id="brands"><Brands /></DeferredSection>}
       {isVisible("home.services") && <DeferredSection id="services"><Services /></DeferredSection>}
       {isVisible("home.programs") && <DeferredSection id="programs"><Programs /></DeferredSection>}
 
       {isVisible("home.latest_additions") && (
-        <DeferredSection id="latest-additions"><div className="max-w-7xl mx-auto px-4 sm:px-5 py-12">
+        <DeferredSection id="latest-additions"><div className="max-w-7xl mx-auto px-5 sm:px-8 py-20 lg:py-28">
           <LatestAdditionsSection />
         </div></DeferredSection>
       )}
@@ -147,6 +148,7 @@ function Portfolio() {
       {isVisible("home.trainee_reviews", false) && <DeferredSection id="trainee-reviews"><TraineeReviews /></DeferredSection>}
       {isVisible("home.cta") && <DeferredSection id="book"><BookCTA /></DeferredSection>}
       {isVisible("home.contact") && <DeferredSection id="contact"><Contact /></DeferredSection>}
+      </main>
       {isVisible("home.footer") && <DeferredSection id="footer"><Footer /></DeferredSection>}
       
       <ScrollTop />
