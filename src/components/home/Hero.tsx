@@ -129,7 +129,7 @@ export function Hero() {
           >
             <button
               onClick={openCalendly}
-              className="group inline-flex items-center gap-2 rounded-xl bg-primary px-7 py-4 text-sm font-bold text-primary-foreground shadow-[0_18px_40px_-14px_oklch(0.22_0.06_252/0.5)] hover:translate-y-[-2px] transition cursor-pointer"
+              className="group inline-flex items-center gap-2 rounded-full bg-primary px-7 py-4 text-sm font-bold text-primary-foreground shadow-[0_18px_40px_-14px_oklch(0.22_0.06_252/0.5)] hover:translate-y-[-2px] transition cursor-pointer"
             >
               <Calendar className="size-4" /> {t("hero_btn_book")}
               <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
@@ -138,14 +138,14 @@ export function Hero() {
               href={links.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-xl border border-foreground/15 bg-card px-7 py-4 text-sm font-bold text-foreground hover:border-foreground/30 hover:bg-foreground/[0.03] transition"
+              className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-card px-7 py-4 text-sm font-bold text-foreground hover:border-foreground/30 hover:bg-foreground/[0.03] transition"
             >
               <MessageCircle className="size-4" /> WhatsApp
             </a>
             <a
               href="#podcast"
               aria-label="Listen to the L&D Podcast"
-              className="group relative inline-flex items-center gap-2 rounded-xl px-7 py-4 text-sm font-bold text-white overflow-hidden shadow-[0_18px_40px_-14px_oklch(0.55_0.2_290/0.55)] hover:translate-y-[-2px] transition"
+              className="group relative inline-flex items-center gap-2 rounded-full px-7 py-4 text-sm font-bold text-white overflow-hidden shadow-[0_18px_40px_-14px_oklch(0.55_0.2_290/0.55)] hover:translate-y-[-2px] transition"
               style={{
                 background: "linear-gradient(135deg, oklch(0.32 0.13 280), oklch(0.55 0.18 200))",
               }}
