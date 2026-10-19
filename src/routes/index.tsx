@@ -13,7 +13,6 @@ const Journey = lazy(() => import("@/components/home/AboutSections").then(m => (
 const Pillars = lazy(() => import("@/components/home/AboutSections").then(m => ({ default: m.Pillars })));
 const Programs = lazy(() => import("@/components/home/AboutSections").then(m => ({ default: m.Programs })));
 const Services = lazy(() => import("@/components/home/AboutSections").then(m => ({ default: m.Services })));
-const Contact = lazy(() => import("@/components/home/Contact").then(m => ({ default: m.Contact })));
 const CurrentCourses = lazy(() => import("@/components/home/Courses").then(m => ({ default: m.CurrentCourses })));
 const Footer = lazy(() => import("@/components/home/Footer").then(m => ({ default: m.Footer })));
 const Interviews = lazy(() => import("@/components/home/Media").then(m => ({ default: m.Interviews })));
@@ -143,7 +142,6 @@ function Portfolio() {
       {isVisible("home.testimonials") && <DeferredSection id="testimonials"><Testimonials /></DeferredSection>}
       {isVisible("home.trainee_reviews", false) && <DeferredSection id="trainee-reviews"><TraineeReviews /></DeferredSection>}
       {isVisible("home.cta") && <DeferredSection id="book"><BookCTA /></DeferredSection>}
-      {isVisible("home.contact") && <DeferredSection id="contact"><Contact /></DeferredSection>}
       {isVisible("home.footer") && <DeferredSection id="footer"><Footer /></DeferredSection>}
       
       <ScrollTop />
