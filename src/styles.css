@@ -216,12 +216,8 @@
   border-radius: inherit;
   pointer-events: none;
 }
-.contact-glass-band {
-  border-radius: 0 0 64px 64px;
-}
 @media (max-width: 767px) {
   .cta-glass-band { border-radius: 32px 32px 0 0; }
-  .contact-glass-band { border-radius: 0 0 32px 32px; }
   .cta-glass-item { backdrop-filter: blur(6px); }
 }
 

@@ -265,9 +265,6 @@ export const NAV: { id: string; key: string; to?: string; highlight?: boolean; a
   { id: "trainings", key: "nav_trainings", to: "/trainings" },
   { id: "success-cases", key: "nav_success_cases", to: "/success-cases" },
   { id: "library", key: "nav_library", to: "/library" },
-  { id: "contact", key: "nav_contact" },
-  { id: "book", key: "nav_book", action: "book", highlight: true },
-];
 // Mobile menu mirrors the desktop top-bar exactly (same labels, same order).
 
 export const NAV_FULL: { id: string; key: string; to?: string; highlight?: boolean; action?: "book" }[] = [
@@ -276,10 +273,6 @@ export const NAV_FULL: { id: string; key: string; to?: string; highlight?: boole
   { id: "trainings", key: "nav_trainings", to: "/trainings" },
   { id: "success-cases", key: "nav_success_cases", to: "/success-cases" },
   { id: "library", key: "nav_library", to: "/library" },
-  { id: "contact", key: "nav_contact" },
-  { id: "book", key: "nav_book", action: "book", highlight: true },
-  { id: "empowerment", key: "nav_empowerment", to: "/graduates" },
-];
 
 export const COUNTRIES = [
   { code: "eg", name: { en: "Egypt", ar: "مصر" } },
