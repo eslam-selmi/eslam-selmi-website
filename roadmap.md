@@ -33,3 +33,8 @@
 - [x] Defer lower homepage modules and their reads until approaching the viewport; support direct section links.
 - [x] Replace mobile marquee loops with native swipe rails and reduce homepage blur; verify public Arabic/English mobile browsing, desktop and lightbox (9 tests pass).
 - [x] Prevent saved English preference from causing a hydration rebuild on first open.
+
+# Remove homepage contact section
+
+- [x] Delete the bottom "contact me" section from the homepage and its now-unused nav link and styles.
+- [x] Verify as the site owner that the page ends with the booking banner and footer, with no dead links or layout gaps.
