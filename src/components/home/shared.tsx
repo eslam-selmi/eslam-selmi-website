@@ -170,12 +170,39 @@ export function isEmpowermentCourse(title: string | null | undefined): boolean {
   return t.includes("أدوات التمكين") || t.includes("empowerment tools");
 }
 
-const chapterNumbers: Record<string, string> = { pillars: "02", journey: "03", brands: "04", services: "05", programs: "06", "current-courses": "07", podcast: "08", interviews: "09", clients: "10", snapshots: "11", testimonials: "12" };
-export function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string; title?: string; children: React.ReactNode }) {
-  return <section id={id} className="edition-section"><div className="edition-container">
-    <motion.div {...fadeUp} className="edition-section-heading"><div className="edition-section-index"><span>{chapterNumbers[id] ?? "—"}</span><span>{eyebrow}</span></div>{title && <h2>{title}</h2>}</motion.div>
-    {children}
-  </div></section>;
+export function Section({
+  id,
+  eyebrow,
+  title,
+  children,
+}: {
+  id: string;
+  eyebrow: string;
+  title?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section id={id} className="px-4 sm:px-6 py-20 lg:py-28 relative overflow-hidden">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
+      <div className="absolute -end-40 top-20 size-80 rounded-full bg-accent/10 blur-3xl" />
+      <div className="mx-auto max-w-7xl">
+        <motion.div {...fadeUp} className={title ? "mb-12 lg:mb-16" : "mb-0"}>
+          {eyebrow && (
+            <div className="inline-flex items-center gap-2 rounded-full bg-foreground/[0.06] border border-foreground/10 px-3.5 py-1.5 text-[11px] uppercase tracking-[0.28em] text-foreground font-bold mb-5">
+              <span className="size-1.5 rounded-full bg-accent" />
+              {eyebrow}
+            </div>
+          )}
+          {title && (
+            <h2 className="font-display leading-[1.05] tracking-tight text-foreground text-[clamp(1.9rem,4.4vw,3.75rem)] whitespace-normal lg:whitespace-nowrap">
+              {title}
+            </h2>
+          )}
+        </motion.div>
+        {children}
+      </div>
+    </section>
+  );
 }
 
 /* ---------- WHATSAPP FLOAT ---------- */

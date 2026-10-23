@@ -1,8 +1,3 @@
-# Homepage editorial redesign
-
-- [ ] Research exceptional personal websites and redesign the full homepage while preserving its colors, fonts, content and controls.
-- [ ] Verify Arabic/English, both themes, mobile layout and booking/media interactions.
-
 # Match administration to trainee portal
 
 # Booking and contact redesign

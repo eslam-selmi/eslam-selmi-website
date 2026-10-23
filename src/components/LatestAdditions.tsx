@@ -99,7 +99,7 @@ export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
   return (
     <section
       id="latest-additions"
-      className="home-latest rounded-3xl border border-[var(--gold)]/25 bg-gradient-to-br from-[var(--gold)]/[0.07] via-white/[0.02] to-transparent p-6 sm:p-8"
+      className="rounded-3xl border border-[var(--gold)]/25 bg-gradient-to-br from-[var(--gold)]/[0.07] via-white/[0.02] to-transparent p-6 sm:p-8"
     >
       <div className="flex items-start justify-between gap-4 mb-5 flex-wrap">
         <div>
@@ -133,7 +133,7 @@ export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
                     isStoragePath: isStorage,
                   })
                 }
-                className="home-latest-card group text-start rounded-2xl border border-white/10 bg-white/[0.04] p-4 hover:border-[var(--gold)]/45 hover:bg-white/[0.06] transition-all hover:-translate-y-0.5"
+                className="group text-start rounded-2xl border border-white/10 bg-white/[0.04] p-4 hover:border-[var(--gold)]/45 hover:bg-white/[0.06] transition-all hover:-translate-y-0.5"
               >
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 rounded-xl bg-[var(--gold)]/15 border border-[var(--gold)]/30 flex items-center justify-center shrink-0">
