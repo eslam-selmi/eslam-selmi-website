@@ -254,9 +254,9 @@ export function CourseCard({
     <button
       type="button"
       onClick={onOpen}
-      className="group relative text-start rounded-[2rem] border border-white/15 bg-white/[0.06] backdrop-blur-xl p-0 overflow-hidden shadow-[0_20px_60px_-30px_rgba(0,0,0,0.45)] md:transition-all md:duration-300 md:hover:-translate-y-1.5 md:hover:scale-[1.02] md:hover:border-white/25 md:hover:shadow-[0_36px_80px_-30px_color-mix(in_oklab,var(--accent)_55%,transparent)]"
+      className="home-course-card group relative text-start rounded-[2rem] border border-white/15 bg-white/[0.06] backdrop-blur-xl p-0 overflow-hidden shadow-[0_20px_60px_-30px_rgba(0,0,0,0.45)] md:transition-all md:duration-300 md:hover:-translate-y-1.5 md:hover:scale-[1.02] md:hover:border-white/25 md:hover:shadow-[0_36px_80px_-30px_color-mix(in_oklab,var(--accent)_55%,transparent)]"
     >
-      <CourseCover id={c.id} title={c.title} />
+      <CourseCover id={c.id} title={c.title} className="home-course-cover" />
       <div
         className={`absolute inset-x-0 top-0 h-1.5 ${upcoming ? "bg-gradient-to-r from-[var(--accent)] via-[var(--lavender)] to-[var(--gold)]" : "bg-gradient-to-r from-[var(--gold)] via-[var(--accent)] to-[var(--gold)]"}`}
       />

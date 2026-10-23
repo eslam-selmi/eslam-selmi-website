@@ -109,7 +109,7 @@ export function Footer() {
   const { t, lang } = useI18n();
   const { profile, links } = useSiteProfile();
   return (
-    <footer className="border-t border-foreground/10 mt-10 bg-foreground/[0.025] backdrop-blur-xl">
+    <footer className="home-footer border-t border-foreground/10 mt-10 bg-foreground/[0.025] backdrop-blur-xl">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <BrandMark size={36} />
