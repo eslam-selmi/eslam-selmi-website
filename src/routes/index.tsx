@@ -116,7 +116,7 @@ function Portfolio() {
 
   return (
     <MotionConfig reducedMotion={isMobile ? "always" : "user"}>
-    <div className="home-page min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-accent/25">
+    <div className="home-page leadership-edition min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-accent/25">
       <Nav theme={theme as ThemeMode} onThemeToggle={toggle} />
       {isVisible("home.hero") && <Hero />}
       
