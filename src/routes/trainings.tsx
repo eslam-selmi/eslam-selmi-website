@@ -119,7 +119,7 @@ function TrainingsPage() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-28 sm:pt-32 pb-16 sm:pb-20">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-accent/30 bg-accent/10 text-accent text-xs font-bold uppercase tracking-widest">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-accent/30 bg-accent/10 text-accent text-[11px] font-semibold uppercase tracking-widest">
               <Sparkles className="w-3.5 h-3.5" />
               {tt("التدريبات والممارسات", "Trainings & practice")}
             </div>
