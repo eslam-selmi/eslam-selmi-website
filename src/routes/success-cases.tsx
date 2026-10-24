@@ -75,7 +75,7 @@ function SuccessCasesPage() {
       <main className="pt-24 pb-20 px-4 sm:px-6">
         <div className="mx-auto max-w-7xl">
           <div className="text-start mb-12">
-            <span className="inline-flex items-center gap-2 text-xs sm:text-sm tracking-[0.26em] uppercase text-[var(--gold)] font-bold">
+            <span className="inline-flex items-center gap-2 text-[11px] tracking-[0.32em] uppercase text-[var(--gold)] font-bold">
               <span className="h-px w-8 bg-[var(--gold)]/70" />
               {tt("حالات نجاح", "Success Cases")}
             </span>

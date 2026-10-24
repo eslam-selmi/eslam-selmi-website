@@ -52,7 +52,7 @@ export function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold uppercase tracking-[0.24em]"
+            className="inline-flex items-center gap-2 text-[11px] sm:text-xs font-bold uppercase tracking-[0.28em]"
             style={{ color: "var(--accent)" }}
           >
             <span className="h-px w-8" style={{ background: "var(--accent)" }} />

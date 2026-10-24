@@ -152,7 +152,7 @@ export function Nav({
           <nav className="hidden xl:flex items-center gap-0.5">
             {NAV.map((n) => {
               const baseCls =
-                "px-2.5 py-1.5 text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-foreground/5";
+                "px-2.5 py-1.5 text-[13px] font-bold text-foreground/85 hover:text-foreground transition-colors rounded-full hover:bg-foreground/5";
               const highlightCls =
                 "group relative inline-flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-extrabold rounded-full transition-all hover:-translate-y-0.5 cursor-pointer";
               const highlightStyle = {
