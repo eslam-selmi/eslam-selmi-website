@@ -188,7 +188,7 @@ export function Section({
       <div className="mx-auto max-w-7xl">
         <motion.div {...fadeUp} className={title ? "mb-12 lg:mb-16" : "mb-0"}>
           {eyebrow && (
-            <div className="inline-flex items-center gap-2 rounded-full bg-foreground/[0.06] border border-foreground/10 px-3.5 py-1.5 text-[11px] uppercase tracking-[0.28em] text-foreground font-bold mb-5">
+            <div className="inline-flex items-center gap-2 rounded-full bg-foreground/[0.06] border border-foreground/10 px-3.5 py-1.5 text-xs sm:text-sm uppercase tracking-[0.22em] text-foreground font-bold mb-5">
               <span className="size-1.5 rounded-full bg-accent" />
               {eyebrow}
             </div>
