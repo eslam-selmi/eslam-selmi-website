@@ -460,7 +460,7 @@ export function Nav({
                   key={n.id}
                   to={n.to}
                   onClick={() => setOpen(false)}
-                  className="px-3 py-2 rounded-lg hover:bg-foreground/5 text-sm"
+                  className="px-3 py-2 rounded-lg hover:bg-foreground/5 text-sm font-bold text-foreground/85"
                 >
                   {t(n.key)}
                 </Link>
@@ -469,7 +469,7 @@ export function Nav({
                   key={n.id}
                   href={hashHref(n.id)}
                   onClick={() => setOpen(false)}
-                  className="px-3 py-2 rounded-lg hover:bg-foreground/5 text-sm"
+                  className="px-3 py-2 rounded-lg hover:bg-foreground/5 text-sm font-bold text-foreground/85"
                 >
                   {t(n.key)}
                 </a>
