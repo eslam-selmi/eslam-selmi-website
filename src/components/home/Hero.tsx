@@ -8,6 +8,7 @@ import etecLicenseAsset from "@/assets/etec-license.png.asset.json";
 import { openCalendly } from "@/components/home/data";
 import { useSiteProfile } from "@/lib/site-profile";
 import { portraitSources } from "@/lib/optimized-images";
+import { Button } from "@/components/ui/button";
 
 export function Hero() {
   const { profile, links } = useSiteProfile();
@@ -87,30 +88,33 @@ export function Hero() {
           </motion.p>
 
           {/* ETEC certified trainer credential — opens license popup */}
-          <motion.button
-            type="button"
-            onClick={() => setLicenseOpen(true)}
+          <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.38 }}
-            className="group inline-flex items-center gap-2.5 rounded-full border border-foreground/10 bg-card/60 backdrop-blur-sm px-3.5 py-2 w-fit cursor-pointer hover:border-[var(--gold)]/50 hover:shadow-[0_10px_30px_-12px_var(--gold)] transition"
+            className="max-w-xl"
           >
-            <span className="inline-flex items-center justify-center rounded-full bg-gradient-to-br from-[var(--gold)] to-[var(--gold-soft)] p-1.5 shadow">
-              <Award className="size-4 text-accent-foreground" />
-            </span>
-            <span className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-foreground">
-              <img
-                src="https://flagcdn.com/sa.svg"
-                alt=""
-                loading="lazy"
-                className="w-4 h-3 rounded-sm object-cover"
-              />
-              {lang === "ar"
-                ? "مدرب معتمد من هيئة تقويم التعليم والتدريب بالمملكة العربية السعودية"
-                : "Certified Trainer by ETEC, Saudi Arabia"}
-              <ExternalLink className="size-3.5 text-muted-foreground group-hover:text-[var(--gold)] transition" />
-            </span>
-          </motion.button>
+            <Button
+              variant="ghost"
+              onClick={() => setLicenseOpen(true)}
+              className="group grid h-auto w-full grid-cols-[auto_minmax(0,1fr)_auto] gap-3 rounded-none border-s-2 border-accent/60 px-3 py-2 text-start whitespace-normal hover:bg-accent/5 hover:text-foreground"
+            >
+              <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-foreground/10 bg-secondary/70 text-foreground">
+                <Award className="!size-5" />
+              </span>
+              <span className="min-w-0 space-y-1">
+                <span className="block text-sm font-bold leading-snug">
+                  {lang === "ar" ? "مدرب معتمد" : "Certified Trainer"}
+                </span>
+                <span className="block text-xs font-normal leading-relaxed text-muted-foreground">
+                  {lang === "ar"
+                    ? "هيئة تقويم التعليم والتدريب · المملكة العربية السعودية"
+                    : "Education & Training Evaluation Commission · Saudi Arabia"}
+                </span>
+              </span>
+              <ExternalLink className="text-muted-foreground transition-colors group-hover:text-accent" />
+            </Button>
+          </motion.div>
 
           <Dialog open={licenseOpen} onOpenChange={setLicenseOpen}>
             <DialogContent className="max-w-3xl p-2 sm:p-3 bg-card">
@@ -126,38 +130,33 @@ export function Hero() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.45 }}
-            className="flex flex-wrap gap-3 pt-2"
+            className="grid max-w-xl grid-cols-2 gap-3 pt-1"
           >
-            <button
+            <Button
               onClick={openCalendly}
-              className="group inline-flex items-center gap-2 rounded-xl bg-primary px-7 py-4 text-sm font-bold text-primary-foreground shadow-[0_18px_40px_-14px_oklch(0.22_0.06_252/0.5)] hover:translate-y-[-2px] transition cursor-pointer"
+              className="group col-span-2 grid h-auto min-h-14 grid-cols-[auto_minmax(0,1fr)_auto] gap-3 rounded-xl bg-primary px-5 py-4 text-start text-sm font-bold text-primary-foreground shadow-sm hover:bg-primary/90"
             >
-              <Calendar className="size-4" /> {t("hero_btn_book")}
-              <ArrowRight className="size-4 group-hover:translate-x-1 rtl-flip transition" />
-            </button>
+              <Calendar className="!size-5" />
+              <span className="min-w-0 whitespace-normal leading-snug">{t("hero_btn_book")}</span>
+              <ArrowRight className={`transition-transform ${lang === "ar" ? "rotate-180 group-hover:-translate-x-1" : "group-hover:translate-x-1"}`} />
+            </Button>
+            <Button asChild variant="outline" className="h-auto min-h-12 rounded-xl border-foreground/10 bg-card/50 px-3 py-3 font-semibold shadow-none hover:bg-secondary hover:text-foreground">
             <a
               href={links.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-xl border border-foreground/15 bg-card px-7 py-4 text-sm font-bold text-foreground hover:border-foreground/30 hover:bg-foreground/[0.03] transition"
             >
               <MessageCircle className="size-4" /> WhatsApp
             </a>
+            </Button>
+            <Button asChild variant="outline" className="h-auto min-h-12 rounded-xl border-foreground/10 bg-card/50 px-3 py-3 font-semibold shadow-none hover:bg-secondary hover:text-foreground">
             <a
               href="#podcast"
-              aria-label="Listen to the L&D Podcast"
-              className="group relative inline-flex items-center gap-2 rounded-xl px-7 py-4 text-sm font-bold text-white overflow-hidden shadow-[0_18px_40px_-14px_oklch(0.55_0.2_290/0.55)] hover:translate-y-[-2px] transition"
-              style={{
-                background: "linear-gradient(135deg, oklch(0.32 0.13 280), oklch(0.55 0.18 200))",
-              }}
             >
-              <span className="relative grid place-items-center size-6 rounded-full bg-white/15 backdrop-blur-sm">
-                <Mic className="size-3.5" />
-                <span className="absolute inset-0 rounded-full ring-2 ring-white/40 animate-ping" />
-              </span>
-              <span className="relative">{t("listen_podcast")}</span>
-              <ArrowRight className="relative size-4 group-hover:translate-x-1 rtl-flip transition" />
+              <Mic className="size-4 text-accent" />
+              <span className="min-w-0 whitespace-normal text-center text-xs sm:text-sm leading-snug">{t("listen_podcast")}</span>
             </a>
+            </Button>
           </motion.div>
 
           {/* Social row */}
