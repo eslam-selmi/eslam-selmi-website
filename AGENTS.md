@@ -1,5 +1,7 @@
 # Project rules
 
+- Program and course cover decorations share CoverReflection and scoped token-based CSS so both stay visually consistent without filtering the underlying media.
+
 - Keep popup notification presentation in the shared Sonner wrapper and scoped global CSS tokens so admin and trainee notifications share site fonts, RTL and both themes without changing notification data workflows.
 
 - Keep administration within the existing `/admin` route and use the shared trainee dashboard surfaces and controls rather than an independent admin theme; this preserves tab links and data workflows while keeping both workspaces visually aligned.

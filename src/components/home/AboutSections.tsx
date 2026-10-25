@@ -107,6 +107,7 @@ import { Section } from "@/components/home/shared";
 import { useSiteProfile } from "@/lib/site-profile";
 import { useSiteMedia } from "@/lib/site-media";
 import { programMedia, mediaImage } from "@/lib/site-media-data";
+import { CoverReflection } from "@/components/CoverReflection";
 
 export function Pillars() {
   const { t } = useI18n();
@@ -330,11 +331,9 @@ export function Programs() {
                 }`}
             >
               {/* Top accent bar — peru tones for the Educational Tracks flagship */}
-              <div className="group/cover relative overflow-hidden">
+              <div className="group/cover clear-glass-cover relative overflow-hidden">
                 <img src={mediaImage(media?.media ?? {}, `program:${programMedia[i]?.key}`, programMedia[i]?.image ?? programMedia[0].image)} alt={p.track[lang]} width={1280} height={720} loading="lazy" decoding="async" className="aspect-video w-full object-cover" />
-                {/* Frosted-glass veil — dissolves on hover to reveal the sharp image */}
-                <span aria-hidden className="pointer-events-none absolute inset-0 z-10 opacity-100 transition-opacity duration-500 group-hover/cover:opacity-0 border border-white/25 bg-gradient-to-br from-white/30 via-white/10 to-white/[0.05] backdrop-blur-[6px]" />
-                <span aria-hidden className="pointer-events-none absolute -top-1/3 start-[-20%] z-10 h-[180%] w-1/3 rotate-12 bg-gradient-to-b from-white/45 via-white/10 to-transparent opacity-100 transition-opacity duration-500 group-hover/cover:opacity-0" />
+                <CoverReflection />
               </div>
               <div
                 className={`h-1.5 w-full ${isFeatured ? "bg-gradient-to-r from-[#CD853F] via-[#E8A87C] to-[#8B4513]" : "bg-gradient-to-r from-foreground/10 via-[var(--gold)]/40 to-foreground/10"}`}
