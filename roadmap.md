@@ -2,7 +2,7 @@
 
 # Hero credential and actions
 
-- [ ] Redesign the accreditation and booking/contact/podcast controls; verify desktop and mobile interactions.
+- [x] Redesign the accreditation and booking/contact/podcast controls; verify desktop and mobile interactions.
 
 # Booking and contact redesign
 
