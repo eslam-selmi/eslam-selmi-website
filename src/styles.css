@@ -92,6 +92,10 @@
   --notification-info: oklch(0.50 0.11 220);
   --notification-surface: color-mix(in oklab, var(--card) 82%, transparent);
   --notification-highlight: oklch(1 0 0 / 0.26);
+  --cover-highlight: oklch(1 0 0);
+  --cover-silver: oklch(0.93 0.008 250);
+  --cover-reflection-gradient: linear-gradient(118deg, transparent 12%, color-mix(in oklab, var(--cover-highlight) 15%, transparent) 12.2%, color-mix(in oklab, var(--cover-highlight) 4%, transparent) 33%, transparent 33.2%, transparent 68%, color-mix(in oklab, var(--cover-silver) 10%, transparent) 68.2%, transparent 85%);
+  --cover-edge-shadow: inset 0 1px 0 color-mix(in oklab, var(--cover-highlight) 50%, transparent), inset 0 -1px 0 color-mix(in oklab, var(--cover-silver) 24%, transparent);
 
   --font-heading-en: 'Sora', ui-sans-serif, system-ui, sans-serif;
   --font-body-en: 'Manrope', ui-sans-serif, system-ui, sans-serif;
@@ -156,6 +160,52 @@
   box-shadow: var(--booking-shadow);
 }
 .booking-reference-muted { color: var(--booking-muted); }
+.clear-glass-cover { isolation: isolate; }
+.clear-glass-cover > img { transition: transform 700ms ease; }
+.cover-reflection {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  overflow: hidden;
+  background: var(--cover-reflection-gradient);
+  box-shadow: var(--cover-edge-shadow);
+  transition: opacity 450ms ease;
+}
+.cover-reflection::before {
+  content: "";
+  position: absolute;
+  width: 90%;
+  height: 130%;
+  top: -83%;
+  left: -12%;
+  border-radius: 50%;
+  border: 1px solid color-mix(in oklab, var(--cover-highlight) 34%, transparent);
+  background: linear-gradient(160deg, color-mix(in oklab, var(--cover-highlight) 16%, transparent), transparent 80%);
+  transform: rotate(-18deg);
+  transition: transform 600ms ease;
+}
+.cover-reflection::after {
+  content: "";
+  position: absolute;
+  width: 65%;
+  height: 110%;
+  right: -26%;
+  bottom: -75%;
+  border-radius: 50%;
+  border: 1px solid color-mix(in oklab, var(--cover-silver) 35%, transparent);
+  transform: rotate(-25deg);
+}
+@media (hover: hover) {
+  .clear-glass-cover:hover > .cover-reflection { opacity: 0; }
+  .clear-glass-cover:hover > img { transform: scale(1.035); }
+  .clear-glass-cover:hover > .cover-reflection::before { transform: translateX(10%) rotate(-18deg); }
+}
+.clear-glass-cover:focus-within > .cover-reflection { opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .clear-glass-cover > img, .cover-reflection, .cover-reflection::before { transition: none; }
+  .clear-glass-cover:hover > img { transform: none; }
+}
 .booking-reference-watermark { color: color-mix(in oklab, var(--booking-cyan) 11%, transparent); }
 .booking-reference-button {
   background: var(--booking-cyan);
