@@ -1,5 +1,9 @@
 # Match administration to trainee portal
 
+# Hero credential and actions
+
+- [ ] Redesign the accreditation and booking/contact/podcast controls; verify desktop and mobile interactions.
+
 # Booking and contact redesign
 
 - [x] Match free booking banner to the supplied reference and verify booking opens.
