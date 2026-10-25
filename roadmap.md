@@ -12,7 +12,7 @@
 
 # Program, course and consultation images
 
-- [ ] Replace frosted cover blur with clear glass reflections and verify disappearance on hover.
+- [x] Replace frosted cover blur with clear glass reflections and verify disappearance on hover.
 
 - [x] Add images above programs and courses and a consultation banner.
 - [x] Add administrator image upload, preview and save controls.
