@@ -1,11 +1,10 @@
 import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
 import { useRef, useState } from "react";
-import { Award, ExternalLink, Calendar, ArrowRight, MessageCircle, Mic, Linkedin, Mail } from "lucide-react";
+import { Award, ExternalLink, Mic, Linkedin, Mail } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import etecLicenseAsset from "@/assets/etec-license.png.asset.json";
-import { openCalendly } from "@/components/home/data";
 import { useSiteProfile } from "@/lib/site-profile";
 import { portraitSources } from "@/lib/optimized-images";
 import { Button } from "@/components/ui/button";
@@ -130,26 +129,9 @@ export function Hero() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.45 }}
-            className="grid max-w-xl grid-cols-2 gap-3 pt-1"
+            className="flex max-w-xl gap-3 pt-1"
           >
-            <Button
-              onClick={openCalendly}
-              className="group col-span-2 grid h-auto min-h-14 grid-cols-[auto_minmax(0,1fr)_auto] gap-3 rounded-xl bg-primary px-5 py-4 text-start text-sm font-bold text-primary-foreground shadow-sm hover:bg-primary/90"
-            >
-              <Calendar className="!size-5" />
-              <span className="min-w-0 whitespace-normal leading-snug">{t("hero_btn_book")}</span>
-              <ArrowRight className={`transition-transform ${lang === "ar" ? "rotate-180 group-hover:-translate-x-1" : "group-hover:translate-x-1"}`} />
-            </Button>
-            <Button asChild variant="outline" className="h-auto min-h-12 rounded-xl border-foreground/10 bg-card/50 px-3 py-3 font-semibold shadow-none hover:bg-secondary hover:text-foreground">
-            <a
-              href={links.whatsapp}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <MessageCircle className="size-4" /> WhatsApp
-            </a>
-            </Button>
-            <Button asChild variant="outline" className="h-auto min-h-12 rounded-xl border-foreground/10 bg-card/50 px-3 py-3 font-semibold shadow-none hover:bg-secondary hover:text-foreground">
+            <Button asChild variant="outline" className="h-auto min-h-12 rounded-xl border-foreground/10 bg-card/50 px-4 py-3 font-semibold shadow-none hover:bg-secondary hover:text-foreground">
             <a
               href="#podcast"
             >
@@ -158,6 +140,7 @@ export function Hero() {
             </a>
             </Button>
           </motion.div>
+
 
           {/* Social row */}
           <motion.div
@@ -174,15 +157,6 @@ export function Hero() {
               className="size-10 rounded-full border border-foreground/15 grid place-items-center text-foreground/70 hover:text-foreground hover:border-foreground/30 transition"
             >
               <Linkedin className="size-4" />
-            </a>
-            <a
-              href={links.whatsapp}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="WhatsApp"
-              className="size-10 rounded-full border border-foreground/15 grid place-items-center text-foreground/70 hover:text-foreground hover:border-foreground/30 transition"
-            >
-              <MessageCircle className="size-4" />
             </a>
             <a
               href={links.email}
