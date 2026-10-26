@@ -1,6 +1,6 @@
 import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
 import { useRef, useState } from "react";
-import { Award, ExternalLink, Mic, Linkedin, Mail } from "lucide-react";
+import { Award, ExternalLink, Eye, Linkedin, Mail } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -96,9 +96,9 @@ export function Hero() {
             <Button
               variant="ghost"
               onClick={() => setLicenseOpen(true)}
-              className="group grid h-auto w-full grid-cols-[auto_minmax(0,1fr)_auto] gap-3 rounded-none border-s-2 border-accent/60 px-3 py-2 text-start whitespace-normal hover:bg-accent/5 hover:text-foreground"
+              className="group glass grid h-auto w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-2xl px-4 py-3 text-start whitespace-normal text-foreground transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/40 hover:text-foreground"
             >
-              <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-foreground/10 bg-secondary/70 text-foreground">
+              <span className="grid size-11 shrink-0 place-items-center rounded-xl border border-accent/25 bg-accent/10 text-accent">
                 <Award className="!size-5" />
               </span>
               <span className="min-w-0 space-y-1">
@@ -110,8 +110,12 @@ export function Hero() {
                     ? "هيئة تقويم التعليم والتدريب · المملكة العربية السعودية"
                     : "Education & Training Evaluation Commission · Saudi Arabia"}
                 </span>
+                <span className="inline-flex items-center gap-1.5 pt-0.5 text-[11px] font-semibold text-accent">
+                  <Eye className="size-3.5" />
+                  {lang === "ar" ? "اضغط لعرض الشهادة الرسمية" : "Tap to view the official license"}
+                </span>
               </span>
-              <ExternalLink className="text-muted-foreground transition-colors group-hover:text-accent" />
+              <ExternalLink className="text-accent/70 transition-colors group-hover:text-accent" />
             </Button>
           </motion.div>
 
@@ -124,23 +128,6 @@ export function Hero() {
               />
             </DialogContent>
           </Dialog>
-
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.45 }}
-            className="flex max-w-xl gap-3 pt-1"
-          >
-            <Button asChild variant="outline" className="h-auto min-h-12 rounded-xl border-foreground/10 bg-card/50 px-4 py-3 font-semibold shadow-none hover:bg-secondary hover:text-foreground">
-            <a
-              href="#podcast"
-            >
-              <Mic className="size-4 text-accent" />
-              <span className="min-w-0 whitespace-normal text-center text-xs sm:text-sm leading-snug">{t("listen_podcast")}</span>
-            </a>
-            </Button>
-          </motion.div>
-
 
           {/* Social row */}
           <motion.div
