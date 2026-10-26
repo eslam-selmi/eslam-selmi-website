@@ -1,5 +1,10 @@
 # Match administration to trainee portal
 
+# Hero cleanup
+
+- [x] Remove the "احجز جلسة فردية مجانية" button and every WhatsApp icon from the hero; verify desktop and mobile.
+
+
 # Hero credential and actions
 
 - [x] Redesign the accreditation and booking/contact/podcast controls; verify desktop and mobile interactions.

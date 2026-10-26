@@ -129,7 +129,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.45 }}
-            className="grid max-w-xl grid-cols-1 gap-3 pt-1"
+            className="flex max-w-xl gap-3 pt-1"
           >
             <Button asChild variant="outline" className="h-auto min-h-12 rounded-xl border-foreground/10 bg-card/50 px-4 py-3 font-semibold shadow-none hover:bg-secondary hover:text-foreground">
             <a
