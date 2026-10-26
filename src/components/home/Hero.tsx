@@ -129,8 +129,6 @@ export function Hero() {
             </DialogContent>
           </Dialog>
 
-
-
           {/* Social row */}
           <motion.div
             initial={{ opacity: 0 }}
