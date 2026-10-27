@@ -1,6 +1,6 @@
 import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
 import { useRef, useState } from "react";
-import { BadgeCheck, ChevronLeft, ChevronRight, Linkedin, Mail } from "lucide-react";
+import { BadgeCheck, ChevronLeft, ChevronRight, Globe2, Linkedin, Mail, TrendingUp, Users } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
