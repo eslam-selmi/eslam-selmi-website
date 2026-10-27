@@ -1,6 +1,6 @@
 import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
 import { useRef, useState } from "react";
-import { BadgeCheck, ChevronLeft, ChevronRight, Linkedin, Mail } from "lucide-react";
+import { BadgeCheck, ChevronLeft, ChevronRight, Globe2, Linkedin, Mail, TrendingUp, Users } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -65,16 +65,9 @@ export function Hero() {
             transition={{ delay: 0.1, duration: 0.7 }}
             className="font-display font-extrabold text-balance leading-[1.05] text-[clamp(2rem,4.6vw,4.25rem)] text-foreground"
           >
-            {lang === "ar" ? (
-              <>
-                إطلاق إمكانات المواهب مع <span style={{ color: "var(--accent)" }}>{nameAr}</span>
-              </>
-            ) : (
-              <>
-                Unlocking Talent Potential With{" "}
-                <span style={{ color: "var(--accent)" }}>{nameEn}</span>
-              </>
-            )}
+            {lang === "ar"
+              ? "إطلاق إمكانات المواهب مع"
+              : "Unlocking Talent Potential With"}
           </motion.h1>
 
           <motion.p
@@ -159,66 +152,116 @@ export function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* Right: Portrait — editorial squircle with offset accents */}
+        {/* Right: Portrait — bare cutout, no frame or background, orbiting glass accents */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="lg:col-span-5 order-1 lg:order-2 relative"
         >
-          <div className="relative mx-auto w-full max-w-[400px] sm:max-w-[440px] lg:max-w-[500px]">
-            {/* soft ambient light behind the frame */}
+          <div className="relative mx-auto w-full max-w-[400px] sm:max-w-[440px] lg:max-w-[480px]">
+            {/* soft ambient glow — light only, no frame */}
             <div
-              className="pointer-events-none absolute -inset-8 -z-10 rounded-[999px] blur-3xl opacity-70"
+              className="pointer-events-none absolute -inset-10 -z-10"
               style={{
                 background:
-                  "radial-gradient(ellipse 60% 55% at 50% 40%, color-mix(in oklab, var(--accent) 22%, transparent), transparent 70%)",
+                  "radial-gradient(ellipse 55% 50% at 50% 42%, color-mix(in oklab, var(--accent) 24%, transparent), transparent 70%), radial-gradient(ellipse 45% 40% at 50% 92%, color-mix(in oklab, var(--navy) 30%, transparent), transparent 75%)",
               }}
-              aria-hidden
-            />
-            {/* offset editorial frame */}
-            <div
-              className="pointer-events-none absolute inset-0 translate-x-4 translate-y-4 rounded-[2.5rem] border border-foreground/12 sm:translate-x-5 sm:translate-y-5"
               aria-hidden
             />
 
-            <div
-              className="relative overflow-hidden rounded-[2.5rem] ring-1 ring-foreground/10"
-              style={{
-                background:
-                  "linear-gradient(165deg, color-mix(in oklab, var(--navy) 92%, transparent), color-mix(in oklab, var(--navy-deep) 96%, transparent))",
-                boxShadow: "0 40px 90px -40px color-mix(in oklab, var(--navy-deep) 65%, transparent)",
-              }}
+            {/* rotating dashed orbit with a travelling light dot */}
+            <motion.div
+              className="pointer-events-none absolute inset-x-2 top-2 aspect-square"
+              animate={reduceMotion ? undefined : { rotate: 360 }}
+              transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+              aria-hidden
             >
-              <div className="relative aspect-[4/5] w-full">
-                <img
-                  src={portrait.src}
-                  srcSet={portrait.srcSet}
-                  sizes="(min-width: 1024px) 500px, (min-width: 640px) 440px, 400px"
-                  loading="eager"
-                  alt="Eslam Selmi"
-                  width={1024}
-                  height={1024}
-                  fetchPriority="high"
-                  decoding="async"
-                  className="absolute inset-0 h-full w-full scale-[1.04] object-cover object-top"
-                />
-                {/* gentle top light + bottom depth so the frame reads premium */}
-                <div
-                  className="pointer-events-none absolute inset-0"
-                  style={{
-                    background:
-                      "linear-gradient(to top, color-mix(in oklab, var(--navy-deep) 55%, transparent) 0%, transparent 42%), radial-gradient(ellipse 70% 40% at 50% 0%, oklch(1 0 0 / 0.14), transparent 70%)",
-                  }}
-                  aria-hidden
-                />
-                <div
-                  className="pointer-events-none absolute inset-0 rounded-[2.5rem]"
-                  style={{ boxShadow: "inset 0 1px 0 oklch(1 0 0 / 0.16)" }}
-                  aria-hidden
-                />
-              </div>
-            </div>
+              <svg viewBox="0 0 100 100" className="h-full w-full opacity-60">
+                <circle cx="50" cy="50" r="48.5" fill="none" stroke="var(--accent)" strokeOpacity="0.35" strokeWidth="0.35" strokeDasharray="1.5 3" />
+              </svg>
+              <span
+                className="absolute left-1/2 top-0 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full"
+                style={{ background: "var(--accent)", boxShadow: "0 0 12px var(--accent)" }}
+              />
+            </motion.div>
+
+            {/* counter-rotating inner arc */}
+            <motion.div
+              className="pointer-events-none absolute inset-x-10 top-10 aspect-square"
+              animate={reduceMotion ? undefined : { rotate: -360 }}
+              transition={{ duration: 26, repeat: Infinity, ease: "linear" }}
+              aria-hidden
+            >
+              <svg viewBox="0 0 100 100" className="h-full w-full">
+                <circle cx="50" cy="50" r="48" fill="none" stroke="var(--accent)" strokeOpacity="0.5" strokeWidth="0.6" strokeDasharray="20 282" strokeLinecap="round" />
+              </svg>
+            </motion.div>
+
+            {/* portrait — transparent cutout, floating */}
+            <motion.img
+              src={portrait.src}
+              srcSet={portrait.srcSet}
+              sizes="(min-width: 1024px) 480px, (min-width: 640px) 440px, 400px"
+              loading="eager"
+              alt={lang === "ar" ? nameAr : nameEn}
+              width={1024}
+              height={1024}
+              fetchPriority="high"
+              decoding="async"
+              className="relative z-10 mx-auto w-full"
+              style={{
+                filter: "drop-shadow(0 34px 44px color-mix(in oklab, var(--navy-deep) 55%, transparent))",
+              }}
+              animate={reduceMotion ? undefined : { y: [0, -10, 0] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            />
+
+            {/* floating glass stat chips */}
+            {[
+              { icon: Users, n: "3000+", l: t("stat_trainees"), pos: "top-[14%] start-1 sm:-start-6", delay: 0 },
+              { icon: Globe2, n: "12+", l: t("nav_clients"), pos: "top-[40%] end-1 sm:-end-6", delay: 1.4 },
+              { icon: TrendingUp, n: "15+", l: t("stat_programs"), pos: "bottom-[30%] start-2 sm:-start-8", delay: 2.4 },
+            ].map(({ icon: Icon, n, l, pos, delay }) => (
+              <motion.div
+                key={l}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.8 + delay * 0.15, duration: 0.5 }}
+                className={`absolute z-20 ${pos}`}
+              >
+                <motion.div
+                  animate={reduceMotion ? undefined : { y: [0, -8, 0] }}
+                  transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut", delay }}
+                  className="glass-panel flex items-center gap-2 rounded-2xl px-3 py-2"
+                >
+                  <span className="grid size-7 shrink-0 place-items-center rounded-xl bg-accent/15 text-accent">
+                    <Icon className="size-4" />
+                  </span>
+                  <span className="leading-tight">
+                    <span className="block font-display text-sm font-bold text-foreground">{n}</span>
+                    <span className="block text-[10px] text-muted-foreground">{l}</span>
+                  </span>
+                </motion.div>
+              </motion.div>
+            ))}
+
+            {/* signature name plate */}
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.7 }}
+              className="relative z-20 -mt-6 text-center sm:-mt-8"
+            >
+              <span className="hero-name-shine font-display font-extrabold leading-none text-[clamp(1.9rem,4vw,3rem)]">
+                {lang === "ar" ? nameAr : nameEn}
+              </span>
+              <div
+                className="mx-auto mt-3 h-px w-40"
+                style={{ background: "linear-gradient(90deg, transparent, var(--accent), transparent)" }}
+                aria-hidden
+              />
+            </motion.div>
           </div>
         </motion.div>
       </div>
