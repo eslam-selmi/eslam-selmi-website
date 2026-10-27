@@ -65,16 +65,9 @@ export function Hero() {
             transition={{ delay: 0.1, duration: 0.7 }}
             className="font-display font-extrabold text-balance leading-[1.05] text-[clamp(2rem,4.6vw,4.25rem)] text-foreground"
           >
-            {lang === "ar" ? (
-              <>
-                إطلاق إمكانات المواهب مع <span style={{ color: "var(--accent)" }}>{nameAr}</span>
-              </>
-            ) : (
-              <>
-                Unlocking Talent Potential With{" "}
-                <span style={{ color: "var(--accent)" }}>{nameEn}</span>
-              </>
-            )}
+            {lang === "ar"
+              ? "إطلاق إمكانات المواهب مع"
+              : "Unlocking Talent Potential With"}
           </motion.h1>
 
           <motion.p
