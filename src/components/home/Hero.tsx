@@ -1,6 +1,6 @@
 import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
 import { useRef, useState } from "react";
-import { Award, ExternalLink, Eye, Linkedin, Mail } from "lucide-react";
+import { BadgeCheck, ChevronLeft, ChevronRight, Linkedin, Mail } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -96,26 +96,30 @@ export function Hero() {
             <Button
               variant="ghost"
               onClick={() => setLicenseOpen(true)}
-              className="group glass grid h-auto w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-2xl px-4 py-3 text-start whitespace-normal text-foreground transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/40 hover:text-foreground"
+              className="group inline-flex h-auto w-auto max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-card/70 px-2.5 py-2 text-start shadow-none transition-colors hover:border-accent/40 hover:bg-secondary/70 hover:text-foreground"
             >
-              <span className="grid size-11 shrink-0 place-items-center rounded-xl border border-accent/25 bg-accent/10 text-accent">
-                <Award className="!size-5" />
+              <span className="grid size-9 shrink-0 place-items-center rounded-full bg-accent/10 text-accent">
+                <BadgeCheck className="!size-5" />
               </span>
-              <span className="min-w-0 space-y-1">
-                <span className="block text-sm font-bold leading-snug">
+              <span className="min-w-0 text-sm leading-snug">
+                <span className="font-bold text-foreground">
                   {lang === "ar" ? "مدرب معتمد" : "Certified Trainer"}
                 </span>
-                <span className="block text-xs font-normal leading-relaxed text-muted-foreground">
+                <span className="text-muted-foreground">
                   {lang === "ar"
-                    ? "هيئة تقويم التعليم والتدريب · المملكة العربية السعودية"
-                    : "Education & Training Evaluation Commission · Saudi Arabia"}
-                </span>
-                <span className="inline-flex items-center gap-1.5 pt-0.5 text-[11px] font-semibold text-accent">
-                  <Eye className="size-3.5" />
-                  {lang === "ar" ? "اضغط لعرض الشهادة الرسمية" : "Tap to view the official license"}
+                    ? " · هيئة تقويم التعليم والتدريب"
+                    : " · Education & Training Evaluation Commission"}
                 </span>
               </span>
-              <ExternalLink className="text-accent/70 transition-colors group-hover:text-accent" />
+              <span className="mx-0.5 hidden h-4 w-px bg-foreground/15 sm:block" />
+              <span className="inline-flex shrink-0 items-center gap-0.5 text-xs font-semibold text-accent">
+                {lang === "ar" ? "عرض الشهادة" : "View license"}
+                {lang === "ar" ? (
+                  <ChevronLeft className="size-3.5 transition-transform group-hover:-translate-x-0.5" />
+                ) : (
+                  <ChevronRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+                )}
+              </span>
             </Button>
           </motion.div>
 
