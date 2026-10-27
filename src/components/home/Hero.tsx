@@ -219,9 +219,9 @@ export function Hero() {
 
             {/* floating glass stat chips */}
             {[
-              { icon: Users, n: "3000+", l: t("stat_trainees"), pos: "top-[14%] -start-2 sm:-start-6", delay: 0 },
-              { icon: Globe2, n: "12+", l: t("nav_clients"), pos: "top-[40%] -end-2 sm:-end-6", delay: 1.4 },
-              { icon: TrendingUp, n: "15+", l: t("stat_programs"), pos: "bottom-[30%] -start-3 sm:-start-8", delay: 2.4 },
+              { icon: Users, n: "3000+", l: t("stat_trainees"), pos: "top-[14%] start-1 sm:-start-6", delay: 0 },
+              { icon: Globe2, n: "12+", l: t("nav_clients"), pos: "top-[40%] end-1 sm:-end-6", delay: 1.4 },
+              { icon: TrendingUp, n: "15+", l: t("stat_programs"), pos: "bottom-[30%] start-2 sm:-start-8", delay: 2.4 },
             ].map(({ icon: Icon, n, l, pos, delay }) => (
               <motion.div
                 key={l}
