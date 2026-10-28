@@ -171,7 +171,7 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
                 {(items[m.id]?.length ?? 0) > 0 && (
                   <ul className="mt-4 space-y-1.5 ms-12">
                     {items[m.id].map((it: any) => {
-                      const isStorage = it.kind === "file";
+                      const isStorage = ["file", "video", "pdf"].includes(it.kind) && !/^https?:\/\//i.test(it.url ?? "");
                       const openable = it.kind !== "note" && !!it.url;
                       return (
                         <li key={it.id} className="flex items-start gap-2 p-2.5 rounded-lg bg-white/[0.03] border border-white/5 text-sm">
@@ -187,7 +187,7 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
                                 onClick={() =>
                                   setViewItem({
                                     title: it.title,
-                                    kind: it.kind === "file" ? "file" : "link",
+                                    kind: ["file", "video", "pdf", "embed"].includes(it.kind) ? it.kind : "link",
                                     url: it.url,
                                     isStoragePath: isStorage,
                                   })

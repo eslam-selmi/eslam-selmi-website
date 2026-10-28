@@ -2,36 +2,11 @@ import { useEffect, useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Loader2, ExternalLink } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { mediaSource } from "@/lib/media-url";
 
 /** Normalize a remote URL into something iframe-friendly. */
 export function toEmbedUrl(raw: string): string {
-  if (!raw) return raw;
-  const url = raw.trim();
-
-  // Google Drive: /view, /view?usp=..., /edit -> /preview
-  if (/drive\.google\.com/i.test(url)) {
-    return url
-      .replace(/\/view(\?[^#]*)?/i, "/preview")
-      .replace(/\/edit(\?[^#]*)?/i, "/preview");
-  }
-
-  // YouTube watch?v=ID -> embed/ID
-  const ytWatch = url.match(/[?&]v=([A-Za-z0-9_-]{6,})/);
-  if (/youtube\.com\/watch/i.test(url) && ytWatch) {
-    return `https://www.youtube.com/embed/${ytWatch[1]}`;
-  }
-  // youtu.be/ID
-  const ytShort = url.match(/youtu\.be\/([A-Za-z0-9_-]{6,})/i);
-  if (ytShort) {
-    return `https://www.youtube.com/embed/${ytShort[1]}`;
-  }
-  // YouTube shorts
-  const ytShorts = url.match(/youtube\.com\/shorts\/([A-Za-z0-9_-]{6,})/i);
-  if (ytShorts) {
-    return `https://www.youtube.com/embed/${ytShorts[1]}`;
-  }
-
-  return url;
+  return mediaSource(raw).url;
 }
 
 export function UniversalEmbedModal({
@@ -86,6 +61,7 @@ export function UniversalEmbedModal({
               className="w-full h-full"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
               allowFullScreen
+              referrerPolicy="strict-origin-when-cross-origin"
               onLoad={() => setLoading(false)}
             />
           ) : null}
