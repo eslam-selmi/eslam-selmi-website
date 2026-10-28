@@ -2,8 +2,8 @@
 
 # Executive website copy
 
-- [ ] Replace public Arabic/English marketing clichés with direct factual copy, including Hero and saved overrides.
-- [ ] Verify both languages and preserve administrator text editing.
+- [x] Replace public Arabic/English marketing clichés with direct factual copy, including Hero, services, programs, saved overrides, metadata, and translation instructions.
+- [x] Verify Hero and services in both languages with the owner's session; preserve administrator text editing and unrelated overrides.
 
 # Course delivery and video playback
 
