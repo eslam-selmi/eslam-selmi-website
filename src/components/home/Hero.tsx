@@ -56,7 +56,7 @@ export function Hero() {
             style={{ color: "var(--accent)" }}
           >
             <span className="h-px w-8" style={{ background: "var(--accent)" }} />
-            {lang === "ar" ? "حلول مبتكرة لبناء القدرات" : "Innovative Solutions for Building"}
+            {lang === "ar" ? "استشارات التعلم والتطوير وإدارة المواهب" : "Learning & Development and Talent Consulting"}
           </motion.div>
 
           <motion.h1
@@ -66,8 +66,8 @@ export function Hero() {
             className="font-display font-extrabold text-balance leading-[1.05] text-[clamp(2rem,4.6vw,4.25rem)] text-foreground"
           >
             {lang === "ar"
-              ? "إطلاق إمكانات المواهب مع"
-              : "Unlocking Talent Potential With"}
+              ? "تطوير الكفاءات وإدارة الأداء"
+              : "Capability Development & Performance Management"}
           </motion.h1>
 
           <motion.p
