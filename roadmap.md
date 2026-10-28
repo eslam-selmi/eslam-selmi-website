@@ -2,8 +2,8 @@
 
 # Course delivery and video playback
 
-- [ ] Add saved live/recorded selection to course creation and settings.
-- [ ] Diagnose and fix trainee video links; test supported links and signed-in flow.
+- [x] Add saved live/recorded selection to course creation and settings; verified saving/reloading and restored original value.
+- [x] Correct provider parsing and YouTube referrer; 12 tests pass and enrolled trainee opens the real player. Full playback verification is blocked by YouTube's anti-bot sign-in check in the test browser; source link remains available.
 
 # Hero cleanup
 
