@@ -723,6 +723,7 @@ export type Database = {
           cover_emoji: string | null
           created_at: string
           currency: string
+          delivery_mode: string
           description: string | null
           ends_at: string | null
           id: string
@@ -751,6 +752,7 @@ export type Database = {
           cover_emoji?: string | null
           created_at?: string
           currency?: string
+          delivery_mode?: string
           description?: string | null
           ends_at?: string | null
           id?: string
@@ -779,6 +781,7 @@ export type Database = {
           cover_emoji?: string | null
           created_at?: string
           currency?: string
+          delivery_mode?: string
           description?: string | null
           ends_at?: string | null
           id?: string

@@ -1,5 +1,8 @@
 # Project rules
 
+- Course delivery is stored on the course row and normalized through the shared delivery helper so creation and settings persist the same formats.
+- Media dialogs share the tested media URL parser; provider videos use embeds with an origin-bearing referrer, direct video files use native playback, and private course paths remain signed on access.
+
 - Program and course cover decorations share CoverReflection and scoped token-based CSS so both stay visually consistent without filtering the underlying media.
 
 - Keep popup notification presentation in the shared Sonner wrapper and scoped global CSS tokens so admin and trainee notifications share site fonts, RTL and both themes without changing notification data workflows.

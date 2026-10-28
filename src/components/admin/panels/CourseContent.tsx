@@ -62,6 +62,7 @@ import { CourseFeedbackPanel } from "@/components/admin/CourseFeedbackPanel";
 import { Button } from "@/components/ui/button";
 import { Course } from "@/components/admin/panels/types";
 import { Input, Select, TextArea } from "@/components/admin/panels/ui";
+import { courseDeliveryMode } from "@/lib/course-delivery";
 
 export function CourseContent({ courseId }: { courseId: string }) {
   const { lang } = useI18n();
@@ -576,6 +577,7 @@ export function CourseSettings({ course, onSaved }: { course: Course; onSaved: (
     course_goals: (course as any).course_goals ?? "",
     target_audience: (course as any).target_audience ?? "",
     is_upcoming: Boolean((course as any).is_upcoming),
+    delivery_mode: courseDeliveryMode(course.delivery_mode),
   });
 
   async function save() {
@@ -606,7 +608,8 @@ export function CourseSettings({ course, onSaved }: { course: Course; onSaved: (
         course_goals: f.course_goals.trim() || null,
         target_audience: f.target_audience.trim() || null,
         is_upcoming: f.is_upcoming,
-      } as any)
+        delivery_mode: courseDeliveryMode(f.delivery_mode),
+      })
       .eq("id", course.id);
     if (error) return toast.error(error.message);
     toast.success(t("تم الحفظ", "Saved"));
@@ -638,6 +641,15 @@ export function CourseSettings({ course, onSaved }: { course: Course; onSaved: (
         label={t("الوصف", "Description")}
         value={f.description}
         onChange={(v) => setF({ ...f, description: v })}
+      />
+      <Select
+        label={t("نوع الكورس", "Course format")}
+        value={f.delivery_mode}
+        onChange={(v) => setF({ ...f, delivery_mode: courseDeliveryMode(v) })}
+        options={[
+          { v: "live", l: t("مباشر", "Live") },
+          { v: "recorded", l: t("مسجل", "Recorded") },
+        ]}
       />
       <div className="grid grid-cols-2 gap-3">
         <Input

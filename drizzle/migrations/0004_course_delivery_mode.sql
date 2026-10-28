@@ -1,0 +1,1 @@
+ALTER TABLE public.courses ADD COLUMN delivery_mode text NOT NULL DEFAULT 'live' CONSTRAINT courses_delivery_mode_check CHECK (delivery_mode IN ('live', 'recorded')); COMMENT ON COLUMN public.courses.delivery_mode IS 'Course delivery format: live sessions or recorded lessons.';

@@ -29,6 +29,13 @@
       "when": 1792226055009,
       "tag": "0003_restrict_requested_public_content_and_upload_reads",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793159046119,
+      "tag": "0004_course_delivery_mode",
+      "breakpoints": true
     }
   ]
 }

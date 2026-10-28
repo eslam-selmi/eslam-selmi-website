@@ -1,5 +1,10 @@
 # Match administration to trainee portal
 
+# Course delivery and video playback
+
+- [ ] Add saved live/recorded selection to course creation and settings.
+- [ ] Diagnose and fix trainee video links; test supported links and signed-in flow.
+
 # Hero cleanup
 
 - [x] Remove the "احجز جلسة فردية مجانية" button and every WhatsApp icon from the hero; verify desktop and mobile.

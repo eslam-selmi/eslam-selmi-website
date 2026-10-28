@@ -3,6 +3,8 @@ import { X, ExternalLink, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { safeHref } from "@/lib/safe-url";
+import { mediaSource } from "@/lib/media-url";
+import { Button } from "@/components/ui/button";
 
 export type MediaItem = {
   title: string;
@@ -13,27 +15,6 @@ export type MediaItem = {
   /** If true, `url` is a storage path in `course-files` bucket, not a public URL */
   isStoragePath?: boolean;
 };
-
-function toEmbedUrl(raw: string): string {
-  try {
-    const u = new URL(raw);
-    // YouTube
-    if (u.hostname.includes("youtube.com")) {
-      const id = u.searchParams.get("v");
-      if (id) return `https://www.youtube.com/embed/${id}`;
-    }
-    if (u.hostname === "youtu.be") {
-      return `https://www.youtube.com/embed${u.pathname}`;
-    }
-    if (u.hostname.includes("vimeo.com")) {
-      const id = u.pathname.split("/").filter(Boolean).pop();
-      if (id) return `https://player.vimeo.com/video/${id}`;
-    }
-    return raw;
-  } catch {
-    return raw;
-  }
-}
 
 export function MediaViewerModal({
   item,
@@ -59,6 +40,8 @@ export function MediaViewerModal({
       return;
     }
     let cancelled = false;
+    const url = item.url;
+    setResolvedUrl(null);
     (async () => {
       setLoading(true);
       setErr(null);
@@ -66,11 +49,11 @@ export function MediaViewerModal({
         if (item.isStoragePath) {
           const { data, error } = await supabase.storage
             .from("course-files")
-            .createSignedUrl(item.url!, 600);
+            .createSignedUrl(url, 600);
           if (error) throw error;
           if (!cancelled) setResolvedUrl(data.signedUrl);
         } else {
-          if (!cancelled) setResolvedUrl(toEmbedUrl(item.url!));
+          if (!cancelled) setResolvedUrl(mediaSource(url).url);
         }
       } catch (e: any) {
         if (!cancelled) setErr(e?.message ?? "Failed to load");
@@ -99,9 +82,9 @@ export function MediaViewerModal({
   const isPdf =
     item.kind === "pdf" ||
     (resolvedUrl && /\.pdf(\?|$)/i.test(resolvedUrl));
-  const isVideoFile =
-    item.kind === "video" ||
-    (item.isStoragePath && resolvedUrl && /\.(mp4|webm|mov|m4v)(\?|$)/i.test(resolvedUrl));
+  const source = mediaSource(resolvedUrl ?? "");
+  const isVideoFile = source.kind === "video";
+  const originalUrl = safeHref(item.isStoragePath ? resolvedUrl : item.url);
   const isImageFile =
     item.isStoragePath && resolvedUrl && /\.(png|jpe?g|gif|webp|svg)(\?|$)/i.test(resolvedUrl);
 
@@ -122,13 +105,19 @@ export function MediaViewerModal({
               <p className="text-[11px] text-white/55 truncate">{item.subtitle}</p>
             )}
           </div>
-          <button
+          {originalUrl && (
+            <Button asChild variant="outline" size="sm">
+              <a href={originalUrl} target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="size-4" />{isAr ? "فتح المصدر" : "Open source"}
+              </a>
+            </Button>
+          )}
+          <Button variant="ghost" size="icon"
             onClick={onClose}
             aria-label="Close"
-            className="w-9 h-9 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center"
           >
             <X className="w-4 h-4" />
-          </button>
+          </Button>
         </div>
 
         <div className="flex-1 min-h-0 bg-black/40 relative">
@@ -151,11 +140,13 @@ export function MediaViewerModal({
                 src={resolvedUrl}
                 controls
                 controlsList="nodownload"
+                playsInline
+                onError={() => setErr(isAr ? "تعذّر تشغيل الفيديو؛ يمكنك فتحه من المصدر." : "Video playback failed; open the source instead.")}
                 className="w-full h-full bg-black"
               />
             ) : isImageFile ? (
               <img src={resolvedUrl} alt="" className="w-full h-full object-contain" />
-            ) : item.kind === "link" && !resolvedUrl.includes("youtube.com") && !resolvedUrl.includes("vimeo.com") ? (
+            ) : source.kind === "external" && !isPdf && !item.isStoragePath && item.kind !== "embed" ? (
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 p-6 text-center">
                 <div className="w-16 h-16 rounded-full bg-sky-500/10 border border-sky-500/20 flex items-center justify-center">
                   <ExternalLink className="w-8 h-8 text-sky-400" />
@@ -167,7 +158,7 @@ export function MediaViewerModal({
                   </p>
                 </div>
                 {safeHref(resolvedUrl) && (
-                  <a href={safeHref(resolvedUrl)!} target="_blank" rel="noopener noreferrer" className="mt-2 px-6 h-12 rounded-xl bg-[var(--gold)] hover:bg-[#b8923f] text-[#0b1736] font-bold inline-flex items-center justify-center gap-2 transition">
+                  <a href={originalUrl ?? undefined} target="_blank" rel="noopener noreferrer" className="mt-2 px-6 h-12 rounded-xl bg-primary text-primary-foreground font-bold inline-flex items-center justify-center gap-2 transition">
                     {isAr ? "فتح الرابط الآن" : "Open Link Now"} <ExternalLink className="w-4 h-4" />
                   </a>
                 )}
@@ -178,7 +169,9 @@ export function MediaViewerModal({
                 title={item.title}
                 className="w-full h-full bg-white"
                 sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-presentation"
-                referrerPolicy="no-referrer"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                allowFullScreen
               />
             )
           ) : null}
