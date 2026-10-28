@@ -420,8 +420,8 @@ export const SERVICES = [
     key: "svc_id",
     title: { en: "Instructional Design", ar: "تصميم تعليمي" },
     desc: {
-      en: "Engaging learning experiences crafted with innovative methods.",
-      ar: "تجارب تعلم جذابة بأساليب مبتكرة.",
+      en: "Learning objectives, structured content, practical activities, and assessments aligned with job requirements.",
+      ar: "أهداف تعلم ومحتوى منظم وأنشطة عملية وتقييمات مرتبطة بمتطلبات العمل.",
     },
   },
   {
@@ -429,8 +429,8 @@ export const SERVICES = [
     key: "svc_coach",
     title: { en: "One-on-One Coaching", ar: "تدريب فردي" },
     desc: {
-      en: "Personalized sessions to unlock individual potential and growth.",
-      ar: "جلسات مخصصة لإطلاق الإمكانات والنمو.",
+      en: "Individual sessions to review work challenges, set priorities, and define practical next steps.",
+      ar: "جلسات فردية لمراجعة تحديات العمل وتحديد الأولويات والخطوات العملية.",
     },
   },
 ];
@@ -442,8 +442,8 @@ export const PROGRAMS = [
       ar: "إدارة التدريب والتطوير",
     },
     intro: {
-      en: "A unified journey under the Training & Development Programs taxonomy: build foundational L&D and instructional design competencies, then graduate into advanced facilitation and TOT delivery mastery.",
-      ar: 'مسار موحّد ضمن تصنيف "إدارة التدريب والتطوير": تبدأ بأسس التعلم والتطوير وتصميم التعليم، ثم تتدرّج لإتقان تيسير التدريب وتقديمه (TOT) على مستوى المدربين المعتمدين.',
+      en: "A training track covering L&D operations, instructional design, and training facilitation (TOT).",
+      ar: 'مسار تدريبي يشمل تشغيل إدارة التعلم والتطوير، والتصميم التعليمي، وتيسير التدريب وتقديمه (TOT).',
     },
     items: [
       {
@@ -456,15 +456,15 @@ export const PROGRAMS = [
       {
         name: { en: "Instructional Design | ID", ar: "التصميم التعليمي" },
         desc: {
-          en: "Impactful training through expertly crafted, engaging learning experiences and modern ID frameworks (ADDIE, SAM).",
-          ar: "تدريب مؤثر بتجارب تعلم مصممة باحتراف وأطر تصميم تعليمي حديثة (ADDIE وSAM).",
+          en: "Design learning objectives, activities, and assessments using ADDIE and SAM.",
+          ar: "تصميم أهداف التعلم والأنشطة والتقييمات باستخدام إطاري ADDIE وSAM.",
         },
       },
       {
-        name: { en: "TOT Mastery (Training of Trainers)", ar: "إتقان تدريب المدربين TOT" },
+        name: { en: "Training of Trainers (TOT)", ar: "تدريب المدربين TOT" },
         desc: {
-          en: "Advanced facilitation, presentation craft, classroom dynamics and innovative delivery strategies — the natural graduation.",
-          ar: "تيسير متقدم، حِرفية العرض، إدارة القاعة، واستراتيجيات تقديم مبتكرة.",
+          en: "Training facilitation, presentation skills, classroom management, and participant assessment.",
+          ar: "تيسير التدريب ومهارات العرض وإدارة القاعة وتقييم المشاركين.",
         },
       },
     ],
@@ -477,10 +477,10 @@ export const PROGRAMS = [
     },
     items: [
       {
-        name: { en: "Recruitment Excellence", ar: "تميز التوظيف" },
+        name: { en: "Recruitment Practices", ar: "ممارسات التوظيف" },
         desc: {
-          en: "Practical strategies to secure top talent.",
-          ar: "استراتيجيات عملية لاستقطاب أفضل المواهب.",
+          en: "Recruitment planning, candidate assessment, and selection against job requirements.",
+          ar: "تخطيط التوظيف وتقييم المرشحين والاختيار وفق متطلبات الوظيفة.",
         },
       },
     ],
@@ -488,8 +488,8 @@ export const PROGRAMS = [
   {
     track: { en: "Soft Skills Management", ar: "إدارة المهارات الناعمة" },
     intro: {
-      en: "Workshops that transform how you connect, lead, and grow.",
-      ar: "ورش تحوّل طريقة التواصل والقيادة والنمو.",
+      en: "Practical workshops in communication, team leadership, problem solving, and negotiation.",
+      ar: "ورش عملية في التواصل وقيادة الفرق وحل المشكلات والتفاوض.",
     },
     items: [
       {
@@ -501,7 +501,7 @@ export const PROGRAMS = [
       },
       {
         name: { en: "Leadership Skills", ar: "مهارات القيادة" },
-        desc: { en: "Inspire and guide teams toward success.", ar: "ألهم وقُد الفرق نحو النجاح." },
+        desc: { en: "Set team goals, delegate responsibilities, and follow up on performance.", ar: "تحديد أهداف الفريق وتفويض المسؤوليات ومتابعة الأداء." },
       },
       {
         name: { en: "Problem Solving", ar: "حل المشكلات" },
@@ -513,8 +513,8 @@ export const PROGRAMS = [
       {
         name: { en: "Negotiation Skills", ar: "مهارات التفاوض" },
         desc: {
-          en: "Practical strategies for win-win solutions.",
-          ar: "استراتيجيات عملية لحلول رابحة للجميع.",
+          en: "Prepare negotiations, assess options, and agree on clear terms.",
+          ar: "التحضير للتفاوض وتقييم البدائل والاتفاق على شروط واضحة.",
         },
       },
     ],

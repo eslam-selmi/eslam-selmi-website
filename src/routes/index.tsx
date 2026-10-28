@@ -32,11 +32,11 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Portfolio of Eslam Selmi: Learning & Development, Talent Management, and Performance expertise across 12 countries. Book a free 1:1.",
+          "Eslam Selmi — Learning & Development, talent management, corporate training, performance systems, and KPIs. 9+ years of experience. Book a free consultation.",
       },
       { property: "og:url", content: "https://eslam-selmi.lovable.app/" },
       { property: "og:title", content: "Eslam Selmi — Head of L&D & Talent" },
-      { property: "og:description", content: "Portfolio of Eslam Selmi: Learning & Development, Talent Management, and Performance expertise across 12 countries." },
+      { property: "og:description", content: "Learning & Development consulting, corporate training, talent management, performance systems, and KPIs with Eslam Selmi." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],

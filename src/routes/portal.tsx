@@ -270,7 +270,7 @@ function PortalPage() {
   const greeting = timeGreeting(lang, hour);
   const firstName = (profile?.full_name || "").trim().split(/\s+/)[0] || (lang === "ar" ? "متدرب جديد" : "there");
   const welcomeLine = lang === "ar"
-    ? (hour < 5 ? `${firstName}، شغف التعلّم لا ينام — خُذ راحتك واستكمل من حيث توقفت.`
+    ? (hour < 5 ? `${firstName}، يمكنك متابعة الكورس من حيث توقفت.`
       : hour < 12 ? `صباح النشاط يا ${firstName} — ابدأ يومك بمحاضرة جديدة.`
       : hour < 17 ? `أهلاً ${firstName} — نظرة سريعة على كورساتك وتقدمك.`
       : hour < 21 ? `مساء الخير يا ${firstName} — وقت مثالي لمراجعة ما أنجزته اليوم.`

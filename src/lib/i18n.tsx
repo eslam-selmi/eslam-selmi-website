@@ -30,7 +30,7 @@ const en: Dict = {
   hero_hello: "Hello,",
   hero_meet: "Meet",
   hero_intro:
-    "Head of Education & Development, Talent and Performance practitioner with 9+ years driving human capital excellence across 12 countries.",
+    "Head of Learning & Development with 9+ years of experience in talent management, performance management, and corporate training.",
   hero_btn_book: "Book free 1:1 session",
   hero_btn_programs: "Explore programs",
   stat_trainees: "Trainees",
@@ -43,24 +43,24 @@ const en: Dict = {
   about_eyebrow: "About Me",
   about_title: "Meet Eslam",
   about_hook:
-    "I lead human-capital transformation by bridging business objectives with talent performance development.",
+    "I align learning plans and talent development with business objectives and performance indicators.",
   about_intro:
-    "Performance & capability-building specialist. I help organizations turn strategy into measurable results through performance systems, KPIs, and modern learning & development programs.\n\nOver 9+ years, I have partnered with diverse organizations to elevate individual effectiveness, develop leaders, and build sustainable performance cultures that create real, lasting business impact.",
+    "I work with organizations on training needs analysis, learning plans, leadership development, and performance systems.\n\nWith 9+ years of experience, I design programs around job requirements, business objectives, and KPIs, with training ROI as part of evaluation.",
   about_role: "Head of Learning & Development",
   about_location: "Riyadh, KSA",
-  about_kpi_years: "Years of impact",
+  about_kpi_years: "Years of experience",
   about_kpi_countries: "Countries",
-  about_kpi_leaders: "Talents empowered",
+  about_kpi_leaders: "Trainees",
   about_kpi_programs: "Programs delivered",
   about_pillar_philosophy: "My Professional Philosophy",
   about_pillar_philosophy_d:
-    "I don't believe in training for training's sake — I design L&D strategies that drive measurable ROI and fuel organizational growth.",
+    "I define training objectives, link them to business KPIs, and include training ROI in program evaluation.",
   about_pillar_journey: "My Career Journey",
   about_pillar_journey_d:
-    "9+ years building and leading learning & talent ecosystems across dynamic sectors — Retail, FMCG, Logistics, and Education.",
+    "9+ years in learning and talent management across retail, FMCG, logistics, and education.",
   about_pillar_digital: "Digital Enablement",
   about_pillar_digital_d:
-    "An advanced blend of professional project management tools and AI to automate and evolve LMS / PMS platforms — a smarter, seamless growth experience.",
+    "Using project management tools and AI to automate learning and performance management workflows (LMS/PMS).",
   about_cta_book: "Book a 1:1 with me",
   about_cta_programs: "Explore programs",
   about_credentials: "Educational credentials",
@@ -81,36 +81,36 @@ const en: Dict = {
 
   // journey
   journey_eyebrow: "My journey",
-  journey_title: "A decade of shaping L&D excellence",
+  journey_title: "Experience in Learning & Development",
 
   // services
   services_eyebrow: "Services",
-  services_title: "How I help you grow",
+  services_title: "Consulting & Corporate Training",
   services_subtitle: "Tap any service to request it instantly via WhatsApp.",
-  svc_request_btn: "Invest in this service",
+  svc_request_btn: "Request this service",
   calendly_title: "Book your free 1:1 session",
   calendly_desc: "Pick a time that works for you.",
 
   // programs
   programs_eyebrow: "Programs",
-  programs_title: "Curated learning tracks",
+  programs_title: "Training & Development Programs",
   programs_track: "Track",
 
   // clients
   clients_eyebrow: "Clients",
-  clients_title: "Borders don't stop us",
-  clients_sub: "Worldwide learning, delivered online & on-site.",
+  clients_title: "Countries Served",
+  clients_sub: "Online and on-site training.",
 
   // brands
   brands_eyebrow: "Trusted by",
-  brands_title: "Brands that trusted my craft",
+  brands_title: "Companies & Training Partners",
   brands_desc:
     "A snapshot of companies and partners I've designed, delivered and led L&D programs with across the region.",
   brands_meta: "Brands & partners",
 
   // snapshots
   snapshots_eyebrow: "Snapshots",
-  snapshots_title: "Moments that shaped the journey",
+  snapshots_title: "Training & Workplace Snapshots",
 
   // podcast
   podcast_eyebrow: "L&D Podcast",
@@ -140,31 +140,31 @@ const en: Dict = {
   book_step_1_d: "We map your priorities and frame a clear focus together.",
   book_step_2_t: "Get a tailored plan",
   book_step_2_d: "Walk away with concrete next steps.",
-  book_step_3_t: "No strings attached",
-  book_step_3_d: "Free, no obligations. Just value.",
+  book_step_3_t: "No obligation to purchase",
+  book_step_3_d: "A free session with no obligation to purchase a service.",
 
   // current courses
   current_eyebrow: "Open now",
-  current_title: "Live courses, enroll today",
+  current_title: "Available Courses",
   current_desc:
-    "Active cohorts running right now. Pick the program that fits you and apply in under a minute.",
+    "Review course content, delivery format, and dates, then submit an enrollment request.",
   current_btn: "Browse & enroll",
-  current_meta: "Limited seats · Live sessions",
+  current_meta: "Course content · Dates · Delivery format",
   current_modal_title: "Choose your course",
   current_modal_desc: "Select the program that fits you best and submit your application.",
 
   // library
   library_eyebrow: "Resources",
-  library_title: "Knowledge Vault",
+  library_title: "Resource Library",
   library_desc:
-    "A curated vault of e-books, frameworks, templates and resources I share with the community. Always growing, so bookmark it.",
-  library_btn: "Open the vault",
+    "E-books, templates, and practical frameworks for learning, talent management, and performance.",
+  library_btn: "Browse resources",
   library_meta: "E-books · Templates · Frameworks",
-  library_modal_title: "Knowledge Vault",
+  library_modal_title: "Resource Library",
   library_modal_desc: "Browse and download the latest resources.",
   library_open_drive: "Open in Google Drive",
   nav_courses: "Courses",
-  nav_library: "Vault",
+  nav_library: "Resources",
   nav_success_cases: "Success Cases",
   nav_trainings: "Trainings",
 
@@ -173,11 +173,11 @@ const en: Dict = {
   // empowerment tools
   emp_eyebrow: "New graduates",
   emp_title: "Empowerment Tools",
-  emp_tagline: "Workplace-ready in weeks, not years.",
+  emp_tagline: "Practical Training in Workplace Tools",
   emp_desc:
     "A hands-on program that prepares fresh graduates to master the everyday tools of modern work: practical AI use, professional Outlook workflows, design with Canva, project tracking with Trello, and data work with Google Sheets & Forms.",
   emp_btn: "Enroll now",
-  emp_meta: "Tools · Workflows · Confidence",
+  emp_meta: "Tools · Tasks · Practical Application",
   emp_tool_ai: "AI at work",
   emp_tool_outlook: "Outlook mastery",
   emp_tool_canva: "Canva design",
@@ -206,7 +206,7 @@ const en: Dict = {
 
   // contact
   contact_eyebrow: "Get in touch",
-  contact_title: "Let's create impact together",
+  contact_title: "Discuss Your Training Needs",
   contact_mobile: "Mobile",
   contact_email: "Email",
   contact_linkedin: "LinkedIn",
@@ -241,7 +241,7 @@ const ar: Dict = {
   hero_hello: "مرحبًا،",
   hero_meet: "تعرّف إلى",
   hero_intro:
-    "رئيس قسم التعليم والتطوير. أمتلك خبرة تتجاوز ٩ سنوات في إدارة المواهب والأداء، وتطوير رأس المال البشري.",
+    "رئيس إدارة التعلم والتطوير، بخبرة تتجاوز ٩ سنوات في إدارة المواهب والأداء والتدريب المؤسسي.",
   hero_btn_book: "احجز جلسة فردية مجانية",
   hero_btn_programs: "استكشف البرامج",
   stat_trainees: "متدرب",
@@ -253,25 +253,25 @@ const ar: Dict = {
   about_eyebrow: "من أنا",
   about_title: "تعرّف إلى إسلام",
   about_hook:
-    "أقود تحول رأس المال البشري من خلال سد الفجوة بين أهداف البيزنس وتطوير أداء المواهب.",
+    "أربط خطط التعلم وتطوير الكفاءات بأهداف الأعمال ومؤشرات الأداء.",
   about_intro:
-    "متخصص في تطوير الأداء وبناء القدرات، أساعد المؤسسات على تحويل استراتيجياتها إلى نتائج ملموسة من خلال أنظمة الأداء، ومؤشرات القياس، وبرامج التعلم والتطوير الحديثة.\n\nعلى مدار أكثر من ٩ سنوات، عملت مع مؤسسات متنوعة لرفع كفاءة الأفراد، وتطوير القيادات، وبناء ثقافة أداء مستدامة تحقق أثراً حقيقياً على مستوى الأعمال.",
+    "أعمل مع المؤسسات على تحليل الاحتياجات التدريبية، وإعداد خطط التعلم، وتطوير القيادات، وبناء أنظمة إدارة الأداء.\n\nبخبرة تتجاوز ٩ سنوات، أصمّم البرامج وفق متطلبات الوظائف وأهداف الأعمال ومؤشرات الأداء، مع إدراج العائد على الاستثمار التدريبي ضمن التقييم.",
   about_credentials: "المؤهلات والشهادات",
   about_role: "رئيس قسم التعلم والتطوير",
   about_location: "الرياض، السعودية",
-  about_kpi_years: "سنوات من الأثر",
+  about_kpi_years: "سنوات خبرة",
   about_kpi_countries: "دولة",
-  about_kpi_leaders: "موهبة تم تمكينها",
+  about_kpi_leaders: "متدرب",
   about_kpi_programs: "برنامج تم تنفيذه",
   about_pillar_philosophy: "فلسفتي المهنية",
   about_pillar_philosophy_d:
-    "لا أؤمن بالتدريب لمجرد التدريب؛ بل بتصميم استراتيجيات تعلم وتطوير (L&D) تقود إلى عائد ملموس على الاستثمار (ROI) وتدعم نمو المؤسسات.",
+    "أحدّد أهداف التدريب، وأربطها بمؤشرات أداء الأعمال، وأدرج العائد على الاستثمار التدريبي ضمن تقييم البرامج.",
   about_pillar_journey: "رحلتي المهنية",
   about_pillar_journey_d:
-    "خبرة تمتد لأكثر من 9 سنوات في بناء وإدارة منظومات التعلم والمواهب عبر قطاعات ديناميكية تشمل التجزئة، السلع الاستهلاكية (FMCG)، اللوجستيات، والتعليم.",
+    "خبرة تتجاوز ٩ سنوات في إدارة التعلم والمواهب بقطاعات التجزئة والسلع الاستهلاكية واللوجستيات والتعليم.",
   about_pillar_digital: "التمكين الرقمي",
   about_pillar_digital_d:
-    "دمج متطور بين أدوات إدارة المشاريع الاحترافية وتقنيات الذكاء الاصطناعي لأتمتة وتطوير منصات التعلم وإدارة الأداء (LMS/PMS) لتوفير تجربة نمو ذكية وسلسة.",
+    "استخدام أدوات إدارة المشاريع والذكاء الاصطناعي لأتمتة إجراءات التعلم وإدارة الأداء على منصات LMS وPMS.",
   about_cta_book: "احجز جلسة فردية معي",
   about_cta_programs: "استكشف البرامج",
 
@@ -288,12 +288,12 @@ const ar: Dict = {
     "تصميم بطاقات الأداء المتوازن، هندسة المقاييس الكمية، بناء لوحات قياس الأداء، ومواءمة برامج التعلم بقرارات قائمة على البيانات وقياس العائد على الاستثمار.",
 
   journey_eyebrow: "مسيرتي المهنية",
-  journey_title: "عقد من بناء التميّز في التعلم والتطوير",
+  journey_title: "الخبرة المهنية في التعلم والتطوير",
 
   services_eyebrow: "الخدمات",
-  services_title: "كيف أساعدك تنمو",
+  services_title: "الاستشارات والتدريب المؤسسي",
   services_subtitle: "اضغط على أي خدمة لطلبها مباشرة عبر واتساب.",
-  svc_request_btn: "استثمر في هذه الخدمة",
+  svc_request_btn: "اطلب هذه الخدمة",
   calendly_title: "احجز جلستك المجانية",
   calendly_desc: "اختر الموعد الذي يناسبك.",
 
@@ -302,16 +302,16 @@ const ar: Dict = {
   programs_track: "المسار",
 
   clients_eyebrow: "العملاء",
-  clients_title: "الحدود لا توقفنا",
-  clients_sub: "تعلّم عالمي يُقدَّم عبر الإنترنت وحضوريًا.",
+  clients_title: "الدول التي عملت بها",
+  clients_sub: "تدريب حضوري وعن بُعد.",
 
   brands_eyebrow: "موثوق من",
-  brands_title: "شركاء صنعت معهم الأثر",
+  brands_title: "الشركات وشركاء التدريب",
   brands_desc: "لمحة عن الشركات والشركاء الذين صمّمت وقدت معهم برامج التعلم والتطوير عبر المنطقة.",
   brands_meta: "علامة وشريك",
 
   snapshots_eyebrow: "لقطات",
-  snapshots_title: "لحظات شكّلت المسيرة",
+  snapshots_title: "لقطات من التدريب والعمل",
 
   podcast_eyebrow: "بودكاست التعلم والتطوير",
   podcast_title: "حوارات في التعلم والنمو.",
@@ -339,22 +339,22 @@ const ar: Dict = {
   book_step_1_d: "نتعرّف على أولوياتك ونضع تصورًا مشتركًا لمحور الجلسة.",
   book_step_2_t: "خطة مخصّصة",
   book_step_2_d: "تخرج بخطوات عملية واضحة قابلة للتنفيذ.",
-  book_step_3_t: "دون أي التزامات",
-  book_step_3_d: "جلسة مجانية تمامًا، قيمة حقيقية فقط.",
+  book_step_3_t: "دون التزام بالشراء",
+  book_step_3_d: "جلسة مجانية دون التزام بشراء خدمة.",
 
   current_eyebrow: "متاح الآن",
-  current_title: "دورات مباشرة، سجّل اليوم",
+  current_title: "الكورسات المتاحة",
   current_desc:
-    "انطلق في رحلتك التطويرية اليوم — التحق بإحدى دوراتنا المتاحة حاليًا وابدأ خطوتك الأولى نحو التميّز في أقل من دقيقة.",
+    "راجع محتوى الكورس ونوعه ومواعيده، ثم أرسل طلب الاشتراك.",
   current_btn: "تصفّح وسجّل الآن",
-  current_meta: "مقاعد محدودة · جلسات مباشرة",
+  current_meta: "محتوى الكورس · المواعيد · نوع الدراسة",
   current_modal_title: "اختر دورتك",
   current_modal_desc: "حدّد البرنامج الأنسب لك وأرسل طلب الاشتراك.",
 
   library_eyebrow: "مصادر",
   library_title: "المصادر",
   library_desc:
-    "مكتبة مختارة من الكتب الإلكترونية والقوالب والأطر العملية والمصادر التي أشاركها مع المجتمع. تتجدّد باستمرار، فاحفظها للرجوع إليها.",
+    "كتب إلكترونية وقوالب وأطر عملية للتعلم وإدارة المواهب والأداء.",
   library_btn: "ادخل المصادر",
   library_meta: "كتب إلكترونية · قوالب · أطر عملية",
   library_modal_title: "المصادر",
@@ -369,11 +369,11 @@ const ar: Dict = {
 
   emp_eyebrow: "للخريجين الجدد",
   emp_title: "أدوات التمكين",
-  emp_tagline: "جاهز لسوق العمل خلال أسابيع، لا سنوات.",
+  emp_tagline: "تدريب عملي على أدوات بيئة العمل",
   emp_desc:
     "برنامج عملي يؤهّل الخريجين الجدد لإتقان الأدوات الأساسية في بيئة العمل الحديثة: توظيف الذكاء الاصطناعي بفاعلية، إتقان Outlook، التصميم باستخدام Canva، إدارة المهام عبر Trello، والعمل مع Google Sheets و Google Forms.",
   emp_btn: "سجّل الآن",
-  emp_meta: "أدوات · مهارات · ثقة",
+  emp_meta: "أدوات · مهام · تطبيق عملي",
   emp_tool_ai: "الذكاء الاصطناعي",
   emp_tool_outlook: "Outlook باحتراف",
   emp_tool_canva: "تصميم Canva",
@@ -399,7 +399,7 @@ const ar: Dict = {
   lead_invalid: "يُرجى إدخال بريد إلكتروني صحيح.",
 
   contact_eyebrow: "تواصل معي",
-  contact_title: "خلّينا نصنع الأثر معًا",
+  contact_title: "ناقش احتياجاتك التدريبية",
   contact_mobile: "الجوّال",
   contact_email: "البريد الإلكتروني",
   contact_linkedin: "لينكدإن",

@@ -1,5 +1,10 @@
 # Match administration to trainee portal
 
+# Executive website copy
+
+- [x] Replace public Arabic/English marketing clichés with direct factual copy, including Hero, services, programs, saved overrides, metadata, and translation instructions.
+- [x] Verify Hero and services in both languages with the owner's session; preserve administrator text editing and unrelated overrides.
+
 # Course delivery and video playback
 
 - [x] Add saved live/recorded selection to course creation and settings; verified saving/reloading and restored original value.

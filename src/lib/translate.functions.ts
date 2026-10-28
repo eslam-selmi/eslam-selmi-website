@@ -17,7 +17,7 @@ export const translateTexts = createServerFn({ method: "POST" })
     }
 
     const targetName = data.target === "en" ? "English" : "Arabic";
-    const systemPrompt = `You are a professional, context-aware translator for a Learning & Development training platform. Translate the user-supplied items into natural, idiomatic ${targetName}. Preserve meaning, brand names, hashtags, URLs, and emojis. Do NOT translate literally — rephrase for fluency. Return strictly a JSON object: {"items":["...","..."]} in the SAME ORDER as input. No extra text.`;
+    const systemPrompt = `You are a professional translator for an executive Learning & Development training platform. Translate the user-supplied items into clear, direct ${targetName}. Use a confident, factual business register focused on concrete services, work requirements, KPIs, and training ROI when present in the source. Avoid canned marketing language such as "innovative solutions", "unlock potential", "transform your journey", "حلول مبتكرة", and "إطلاق الإمكانات"; express the underlying meaning plainly without adding claims. Preserve meaning, numbers, percentages, qualifications, brand names, hashtags, URLs, and emojis. Never invent statistics, achievements, guarantees, or outcomes. Arabic and English must convey the same facts. Return strictly a JSON object: {"items":["...","..."]} in the SAME ORDER as input. No extra text.`;
 
     try {
       const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
