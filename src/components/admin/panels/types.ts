@@ -65,7 +65,7 @@ import { Button } from "@/components/ui/button";
 
 export type Course = Pick<Tables<"courses">,
   "id" | "title" | "description" | "price" | "currency" | "active" | "starts_at" | "ends_at" |
-  "installments_count" | "online_url" | "cover_emoji"
+  "installments_count" | "online_url" | "cover_emoji" | "delivery_mode"
 > & { total_hours: number | null; course_goals?: string | null; target_audience?: string | null };
 
 export type EnrollmentRow = {

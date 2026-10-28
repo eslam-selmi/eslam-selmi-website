@@ -65,6 +65,7 @@ import { CourseAssignmentsAdmin } from "@/components/admin/panels/CourseAssignme
 import { CourseContent, CourseSessions, CourseSettings } from "@/components/admin/panels/CourseContent";
 import { Course, EnrollmentRow } from "@/components/admin/panels/types";
 import { Input, Select, TextArea } from "@/components/admin/panels/ui";
+import { courseDeliveryMode } from "@/lib/course-delivery";
 
 export function CoursesPanel({
   courses,
@@ -93,6 +94,7 @@ export function CoursesPanel({
     total_hours: "",
     course_goals: "",
     target_audience: "",
+    delivery_mode: "live",
   });
   const [busy, setBusy] = useState(false);
 
@@ -113,7 +115,8 @@ export function CoursesPanel({
       course_goals: form.course_goals || null,
       target_audience: form.target_audience || null,
       active: true,
-    } as any);
+      delivery_mode: courseDeliveryMode(form.delivery_mode),
+    });
     setBusy(false);
     if (error) return toast.error(error.message);
     toast.success(t("تمت إضافة الكورس", "Course added"));
@@ -130,6 +133,7 @@ export function CoursesPanel({
       total_hours: "",
       course_goals: "",
       target_audience: "",
+      delivery_mode: "live",
     });
     refresh();
   }
@@ -318,6 +322,15 @@ export function CoursesPanel({
           label={t("الوصف", "Description")}
           value={form.description}
           onChange={(v) => setForm({ ...form, description: v })}
+        />
+        <Select
+          label={t("نوع الكورس", "Course format")}
+          value={form.delivery_mode}
+          onChange={(v) => setForm({ ...form, delivery_mode: v })}
+          options={[
+            { v: "live", l: t("مباشر", "Live") },
+            { v: "recorded", l: t("مسجل", "Recorded") },
+          ]}
         />
         <div className="grid grid-cols-2 gap-3">
           <Input
