@@ -461,7 +461,7 @@ export const PROGRAMS = [
         },
       },
       {
-        name: { en: "TOT Mastery (Training of Trainers)", ar: "إتقان تدريب المدربين TOT" },
+        name: { en: "Training of Trainers (TOT)", ar: "تدريب المدربين TOT" },
         desc: {
           en: "Training facilitation, presentation skills, classroom management, and participant assessment.",
           ar: "تيسير التدريب ومهارات العرض وإدارة القاعة وتقييم المشاركين.",
@@ -477,7 +477,7 @@ export const PROGRAMS = [
     },
     items: [
       {
-        name: { en: "Recruitment Excellence", ar: "تميز التوظيف" },
+        name: { en: "Recruitment Practices", ar: "ممارسات التوظيف" },
         desc: {
           en: "Recruitment planning, candidate assessment, and selection against job requirements.",
           ar: "تخطيط التوظيف وتقييم المرشحين والاختيار وفق متطلبات الوظيفة.",

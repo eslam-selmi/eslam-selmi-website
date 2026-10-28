@@ -84,14 +84,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "google-site-verification", content: "DPwlXbDvgZbfuqH6GxsivQht03fPS2Ljqllw-yHo73A" },
       { title: "Eslam Selmi" },
-      { name: "description", content: "Let’s Build an Exceptional Learning Experience" },
+      { name: "description", content: "Learning & Development, Talent Management and Performance — Eslam Selmi" },
       { name: "author", content: "Eslam Selmi" },
       { property: "og:title", content: "Eslam Selmi" },
-      { property: "og:description", content: "Let’s Build an Exceptional Learning Experience" },
+      { property: "og:description", content: "Learning & Development, Talent Management and Performance — Eslam Selmi" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Eslam Selmi" },
-      { name: "twitter:description", content: "Let’s Build an Exceptional Learning Experience" },
+      { name: "twitter:description", content: "Learning & Development, Talent Management and Performance — Eslam Selmi" },
 
     ],
     links: [
