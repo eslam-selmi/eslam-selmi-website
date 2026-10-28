@@ -298,7 +298,7 @@ export function BookCTA() {
           <div className="min-w-0">
             <p className="booking-reference-muted text-sm font-semibold">{lang === "ar" ? "مجانًا · بدون التزام" : "Free · No commitment"}</p>
             <h2 className="mt-3 font-display text-2xl font-extrabold leading-tight sm:text-3xl lg:text-4xl">{lang === "ar" ? "احجز جلسة استشارية مجانية الآن." : "Book your free consultation now."}</h2>
-            <p className="booking-reference-muted mt-4 text-base font-semibold leading-relaxed lg:text-lg">{lang === "ar" ? "دقائق قليلة نتحدث فيها عن فريقك وأهدافك، لنخرج بخطة تدريب واضحة قبل أن تنفق أي شيء." : "A few minutes to discuss your team and goals, and create a clear training plan before you spend anything."}</p>
+            <p className="booking-reference-muted mt-4 text-base font-semibold leading-relaxed lg:text-lg">{lang === "ar" ? "نناقش احتياجات فريقك وأهداف العمل، ونحدّد أولويات التدريب والخطوات التالية." : "Discuss your team's needs and business objectives, and define training priorities and next steps."}</p>
           </div>
           <Button onClick={openCalendly} size="lg" className="booking-reference-button group h-14 w-[164px] justify-center gap-3 rounded-full text-base font-bold lg:justify-self-end">
             {lang === "ar" ? "احجز الآن" : "Book now"}<ArrowRight className="size-5 rtl-flip transition-transform motion-safe:group-hover:translate-x-1" />
