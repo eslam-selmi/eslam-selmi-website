@@ -124,7 +124,7 @@ export function CurrentCourses() {
       const { data } = await supabase
         .from("courses")
         .select(
-          "id,title,description,cover_emoji,price,currency,starts_at,ends_at,total_hours,online_url,brand_name,brand_tagline_ar,brand_tagline_en,course_goals,target_audience,is_upcoming",
+          "id,title,description,cover_emoji,price,currency,starts_at,ends_at,total_hours,online_url,brand_name,brand_tagline_ar,brand_tagline_en,course_goals,target_audience,is_upcoming,delivery_mode",
         )
         .eq("active", true)
         .eq("is_archived", false)
@@ -173,7 +173,7 @@ export function CurrentCourses() {
                 className="text-xs uppercase tracking-[0.3em] font-bold mb-4"
                 style={{ color: "var(--gold)" }}
               >
-                {tt("دورات مباشرة · سجل اليوم", "Live courses · enroll today")}
+                {tt("الدورات المتاحة · سجل اليوم", "Available courses · enroll today")}
               </h3>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {current.map((c) => (
@@ -271,7 +271,7 @@ export function CourseCard({
             className={`inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] font-bold rounded-full px-2.5 py-1 border backdrop-blur ${upcoming ? "bg-[var(--accent)]/15 text-[var(--accent)] border-[var(--accent)]/40" : "bg-[var(--gold)]/15 text-[var(--gold)] border-[var(--gold)]/40"}`}
           >
             {upcoming ? <Calendar className="size-3" /> : <Sparkles className="size-3" />}
-            {upcoming ? tt("قريباً", "Soon") : tt("مباشر", "Live")}
+            {upcoming ? tt("قريباً", "Soon") : c.delivery_mode === "recorded" ? tt("مسجل", "Recorded") : tt("مباشر", "Live")}
           </span>
         </div>
 

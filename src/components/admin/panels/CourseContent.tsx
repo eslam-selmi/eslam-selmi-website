@@ -63,6 +63,7 @@ import { Button } from "@/components/ui/button";
 import { Course } from "@/components/admin/panels/types";
 import { Input, Select, TextArea } from "@/components/admin/panels/ui";
 import { courseDeliveryMode } from "@/lib/course-delivery";
+import { CourseImageSetting } from "@/components/admin/CourseImageSetting";
 
 export function CourseContent({ courseId }: { courseId: string }) {
   const { lang } = useI18n();
@@ -625,6 +626,7 @@ export function CourseSettings({ course, onSaved }: { course: Course; onSaved: (
 
   return (
     <div className="space-y-3">
+      <CourseImageSetting id={course.id} title={course.title} />
       <div className="grid grid-cols-[80px_1fr] gap-3">
         <Input
           label={t("إيموجي", "Emoji")}
