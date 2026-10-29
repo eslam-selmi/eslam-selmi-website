@@ -173,7 +173,7 @@ export function CurrentCourses() {
                 className="text-xs uppercase tracking-[0.3em] font-bold mb-4"
                 style={{ color: "var(--gold)" }}
               >
-                {tt("دورات مباشرة · سجل اليوم", "Live courses · enroll today")}
+                {tt("الدورات المتاحة · سجل اليوم", "Available courses · enroll today")}
               </h3>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {current.map((c) => (
