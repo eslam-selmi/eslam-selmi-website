@@ -580,6 +580,7 @@ export type PublicCourse = {
   title: string;
   description: string | null;
   cover_emoji: string | null;
+  delivery_mode?: string | null;
   price: number | null;
   currency: string;
   starts_at: string | null;
