@@ -213,8 +213,8 @@
 }
 .booking-reference-button:hover { background: color-mix(in oklab, var(--booking-cyan) 88%, var(--booking-foreground)); }
 @media (max-width: 767px) {
-  .booking-reference-banner { border-radius: 32px; }
-  .booking-reference-watermark { font-size: 160px; bottom: -42px; }
+  .booking-reference-banner { border-radius: 28px; }
+  .booking-reference-watermark { font-size: 110px; bottom: -32px; }
 }
 .cta-glass-band {
   position: relative;
