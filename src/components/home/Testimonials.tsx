@@ -292,16 +292,16 @@ export function BookCTA() {
   const { lang } = useI18n();
   return (
     <section id="book" className="booking-reference-section px-4 py-8 sm:py-10">
-      <div className="mx-auto max-w-[1400px]">
-        <motion.div {...fadeUp} className="booking-reference-banner relative isolate grid min-h-[188px] items-center gap-8 overflow-hidden rounded-[48px] border px-7 py-8 sm:px-12 lg:grid-cols-[1fr_210px] lg:gap-14 lg:px-[70px] lg:py-10">
-          <span aria-hidden="true" dir="ltr" className="booking-reference-watermark pointer-events-none absolute bottom-[-62px] left-5 -z-10 select-none font-display text-[200px] font-extrabold leading-none">1:1</span>
+      <div className="mx-auto max-w-6xl">
+        <motion.div {...fadeUp} className="booking-reference-banner relative isolate grid min-h-[150px] items-center gap-6 overflow-hidden rounded-[36px] border px-6 py-6 sm:px-10 sm:py-7 lg:grid-cols-[1fr_190px] lg:gap-12 lg:px-14 lg:py-8">
+          <span aria-hidden="true" dir="ltr" className="booking-reference-watermark pointer-events-none absolute bottom-[-48px] left-4 -z-10 select-none font-display text-[150px] font-extrabold leading-none">1:1</span>
           <div className="min-w-0">
-            <p className="booking-reference-muted text-sm font-semibold">{lang === "ar" ? "مجانًا · بدون التزام" : "Free · No commitment"}</p>
-            <h2 className="mt-3 font-display text-2xl font-extrabold leading-tight sm:text-3xl lg:text-4xl">{lang === "ar" ? "احجز جلسة استشارية مجانية الآن." : "Book your free consultation now."}</h2>
-            <p className="booking-reference-muted mt-4 text-base font-semibold leading-relaxed lg:text-lg">{lang === "ar" ? "نناقش احتياجات فريقك وأهداف العمل، ونحدّد أولويات التدريب والخطوات التالية." : "Discuss your team's needs and business objectives, and define training priorities and next steps."}</p>
+            <p className="booking-reference-muted text-xs font-semibold tracking-wide sm:text-sm">{lang === "ar" ? "مجانًا · بدون التزام" : "Free · No commitment"}</p>
+            <h2 className="mt-2 font-display text-xl font-extrabold leading-tight sm:text-2xl lg:text-[28px]">{lang === "ar" ? "احجز جلسة استشارية مجانية الآن." : "Book your free consultation now."}</h2>
+            <p className="booking-reference-muted mt-2.5 text-sm font-semibold leading-relaxed lg:text-[15px]">{lang === "ar" ? "نناقش احتياجات فريقك وأهداف العمل، ونحدّد أولويات التدريب والخطوات التالية." : "Discuss your team's needs and business objectives, and define training priorities and next steps."}</p>
           </div>
-          <Button onClick={openCalendly} size="lg" className="booking-reference-button group h-14 w-[164px] justify-center gap-3 rounded-full text-base font-bold lg:justify-self-end">
-            {lang === "ar" ? "احجز الآن" : "Book now"}<ArrowRight className="size-5 rtl-flip transition-transform motion-safe:group-hover:translate-x-1" />
+          <Button onClick={openCalendly} size="lg" className="booking-reference-button group h-12 w-[150px] justify-center gap-2.5 rounded-full text-[15px] font-bold lg:justify-self-end">
+            {lang === "ar" ? "احجز الآن" : "Book now"}<ArrowRight className="size-4.5 rtl-flip transition-transform motion-safe:group-hover:translate-x-1" />
           </Button>
         </motion.div>
       </div>
