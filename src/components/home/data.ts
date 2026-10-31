@@ -1,78 +1,4 @@
-import { BookingDialog } from "@/components/booking/BookingDialog";
-import { TraineeReviews } from "@/components/TraineeReviews";
-import { createFileRoute, Link, useRouterState } from "@tanstack/react-router";
-import { motion, AnimatePresence, useScroll, useTransform, MotionConfig } from "motion/react";
-import { useEffect, useRef, useState } from "react";
-import {
-  Sparkles,
-  Globe2,
-  Layers,
-  MessageCircle,
-  Mail,
-  Linkedin,
-  Phone,
-  ArrowRight,
-  CheckCircle2,
-  Menu,
-  X,
-  Calendar,
-  Target,
-  Lightbulb,
-  HeartHandshake,
-  GraduationCap,
-  Award,
-  Users,
-  TrendingUp,
-  BarChart3,
-  UserCheck,
-  Languages,
-  ArrowUp,
-  Loader2,
-  Briefcase,
-  BadgeCheck,
-  
-  Presentation,
-  Moon,
-  Sun,
-  Mic,
-  BookOpen,
-  Library as LibraryIcon,
-  FileText,
-  Download,
-  ExternalLink,
-  Rocket,
-  Wand2,
-  Mail as MailIcon,
-  Palette,
-  Trello,
-  Table2,
-  Bot,
-  Quote,
-  ShieldCheck,
-  KeyRound,
-  LogIn,
-  Clock,
-  User as UserIcon,
-  MessageSquare,
-  Check,
-  Video,
-  PlayCircle,
-} from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import { useI18n, type Lang } from "@/lib/i18n";
-import { useTheme } from "@/lib/theme";
-import { LatestAdditionsSection } from "@/components/LatestAdditions";
-import { useSiteContent } from "@/lib/site-content";
-import { SitePopup } from "@/components/SitePopup";
-import { UniversalEmbedModal } from "@/components/UniversalEmbedModal";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import {
-  COUNTRIES as PHONE_COUNTRIES,
-  findCountry as findDialCountry,
-  sanitizeNationalNumber,
-  validatePhoneForCountry,
-} from "@/lib/countries";
+import { Layers, Target, Lightbulb, HeartHandshake, GraduationCap, Award, TrendingUp, BarChart3, UserCheck, BadgeCheck, Presentation } from "lucide-react";
 import headshotAsset from "@/assets/portfolio/headshot-cutout.png.asset.json";
 import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
 import snap1Asset from "@/assets/snapshots/snap-1.jpg.asset.json";
@@ -82,7 +8,6 @@ import snap4Asset from "@/assets/snapshots/snap-4.jpg.asset.json";
 import snap5Asset from "@/assets/snapshots/snap-5.jpg.asset.json";
 import snap6Asset from "@/assets/snapshots/snap-6.jpg.asset.json";
 import snap7Asset from "@/assets/snapshots/snap-7.jpg.asset.json";
-import etecLicenseAsset from "@/assets/etec-license.png.asset.json";
 import snap8Asset from "@/assets/snapshots/snap-8.jpg.asset.json";
 import logoAramexAsset from "@/assets/clients/aramex.jpg.asset.json";
 import logoG4sAsset from "@/assets/clients/g4s.jpg.asset.json";
@@ -101,49 +26,27 @@ import snap12Asset from "@/assets/snapshots/snap-12.jpg.asset.json";
 import snap13Asset from "@/assets/snapshots/snap-13.jpg.asset.json";
 import snap15Asset from "@/assets/snapshots/snap-15.jpg.asset.json";
 import snap16Asset from "@/assets/snapshots/snap-16.jpg.asset.json";
-
 export const headshot = headshotAsset.url;
-
 export const brandLogo = brandLogoAsset.url;
-
 export const snap1 = snap1Asset.url;
-
 export const snap2 = snap2Asset.url;
-
 export const snap3 = snap3Asset.url;
-
 export const snap4 = snap4Asset.url;
-
 export const snap5 = snap5Asset.url;
-
 export const snap6 = snap6Asset.url;
-
 export const snap7 = snap7Asset.url;
-
 export const snap8 = snap8Asset.url;
-
 export const logoAramex = logoAramexAsset.url;
-
 export const logoG4s = logoG4sAsset.url;
-
 export const logoAllerAqua = logoAllerAquaAsset.url;
-
 export const logoEvno = logoEvnoAsset.url;
-
 export const logoBadreldin = logoBadreldinAsset.url;
-
 export const logoAmazonEg = logoAmazonEgAsset.url;
-
 export const logoAlmajarah = logoAlmajarahAsset.url;
-
 export const logoImtenan = logoImtenanAsset.url;
-
 export const logoDaralnokba = logoDaralnokbaAsset.url;
-
 export const logoMallOfEgypt = logoMallOfEgyptAsset.url;
-
 export const logoNewBrand = logoNewBrandAsset.url;
-
 export const BRANDS: { src: string; name: string; nameAr: string; specEn: string; specAr: string }[] = [
   {
     src: logoAramex,
@@ -223,32 +126,20 @@ export const BRANDS: { src: string; name: string; nameAr: string; specEn: string
     specAr: "قطاع التعليم العالمي والتدريب",
   },
 ];
-
 export const snap10 = snap10Asset.url;
-
 export const snap11 = snap11Asset.url;
-
 export const snap12 = snap12Asset.url;
-
 export const snap13 = snap13Asset.url;
-
 export const snap15 = snap15Asset.url;
-
 export const snap16 = snap16Asset.url;
-
 export const WHATSAPP_BASE = "https://wa.me/966555376228";
-
 export const WHATSAPP = `${WHATSAPP_BASE}?text=${encodeURIComponent("Hi Eslam, I'd like to book a free 1:1 session.")}`;
-
 export const CALENDLY_URL = "https://calendly.com/eslam-m-selmi/30min";
-
 export const LINKEDIN = "https://www.linkedin.com/in/eslam-selmi/";
-
 export const openCalendly = (e?: React.MouseEvent) => {
   if (e) e.preventDefault();
   if (typeof window !== "undefined") window.dispatchEvent(new Event("open-calendly"));
 };
-
 export const waServiceLink = (serviceEn: string, lang: "en" | "ar") => {
   const msg =
     lang === "ar"
@@ -256,9 +147,7 @@ export const waServiceLink = (serviceEn: string, lang: "en" | "ar") => {
       : `Hi Eslam, I'd like to request the "${serviceEn}" service. Can we chat?`;
   return `${WHATSAPP_BASE}?text=${encodeURIComponent(msg)}`;
 };
-
 // Primary nav — kept short and focused. The full set lives in the mobile menu.
-
 export const NAV: { id: string; key: string; to?: string; highlight?: boolean; action?: "book" }[] = [
   { id: "services", key: "nav_services" },
   { id: "current-courses", key: "nav_courses" },
@@ -268,7 +157,6 @@ export const NAV: { id: string; key: string; to?: string; highlight?: boolean; a
   { id: "book", key: "nav_book", action: "book", highlight: true },
 ];
 // Mobile menu mirrors the desktop top-bar exactly (same labels, same order).
-
 export const NAV_FULL: { id: string; key: string; to?: string; highlight?: boolean; action?: "book" }[] = [
   { id: "services", key: "nav_services" },
   { id: "current-courses", key: "nav_courses" },
@@ -278,7 +166,6 @@ export const NAV_FULL: { id: string; key: string; to?: string; highlight?: boole
   { id: "book", key: "nav_book", action: "book", highlight: true },
   { id: "empowerment", key: "nav_empowerment", to: "/graduates" },
 ];
-
 export const COUNTRIES = [
   { code: "eg", name: { en: "Egypt", ar: "مصر" } },
   { code: "sa", name: { en: "Saudi Arabia", ar: "السعودية" } },
@@ -293,7 +180,6 @@ export const COUNTRIES = [
   { code: "jo", name: { en: "Jordan", ar: "الأردن" } },
   { code: "ye", name: { en: "Yemen", ar: "اليمن" } },
 ];
-
 export const JOURNEY = [
   {
     year: { en: "2017", ar: "2017" },
@@ -339,7 +225,6 @@ export const JOURNEY = [
     logo: "https://logo.clearbit.com/knowledgecity.com",
   },
 ];
-
 export const CREDENTIALS = [
   {
     name: { en: "PMP", ar: "إدارة المشاريع PMP" },
@@ -395,7 +280,6 @@ export const CREDENTIALS = [
     icon: GraduationCap,
   },
 ];
-
 export const SERVICES = [
   {
     icon: Target,
@@ -434,7 +318,6 @@ export const SERVICES = [
     },
   },
 ];
-
 export const PROGRAMS = [
   {
     track: {
@@ -520,13 +403,11 @@ export const PROGRAMS = [
     ],
   },
 ];
-
 export const PILLARS = [
   { icon: UserCheck, key: "talent", color: "from-accent/35 to-primary/10" },
   { icon: TrendingUp, key: "perf", color: "from-gold/35 to-accent/10" },
   { icon: BarChart3, key: "kpi", color: "from-lavender/35 to-primary/10" },
 ];
-
 export const SNAPSHOTS = [
   snap1,
   snap15,
@@ -543,25 +424,20 @@ export const SNAPSHOTS = [
   snap7,
   snap6,
 ];
-
 export type ThemeMode = "dark" | "light";
-
 export const fadeUp = {
   initial: { opacity: 0, y: 24 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, margin: "-80px" },
   transition: { duration: 0.6, ease: [0.21, 0.5, 0.3, 1] as const },
 };
-
 export type BookingSlot = {
   id: string;
   starts_at: string;
   duration_minutes: number;
   booked_by: string | null;
 };
-
 export type JourneyItem = (typeof JOURNEY)[number] & { current?: boolean; countryName?: { en: string; ar: string } };
-
 export type TestimonialRow = {
   id: string;
   name: string;
@@ -571,10 +447,8 @@ export type TestimonialRow = {
   avatar_url: string | null;
   rating: number | null;
 };
-
 export const COURSES_FORM_URL =
   "https://docs.google.com/forms/d/e/1FAIpQLSePiL3_X7XaxWa6oAMlUc0TgT80z1mozFSExDzZnqvfmP4nRA/viewform?embedded=true";
-
 export type PublicCourse = {
   id: string;
   title: string;
@@ -594,13 +468,9 @@ export type PublicCourse = {
   target_audience: string | null;
   is_upcoming: boolean;
 };
-
 export const LIBRARY_DRIVE_ID = "1dhtjAdvchdH6DEIyT-VoDAWd2itLsnZq";
-
 export const LIBRARY_EMBED_URL = `https://drive.google.com/embeddedfolderview?id=${LIBRARY_DRIVE_ID}#grid`;
-
 export const LIBRARY_OPEN_URL = `https://drive.google.com/drive/folders/${LIBRARY_DRIVE_ID}?usp=sharing`;
-
 export const PODCAST_EPISODES = [
   {
     id: "f0cDZYSbrCU",
@@ -631,7 +501,6 @@ export const PODCAST_EPISODES = [
     duration: "—",
   },
 ];
-
 export type InterviewRow = {
   id: string;
   title_ar: string;
@@ -641,7 +510,6 @@ export type InterviewRow = {
   cover_url: string | null;
   resource_url: string;
 };
-
 export type TrainingRow = {
   id: string;
   title_ar: string;
