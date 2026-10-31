@@ -49,6 +49,8 @@
 
 # Mobile website performance
 
+- [ ] Reduce unnecessary initial imports, defer booking, and remove first-screen animation delays; verify mobile browsing and booking.
+
 - [x] Replace render-blocking Google Fonts with essential local subsets and swap behavior.
 - [x] Compress portrait by 94–97% and bundled snapshot thumbnails by 71%, preserving administrator replacements and full-size originals.
 - [x] Defer lower homepage modules and their reads until approaching the viewport; support direct section links.

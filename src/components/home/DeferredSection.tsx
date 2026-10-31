@@ -22,7 +22,7 @@ export function DeferredSection({ id, children }: { id: string; children: ReactN
         setReady(true);
         observer.disconnect();
       }
-    }, { rootMargin: "400px 0px" });
+    }, { rootMargin: window.matchMedia("(max-width: 767px)").matches ? "160px 0px" : "400px 0px" });
     observer.observe(element);
     return () => {
       observer.disconnect();

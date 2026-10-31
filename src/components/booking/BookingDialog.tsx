@@ -28,13 +28,13 @@ const field = {
 };
 const dayKey = (d: Date) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 
-export function BookingDialog() {
+export function BookingDialog({ initiallyOpen = false }: { initiallyOpen?: boolean }) {
   const { lang, dir } = useI18n();
   const isAr = lang === "ar";
   const tx = (a: string, b: string) => (isAr ? a : b);
   const loc = isAr ? "ar-EG" : "en-US";
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(initiallyOpen);
   const [view, setView] = useState<"book" | "mine">("book");
   const [step, setStep] = useState<1 | 2>(1);
   const [user, setUser] = useState<{ id: string; email: string } | null>(null);

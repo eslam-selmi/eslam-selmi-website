@@ -1,4 +1,4 @@
-import { BookingDialog } from "@/components/booking/BookingDialog";
+import { DeferredBookingDialog } from "@/components/booking/DeferredBookingDialog";
 import { TraineeReviews } from "@/components/TraineeReviews";
 import { createFileRoute, Link, useRouterState } from "@tanstack/react-router";
 import { motion, AnimatePresence, useScroll, useTransform, MotionConfig } from "motion/react";
@@ -105,7 +105,7 @@ import { PILLARS, WHATSAPP, brandLogo, fadeUp } from "@/components/home/data";
 import { useSiteProfile } from "@/lib/site-profile";
 
 export function CalendlyDialog() {
-  return <BookingDialog />;
+  return <DeferredBookingDialog />;
 }
 
 /* ---------- BRAND MARK ---------- */
