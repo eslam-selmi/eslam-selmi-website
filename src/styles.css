@@ -664,6 +664,7 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
     background-color: var(--glass-strong);
   }
   .home-page :is(.blur-3xl, .blur-2xl) { display: none; }
+  .home-page .hero-portrait { filter: none !important; }
 }
 
 .home-section-placeholder { min-height: 420px; scroll-margin-top: 110px; }

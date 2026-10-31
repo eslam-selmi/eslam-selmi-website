@@ -50,7 +50,7 @@ export function Hero() {
         {/* Left: Copy */}
         <motion.div style={{ y: isMobile || reduceMotion ? 0 : y }} className="lg:col-span-7 order-2 lg:order-1 space-y-7">
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             className="inline-flex items-center gap-2 text-[11px] sm:text-xs font-bold uppercase tracking-[0.28em]"
             style={{ color: "var(--accent)" }}
@@ -60,7 +60,7 @@ export function Hero() {
           </motion.div>
 
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.7 }}
             className="font-display font-extrabold text-balance leading-[1.05] text-[clamp(2rem,4.6vw,4.25rem)] text-foreground"
@@ -71,7 +71,7 @@ export function Hero() {
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 16 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
             className="max-w-xl text-base sm:text-lg leading-relaxed text-muted-foreground"
@@ -81,7 +81,7 @@ export function Hero() {
 
           {/* ETEC certified trainer credential — opens license popup */}
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.38 }}
             className="max-w-xl"
@@ -128,7 +128,7 @@ export function Hero() {
 
           {/* Social row */}
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={false}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
             className="flex items-center gap-3 pt-3"
@@ -154,7 +154,7 @@ export function Hero() {
 
         {/* Right: Portrait — bare cutout, no frame or background, orbiting glass accents */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={false}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="lg:col-span-5 order-1 lg:order-2 relative"
@@ -173,7 +173,7 @@ export function Hero() {
             {/* rotating dashed orbit with a travelling light dot */}
             <motion.div
               className="pointer-events-none absolute inset-x-2 top-2 aspect-square"
-              animate={reduceMotion ? undefined : { rotate: 360 }}
+              animate={isMobile || reduceMotion ? undefined : { rotate: 360 }}
               transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
               aria-hidden
             >
@@ -189,7 +189,7 @@ export function Hero() {
             {/* counter-rotating inner arc */}
             <motion.div
               className="pointer-events-none absolute inset-x-10 top-10 aspect-square"
-              animate={reduceMotion ? undefined : { rotate: -360 }}
+              animate={isMobile || reduceMotion ? undefined : { rotate: -360 }}
               transition={{ duration: 26, repeat: Infinity, ease: "linear" }}
               aria-hidden
             >
@@ -202,18 +202,18 @@ export function Hero() {
             <motion.img
               src={portrait.src}
               srcSet={portrait.srcSet}
-              sizes="(min-width: 1024px) 480px, (min-width: 640px) 440px, 400px"
+              sizes="(min-width: 1024px) 480px, (min-width: 640px) 440px, (min-width: 432px) 400px, calc(100vw - 32px)"
               loading="eager"
               alt={lang === "ar" ? nameAr : nameEn}
               width={1024}
               height={1024}
               fetchPriority="high"
               decoding="async"
-              className="relative z-10 mx-auto w-full"
+              className="hero-portrait relative z-10 mx-auto w-full"
               style={{
                 filter: "drop-shadow(0 34px 44px color-mix(in oklab, var(--navy-deep) 55%, transparent))",
               }}
-              animate={reduceMotion ? undefined : { y: [0, -10, 0] }}
+              animate={isMobile || reduceMotion ? undefined : { y: [0, -10, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
             />
 
@@ -225,13 +225,13 @@ export function Hero() {
             ].map(({ icon: Icon, n, l, pos, delay }) => (
               <motion.div
                 key={l}
-                initial={{ opacity: 0, scale: 0.8 }}
+                initial={false}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.8 + delay * 0.15, duration: 0.5 }}
                 className={`absolute z-20 ${pos}`}
               >
                 <motion.div
-                  animate={reduceMotion ? undefined : { y: [0, -8, 0] }}
+                  animate={isMobile || reduceMotion ? undefined : { y: [0, -8, 0] }}
                   transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut", delay }}
                   className="glass-panel flex items-center gap-2 rounded-2xl px-3 py-2"
                 >
@@ -248,7 +248,7 @@ export function Hero() {
 
             {/* signature name plate */}
             <motion.div
-              initial={{ opacity: 0, y: 14 }}
+              initial={false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.7 }}
               className="relative z-20 -mt-6 text-center sm:-mt-8"

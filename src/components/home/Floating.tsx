@@ -1,120 +1,15 @@
-import { BookingDialog } from "@/components/booking/BookingDialog";
-import { TraineeReviews } from "@/components/TraineeReviews";
-import { createFileRoute, Link, useRouterState } from "@tanstack/react-router";
-import { motion, AnimatePresence, useScroll, useTransform, MotionConfig } from "motion/react";
-import { useEffect, useRef, useState } from "react";
-import {
-  Sparkles,
-  Globe2,
-  Layers,
-  MessageCircle,
-  Mail,
-  Linkedin,
-  Phone,
-  ArrowRight,
-  CheckCircle2,
-  Menu,
-  X,
-  Calendar,
-  Target,
-  Lightbulb,
-  HeartHandshake,
-  GraduationCap,
-  Award,
-  Users,
-  TrendingUp,
-  BarChart3,
-  UserCheck,
-  Languages,
-  ArrowUp,
-  Loader2,
-  Briefcase,
-  BadgeCheck,
-  
-  Presentation,
-  Moon,
-  Sun,
-  Mic,
-  BookOpen,
-  Library as LibraryIcon,
-  FileText,
-  Download,
-  ExternalLink,
-  Rocket,
-  Wand2,
-  Mail as MailIcon,
-  Palette,
-  Trello,
-  Table2,
-  Bot,
-  Quote,
-  ShieldCheck,
-  KeyRound,
-  LogIn,
-  Clock,
-  User as UserIcon,
-  MessageSquare,
-  Check,
-  Video,
-  PlayCircle,
-} from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import { useI18n, type Lang } from "@/lib/i18n";
-import { useTheme } from "@/lib/theme";
-import { LatestAdditionsSection } from "@/components/LatestAdditions";
-import { useSiteContent } from "@/lib/site-content";
-import { SitePopup } from "@/components/SitePopup";
-import { UniversalEmbedModal } from "@/components/UniversalEmbedModal";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import {
-  COUNTRIES as PHONE_COUNTRIES,
-  findCountry as findDialCountry,
-  sanitizeNationalNumber,
-  validatePhoneForCountry,
-} from "@/lib/countries";
-import headshotAsset from "@/assets/portfolio/headshot-cutout.png.asset.json";
-import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
-import snap1Asset from "@/assets/snapshots/snap-1.jpg.asset.json";
-import snap2Asset from "@/assets/snapshots/snap-2.jpg.asset.json";
-import snap3Asset from "@/assets/snapshots/snap-3.jpg.asset.json";
-import snap4Asset from "@/assets/snapshots/snap-4.jpg.asset.json";
-import snap5Asset from "@/assets/snapshots/snap-5.jpg.asset.json";
-import snap6Asset from "@/assets/snapshots/snap-6.jpg.asset.json";
-import snap7Asset from "@/assets/snapshots/snap-7.jpg.asset.json";
-import etecLicenseAsset from "@/assets/etec-license.png.asset.json";
-import snap8Asset from "@/assets/snapshots/snap-8.jpg.asset.json";
-import logoAramexAsset from "@/assets/clients/aramex.jpg.asset.json";
-import logoG4sAsset from "@/assets/clients/g4s.jpg.asset.json";
-import logoAllerAquaAsset from "@/assets/clients/aller-aqua.jpg.asset.json";
-import logoEvnoAsset from "@/assets/clients/evno.jpg.asset.json";
-import logoBadreldinAsset from "@/assets/clients/badreldin.jpg.asset.json";
-import logoAmazonEgAsset from "@/assets/clients/amazon-eg.jpg.asset.json";
-import logoAlmajarahAsset from "@/assets/clients/almajarah.jpg.asset.json";
-import logoImtenanAsset from "@/assets/clients/imtenan.jpg.asset.json";
-import logoDaralnokbaAsset from "@/assets/clients/daralnokba.jpg.asset.json";
-import logoMallOfEgyptAsset from "@/assets/clients/mall-of-egypt.jpg.asset.json";
-import logoNewBrandAsset from "@/assets/clients/new-brand.jpg.asset.json";
-import snap10Asset from "@/assets/snapshots/snap-10.jpg.asset.json";
-import snap11Asset from "@/assets/snapshots/snap-11.jpg.asset.json";
-import snap12Asset from "@/assets/snapshots/snap-12.jpg.asset.json";
-import snap13Asset from "@/assets/snapshots/snap-13.jpg.asset.json";
-import snap15Asset from "@/assets/snapshots/snap-15.jpg.asset.json";
-import snap16Asset from "@/assets/snapshots/snap-16.jpg.asset.json";
-
-
+import { motion, AnimatePresence } from "motion/react";
+import { useEffect, useState } from "react";
+import { ArrowRight, X, Languages, ArrowUp } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 export function WhatsAppFloat() {
   return null;
 }
-
 /* ---------- ASK SELMI FLOATING (removed — kept as no-op for backward compat) ---------- */
-
 export function AskSelmiFloat() {
   return null;
 }
-
 /* ---------- SCROLL TOP ---------- */
-
 export function ScrollTop() {
   const { dir } = useI18n();
   const [show, setShow] = useState(false);
@@ -147,13 +42,10 @@ export function ScrollTop() {
     </AnimatePresence>
   );
 }
-
 /* ---------- LANGUAGE HINT TOAST ---------- */
-
 export function LanguageHint() {
   const { lang, setLang, t, dir } = useI18n();
   const [show, setShow] = useState(false);
-
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (window.localStorage.getItem("lang-hint-seen")) return;
@@ -167,24 +59,20 @@ export function LanguageHint() {
       clearTimeout(hideTimer);
     };
   }, []);
-
   const dismiss = () => {
     setShow(false);
     if (typeof window !== "undefined") window.localStorage.setItem("lang-hint-seen", "1");
   };
-
   const switchLang = () => {
     setLang(lang === "en" ? "ar" : "en");
     dismiss();
   };
-
   // Suggest the OTHER language
   const suggestAr = lang === "en";
   const title = suggestAr ? t("lang_hint_title_ar") : t("lang_hint_title_en");
   const desc = suggestAr ? t("lang_hint_desc_ar") : t("lang_hint_desc_en");
   const switchLabel = suggestAr ? t("lang_hint_switch_ar") : t("lang_hint_switch_en");
   const toastDir = suggestAr ? "rtl" : "ltr";
-
   return (
     <AnimatePresence>
       {show && (
@@ -224,7 +112,6 @@ export function LanguageHint() {
             />
             {/* subtle grain border highlight */}
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none" />
-
             <div className="relative p-5 flex items-start gap-3.5">
               <span className="relative shrink-0 mt-0.5">
                 <span
@@ -284,5 +171,4 @@ export function LanguageHint() {
     </AnimatePresence>
   );
 }
-
 /* ---------- EMPOWERMENT TOOLS (for new graduates) ---------- */

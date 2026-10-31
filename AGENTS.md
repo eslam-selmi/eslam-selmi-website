@@ -21,6 +21,7 @@
 - Public country choices use `get_public_custom_countries` with only display fields; section visibility uses `get_public_site_visibility` with flags only, so hidden content and country creator metadata remain protected while public controls keep working.
 - Latest-addition reads follow the homepage section visibility; private `public-uploads` reads require ownership or administrator access, while public images retain administrator-issued signed links.
 - Below-fold homepage sections use intersection-gated lazy modules with hash-link activation so their code, reads and media do not compete with the first screen.
+- Booking dialogs load on the first booking request through DeferredBookingDialog, with initiallyOpen preserving that request; first-screen hero content remains visible in server markup rather than awaiting animations.
 - Site fonts are local Fontsource subsets with swap behavior and essential weights only; certificate exports still embed their own fonts to avoid external render-blocking requests.
 - Known portrait and snapshot originals use immutable optimized asset variants for display, while administrator replacements and full-size lightbox originals remain unchanged.
 - Mobile homepage marquees use native swipe rails without repeated copies or background blur; desktop keeps its existing presentation.
