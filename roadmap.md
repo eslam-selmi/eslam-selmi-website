@@ -49,7 +49,7 @@
 
 # Mobile website performance
 
-- [ ] Reduce unnecessary initial imports, defer booking, and remove first-screen animation delays; verify mobile browsing and booking.
+- [x] Reduce unnecessary initial imports, defer booking, and remove first-screen animation delays; verified mobile Arabic/English browsing, direct course links, and signed-in booking opening (no slots currently available); 9 regression tests pass.
 
 - [x] Replace render-blocking Google Fonts with essential local subsets and swap behavior.
 - [x] Compress portrait by 94–97% and bundled snapshot thumbnails by 71%, preserving administrator replacements and full-size originals.
