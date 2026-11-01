@@ -853,3 +853,29 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
   animation: hero-name-shine 5s linear infinite;
 }
 @media (prefers-reduced-motion: reduce) { .hero-name-shine { animation: none; } }
+
+/* Top nav: distinctive gradient underline that sweeps in on hover */
+.nav-link { position: relative; }
+.nav-link .nav-label { position: relative; display: inline-block; }
+.nav-link .nav-label::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -4px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), color-mix(in oklab, var(--accent) 35%, transparent));
+  box-shadow: 0 0 6px color-mix(in oklab, var(--accent) 55%, transparent);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.28s ease;
+  opacity: 0;
+}
+.nav-link:hover .nav-label::after,
+.nav-link:focus-visible .nav-label::after {
+  transform: scaleX(1);
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-link .nav-label::after { transition: none; }
+}
