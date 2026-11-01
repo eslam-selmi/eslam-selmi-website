@@ -56,7 +56,7 @@ export function Nav({
           <nav className="hidden xl:flex items-center gap-0.5">
             {NAV.map((n) => {
               const baseCls =
-                "px-2.5 py-1.5 text-[13px] font-bold text-foreground/85 hover:text-foreground transition-colors rounded-full hover:bg-foreground/5";
+                "nav-link group px-2.5 py-1.5 text-[13px] font-bold text-foreground/85 hover:text-foreground transition-colors rounded-full hover:bg-foreground/5";
               const highlightCls =
                 "group relative inline-flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-extrabold rounded-full transition-all hover:-translate-y-0.5 cursor-pointer";
               const highlightStyle = {
@@ -82,13 +82,13 @@ export function Nav({
                   </Link>
                 ) : (
                   <Link key={n.id} to={n.to} className={baseCls}>
-                    {t(n.key)}
+                    <span className="nav-label">{t(n.key)}</span>
                   </Link>
                 );
               }
               return (
                 <a key={n.id} href={hashHref(n.id)} className={baseCls}>
-                  {t(n.key)}
+                  <span className="nav-label">{t(n.key)}</span>
                 </a>
               );
             })}
