@@ -59,37 +59,12 @@ export function Clients() {
                 <span className="atlas-chip-name min-w-0 truncate text-[13px] font-semibold">
                   {c.name[lang]}
                 </span>
-                <span
-                  className="atlas-chip-index ms-auto text-[10px] font-bold tracking-widest"
-                  dir="ltr"
-                >
-                  {String(i + 1).padStart(2, "0")}
-                </span>
               </motion.div>
             ))}
           </div>
         </div>
-
-        <div className="atlas-stats mt-7 grid grid-cols-3 gap-3 px-4 py-4 sm:px-6 sm:py-5">
-          <AtlasStat n="3000+" l={t("stat_trainees")} />
-          <AtlasStat n="12+" l={t("nav_clients")} />
-          <AtlasStat n="15+" l={t("stat_programs")} />
-        </div>
       </motion.div>
     </Section>
-  );
-}
-
-function AtlasStat({ n, l }: { n: string; l: string }) {
-  return (
-    <div className="min-w-0">
-      <div className="atlas-stat-value font-display text-2xl font-extrabold leading-none sm:text-3xl">
-        {n}
-      </div>
-      <div className="atlas-stat-label mt-2 truncate text-[9px] uppercase tracking-[0.2em] sm:text-[10px]">
-        {l}
-      </div>
-    </div>
   );
 }
 
