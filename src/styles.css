@@ -282,14 +282,14 @@
 .atlas-chip-index { color: color-mix(in oklab, var(--booking-muted) 62%, transparent); }
 .atlas-rule { background: color-mix(in oklab, var(--booking-foreground) 14%, transparent); }
 .atlas-stat-value { color: var(--booking-cyan); }
-.atlas-stat-label { color: var(--booking-muted); }
+.atlas-stat-label { color: color-mix(in oklab, var(--booking-foreground) 72%, transparent); }
 .atlas-stat + .atlas-stat {
   border-inline-start: 1px solid color-mix(in oklab, var(--booking-foreground) 12%, transparent);
   padding-inline-start: 0.9rem;
 }
 @media (max-width: 767px) {
   .atlas-panel { border-radius: 28px; }
-  .atlas-watermark { font-size: 120px; }
+  .atlas-watermark { font-size: 120px; bottom: -74px; opacity: 0.75; }
 }
 @media (prefers-reduced-motion: reduce) {
   .atlas-chip { transition: none; }
