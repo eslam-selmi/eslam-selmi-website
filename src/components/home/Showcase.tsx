@@ -10,48 +10,88 @@ import { snapshotThumbnail } from "@/lib/optimized-images";
 
 export function Clients() {
   const { t, lang } = useI18n();
+  const region =
+    lang === "ar"
+      ? "مصر · السعودية · الإمارات · الشام · شمال أفريقيا"
+      : "Egypt · KSA · UAE · Levant · North Africa";
   return (
     <Section id="clients" eyebrow={t("clients_eyebrow")} title={t("clients_title")}>
-      <div className="grid lg:grid-cols-2 gap-10 items-center">
-        <motion.div {...fadeUp}>
-          <div className="font-display text-[8rem] lg:text-[10rem] leading-none font-bold text-gradient-gold">
-            12
+      <motion.div {...fadeUp} className="atlas-panel px-5 py-7 sm:px-8 sm:py-9 lg:px-12 lg:py-11">
+        <span
+          aria-hidden="true"
+          dir="ltr"
+          className="atlas-watermark pointer-events-none absolute -bottom-12 start-1 -z-10 select-none font-display text-[150px] font-extrabold leading-none sm:text-[210px]"
+        >
+          12
+        </span>
+
+        <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-12">
+          <div className="min-w-0 space-y-5">
+            <span className="atlas-pill px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.24em]">
+              <Globe2 className="atlas-icon size-3.5" />
+              {lang === "ar" ? "تدريب عن بُعد" : "Online delivery"}
+            </span>
+            <p className="atlas-lead font-display text-xl font-extrabold leading-snug sm:text-2xl">
+              {t("clients_sub")}
+            </p>
+            <p className="atlas-region text-sm font-semibold">{region}</p>
           </div>
-          <p className="text-xl font-medium mt-2">{t("clients_sub")}</p>
-          <div className="mt-6 grid grid-cols-3 gap-3 max-w-md">
-            <CompactStat n="3000+" l={t("stat_trainees")} />
-            <CompactStat n="12+" l={t("nav_clients")} />
-            <CompactStat n="15+" l={t("stat_programs")} />
+
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+            {COUNTRIES.map((c, i) => (
+              <motion.div
+                key={c.code}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.03, duration: 0.4 }}
+                className="atlas-chip group flex items-center gap-2.5 rounded-2xl px-3 py-2.5"
+              >
+                <img
+                  src={`https://flagcdn.com/${c.code}.svg`}
+                  alt={c.name[lang]}
+                  loading="lazy"
+                  decoding="async"
+                  width={32}
+                  height={24}
+                  className="h-6 w-8 shrink-0 rounded-[4px] object-cover shadow-sm transition-transform duration-300 group-hover:scale-110"
+                />
+                <span className="atlas-chip-name min-w-0 truncate text-[13px] font-semibold">
+                  {c.name[lang]}
+                </span>
+                <span
+                  className="atlas-chip-index ms-auto text-[10px] font-bold tracking-widest"
+                  dir="ltr"
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+              </motion.div>
+            ))}
           </div>
-          <div className="mt-6 inline-flex items-center gap-2 text-sm text-muted-foreground">
-            <Globe2 className="size-4 text-gold" />
-            Egypt · KSA · UAE · Levant · North Africa
-          </div>
-        </motion.div>
-        <div className="grid grid-cols-4 gap-3">
-          {COUNTRIES.map((c, i) => (
-            <motion.div
-              key={c.code}
-              initial={{ opacity: 0, scale: 0.85 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.04 }}
-              className="glass-panel aspect-square rounded-3xl flex flex-col items-center justify-center gap-2 transition hover:-translate-y-1 group p-2"
-            >
-              <img
-                src={`https://flagcdn.com/${c.code}.svg`}
-                alt={c.name[lang]}
-                loading="lazy"
-                className="w-10 h-7 object-cover rounded-sm shadow-md group-hover:scale-110 transition"
-              />
-              <span className="text-[10px] text-muted-foreground text-center leading-tight">
-                {c.name[lang]}
-              </span>
-            </motion.div>
-          ))}
         </div>
-      </div>
+
+        <div className="atlas-rule mt-8 h-px w-full" />
+
+        <div className="mt-6 grid grid-cols-3 gap-3">
+          <AtlasStat n="3000+" l={t("stat_trainees")} />
+          <AtlasStat n="12+" l={t("nav_clients")} />
+          <AtlasStat n="15+" l={t("stat_programs")} />
+        </div>
+      </motion.div>
     </Section>
+  );
+}
+
+function AtlasStat({ n, l }: { n: string; l: string }) {
+  return (
+    <div className="min-w-0">
+      <div className="atlas-stat-value font-display text-2xl font-extrabold leading-none sm:text-3xl">
+        {n}
+      </div>
+      <div className="atlas-stat-label mt-2 truncate text-[9px] uppercase tracking-[0.2em] sm:text-[10px]">
+        {l}
+      </div>
+    </div>
   );
 }
 
