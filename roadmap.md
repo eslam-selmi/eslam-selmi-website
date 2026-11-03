@@ -61,3 +61,8 @@
 
 - [x] Delete the bottom "contact me" section from the homepage and its now-unused nav link and styles.
 - [x] Verify as the site owner that the page ends with the booking banner and footer, with no dead links or layout gaps.
+
+# Countries section redesign
+
+- [x] Replace the "Trainees from 12 Countries" layout with a navy dotted glass atlas panel: online-delivery pill, lead line, region list, 12 country chips with flags and indices, and a solid stats bar; keep site identity and remove the gold styling.
+- [x] Verify Arabic and English, light and dark, desktop and mobile: no overlap, no clipping, no horizontal scroll, all text legible.
