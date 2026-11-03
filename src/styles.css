@@ -216,6 +216,85 @@
   .booking-reference-banner { border-radius: 28px; }
   .booking-reference-watermark { font-size: 110px; bottom: -32px; }
 }
+/* ---------- CLIENTS / ATLAS PANEL ---------- */
+.atlas-panel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 40px;
+  border: 1px solid var(--booking-border);
+  background-color: var(--booking-surface);
+  background-image:
+    radial-gradient(circle, var(--booking-dot) 1px, transparent 1.5px),
+    radial-gradient(ellipse at 4% 0%, color-mix(in oklab, var(--booking-cyan) 26%, transparent), transparent 48%),
+    radial-gradient(ellipse at 100% 100%, color-mix(in oklab, var(--lavender-deep) 26%, transparent), transparent 52%);
+  background-size: 28px 28px, 100% 100%, 100% 100%;
+  box-shadow: var(--booking-shadow);
+  color: var(--booking-foreground);
+}
+.atlas-panel::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  z-index: -1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--booking-cyan) 60%, transparent), transparent);
+}
+.atlas-panel::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset-inline-start: -12%;
+  inset-block-end: -230px;
+  width: 124%;
+  height: 340px;
+  border-radius: 50%;
+  border-top: 1px solid color-mix(in oklab, var(--booking-cyan) 26%, transparent);
+  background: linear-gradient(180deg, color-mix(in oklab, var(--booking-cyan) 8%, transparent), transparent 62%);
+  transform: rotate(-4deg);
+  pointer-events: none;
+}
+.atlas-watermark { color: color-mix(in oklab, var(--booking-cyan) 12%, transparent); }
+.atlas-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--booking-cyan) 34%, transparent);
+  background: color-mix(in oklab, var(--booking-cyan) 12%, transparent);
+  color: var(--booking-foreground);
+}
+.atlas-icon { color: var(--booking-cyan); }
+.atlas-lead { color: var(--booking-foreground); }
+.atlas-region { color: var(--booking-muted); }
+.atlas-chip {
+  border: 1px solid color-mix(in oklab, var(--booking-foreground) 12%, transparent);
+  background: linear-gradient(135deg, color-mix(in oklab, var(--booking-foreground) 9%, transparent), color-mix(in oklab, var(--booking-foreground) 3%, transparent));
+  transition: transform 300ms ease, border-color 300ms ease, box-shadow 300ms ease;
+}
+.atlas-chip:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in oklab, var(--booking-cyan) 60%, transparent);
+  box-shadow: 0 18px 34px -20px color-mix(in oklab, var(--booking-cyan) 70%, transparent);
+}
+.atlas-chip-name { color: var(--booking-foreground); }
+.atlas-chip-index { color: color-mix(in oklab, var(--booking-muted) 62%, transparent); }
+.atlas-rule { background: color-mix(in oklab, var(--booking-foreground) 14%, transparent); }
+.atlas-stat-value { color: var(--booking-cyan); }
+.atlas-stat-label { color: var(--booking-muted); }
+.atlas-stat + .atlas-stat {
+  border-inline-start: 1px solid color-mix(in oklab, var(--booking-foreground) 12%, transparent);
+  padding-inline-start: 0.9rem;
+}
+@media (max-width: 767px) {
+  .atlas-panel { border-radius: 28px; }
+  .atlas-watermark { font-size: 120px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .atlas-chip { transition: none; }
+  .atlas-chip:hover { transform: none; }
+}
 .cta-glass-band {
   position: relative;
   isolation: isolate;

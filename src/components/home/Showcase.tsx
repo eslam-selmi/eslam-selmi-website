@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { COUNTRIES, SNAPSHOTS, fadeUp } from "@/components/home/data";
-import { CompactStat, Section } from "@/components/home/shared";
+import { Section } from "@/components/home/shared";
 import { snapshotThumbnail } from "@/lib/optimized-images";
 
 export function Clients() {
