@@ -66,3 +66,8 @@
 
 - [x] Replace the "Trainees from 12 Countries" layout with a navy dotted glass atlas panel: online-delivery pill, lead line, region list, 12 country chips with flags and indices, and a solid stats bar; keep site identity and remove the gold styling.
 - [x] Verify Arabic and English, light and dark, desktop and mobile: no overlap, no clipping, no horizontal scroll, all text legible.
+
+# Countries section trim
+
+- [x] Remove the 3000+/12+/15+ stats bar and the per-country index numbers from the atlas panel.
+- [x] Verify Arabic and English, desktop and mobile: no stats bar, no index numbers, no overlap or clipping, no horizontal scroll.
