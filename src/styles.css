@@ -280,7 +280,11 @@
 }
 .atlas-chip-name { color: var(--booking-foreground); }
 .atlas-chip-index { color: color-mix(in oklab, var(--booking-muted) 62%, transparent); }
-.atlas-rule { background: color-mix(in oklab, var(--booking-foreground) 14%, transparent); }
+.atlas-stats {
+  border: 1px solid color-mix(in oklab, var(--booking-foreground) 10%, transparent);
+  background: linear-gradient(135deg, color-mix(in oklab, var(--booking-foreground) 7%, transparent), color-mix(in oklab, var(--booking-foreground) 2%, transparent));
+  border-radius: 24px;
+}
 .atlas-stat-value { color: var(--booking-cyan); }
 .atlas-stat-label { color: color-mix(in oklab, var(--booking-foreground) 72%, transparent); }
 .atlas-stat + .atlas-stat {

@@ -70,9 +70,7 @@ export function Clients() {
           </div>
         </div>
 
-        <div className="atlas-rule mt-8 h-px w-full" />
-
-        <div className="mt-6 grid grid-cols-3 gap-3">
+        <div className="atlas-stats mt-7 grid grid-cols-3 gap-3 px-4 py-4 sm:px-6 sm:py-5">
           <AtlasStat n="3000+" l={t("stat_trainees")} />
           <AtlasStat n="12+" l={t("nav_clients")} />
           <AtlasStat n="15+" l={t("stat_programs")} />
