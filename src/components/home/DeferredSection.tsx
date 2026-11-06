@@ -1,4 +1,5 @@
 import { Suspense, useEffect, useRef, useState, type ReactNode } from "react";
+import { BuildReveal } from "./BuildReveal";
 
 /** Keep below-the-fold code, queries and media idle until the section approaches. */
 export function DeferredSection({ id, children }: { id: string; children: ReactNode }) {
@@ -33,7 +34,7 @@ export function DeferredSection({ id, children }: { id: string; children: ReactN
   const placeholder = <div id={id} className="home-section-placeholder" aria-busy="true" />;
   return (
     <div ref={ref} data-deferred-section={id}>
-      {ready ? <Suspense fallback={placeholder}>{children}</Suspense> : placeholder}
+      {ready ? <Suspense fallback={placeholder}><BuildReveal>{children}</BuildReveal></Suspense> : placeholder}
     </div>
   );
 }
