@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { KeyRound } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { useSiteProfile } from "@/lib/site-profile";
+import { MaintenanceCanvas } from "@/components/MaintenanceCanvas";
 import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
 const brandLogo = brandLogoAsset.url;
 type Props = {
@@ -67,7 +68,10 @@ export function MaintenancePage({ message, until }: Props) {
       <div aria-hidden className="absolute -top-32 -start-32 w-[420px] h-[420px] rounded-full blur-3xl"
            style={{ background: "radial-gradient(circle, oklch(0.72 0.13 180 / 0.35), transparent 70%)" }} />
       <div aria-hidden className="absolute -bottom-40 -end-32 w-[480px] h-[480px] rounded-full blur-3xl"
-           style={{ background: "radial-gradient(circle, oklch(0.66 0.14 290 / 0.30), transparent 70%)" }} />
+            style={{ background: "radial-gradient(circle, oklch(0.66 0.14 290 / 0.30), transparent 70%)" }} />
+
+      {/* Cursors drawing the maintenance mark in the background */}
+      <MaintenanceCanvas />
 
       <div className="relative w-full max-w-2xl">
         <div

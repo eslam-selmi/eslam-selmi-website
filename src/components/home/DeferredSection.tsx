@@ -34,7 +34,7 @@ export function DeferredSection({ id, children }: { id: string; children: ReactN
   const placeholder = <div id={id} className="home-section-placeholder" aria-busy="true" />;
   return (
     <div ref={ref} data-deferred-section={id}>
-      {ready ? <Suspense fallback={placeholder}><BuildReveal>{children}</BuildReveal></Suspense> : placeholder}
+      {ready ? <Suspense fallback={placeholder}><BuildReveal variant={id}>{children}</BuildReveal></Suspense> : placeholder}
     </div>
   );
 }
