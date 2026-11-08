@@ -7,7 +7,7 @@ export function BuildReveal({ variant, children }: { variant?: string; children:
   const { enabled } = useBuildEffects();
   useEffect(() => {
     const stage = ref.current;
-    if (!stage || !enabled || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!stage || !enabled || !("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const built = new WeakSet<Element>();
     const animations = new Set<Animation>();
     const overlays = new Set<HTMLElement>();
@@ -27,11 +27,26 @@ export function BuildReveal({ variant, children }: { variant?: string; children:
       const rtl = getComputedStyle(target).direction === 'rtl';
       const start = rtl ? w : 0, end = rtl ? 0 : w;
       // Text follows its actual lines; images use a diagonal scan; controls trace their actual edges.
-      const points = kind === 'text'
+      let points = kind === 'text'
         ? [[start, 0], [end, h * .24], [start, h * .5], [end, h * .75], [start, h]]
         : kind === 'image'
           ? [[0, 0], [w, h * .25], [0, h * .5], [w, h * .75], [w, h]]
           : [[0, 0], [w, 0], [w, h], [0, h], [0, 0]];
+      if (kind === 'text') {
+        const walker = document.createTreeWalker(target, NodeFilter.SHOW_TEXT);
+        const lines: DOMRect[] = [];
+        while (walker.nextNode()) {
+          if (!walker.currentNode.textContent?.trim()) continue;
+          const range = document.createRange();
+          range.selectNodeContents(walker.currentNode);
+          lines.push(...Array.from(range.getClientRects()));
+        }
+        if (lines.length) points = lines.flatMap(line => {
+          const left = line.left - rect.left, right = line.right - rect.left;
+          const baseline = line.bottom - rect.top;
+          return rtl ? [[right, baseline], [left, baseline]] : [[left, baseline], [right, baseline]];
+        });
+      }
       const layer = document.createElement('div');
       layer.className = 'build-overlay';
       layer.dataset.kind = kind;
@@ -47,7 +62,11 @@ export function BuildReveal({ variant, children }: { variant?: string; children:
       stage.append(layer);
       overlays.add(layer);
       const duration = kind === 'text' ? 1750 : kind === 'image' ? 2100 : 1550;
-      const track = (animation: Animation) => { animations.add(animation); return animation; };
+      const track = (animation: Animation) => {
+        animations.add(animation);
+        animation.addEventListener('finish', () => animations.delete(animation), { once: true });
+        return animation;
+      };
       const movement = track(cursor.animate(points.map(([px, py], i) => ({ transform: `translate(${x + px}px, ${y + py}px)`, opacity: i === 0 || i === points.length - 1 ? .6 : 1 })), { duration, easing: 'linear' }));
       track(outline.animate([{ opacity: .8, clipPath: 'inset(0 100% 0 0)' }, { opacity: .55, clipPath: 'inset(0 0 0 0)', offset: .7 }, { opacity: 0, clipPath: 'inset(0 0 0 0)' }], { duration }));
       track(target.animate([
@@ -67,7 +86,7 @@ export function BuildReveal({ variant, children }: { variant?: string; children:
     const collect = () => {
       stage.querySelectorAll<HTMLElement>(selector).forEach(el => {
         // Country chips are constructed as complete units, never also animate their children.
-        if (el.closest('.build-overlay,[aria-hidden="true"]') || el.parentElement?.closest('.atlas-chip,.atlas-pill') || built.has(el)) return;
+        if (el.closest('.build-overlay,[aria-hidden="true"]') || el.parentElement?.closest('.atlas-chip,.atlas-pill,button,a[href]') || built.has(el)) return;
         observer.observe(el);
       });
     };
