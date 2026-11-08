@@ -74,6 +74,6 @@
 
 # Content-aware cursor building
 
-- [ ] Replace template wireframes with simultaneous cursors tracing and revealing actual section elements.
-- [ ] Complete maintenance logo drawing and add a saved administrator switch for visitor effects.
-- [ ] Test enabled/disabled settings, real section animations and maintenance on desktop/mobile.
+- [x] Replace template wireframes with simultaneous cursors tracing and revealing actual section elements.
+- [x] Complete maintenance logo drawing and add a saved administrator switch for visitor effects.
+- [x] Test enabled/disabled settings, real section animations and maintenance on desktop/mobile.
