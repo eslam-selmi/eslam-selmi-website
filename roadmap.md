@@ -71,3 +71,9 @@
 
 - [x] Remove the 3000+/12+/15+ stats bar and the per-country index numbers from the atlas panel.
 - [x] Verify Arabic and English, desktop and mobile: no stats bar, no index numbers, no overlap or clipping, no horizontal scroll.
+
+# Content-aware cursor building
+
+- [ ] Replace template wireframes with simultaneous cursors tracing and revealing actual section elements.
+- [ ] Complete maintenance logo drawing and add a saved administrator switch for visitor effects.
+- [ ] Test enabled/disabled settings, real section animations and maintenance on desktop/mobile.
