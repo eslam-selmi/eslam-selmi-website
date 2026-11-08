@@ -951,38 +951,23 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
   .nav-link .nav-label::after { transition: none; }
 }
 
-/* Homepage "being built" reveal: many collaborating cursors draw the wireframe */
-.build-stage { position: relative; --build-c1: var(--accent); --build-c2: oklch(0.72 0.17 330); --build-c3: oklch(0.78 0.16 150); --build-c4: oklch(0.82 0.15 85); --build-c5: oklch(0.7 0.16 260); --build-c6: oklch(0.75 0.15 30); }
-.build-stage[data-build="idle"] > :not(.build-overlay) { opacity: 0; }
-.build-stage[data-build="building"] > :not(.build-overlay) { animation: build-fill 3.2s ease both; }
-@keyframes build-fill {
-  0%, 30% { opacity: .12; clip-path: inset(0 0 100% 0); filter: grayscale(1); }
-  70% { opacity: .6; clip-path: inset(0 0 25% 0); filter: grayscale(.6); }
-  100% { opacity: 1; clip-path: inset(0 0 0 0); filter: none; }
+/* Content-aware drawing: overlays share the exact coordinates of their target. */
+.build-stage { position: relative; --build-c1: var(--accent); --build-c2: var(--cover-silver); --build-c3: var(--lavender-deep); --build-c4: var(--steel); }
+.build-overlay { position: absolute; inset: 0; pointer-events: none; z-index: 30; overflow: hidden; }
+.build-outline { position: absolute; border: 1px dashed var(--c); background: color-mix(in oklab, var(--c) 8%, transparent); }
+.build-overlay[data-kind="text"] .build-outline { border: none; border-bottom: 1px solid var(--c); background: transparent; }
+.build-cursor { position: absolute; left: 0; top: 0; color: var(--c); width: 24px; height: 26px; will-change: transform; }
+.build-pointer { position: absolute; top: 0; left: 0; display: flex; gap: 2px; color: var(--c); }
+.build-pointer b { display: none; }
+/* Maintenance mark: stroke and cursor share the same path, timing and delay. */
+.maint-canvas { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.maint-stage { position: absolute; width: 520px; height: 520px; left: calc(50% - 600px); top: calc(50% - 260px); opacity: .6; }
+.maint-path { stroke: var(--c); stroke-linecap: round; stroke-dasharray: 100; stroke-dashoffset: 100; animation: maint-draw var(--dur) linear var(--dl) infinite; }
+.maint-cursor { position: absolute; left: 0; top: 0; offset-path: var(--op); offset-rotate: 0deg; animation: maint-trace var(--dur) linear var(--dl) infinite; color: var(--c); }
+@keyframes maint-draw { 0% { stroke-dashoffset: 100; opacity: .4; } 70%,85% { stroke-dashoffset: 0; opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes maint-trace { 0% { offset-distance: 0%; opacity: 1; } 70% { offset-distance: 100%; opacity: 1; } 85%,100% { offset-distance: 100%; opacity: 0; } }
+@media (max-width: 767px) {
+  .maint-stage { left: calc(50% - 260px); top: -80px; transform: scale(.64); opacity: .38; }
+  .maint-path,.maint-cursor { animation-duration: var(--dur) !important; animation-delay: var(--dl) !important; animation-iteration-count: infinite !important; }
 }
-.build-overlay { position: absolute; inset: 0; pointer-events: none; z-index: 30; animation: build-out 3.2s ease forwards; }
-.build-view { position: sticky; top: 0; height: min(100%, 100vh); max-height: 100vh; overflow: hidden; }
-@keyframes build-out { 0%, 80% { opacity: 1; } 100% { opacity: 0; } }
-.build-grid { position: absolute; inset: 12px; border: 1px dashed color-mix(in oklab, var(--accent) 55%, transparent); border-radius: 18px;
-  background-image: linear-gradient(color-mix(in oklab, var(--accent) 10%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklab, var(--accent) 10%, transparent) 1px, transparent 1px);
-  background-size: 48px 48px; }
-.build-box { position: absolute; border: 1.5px solid var(--c); border-radius: 8px; background: color-mix(in oklab, var(--c) 12%, transparent);
-  animation: build-draw 1.2s cubic-bezier(.3,.7,.2,1) var(--dl) both; }
-.build-box span { position: absolute; top: -18px; left: 0; font: 600 10px/1 var(--font-sans, sans-serif); padding: 3px 6px; border-radius: 4px; background: var(--c); color: oklch(0.15 0.03 260); direction: ltr; }
-@keyframes build-draw { from { clip-path: inset(0 100% 0 0); opacity: .35; } to { clip-path: inset(0 0 0 0); opacity: 1; } }
-.build-cursor { position: absolute; inset: 0; color: var(--c); animation: build-path 2.3s cubic-bezier(.45,.05,.25,1) var(--dl) both; }
-.build-pointer { position: absolute; top: 0; left: 0; display: flex; align-items: flex-start; gap: 2px; filter: drop-shadow(0 2px 4px rgb(0 0 0 / .35)); }
-.build-pointer b { font: 600 10px/1 var(--font-sans, sans-serif); margin-top: 14px; padding: 3px 7px; border-radius: 999px; background: var(--c); color: oklch(0.15 0.03 260); white-space: nowrap; direction: ltr; }
-/* Each cursor traces the perimeter of its own block: enter → four corners → close the loop → leave. */
-@keyframes build-path {
-  0% { translate: var(--a); opacity: 0; }
-  6% { opacity: 1; }
-  16% { translate: var(--p1); }
-  36% { translate: var(--p2); }
-  52% { translate: var(--p3); }
-  68% { translate: var(--p4); }
-  80% { translate: var(--p1); opacity: 1; }
-  92%, 100% { translate: var(--x); opacity: 0; }
-}
-@media (max-width: 767px) { .build-pointer b, .build-box span { display: none; } .build-grid { background-size: 32px 32px; } }
-@media (prefers-reduced-motion: reduce) { .build-overlay { display: none; } .build-stage > * { animation: none !important; opacity: 1 !important; } }
+@media (prefers-reduced-motion: reduce) { .build-overlay,.maint-canvas { display: none; } }

@@ -26,3 +26,4 @@
 - Known portrait and snapshot originals use immutable optimized asset variants for display, while administrator replacements and full-size lightbox originals remain unchanged.
 - Mobile homepage marquees use native swipe rails without repeated copies or background blur; desktop keeps its existing presentation.
 - Program, course and consultation covers use shared `site.media` CMS query options and stable program/course keys; administrator uploads retain the existing signed-link storage workflow without altering course records or permissions.
+- Visitor cursor effects use shared `site.effects` query options and measured rendered elements, not section templates; this keeps administrator control and cursor paths consistent with edited content and mobile layouts.
