@@ -1,6 +1,5 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { useBuildEffects } from "@/lib/build-effects";
-import { BUILD_CURSOR_ART } from "./build-cursor-art";
 
 /** Cursors work on measured, rendered content. Each visible element is built once. */
 export function BuildReveal({ variant, children }: { variant?: string; children: ReactNode }) {
@@ -52,13 +51,13 @@ export function BuildReveal({ variant, children }: { variant?: string; children:
       layer.className = 'build-overlay';
       layer.dataset.kind = kind;
       layer.setAttribute('aria-hidden', 'true');
-      layer.style.setProperty('--c', `var(--build-c${sequence++ % 5 + 1})`);
+      layer.style.setProperty('--c', `var(--build-c${sequence++ % 4 + 1})`);
       const outline = document.createElement('div');
       outline.className = 'build-outline';
       Object.assign(outline.style, { left: `${x}px`, top: `${y}px`, width: `${w}px`, height: `${h}px`, borderRadius: getComputedStyle(target).borderRadius });
       const cursor = document.createElement('div');
       cursor.className = 'build-cursor';
-      cursor.innerHTML = BUILD_CURSOR_ART;
+      cursor.innerHTML = '<svg width="20" height="24" viewBox="0 0 24 24"><path d="M3 2l7 19 2.5-7.5L20 11z" fill="currentColor" stroke="var(--cover-highlight)" stroke-width="1.2"/></svg>';
       layer.append(outline, cursor);
       stage.append(layer);
       overlays.add(layer);

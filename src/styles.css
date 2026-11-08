@@ -952,20 +952,11 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 }
 
 /* Content-aware drawing: overlays share the exact coordinates of their target. */
-:root {
-  --build-c1: oklch(0.76 0.15 205);
-  --build-c2: oklch(0.73 0.19 18);
-  --build-c3: oklch(0.77 0.16 155);
-  --build-c4: oklch(0.72 0.18 300);
-  --build-c5: oklch(0.72 0.16 250);
-  --build-cursor-shadow: 0 2px 2px oklch(0.10 0.03 252 / 0.4);
-}
-.build-stage { position: relative; }
+.build-stage { position: relative; --build-c1: var(--accent); --build-c2: var(--cover-silver); --build-c3: var(--lavender-deep); --build-c4: var(--steel); }
 .build-overlay { position: absolute; inset: 0; pointer-events: none; z-index: 30; overflow: hidden; }
 .build-outline { position: absolute; border: 1px dashed var(--c); background: color-mix(in oklab, var(--c) 8%, transparent); }
 .build-overlay[data-kind="text"] .build-outline { border: none; border-bottom: 1px solid var(--c); background: transparent; }
-.build-cursor { position: absolute; left: 0; top: 0; color: var(--c); width: 32px; height: 36px; will-change: transform; }
-.build-cursor-art { display: block; overflow: visible; filter: drop-shadow(var(--build-cursor-shadow)); }
+.build-cursor { position: absolute; left: 0; top: 0; color: var(--c); width: 24px; height: 26px; will-change: transform; }
 .build-pointer { position: absolute; top: 0; left: 0; display: flex; gap: 2px; color: var(--c); }
 .build-pointer b { display: none; }
 /* Maintenance mark: stroke and cursor share the same path, timing and delay. */
@@ -976,7 +967,6 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 @keyframes maint-draw { 0% { stroke-dashoffset: 100; opacity: .4; } 70%,85% { stroke-dashoffset: 0; opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
 @keyframes maint-trace { 0% { offset-distance: 0%; opacity: 1; } 70% { offset-distance: 100%; opacity: 1; } 85%,100% { offset-distance: 100%; opacity: 0; } }
 @media (max-width: 767px) {
-  .build-cursor-art { width: 26px; height: 30px; }
   .maint-stage { left: calc(50% - 260px); top: -80px; transform: scale(.64); opacity: .38; }
   .maint-path,.maint-cursor { animation-duration: var(--dur) !important; animation-delay: var(--dl) !important; animation-iteration-count: infinite !important; }
 }

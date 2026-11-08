@@ -1,2 +1,0 @@
-/** Static, shared cursor artwork; no user content is interpolated. */
-export const BUILD_CURSOR_ART = '<svg class="build-cursor-art" width="32" height="36" viewBox="0 0 32 36" fill="none"><path d="M3 3L27 17L16 20L11 31L3 3Z" fill="currentColor" stroke="var(--cover-highlight)" stroke-width="1.8" stroke-linejoin="round"/><path d="M7 8L19 15" stroke="var(--cover-highlight)" stroke-opacity=".6" stroke-width="1.4" stroke-linecap="round"/><circle cx="25" cy="29" r="4" fill="currentColor" stroke="var(--cover-highlight)" stroke-width="1.5"/></svg>';
