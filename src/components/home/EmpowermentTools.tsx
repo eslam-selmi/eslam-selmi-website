@@ -104,6 +104,7 @@ import snap16Asset from "@/assets/snapshots/snap-16.jpg.asset.json";
 import { CourseDetailsModal, InterestFormModal } from "@/components/home/Courses";
 import { Interviews } from "@/components/home/Media";
 import { PublicCourse, fadeUp } from "@/components/home/data";
+import { DEFAULT_GRADUATE_TOOLS, iconForTool, useGraduateTools } from "@/lib/graduate-tools";
 import { Section, isEmpowermentCourse } from "@/components/home/shared";
 
 export function EmpowermentTools() {
@@ -176,14 +177,8 @@ export function EmpowermentTools() {
     }
   }
 
-  const tools = [
-    { icon: Bot, key: "emp_tool_ai" },
-    { icon: MailIcon, key: "emp_tool_outlook" },
-    { icon: Palette, key: "emp_tool_canva" },
-    { icon: Trello, key: "emp_tool_trello" },
-    { icon: Table2, key: "emp_tool_sheets" },
-    { icon: Wand2, key: "emp_tool_more" },
-  ];
+  const { data: toolList = DEFAULT_GRADUATE_TOOLS } = useGraduateTools();
+  const tools = toolList.map((x, i) => ({ icon: iconForTool(x), key: `${i}-${x.ar}`, label: isAr ? x.ar : x.en || x.ar }));
 
   return (
     <Section id="empowerment" eyebrow={t("emp_eyebrow")} title={t("emp_title")}>
@@ -243,7 +238,7 @@ export function EmpowermentTools() {
                 >
                   <tool.icon className="size-5" />
                 </span>
-                <div className="text-xs font-bold leading-tight text-[#0b1736]">{t(tool.key)}</div>
+                <div className="text-xs font-bold leading-tight text-[#0b1736]">{tool.label}</div>
               </motion.div>
             ))}
           </div>
