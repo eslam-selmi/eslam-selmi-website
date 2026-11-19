@@ -1295,6 +1295,7 @@ html[dir="rtl"] .additions-card:hover .additions-arrow { transform: translate(-3
 .additions-empty {
   position: relative;
   z-index: 1;
+  grid-column: 1 / -1;
   display: grid;
   place-items: center;
   gap: .5rem;
