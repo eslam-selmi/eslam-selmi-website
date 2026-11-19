@@ -971,3 +971,33 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
   .maint-path,.maint-cursor { animation-duration: var(--dur) !important; animation-delay: var(--dl) !important; animation-iteration-count: infinite !important; }
 }
 @media (prefers-reduced-motion: reduce) { .build-overlay,.maint-canvas { display: none; } }
+
+/* ---------- Programs: editorial index + feature ---------- */
+.prog-shell { display: grid; gap: 1.5rem; }
+@media (min-width: 1024px) { .prog-shell { grid-template-columns: 320px 1fr; gap: 2.5rem; align-items: start; } }
+.prog-index { display: flex; gap: .5rem; overflow-x: auto; scrollbar-width: none; border-block-start: 2px solid var(--foreground); }
+@media (min-width: 1024px) { .prog-index { flex-direction: column; gap: 0; overflow: visible; position: sticky; top: 6rem; } }
+.prog-tab { flex: 0 0 auto; min-width: 220px; display: grid; grid-template-columns: auto 1fr; column-gap: .9rem; row-gap: .2rem; text-align: start; padding: 1.1rem .25rem; border-block-end: 1px solid color-mix(in oklab, var(--foreground) 12%, transparent); color: var(--muted-foreground); transition: color .25s, padding .25s; position: relative; }
+.prog-tab::before { content: ""; position: absolute; inset-inline-start: 0; inset-block: 0; width: 2px; background: var(--accent); transform: scaleY(0); transition: transform .3s; }
+.prog-tab:hover { color: var(--foreground); }
+.prog-tab[data-active="true"] { color: var(--foreground); padding-inline-start: 1rem; }
+.prog-tab[data-active="true"]::before { transform: scaleY(1); }
+.prog-tab-num { grid-row: span 2; font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; line-height: 1; opacity: .5; }
+.prog-tab[data-active="true"] .prog-tab-num { opacity: 1; color: var(--accent); }
+.prog-tab-title { font-weight: 700; font-size: 1rem; line-height: 1.3; }
+.prog-tab-count { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; opacity: .7; }
+.prog-feature { display: grid; border: 1px solid color-mix(in oklab, var(--foreground) 12%, transparent); border-radius: 1.5rem; overflow: hidden; background: var(--card); }
+@media (min-width: 768px) { .prog-feature { grid-template-columns: 1fr 1.15fr; } }
+.prog-cover { position: relative; overflow: hidden; min-height: 240px; }
+.prog-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.prog-cover-num { position: absolute; inset-block-end: .5rem; inset-inline-start: 1rem; font-family: var(--font-display); font-size: 5rem; font-weight: 800; line-height: 1; color: var(--background); opacity: .85; text-shadow: 0 2px 24px color-mix(in oklab, var(--foreground) 35%, transparent); pointer-events: none; }
+.prog-body { padding: 1.75rem; }
+@media (min-width: 1024px) { .prog-body { padding: 2.5rem; } }
+.prog-kicker { font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; font-weight: 800; color: var(--accent); }
+.prog-title { margin-top: .6rem; font-family: var(--font-display); font-size: clamp(1.5rem, 2.4vw, 2.1rem); font-weight: 800; line-height: 1.15; }
+.prog-intro { margin-top: .8rem; color: var(--muted-foreground); line-height: 1.75; font-size: .95rem; }
+.prog-modules { margin-top: 1.5rem; border-block-start: 1px solid color-mix(in oklab, var(--foreground) 12%, transparent); }
+.prog-modules li { display: grid; grid-template-columns: 2.5rem 1fr; gap: .75rem; padding: 1rem 0; border-block-end: 1px solid color-mix(in oklab, var(--foreground) 8%, transparent); }
+.prog-mod-num { font-family: var(--font-display); font-weight: 800; color: var(--muted-foreground); font-size: .9rem; padding-top: .1rem; }
+.prog-mod-name { font-weight: 700; line-height: 1.35; }
+.prog-mod-desc { margin-top: .3rem; font-size: .85rem; color: var(--muted-foreground); line-height: 1.65; }

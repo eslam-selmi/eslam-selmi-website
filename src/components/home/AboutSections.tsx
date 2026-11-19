@@ -108,6 +108,7 @@ import { useSiteProfile } from "@/lib/site-profile";
 import { useSiteMedia } from "@/lib/site-media";
 import { programMedia, mediaImage } from "@/lib/site-media-data";
 import { CoverReflection } from "@/components/CoverReflection";
+import { DEFAULT_PROGRAM_TRACKS, useSitePrograms, type ProgramTrack } from "@/lib/site-programs";
 
 export function Pillars() {
   const { t } = useI18n();
@@ -311,115 +312,49 @@ export function Services() {
 export function Programs() {
   const { t, lang } = useI18n();
   const { data: media } = useSiteMedia();
-  const trackIcons = [GraduationCap, UserCheck, Sparkles];
+  const { data: tracks = DEFAULT_PROGRAM_TRACKS } = useSitePrograms();
+  const [active, setActive] = useState(0);
+  if (!tracks.length) return null;
+  const idx = Math.min(active, tracks.length - 1);
+  const ar = lang === "ar";
+  const img = (tr: ProgramTrack, i: number) =>
+    tr.image || mediaImage(media?.media ?? {}, `program:${tr.key}`, (programMedia.find((p) => p.key === tr.key) ?? programMedia[i % 3]).image);
+  const cur = tracks[idx];
   return (
     <Section id="programs" eyebrow={t("programs_eyebrow")} title={t("programs_title")}>
-      <div className="grid lg:grid-cols-3 gap-6 lg:gap-7">
-        {PROGRAMS.map((p, i) => {
-          const Icon = trackIcons[i] || Sparkles;
-          const isFeatured = true;
-          return (
-            <motion.article
-              key={p.track.en}
-              {...fadeUp}
-              transition={{ delay: i * 0.1, duration: 0.6 }}
-              className={`group relative flex flex-col rounded-[2.25rem] overflow-hidden border transition-all duration-500 hover:-translate-y-2
-                ${
-                  isFeatured
-                    ? "lg:row-span-1 border-[#CD853F]/55 bg-gradient-to-br from-[#CD853F]/[0.14] via-[#8B4513]/[0.05] to-background shadow-[0_24px_70px_-30px_rgba(205,133,63,0.55)]"
-                    : "border-foreground/10 bg-gradient-to-br from-background to-foreground/[0.025] hover:border-[var(--gold)]/30"
-                }`}
-            >
-              {/* Top accent bar — peru tones for the Educational Tracks flagship */}
-              <div className="group/cover clear-glass-cover relative overflow-hidden">
-                <img src={mediaImage(media?.media ?? {}, `program:${programMedia[i]?.key}`, programMedia[i]?.image ?? programMedia[0].image)} alt={p.track[lang]} width={1280} height={720} loading="lazy" decoding="async" className="aspect-video w-full object-cover" />
-                <CoverReflection />
-              </div>
-              <div
-                className={`h-1.5 w-full ${isFeatured ? "bg-gradient-to-r from-[#CD853F] via-[#E8A87C] to-[#8B4513]" : "bg-gradient-to-r from-foreground/10 via-[var(--gold)]/40 to-foreground/10"}`}
-              />
-
-              {/* Decorative glow */}
-              <div
-                className={`pointer-events-none absolute -top-24 -right-24 size-64 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition duration-700 ${isFeatured ? "bg-[#CD853F]/20" : "bg-[var(--gold)]/10"}`}
-              />
-
-              <div className="relative p-7 lg:p-8 flex flex-col flex-1">
-                {/* Header: icon + track number */}
-                <div className="flex items-start justify-between gap-3">
-                  <div
-                    className={`size-14 grid place-items-center rounded-2xl border ${isFeatured ? "bg-gradient-to-br from-[#CD853F]/35 to-[#8B4513]/25 border-[#CD853F]/50 text-[#E8A87C]" : "bg-foreground/[0.04] border-foreground/10 text-foreground/70"}`}
-                  >
-                    <Icon className="size-7" strokeWidth={1.6} />
+      <div className="prog-shell">
+        <div className="prog-index" role="tablist" aria-label={t("programs_title")}>
+          {tracks.map((tr, i) => (
+            <button key={tr.key} type="button" role="tab" aria-selected={i === idx} onClick={() => setActive(i)} className="prog-tab" data-active={i === idx}>
+              <span className="prog-tab-num">{String(i + 1).padStart(2, "0")}</span>
+              <span className="prog-tab-title">{ar ? tr.titleAr : tr.titleEn}</span>
+              <span className="prog-tab-count">{tr.modules.length} {ar ? "محاور" : "modules"}</span>
+            </button>
+          ))}
+        </div>
+        <motion.article key={cur.key} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }} className="prog-feature" role="tabpanel">
+          <div className="group/cover clear-glass-cover prog-cover">
+            <img src={img(cur, idx)} alt={ar ? cur.titleAr : cur.titleEn} width={1280} height={720} loading="lazy" decoding="async" />
+            <CoverReflection />
+            <span className="prog-cover-num" aria-hidden>{String(idx + 1).padStart(2, "0")}</span>
+          </div>
+          <div className="prog-body">
+            <div className="prog-kicker">{t("programs_track")} · {String(idx + 1).padStart(2, "0")}</div>
+            <h3 className="prog-title">{ar ? cur.titleAr : cur.titleEn}</h3>
+            {(ar ? cur.introAr : cur.introEn) && <p className="prog-intro">{ar ? cur.introAr : cur.introEn}</p>}
+            <ol className="prog-modules">
+              {cur.modules.map((m, k) => (
+                <li key={k}>
+                  <span className="prog-mod-num">{String(k + 1).padStart(2, "0")}</span>
+                  <div>
+                    <div className="prog-mod-name">{ar ? m.nameAr : m.nameEn}</div>
+                    {(ar ? m.descAr : m.descEn) && <div className="prog-mod-desc">{ar ? m.descAr : m.descEn}</div>}
                   </div>
-                  <div className="text-right rtl:text-left">
-                    <div
-                      className={`text-[10px] font-bold uppercase tracking-[0.22em] ${isFeatured ? "text-[#CD853F]" : "text-muted-foreground"}`}
-                    >
-                      {t("programs_track")}
-                    </div>
-                    <div
-                      className={`font-display text-3xl font-extrabold leading-none mt-1 ${isFeatured ? "" : "text-gradient-gold"}`}
-                      style={
-                        isFeatured
-                          ? {
-                              background: "linear-gradient(110deg, #CD853F, #E8A87C, #8B4513)",
-                              WebkitBackgroundClip: "text",
-                              backgroundClip: "text",
-                              color: "transparent",
-                            }
-                          : undefined
-                      }
-                    >
-                      0{i + 1}
-                    </div>
-                  </div>
-                </div>
-
-                <h3 className="mt-6 font-display text-[1.45rem] lg:text-2xl font-bold leading-tight">
-                  {p.track[lang]}
-                </h3>
-                <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-                  {p.intro[lang]}
-                </p>
-
-                {/* Items as a vertical journey */}
-                <ol className="relative mt-7 space-y-4 flex-1">
-                  {/* connector line */}
-                  {p.items.length > 1 && (
-                    <span
-                      className={`absolute top-3 bottom-3 start-[14px] w-px bg-gradient-to-b ${isFeatured ? "from-[#CD853F]/65 via-[#8B4513]/25" : "from-[var(--gold)]/50 via-foreground/15"} to-transparent`}
-                      aria-hidden
-                    />
-                  )}
-                  {p.items.map((it, idx) => (
-                    <li key={it.name.en} className="relative ps-10">
-                      <span
-                        className={`absolute start-0 top-1 size-7 grid place-items-center rounded-full text-[11px] font-extrabold ring-4 ring-background
-                        ${isFeatured ? "bg-[#CD853F] text-background shadow-[0_6px_18px_-6px_rgba(205,133,63,0.85)]" : "bg-foreground/10 text-foreground/80"}`}
-                      >
-                        {idx + 1}
-                      </span>
-                      <div className="font-semibold text-[0.95rem] leading-snug">
-                        {it.name[lang]}
-                      </div>
-                      <div className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
-                        {it.desc[lang]}
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-
-                {/* Footer meta */}
-                <div className="mt-7 pt-5 border-t border-foreground/10 flex items-center justify-between text-[11px] font-bold uppercase tracking-[0.18em]">
-                  <span className="text-muted-foreground">
-                    {p.items.length} {lang === "ar" ? "محاور" : "modules"}
-                  </span>
-                </div>
-              </div>
-            </motion.article>
-          );
-        })}
+                </li>
+              ))}
+            </ol>
+          </div>
+        </motion.article>
       </div>
     </Section>
   );
