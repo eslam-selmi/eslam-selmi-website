@@ -77,3 +77,8 @@
 - [x] Replace template wireframes with simultaneous cursors tracing and revealing actual section elements.
 - [x] Complete maintenance logo drawing and add a saved administrator switch for visitor effects.
 - [x] Test enabled/disabled settings, real section animations and maintenance on desktop/mobile.
+
+# Latest additions glass redesign
+
+- [x] Rebuild the "أحدث الإضافات" section as a navy dotted glass console: live pill, display title, item count, staggered glass cards with per-kind tint, sheen and lift on hover, new-item pulse, relative dates.
+- [x] Verify Arabic and English, light and dark, desktop and mobile: card click opens the viewer, no overlap, no clipping, no horizontal scroll, no console errors.

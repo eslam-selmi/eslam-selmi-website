@@ -982,7 +982,7 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 .prog-tab:hover { color: var(--foreground); }
 .prog-tab[data-active="true"] { color: var(--foreground); padding-inline-start: 1rem; }
 .prog-tab[data-active="true"]::before { transform: scaleY(1); }
-.prog-tab-num { grid-row: span 2; font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; line-height: 1; opacity: .5; }
+.prog-tab-num { grid-row: span 2; font-family: var(--font-heading-en); font-size: 1.6rem; font-weight: 800; line-height: 1; opacity: .5; }
 .prog-tab[data-active="true"] .prog-tab-num { opacity: 1; color: var(--accent); }
 .prog-tab-title { font-weight: 700; font-size: 1rem; line-height: 1.3; }
 .prog-tab-count { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; opacity: .7; }
@@ -990,14 +990,333 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 @media (min-width: 768px) { .prog-feature { grid-template-columns: 1fr 1.15fr; } }
 .prog-cover { position: relative; overflow: hidden; min-height: 240px; }
 .prog-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.prog-cover-num { position: absolute; inset-block-end: .5rem; inset-inline-start: 1rem; font-family: var(--font-display); font-size: 5rem; font-weight: 800; line-height: 1; color: var(--cover-silver, oklch(0.94 0.005 270)); opacity: .9; text-shadow: 0 2px 24px color-mix(in oklab, var(--foreground) 35%, transparent); pointer-events: none; }
+.prog-cover-num { position: absolute; inset-block-end: .5rem; inset-inline-start: 1rem; font-family: var(--font-heading-en); font-size: 5rem; font-weight: 800; line-height: 1; color: var(--cover-silver, oklch(0.94 0.005 270)); opacity: .9; text-shadow: 0 2px 24px color-mix(in oklab, var(--foreground) 35%, transparent); pointer-events: none; }
 .prog-body { padding: 1.75rem; }
 @media (min-width: 1024px) { .prog-body { padding: 2.5rem; } }
 .prog-kicker { font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; font-weight: 800; color: var(--accent); }
-.prog-title { margin-top: .6rem; font-family: var(--font-display); font-size: clamp(1.5rem, 2.4vw, 2.1rem); font-weight: 800; line-height: 1.15; }
+.prog-title { margin-top: .6rem; font-family: var(--font-heading-en); font-size: clamp(1.5rem, 2.4vw, 2.1rem); font-weight: 800; line-height: 1.15; }
 .prog-intro { margin-top: .8rem; color: var(--muted-foreground); line-height: 1.75; font-size: .95rem; }
 .prog-modules { margin-top: 1.5rem; border-block-start: 1px solid color-mix(in oklab, var(--foreground) 12%, transparent); }
 .prog-modules li { display: grid; grid-template-columns: 2.5rem 1fr; gap: .75rem; padding: 1rem 0; border-block-end: 1px solid color-mix(in oklab, var(--foreground) 8%, transparent); }
-.prog-mod-num { font-family: var(--font-display); font-weight: 800; color: var(--muted-foreground); font-size: .9rem; padding-top: .1rem; }
+.prog-mod-num { font-family: var(--font-heading-en); font-weight: 800; color: var(--muted-foreground); font-size: .9rem; padding-top: .1rem; }
 .prog-mod-name { font-weight: 700; line-height: 1.35; }
 .prog-mod-desc { margin-top: .3rem; font-size: .85rem; color: var(--muted-foreground); line-height: 1.65; }
+
+/* ---------- LATEST ADDITIONS: glass console ---------- */
+.additions-panel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 40px;
+  border: 1px solid var(--booking-border);
+  background-color: var(--booking-surface);
+  background-image:
+    radial-gradient(circle, var(--booking-dot) 1px, transparent 1.5px),
+    radial-gradient(ellipse at 96% -12%, color-mix(in oklab, var(--booking-cyan) 26%, transparent), transparent 46%),
+    radial-gradient(ellipse at -8% 110%, color-mix(in oklab, var(--lavender-deep) 24%, transparent), transparent 52%);
+  background-size: 26px 26px, 100% 100%, 100% 100%;
+  box-shadow: var(--booking-shadow);
+  color: var(--booking-foreground);
+}
+.additions-panel::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  z-index: 2;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--booking-cyan) 55%, transparent), transparent);
+}
+.additions-panel::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset-inline-start: -16%;
+  inset-block-end: -300px;
+  width: 132%;
+  height: 420px;
+  border-radius: 50%;
+  border-top: 1px solid color-mix(in oklab, var(--booking-cyan) 22%, transparent);
+  background: linear-gradient(180deg, color-mix(in oklab, var(--booking-cyan) 7%, transparent), transparent 60%);
+  transform: rotate(-3deg);
+  pointer-events: none;
+}
+.additions-scan {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  width: 26%;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--booking-cyan), transparent);
+  animation: additions-scan 7.5s linear infinite;
+}
+@keyframes additions-scan {
+  0% { transform: translateX(-110%); opacity: 0; }
+  8% { opacity: 1; }
+  72% { opacity: 1; }
+  84%, 100% { transform: translateX(430%); opacity: 0; }
+}
+.additions-watermark {
+  position: absolute;
+  z-index: -1;
+  inset-inline-end: -30px;
+  inset-block-start: -28px;
+  width: 210px;
+  height: 210px;
+  color: color-mix(in oklab, var(--booking-cyan) 9%, transparent);
+  transform: rotate(-8deg);
+  pointer-events: none;
+}
+.additions-head {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  padding-block-end: 1.15rem;
+  margin-block-end: 1.4rem;
+  border-block-end: 1px solid color-mix(in oklab, var(--booking-foreground) 10%, transparent);
+}
+.additions-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  border-radius: 999px;
+  padding: .35rem .8rem;
+  border: 1px solid color-mix(in oklab, var(--booking-cyan) 32%, transparent);
+  background: color-mix(in oklab, var(--booking-cyan) 11%, transparent);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--booking-foreground);
+}
+.additions-live {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--booking-cyan);
+  animation: additions-blip 2.6s ease-out infinite;
+}
+@keyframes additions-blip {
+  0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--booking-cyan) 55%, transparent); }
+  70% { box-shadow: 0 0 0 7px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+.additions-title {
+  margin-top: .7rem;
+  font-family: var(--font-heading-en);
+  font-size: clamp(1.55rem, 3.2vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -.01em;
+  color: var(--booking-foreground);
+}
+.additions-sub {
+  margin-top: .55rem;
+  max-width: 46ch;
+  font-size: .9rem;
+  line-height: 1.7;
+  color: var(--booking-muted);
+}
+.additions-count { display: flex; align-items: baseline; gap: .45rem; }
+.additions-count-num {
+  font-family: var(--font-heading-en);
+  font-size: 2.1rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--booking-cyan);
+}
+.additions-count-label {
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--booking-muted);
+}
+.additions-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: .8rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 640px) { .additions-grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1024px) { .additions-grid { grid-template-columns: repeat(3, 1fr); gap: .95rem; } }
+.additions-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+  gap: .85rem;
+  padding: 1rem 1.05rem;
+  text-align: start;
+  cursor: pointer;
+  border-radius: 20px;
+  border: 1px solid color-mix(in oklab, var(--booking-foreground) 11%, transparent);
+  background: linear-gradient(145deg,
+    color-mix(in oklab, var(--booking-foreground) 8%, transparent),
+    color-mix(in oklab, var(--booking-foreground) 2.5%, transparent) 52%,
+    color-mix(in oklab, var(--acc) 7%, transparent));
+  transition: transform .38s cubic-bezier(.22,.61,.36,1), border-color .38s ease, box-shadow .38s ease;
+  animation: additions-rise .62s cubic-bezier(.22,.61,.36,1) both;
+  animation-delay: calc(var(--i, 0) * 55ms);
+}
+@keyframes additions-rise {
+  from { opacity: 0; transform: translateY(16px) scale(.985); }
+  to { opacity: 1; transform: none; }
+}
+.additions-card::before {
+  content: "";
+  position: absolute;
+  inset-inline: 14%;
+  top: 0;
+  z-index: 2;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--acc) 55%, transparent), transparent);
+  opacity: 0;
+  transition: opacity .38s ease;
+}
+.additions-card::after {
+  content: "";
+  position: absolute;
+  top: -55%;
+  bottom: -55%;
+  left: -60%;
+  width: 40%;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent, color-mix(in oklab, var(--cover-silver) 20%, transparent), transparent);
+  transform: skewX(-14deg);
+  opacity: 0;
+  transition: transform .85s cubic-bezier(.3,.7,.3,1), opacity .35s ease;
+}
+.additions-card:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in oklab, var(--acc) 52%, transparent);
+  box-shadow: 0 22px 42px -24px color-mix(in oklab, var(--acc) 70%, transparent);
+}
+.additions-card:hover::before { opacity: 1; }
+.additions-card:hover::after { opacity: 1; transform: skewX(-14deg) translateX(430%); }
+.additions-card:focus-visible { outline: 2px solid var(--booking-cyan); outline-offset: 3px; }
+.additions-tile,
+.additions-body,
+.additions-arrow { position: relative; z-index: 2; }
+.additions-tile {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  border: 1px solid color-mix(in oklab, var(--acc) 38%, transparent);
+  background: color-mix(in oklab, var(--acc) 13%, transparent);
+  color: var(--acc);
+  transition: transform .38s cubic-bezier(.22,.61,.36,1), background .38s ease, box-shadow .38s ease;
+}
+.additions-card:hover .additions-tile {
+  transform: scale(1.07) rotate(-4deg);
+  background: color-mix(in oklab, var(--acc) 22%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--acc) 10%, transparent);
+}
+.additions-body { display: grid; gap: .28rem; min-width: 0; }
+.additions-label {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--acc) 85%, var(--booking-foreground));
+}
+.additions-card-title {
+  font-size: .95rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--booking-foreground);
+}
+.additions-card-sub {
+  font-size: .78rem;
+  line-height: 1.55;
+  color: var(--booking-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.additions-meta {
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  margin-top: .15rem;
+  font-size: .68rem;
+  letter-spacing: .06em;
+  color: color-mix(in oklab, var(--booking-muted) 80%, transparent);
+}
+.additions-new-dot {
+  position: relative;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--booking-cyan);
+}
+.additions-new-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--booking-cyan) 70%, transparent);
+  animation: additions-pulse 2.3s ease-out infinite;
+}
+@keyframes additions-pulse {
+  0% { transform: scale(1); opacity: .65; }
+  100% { transform: scale(3); opacity: 0; }
+}
+.additions-arrow {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--booking-foreground) 14%, transparent);
+  color: color-mix(in oklab, var(--booking-foreground) 55%, transparent);
+  transition: transform .38s cubic-bezier(.22,.61,.36,1), color .38s ease, border-color .38s ease, background .38s ease;
+}
+.additions-card:hover .additions-arrow {
+  color: var(--booking-cyan);
+  border-color: color-mix(in oklab, var(--booking-cyan) 45%, transparent);
+  background: color-mix(in oklab, var(--booking-cyan) 12%, transparent);
+  transform: translate(3px, -3px);
+}
+html[dir="rtl"] .additions-card:hover .additions-arrow { transform: translate(-3px, -3px); }
+.additions-empty {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  gap: .5rem;
+  padding: 2.2rem 1rem;
+  border-radius: 20px;
+  border: 1px dashed color-mix(in oklab, var(--booking-foreground) 16%, transparent);
+  background: color-mix(in oklab, var(--booking-foreground) 3%, transparent);
+  color: var(--booking-muted);
+  font-size: .85rem;
+}
+@media (max-width: 767px) {
+  .additions-panel { border-radius: 26px; }
+  .additions-card { border-radius: 16px; padding: .85rem .9rem; }
+  .additions-card::after { display: none; }
+  .additions-scan { display: none; }
+  .additions-watermark { width: 130px; height: 130px; inset-inline-end: -18px; inset-block-start: -16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .additions-card { animation: none; }
+  .additions-card, .additions-tile, .additions-arrow,
+  .additions-card::before, .additions-card::after { transition: none; }
+  .additions-scan, .additions-live, .additions-new-dot::after { animation: none; }
+  .additions-card:hover { transform: none; }
+  .additions-card:hover .additions-tile { transform: none; }
+}

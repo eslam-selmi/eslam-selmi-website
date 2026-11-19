@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
-import { Sparkles, FileText, Link as LinkIcon, Video, FileType2, PlaySquare } from "lucide-react";
+import {
+  Sparkles,
+  FileText,
+  Link as LinkIcon,
+  Video,
+  FileType2,
+  PlaySquare,
+  ArrowUpRight,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { MediaViewerModal, type MediaItem } from "./MediaViewerModal";
@@ -65,6 +73,28 @@ function iconFor(kind: Addition["kind"]) {
   return LinkIcon;
 }
 
+/** Per-kind tint, taken from the site palette tokens only. */
+const KIND_TOKEN: Record<Addition["kind"], string> = {
+  link: "var(--accent)",
+  file: "var(--cover-silver)",
+  pdf: "var(--lavender)",
+  video: "var(--booking-cyan)",
+  embed: "var(--booking-cyan)",
+};
+
+const NEW_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
+
+function relativeDate(iso: string, isAr: boolean) {
+  const then = new Date(iso).getTime();
+  if (!Number.isFinite(then)) return "";
+  const days = Math.round((Date.now() - then) / (24 * 60 * 60 * 1000));
+  const rtf = new Intl.RelativeTimeFormat(isAr ? "ar" : "en", { numeric: "auto" });
+  if (days < 1) return rtf.format(0, "day");
+  if (days < 30) return rtf.format(-days, "day");
+  if (days < 365) return rtf.format(-Math.round(days / 30), "month");
+  return rtf.format(-Math.round(days / 365), "year");
+}
+
 export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
   const { lang } = useI18n();
   const isAr = lang === "ar";
@@ -97,29 +127,41 @@ export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
   const subtitle = settings ? (isAr ? settings.subtitle_ar : settings.subtitle_en) : null;
 
   return (
-    <section
-      id="latest-additions"
-      className="rounded-3xl border border-[var(--gold)]/25 bg-gradient-to-br from-[var(--gold)]/[0.07] via-white/[0.02] to-transparent p-6 sm:p-8"
-    >
-      <div className="flex items-start justify-between gap-4 mb-5 flex-wrap">
-        <div>
-          <h2 className="text-2xl sm:text-3xl font-bold">{title}</h2>
-          {subtitle && <p className="text-sm text-white/60 mt-1.5 max-w-xl">{subtitle}</p>}
-        </div>
+    <section id="latest-additions" className="additions-panel px-5 py-6 sm:px-8 sm:py-9">
+      <span className="additions-scan" aria-hidden />
+      <Sparkles className="additions-watermark" aria-hidden />
 
-      </div>
+      <header className="additions-head">
+        <div className="min-w-0">
+          <span className="additions-pill">
+            <span className="additions-live" aria-hidden />
+            {isAr ? "مستجدات" : "Just added"}
+          </span>
+          <h2 className="additions-title">{title}</h2>
+          {subtitle && <p className="additions-sub">{subtitle}</p>}
+        </div>
+        {items.length > 0 && (
+          <div className="additions-count">
+            <span className="additions-count-num">{items.length}</span>
+            <span className="additions-count-label">{isAr ? "إضافة" : items.length === 1 ? "item" : "items"}</span>
+          </div>
+        )}
+      </header>
 
       {items.length === 0 ? (
-        <p className="text-sm text-white/40 text-center py-6">
-          {isAr ? "لا توجد إضافات بعد." : "No additions yet."}
-        </p>
+        <div className="additions-empty">
+          <Sparkles className="size-5" aria-hidden />
+          <p>{isAr ? "لا توجد إضافات بعد." : "No additions yet."}</p>
+        </div>
       ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {items.map((it) => {
+        <div className="additions-grid">
+          {items.map((it, idx) => {
             const Icon = iconFor(it.kind);
             const t = isAr ? it.title_ar : it.title_en;
             const sub = isAr ? it.subtitle_ar : it.subtitle_en;
             const isStorage = it.kind === "file" || it.kind === "pdf" || (it.kind === "video" && !/^https?:\/\//i.test(it.url));
+            const isNew = Date.now() - new Date(it.created_at).getTime() < NEW_WINDOW_MS;
+            const when = relativeDate(it.created_at, isAr);
             return (
               <button
                 key={it.id}
@@ -133,22 +175,26 @@ export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
                     isStoragePath: isStorage,
                   })
                 }
-                className="group text-start rounded-2xl border border-white/10 bg-white/[0.04] p-4 hover:border-[var(--gold)]/45 hover:bg-white/[0.06] transition-all hover:-translate-y-0.5"
+                className="additions-card"
+                style={{ "--i": idx, "--acc": KIND_TOKEN[it.kind] } as React.CSSProperties}
               >
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[var(--gold)]/15 border border-[var(--gold)]/30 flex items-center justify-center shrink-0">
-                    <Icon className="w-4 h-4 text-[var(--gold)]" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    {it.custom_label && (
-                      <p className="text-[10px] text-[var(--gold)]/80 uppercase tracking-wider mb-0.5">
-                        {it.custom_label}
-                      </p>
-                    )}
-                    <p className="font-bold text-sm leading-tight truncate">{t}</p>
-                    {sub && <p className="text-xs text-white/55 mt-1 line-clamp-2">{sub}</p>}
-                  </div>
-                </div>
+                <span className="additions-tile" aria-hidden>
+                  <Icon className="size-[18px]" />
+                </span>
+                <span className="additions-body">
+                  {it.custom_label && <span className="additions-label">{it.custom_label}</span>}
+                  <span className="additions-card-title">{t}</span>
+                  {sub && <span className="additions-card-sub">{sub}</span>}
+                  {when && (
+                    <span className="additions-meta">
+                      {isNew && <span className="additions-new-dot" aria-hidden />}
+                      <span>{when}</span>
+                    </span>
+                  )}
+                </span>
+                <span className="additions-arrow" aria-hidden>
+                  <ArrowUpRight className="size-[15px] rtl-flip" />
+                </span>
               </button>
             );
           })}
