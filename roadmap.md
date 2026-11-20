@@ -94,3 +94,4 @@
 - [x] Disable the saved maintenance setting through administration and read it back; leave section visibility and private-data permissions unchanged.
 - [x] Verify first-time and returning signed-out visitors on preview and published custom domain, plus signed-in homepage browsing on phone/desktop in both themes: all 15 configured sections load, with no failed images; interviews have no published records.
 - [x] Run all 9 public access/security regression tests successfully.
+- [x] Sweep homepage sources and live public read policies: hero/profile/footer, pillars/services/podcast, contracts/partners, programs/media, courses/reviews, additions, countries/snapshots, testimonials, maintenance, popups and deferred/build effects all allow published content without login; hidden/private content stays protected.
