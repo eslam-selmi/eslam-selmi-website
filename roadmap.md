@@ -18,6 +18,8 @@
 
 # Hero cleanup
 
+- [x] Remove the three portrait statistics and replace spinning rings/floating chips with independently drawn silver/cyan linework and a signature stroke; verify portrait loading, license opening, no overflow on phone/desktop in both themes, and reduced-motion behavior.
+
 - [x] Remove the "احجز جلسة فردية مجانية" button and every WhatsApp icon from the hero; verify desktop and mobile.
 
 

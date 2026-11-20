@@ -1,6 +1,6 @@
 import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
 import { useRef, useState } from "react";
-import { BadgeCheck, ChevronLeft, ChevronRight, Globe2, Linkedin, Mail, TrendingUp, Users } from "lucide-react";
+import { BadgeCheck, ChevronLeft, ChevronRight, Linkedin, Mail } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -152,51 +152,24 @@ export function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* Right: Portrait — bare cutout, no frame or background, orbiting glass accents */}
+        {/* Transparent portrait with open editorial linework, no statistics or frame. */}
         <motion.div
           initial={false}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="lg:col-span-5 order-1 lg:order-2 relative"
         >
-          <div className="relative mx-auto w-full max-w-[400px] sm:max-w-[440px] lg:max-w-[480px]">
-            {/* soft ambient glow — light only, no frame */}
-            <div
-              className="pointer-events-none absolute -inset-10 -z-10"
-              style={{
-                background:
-                  "radial-gradient(ellipse 55% 50% at 50% 42%, color-mix(in oklab, var(--accent) 24%, transparent), transparent 70%), radial-gradient(ellipse 45% 40% at 50% 92%, color-mix(in oklab, var(--navy) 30%, transparent), transparent 75%)",
-              }}
-              aria-hidden
-            />
-
-            {/* rotating dashed orbit with a travelling light dot */}
-            <motion.div
-              className="pointer-events-none absolute inset-x-2 top-2 aspect-square"
-              animate={isMobile || reduceMotion ? undefined : { rotate: 360 }}
-              transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-              aria-hidden
-            >
-              <svg viewBox="0 0 100 100" className="h-full w-full opacity-60">
-                <circle cx="50" cy="50" r="48.5" fill="none" stroke="var(--accent)" strokeOpacity="0.35" strokeWidth="0.35" strokeDasharray="1.5 3" />
-              </svg>
-              <span
-                className="absolute left-1/2 top-0 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full"
-                style={{ background: "var(--accent)", boxShadow: "0 0 12px var(--accent)" }}
-              />
-            </motion.div>
-
-            {/* counter-rotating inner arc */}
-            <motion.div
-              className="pointer-events-none absolute inset-x-10 top-10 aspect-square"
-              animate={isMobile || reduceMotion ? undefined : { rotate: -360 }}
-              transition={{ duration: 26, repeat: Infinity, ease: "linear" }}
-              aria-hidden
-            >
-              <svg viewBox="0 0 100 100" className="h-full w-full">
-                <circle cx="50" cy="50" r="48" fill="none" stroke="var(--accent)" strokeOpacity="0.5" strokeWidth="0.6" strokeDasharray="20 282" strokeLinecap="round" />
-              </svg>
-            </motion.div>
+          <div className="hero-portrait-stage relative mx-auto w-full max-w-[400px] sm:max-w-[440px] lg:max-w-[480px]">
+            <svg className="hero-portrait-lines" viewBox="0 0 480 480" fill="none" aria-hidden="true">
+              <g className="hero-line-guides">
+                <path d="M22 355V205Q22 185 42 185H106M374 110H420Q448 110 448 138V288" />
+                <path d="M46 389L112 323M366 326L431 391M66 145V119M53 132H79M399 66V90M387 78H411" />
+              </g>
+              <path className="hero-line-trace hero-line-trace-first" pathLength="100" d="M18 335V229Q18 197 50 197H94" />
+              <path className="hero-line-trace hero-line-trace-second" pathLength="100" d="M386 122H417Q436 122 436 141V270" />
+              <path className="hero-line-trace hero-line-trace-third" pathLength="100" d="M40 404L90 354M388 352L440 404" />
+              <path className="hero-line-detail" d="M12 360H32M12 367H26M438 293H458M444 300H458" />
+            </svg>
 
             {/* portrait — transparent cutout, floating */}
             <motion.img
@@ -210,41 +183,7 @@ export function Hero() {
               fetchPriority="high"
               decoding="async"
               className="hero-portrait relative z-10 mx-auto w-full"
-              style={{
-                filter: "drop-shadow(0 34px 44px color-mix(in oklab, var(--navy-deep) 55%, transparent))",
-              }}
-              animate={isMobile || reduceMotion ? undefined : { y: [0, -10, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
             />
-
-            {/* floating glass stat chips */}
-            {[
-              { icon: Users, n: "3000+", l: t("stat_trainees"), pos: "top-[14%] start-1 sm:-start-6", delay: 0 },
-              { icon: Globe2, n: "12+", l: t("nav_clients"), pos: "top-[40%] end-1 sm:-end-6", delay: 1.4 },
-              { icon: TrendingUp, n: "15+", l: t("stat_programs"), pos: "bottom-[30%] start-2 sm:-start-8", delay: 2.4 },
-            ].map(({ icon: Icon, n, l, pos, delay }) => (
-              <motion.div
-                key={l}
-                initial={false}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.8 + delay * 0.15, duration: 0.5 }}
-                className={`absolute z-20 ${pos}`}
-              >
-                <motion.div
-                  animate={isMobile || reduceMotion ? undefined : { y: [0, -8, 0] }}
-                  transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut", delay }}
-                  className="glass-panel flex items-center gap-2 rounded-2xl px-3 py-2"
-                >
-                  <span className="grid size-7 shrink-0 place-items-center rounded-xl bg-accent/15 text-accent">
-                    <Icon className="size-4" />
-                  </span>
-                  <span className="leading-tight">
-                    <span className="block font-display text-sm font-bold text-foreground">{n}</span>
-                    <span className="block text-[10px] text-muted-foreground">{l}</span>
-                  </span>
-                </motion.div>
-              </motion.div>
-            ))}
 
             {/* signature name plate */}
             <motion.div
@@ -256,11 +195,7 @@ export function Hero() {
               <span className="hero-name-shine font-display font-extrabold leading-none text-[clamp(1.9rem,4vw,3rem)]">
                 {lang === "ar" ? nameAr : nameEn}
               </span>
-              <div
-                className="mx-auto mt-3 h-px w-40"
-                style={{ background: "linear-gradient(90deg, transparent, var(--accent), transparent)" }}
-                aria-hidden
-              />
+              <svg className="hero-signature-rule" viewBox="0 0 180 14" fill="none" aria-hidden="true"><path pathLength="100" d="M4 10Q52 2 94 7T176 4" /></svg>
             </motion.div>
           </div>
         </motion.div>
