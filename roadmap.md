@@ -88,3 +88,9 @@
 - [x] Replace the marked program index with compact full-width selectors, readable labels and a clear selected state on mobile and desktop.
 - [x] Remove dotted background textures from latest additions, countries and consultation booking without changing their content.
 - [x] Verify all three real program selections and keyboard navigation on mobile/desktop in light/dark themes, without overflow, and all three backgrounds without dots; 3 program tests pass.
+
+# Verify public homepage availability
+
+- [x] Disable the saved maintenance setting through administration and read it back; leave section visibility and private-data permissions unchanged.
+- [x] Verify first-time and returning signed-out visitors on preview and published custom domain, plus signed-in homepage browsing on phone/desktop in both themes: all 15 configured sections load, with no failed images; interviews have no published records.
+- [x] Run all 9 public access/security regression tests successfully.
