@@ -7,6 +7,7 @@ import { BuildEffectsPanel } from "@/components/admin/BuildEffectsPanel";
 import { GraduateToolsPanel } from "@/components/admin/GraduateToolsPanel";
 import { ProgramsPanel } from "@/components/admin/ProgramsPanel";
 import { ServicesPanel } from "@/components/admin/panels/ServicesPanel";
+import { PillarsPanel } from "@/components/admin/panels/PillarsPanel";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Eye, EyeOff, Save, Plus, Trash2, Pencil, X, Calendar, Clock, Link as LinkIcon, Wrench, Power } from "lucide-react";
@@ -44,6 +45,7 @@ export function SiteManagementPanel() {
       <GraduateToolsPanel />
       <ProgramsPanel />
       <ServicesPanel />
+      <PillarsPanel />
       <div className="dash-card p-1.5 inline-flex gap-1 flex-wrap">
         {[
           { id: "profile", label: t("الصورة والتواصل والحقوق", "Portrait, contact & footer") },

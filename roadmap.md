@@ -1,5 +1,10 @@
 # Match administration to trainee portal
 
+# Three pillars administration
+
+- [x] Add section headings, bilingual pillar texts, icon selection, ordering, visibility, addition and deletion within Site management.
+- [x] Verified title/description/icon save and reload, all three public/admin items on phone/desktop in both themes without overflow/errors, and saved visibility; restored original content and passed 4 parser tests.
+
 # Service administration
 
 - [x] Add bilingual service and section editing, icons, ordering, visibility, addition and deletion in existing administration.

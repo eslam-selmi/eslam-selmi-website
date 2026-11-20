@@ -111,13 +111,17 @@ import { programMedia, mediaImage } from "@/lib/site-media-data";
 import { CoverReflection } from "@/components/CoverReflection";
 import { DEFAULT_PROGRAM_TRACKS, useSitePrograms, type ProgramTrack } from "@/lib/site-programs";
 import { Button } from "@/components/ui/button";
+import { DEFAULT_PILLARS, pillarIcons, useSitePillars } from "@/lib/site-pillars";
 
 export function Pillars() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
+  const { data: config = DEFAULT_PILLARS } = useSitePillars();
   return (
-    <Section id="pillars" eyebrow={t("pillars_eyebrow")} title={t("pillars_title")}>
+    <Section id="pillars" eyebrow={lang === "ar" ? config.eyebrowAr : config.eyebrowEn} title={lang === "ar" ? config.titleAr : config.titleEn}>
       <div className="grid md:grid-cols-3 gap-5">
-        {PILLARS.map((p, i) => (
+        {config.pillars.filter(p => p.visible).map((p, i) => {
+          const Icon = pillarIcons[p.icon];
+          return (
           <motion.div
             key={p.key}
             {...fadeUp}
@@ -125,19 +129,19 @@ export function Pillars() {
             className="relative glass-panel rounded-[2rem] p-7 overflow-hidden group hover:-translate-y-1 transition"
           >
             <div
-              className={`absolute -top-20 -end-20 size-48 rounded-full bg-gradient-to-br ${p.color} blur-3xl opacity-60 group-hover:opacity-100 transition`}
+              className={`absolute -top-20 -end-20 size-48 rounded-full bg-gradient-to-br ${PILLARS[i % PILLARS.length]?.color ?? "from-accent/35 to-primary/10"} blur-3xl opacity-60 group-hover:opacity-100 transition`}
             />
             <div className="relative">
               <div className="size-14 rounded-2xl bg-gradient-to-br from-[var(--gold)] to-[var(--gold-soft)] grid place-items-center text-accent-foreground shadow-lg">
-                <p.icon className="size-7" />
+                <Icon className="size-7" />
               </div>
-              <h3 className="mt-5 font-display text-2xl font-bold">{t(`pillar_${p.key}`)}</h3>
+              <h3 className="mt-5 font-display text-2xl font-bold">{lang === "ar" ? p.titleAr : p.titleEn}</h3>
               <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-                {t(`pillar_${p.key}_desc`)}
+                {lang === "ar" ? p.descAr : p.descEn}
               </p>
             </div>
           </motion.div>
-        ))}
+        ); })}
       </div>
     </Section>
   );
