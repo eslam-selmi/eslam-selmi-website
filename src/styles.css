@@ -786,6 +786,16 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
   }
   .home-page :is(.blur-3xl, .blur-2xl) { display: none; }
   .home-page .hero-portrait { filter: none !important; }
+  /* The credential badge's one-time glass reveal must survive the mobile kill switch. */
+  .credential-badge::before {
+    animation-duration: 2300ms !important;
+    animation-delay: 620ms !important;
+    backdrop-filter: none !important;
+  }
+  .credential-badge::after {
+    animation-duration: 1500ms !important;
+    animation-delay: 720ms !important;
+  }
 }
 
 .home-section-placeholder { min-height: 420px; scroll-margin-top: 110px; }
