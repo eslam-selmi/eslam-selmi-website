@@ -14,6 +14,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --font-sans: var(--font-body-en);
+  --font-mono: ui-monospace, 'IBM Plex Sans Arabic', monospace;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -97,8 +99,8 @@
   --cover-reflection-gradient: linear-gradient(118deg, transparent 12%, color-mix(in oklab, var(--cover-highlight) 15%, transparent) 12.2%, color-mix(in oklab, var(--cover-highlight) 4%, transparent) 33%, transparent 33.2%, transparent 68%, color-mix(in oklab, var(--cover-silver) 10%, transparent) 68.2%, transparent 85%);
   --cover-edge-shadow: inset 0 1px 0 color-mix(in oklab, var(--cover-highlight) 50%, transparent), inset 0 -1px 0 color-mix(in oklab, var(--cover-silver) 24%, transparent);
 
-  --font-heading-en: 'Sora', ui-sans-serif, system-ui, sans-serif;
-  --font-body-en: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  --font-heading-en: 'Sora', 'IBM Plex Sans Arabic', ui-sans-serif, system-ui, sans-serif;
+  --font-body-en: 'Manrope', 'IBM Plex Sans Arabic', ui-sans-serif, system-ui, sans-serif;
   --font-heading-ar: 'IBM Plex Sans Arabic', 'Tajawal', sans-serif;
   --font-body-ar: 'IBM Plex Sans Arabic', 'Tajawal', sans-serif;
 }
@@ -851,13 +853,13 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
   --certificate-muted: oklch(0.49 0.03 245); --certificate-accent: oklch(0.55 0.1 210);
   --certificate-line: oklch(0.82 0.025 225); --certificate-silver: oklch(0.94 0.008 230);
   width:1600px; height:1131px; position:relative; overflow:hidden; background:var(--certificate-paper); color:var(--certificate-ink);
-  font-family:Manrope,sans-serif; font-weight:400; letter-spacing:0; text-align:center; isolation:isolate;
+  font-family:Manrope,"IBM Plex Sans Arabic",sans-serif; font-weight:400; letter-spacing:0; text-align:center; isolation:isolate;
 }
 .certificate-ar { font-family:"IBM Plex Sans Arabic",sans-serif; }
 .certificate-sheet h1,.certificate-sheet h2,.certificate-sheet h3,.certificate-sheet p { margin:0; letter-spacing:0; }
-.certificate-sheet h1,.certificate-sheet h2,.certificate-sheet h3 { font-family:Sora,sans-serif; font-weight:600; }
+.certificate-sheet h1,.certificate-sheet h2,.certificate-sheet h3 { font-family:Sora,"IBM Plex Sans Arabic",sans-serif; font-weight:600; }
 .certificate-ar h1,.certificate-ar h2,.certificate-ar h3 { font-family:"IBM Plex Sans Arabic",sans-serif; }
-.certificate-spine { position:absolute; inset:0 auto 0 0; width:54px; background:var(--certificate-ink); color:var(--certificate-silver); display:flex; align-items:center; justify-content:space-between; padding:60px 0; writing-mode:vertical-rl; font:600 12px Manrope,sans-serif; }
+.certificate-spine { position:absolute; inset:0 auto 0 0; width:54px; background:var(--certificate-ink); color:var(--certificate-silver); display:flex; align-items:center; justify-content:space-between; padding:60px 0; writing-mode:vertical-rl; font:600 12px Manrope,"IBM Plex Sans Arabic",sans-serif; }
 .certificate-lines { position:absolute; inset:0; width:100%; height:100%; color:var(--certificate-line); opacity:.28; z-index:-1; }
 .certificate-inner-frame { position:absolute; inset:28px 28px 28px 78px; border:1px solid var(--certificate-line); z-index:-1; }
 .certificate-header { display:flex; justify-content:space-between; align-items:center; padding:66px 92px 0 120px; text-align:start; }

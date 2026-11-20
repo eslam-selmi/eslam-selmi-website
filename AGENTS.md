@@ -23,6 +23,7 @@
 - Below-fold homepage sections use intersection-gated lazy modules with hash-link activation so their code, reads and media do not compete with the first screen.
 - Booking dialogs load on the first booking request through DeferredBookingDialog, with initiallyOpen preserving that request; first-screen hero content remains visible in server markup rather than awaiting animations.
 - Site fonts are local Fontsource subsets with swap behavior and essential weights only; certificate exports still embed their own fonts to avoid external render-blocking requests.
+- English font stacks include the site's Arabic font before system fallbacks, including sans/mono utilities and certificate text, so mixed-language content uses the correct glyphs without DOM rewriting.
 - Known portrait and snapshot originals use immutable optimized asset variants for display, while administrator replacements and full-size lightbox originals remain unchanged.
 - Mobile homepage marquees use native swipe rails without repeated copies or background blur; desktop keeps its existing presentation.
 - Program, course and consultation covers use shared `site.media` CMS query options and stable program/course keys; administrator uploads retain the existing signed-link storage workflow without altering course records or permissions.
