@@ -3,11 +3,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { invalidateSiteContent } from "@/lib/site-content";
 import { SiteProfilePanel } from "@/components/admin/SiteProfilePanel";
-import { BuildEffectsPanel } from "@/components/admin/BuildEffectsPanel";
-import { GraduateToolsPanel } from "@/components/admin/GraduateToolsPanel";
-import { ProgramsPanel } from "@/components/admin/ProgramsPanel";
-import { ServicesPanel } from "@/components/admin/panels/ServicesPanel";
-import { PillarsPanel } from "@/components/admin/panels/PillarsPanel";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Eye, EyeOff, Save, Plus, Trash2, Pencil, X, Calendar, Clock, Link as LinkIcon, Wrench, Power } from "lucide-react";
@@ -34,35 +29,8 @@ type Popup = {
   is_active: boolean;
 };
 
-export function SiteManagementPanel() {
-  const { lang } = useI18n();
-  const t = (a: string, b: string) => (lang === "ar" ? a : b);
-  const [sub, setSub] = useState<"profile" | "content" | "popups" | "maintenance">("profile");
-
-  return (
-    <div className="space-y-4">
-      <BuildEffectsPanel />
-      <GraduateToolsPanel />
-      <ProgramsPanel />
-      <ServicesPanel />
-      <PillarsPanel />
-      <div className="dash-card p-1.5 inline-flex gap-1 flex-wrap">
-        {[
-          { id: "profile", label: t("الصورة والتواصل والحقوق", "Portrait, contact & footer") },
-          { id: "content", label: t("محتوى الموقع", "Site content") },
-          { id: "popups", label: t("النوافذ المنبثقة", "Popups") },
-          { id: "maintenance", label: t("وضع الصيانة", "Maintenance") },
-        ].map((x) => (
-          <Button type="button" variant={sub === x.id ? "default" : "ghost"}
-            key={x.id}
-            onClick={() => setSub(x.id as any)}
-            className="px-4 h-9 rounded-md text-sm font-semibold"
-          >{x.label}</Button>
-        ))}
-      </div>
-      {sub === "profile" ? <SiteProfilePanel /> : sub === "content" ? <ContentPanel /> : sub === "popups" ? <PopupsPanel /> : <MaintenancePanel />}
-    </div>
-  );
+export function SiteManagementPanel({ section = "profile" }: { section?: "profile" | "content" | "popups" | "maintenance" }) {
+  return section === "profile" ? <SiteProfilePanel /> : section === "content" ? <ContentPanel /> : section === "popups" ? <PopupsPanel /> : <MaintenancePanel />;
 }
 
 /* ---------------- CONTENT ---------------- */

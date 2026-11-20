@@ -60,6 +60,7 @@ import { TraineeDrawer } from "@/components/admin/TraineeDrawer";
 import { ExecutiveOverview } from "@/components/admin/ExecutiveOverview";
 import { CourseFeedbackPanel } from "@/components/admin/CourseFeedbackPanel";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ActivationsPanel } from "@/components/admin/panels/ActivationsPanel";
 import { LatestAdditionsPanel, SnapshotsPanel, TestimonialsPanel } from "@/components/admin/panels/ContentPanels";
 import { CouponsPanel } from "@/components/admin/panels/Coupons";
@@ -68,6 +69,13 @@ import { CourseEditor, CoursesPanel } from "@/components/admin/panels/Courses";
 import { EnrollmentDrawer } from "@/components/admin/panels/EnrollmentDrawer";
 import { BannedPanel, EnrollmentsTable } from "@/components/admin/panels/Enrollments";
 import { FinancePanel, PaymentMethodsPanel } from "@/components/admin/panels/Finance";
+import { ProgramsPanel } from "@/components/admin/ProgramsPanel";
+import { GraduateToolsPanel } from "@/components/admin/GraduateToolsPanel";
+import { BuildEffectsPanel } from "@/components/admin/BuildEffectsPanel";
+import { SiteMediaPanel } from "@/components/admin/SiteMediaPanel";
+import { ServicesPanel } from "@/components/admin/panels/ServicesPanel";
+import { PillarsPanel } from "@/components/admin/panels/PillarsPanel";
+import { AdminTranslationReview } from "@/components/admin/AdminTranslationReview";
 import { Course, EnrollmentRow } from "@/components/admin/panels/types";
 
 type AdminSearch = {
@@ -93,7 +101,8 @@ type AdminSearch = {
     | "snapshots"
     | "trainings"
     | "partners"
-    | "contracts";
+    | "contracts"
+    | "programs" | "services" | "pillars" | "graduate_tools" | "media" | "effects" | "visibility" | "popups" | "maintenance";
 
   drawer?: string;
   editCourse?: string;
@@ -157,6 +166,7 @@ function AdminPage() {
     | "snapshots"
     | "partners"
     | "contracts"
+    | "programs" | "services" | "pillars" | "graduate_tools" | "media" | "effects" | "visibility" | "popups" | "maintenance"
   >(search.tab || "overview");
 
   const tab = tabState;
@@ -287,7 +297,7 @@ function AdminPage() {
                 { id: "activations", label: t("تفعيل الحسابات", "Activations"), icon: ShieldCheck, badge: pendingActivations || undefined },
                 { id: "enrollments", label: t("طلبات وانضمامات", "Enrollments"), icon: Users, badge: pending || undefined },
                 { id: "courses", label: t("الكورسات", "Courses"), icon: BookOpen },
-                { id: "trainings", label: t("التدريبات", "Trainings"), icon: Layers },
+                { id: "leads", label: t("اهتمامات الكورسات", "Course leads"), icon: StickyNote },
                 { id: "feedback", label: t("تقييمات الكورسات", "Course feedback"), icon: Star },
                 { id: "banned", label: t("الموقوفون", "Banned"), icon: Archive, badge: enrollments.filter((e) => e.profiles?.account_blocked).length || undefined },
               ],
@@ -300,7 +310,6 @@ function AdminPage() {
                 { id: "finance", label: t("المعاملات المالية", "Transactions"), icon: Wallet },
                 { id: "methods", label: t("طرق الدفع", "Payment methods"), icon: CreditCard },
                 { id: "coupons", label: t("كوبونات الخصم", "Coupons"), icon: Ticket },
-                { id: "leads", label: t("اهتمامات الكورسات", "Course leads"), icon: StickyNote },
                 { id: "packages", label: t("باقات الاستشارات", "Packages"), icon: Layers },
               ],
             },
@@ -308,6 +317,12 @@ function AdminPage() {
               id: "site",
               label: t("إدارة محتوى الموقع", "Site Content · CMS"),
               items: [
+                { id: "services", label: t("الخدمات", "Services"), icon: Layers },
+                { id: "pillars", label: t("ثلاث ركائز", "Three pillars"), icon: Layers },
+                { id: "programs", label: t("البرامج والمسارات", "Programs & tracks"), icon: BookOpen },
+                { id: "graduate_tools", label: t("أدوات الخريجين", "Graduate tools"), icon: Award },
+                { id: "trainings", label: t("التدريبات", "Trainings"), icon: Layers },
+                { id: "media", label: t("صور البرامج والكورسات", "Program & course images"), icon: Camera },
                 { id: "additions", label: t("أحدث الإضافات", "Latest additions"), icon: Sparkles },
                 { id: "snapshots", label: t("لحظات المسيرة", "Career moments"), icon: Camera },
                 { id: "testimonials", label: t("شهادات العملاء", "Testimonials"), icon: Star },
@@ -321,7 +336,11 @@ function AdminPage() {
               id: "settings",
               label: t("الإعدادات والدعم", "Settings & Support"),
               items: [
-                { id: "site", label: t("إدارة الموقع", "Site management"), icon: Settings2 },
+                { id: "site", label: t("هوية الموقع والتواصل", "Site identity & contact"), icon: Settings2 },
+                { id: "visibility", label: t("ظهور الأقسام ومحتوى الموقع", "Section visibility & content"), icon: ToggleRight },
+                { id: "popups", label: t("الإعلانات المنبثقة", "Popup announcements"), icon: Sparkles },
+                { id: "effects", label: t("مؤثرات الزوار", "Visitor effects"), icon: Sparkles },
+                { id: "maintenance", label: t("وضع الصيانة", "Maintenance"), icon: Settings2 },
                 { id: "tickets", label: t("تذاكر الدعم", "Support tickets"), icon: LifeBuoy },
               ],
             },
@@ -329,14 +348,12 @@ function AdminPage() {
 
           return (
             <div className="flex flex-col lg:flex-row gap-6">
-              {/* Same scrolling mobile navigation as the trainee portal. */}
-              <div className="lg:hidden -mx-4 px-4 overflow-x-auto sticky top-16 z-30 py-2 dash-header backdrop-blur-xl">
-                <nav aria-label={t("أقسام الإدارة", "Administration sections")} className="flex gap-2 w-max">
-                  {groups.flatMap(g => g.items).map(item => {
-                    const Icon = item.icon;
-                    return <Button key={item.id} variant="ghost" onClick={() => setTab(item.id)} aria-current={tab === item.id ? "page" : undefined} className="dashboard-nav-item h-10 gap-1.5 px-3.5 text-xs whitespace-nowrap"><Icon className="size-3.5" />{item.label}{item.badge ? <span className="dashboard-nav-badge rounded-md px-1 text-[10px]">{item.badge}</span> : null}</Button>;
-                  })}
-                </nav>
+              {/* Grouped mobile menu avoids an unbounded horizontal strip. */}
+              <div className="lg:hidden sticky top-16 z-30 py-2 dash-header">
+                <Select value={tab} onValueChange={value => { const item = groups.flatMap(g => g.items).find(i => i.id === value); if (item) setTab(item.id); }}>
+                  <SelectTrigger aria-label={t("أقسام الإدارة", "Administration sections")}><SelectValue /></SelectTrigger>
+                  <SelectContent>{groups.map(group => <div key={group.id}><p className="px-2 py-2 text-xs font-bold text-muted-foreground">{group.label}</p>{group.items.map(item => { const Icon = item.icon; return <SelectItem key={item.id} value={item.id}><span className="flex items-center gap-2"><Icon className="size-4" />{item.label}</span></SelectItem>; })}</div>)}</SelectContent>
+                </Select>
               </div>
 
               {/* Desktop sidebar */}
@@ -430,8 +447,20 @@ function AdminPage() {
                   <TrainingsPanel />
                 ) : tab === "snapshots" ? (
                   <SnapshotsPanel />
-                ) : tab === "site" ? (
-                  <SiteManagementPanel />
+                ) : tab === "programs" ? (
+                  <ProgramsPanel />
+                ) : tab === "services" ? (
+                  <ServicesPanel />
+                ) : tab === "pillars" ? (
+                  <PillarsPanel />
+                ) : tab === "graduate_tools" ? (
+                  <GraduateToolsPanel />
+                ) : tab === "media" ? (
+                  <SiteMediaPanel />
+                ) : tab === "effects" ? (
+                  <BuildEffectsPanel />
+                ) : tab === "visibility" || tab === "popups" || tab === "maintenance" || tab === "site" ? (
+                  <SiteManagementPanel section={tab === "site" ? "profile" : tab === "visibility" ? "content" : tab} />
                 ) : tab === "leads" ? (
                   <CourseLeadsPanel />
                 ) : tab === "feedback" ? (
@@ -453,6 +482,7 @@ function AdminPage() {
         })()}
 
       </div>
+      <AdminTranslationReview />
 
       {drawer && (
         <EnrollmentDrawer enrollment={drawer} onClose={() => setDrawer(null)} refresh={refresh} />

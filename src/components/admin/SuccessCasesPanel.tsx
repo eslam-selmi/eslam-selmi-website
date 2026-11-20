@@ -140,13 +140,7 @@ export function SuccessCasesPanel() {
       return;
     }
     setBusy(true);
-    let f = form;
-    try {
-      f = await autoTranslateEmptyEn(form);
-      if (f !== form) setForm(f);
-    } catch (e) {
-      console.error("auto-translate failed", e);
-    }
+    const f = form;
     const payload = {
       name_ar: f.name_ar.trim(),
       name_en: f.name_en.trim() || null,
@@ -265,8 +259,8 @@ export function SuccessCasesPanel() {
             </h3>
             <p className="text-xs text-white/60 mb-4 leading-relaxed">
               {t(
-                "اكتب المحتوى بالعربية فقط — سيتم ترجمته للإنجليزية تلقائياً عند الحفظ بأسلوب احترافي. تقدر تعدل الإنجليزية يدوياً لو حبيت.",
-                "Write the content in Arabic only — it will be auto-translated to English professionally on save. You can still edit the English manually.",
+                "اكتب المحتوى ثم اطلب الترجمة وراجعها قبل الحفظ. النص الإنجليزي قابل للتعديل.",
+                "Translate and review your content before saving. English remains editable.",
               )}
             </p>
 

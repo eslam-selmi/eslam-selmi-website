@@ -8,7 +8,6 @@ import { useI18n } from "@/lib/i18n";
 import { siteProfileKey, useSiteProfile } from "@/lib/site-profile";
 import { siteProfileDefaults, type SiteProfile } from "@/lib/site-profile-data";
 import { invalidateSiteContent } from "@/lib/site-content";
-import { SiteMediaPanel } from "./SiteMediaPanel";
 
 export function SiteProfilePanel() {
   const { lang } = useI18n();
@@ -83,5 +82,5 @@ export function SiteProfilePanel() {
       <label className="space-y-2 text-sm"><span className="block">{t("النص أسفل الموقع — إنجليزي", "Footer text — English")}</span><textarea dir="ltr" rows={3} value={draft.footer_en} placeholder="© 2026 · All rights reserved." onChange={e => set("footer_en", e.target.value)} className="w-full rounded-md border border-input bg-card p-3" /></label>
     </div>
     <Button type="submit" disabled={!dirty || saving || uploading}><Save className="size-4" />{saving ? t("جارٍ الحفظ…", "Saving…") : t("حفظ بيانات الموقع", "Save site details")}</Button>
-  </form><div className="border-t border-border pt-8"><SiteMediaPanel /></div></div>;
+  </form></div>;
 }

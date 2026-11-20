@@ -1,5 +1,11 @@
 # Match administration to trainee portal
 
+# Administration structure and translation review
+
+- [x] Separate services, pillars, programs, graduate tools, media and visitor effects into dedicated navigation items; keep identity/contact, popups, maintenance and visibility separate; group the mobile navigation menu.
+- [x] Add a shared translation/review tool for editable text throughout administration and dialogs; preserve manual edits and keep translation separate from saving, including certificates and success cases.
+- [x] Verified all 10 separated destinations on phone/desktop in both themes, mobile and desktop navigation, real translation/edit/apply/save/readback and nested popup-editor translation; restored test content and passed 14 focused tests.
+
 # Three pillars administration
 
 - [x] Add section headings, bilingual pillar texts, icon selection, ordering, visibility, addition and deletion within Site management.

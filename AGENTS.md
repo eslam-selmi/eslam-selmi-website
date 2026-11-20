@@ -30,3 +30,4 @@
 - Visitor cursor effects use shared `site.effects` query options and measured rendered elements, not section templates; this keeps administrator control and cursor paths consistent with edited content and mobile layouts.
 - Service administration and public cards share the tested `site.services` CMS configuration; prices render only when both global pricing and the service price switch allow a valid amount, preserving unpriced defaults and saved section visibility.
 - Pillar administration and homepage rendering share `site.pillars` query options and parser; bilingual defaults retain existing copy, while saved arrays control order and individual visibility without resurrecting deleted items.
+- Admin content sections have dedicated `/admin?tab=` destinations; shared translation review reads editable text controls, never secrets, and applies reviewed drafts through React input events without saving or overwriting changed fields.

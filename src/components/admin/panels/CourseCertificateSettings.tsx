@@ -29,12 +29,12 @@ export function CourseCertificateSettings({ course }: { course: { id: string; ti
 
   async function translateAll(): Promise<CertificateSettings> {
     const keys: CertTextKey[] = CERT_TEXT_FIELDS.map((f) => f[0]).filter((k) => s.ar[k]?.trim());
-    const texts = keys.map((k) => s.ar[k]!.trim());
+    const texts = keys.map((k) => (s.ar[k] ?? "").trim());
     // English certificate shows the course name in English too, unless set manually
     if (!s.ar.courseTitle?.trim() && !s.en.courseTitle?.trim() && /[\u0600-\u06FF]/.test(course.title)) { keys.push("courseTitle"); texts.push(course.title); }
     if (!keys.length) return s;
     const { translations, error } = await translateTexts({ data: { texts, target: "en" } });
-    if (error) toast.error("تعذرت الترجمة التلقائية، راجع النصوص الإنجليزية يدوياً");
+    if (error) throw new Error("تعذرت الترجمة التلقائية، راجع النصوص الإنجليزية يدوياً");
     const en = { ...s.en };
     keys.forEach((k, i) => { en[k] = translations[i]; });
     const next = { ...s, en };
@@ -45,10 +45,11 @@ export function CourseCertificateSettings({ course }: { course: { id: string; ti
   async function save(withTranslate: boolean) {
     setBusy(withTranslate ? "translate" : "save");
     try {
-      const value = withTranslate ? await translateAll() : s;
+      if (withTranslate) { await translateAll(); setPreview("en"); toast.success("الترجمة جاهزة للمراجعة، احفظ بعد تعديلها"); return; }
+      const value = s;
       const { error } = await supabase.from("courses").update({ certificate_settings: value as unknown as Json }).eq("id", course.id);
       if (error) throw error;
-      toast.success(withTranslate ? "تمت الترجمة والحفظ" : "تم حفظ إعدادات الشهادة");
+      toast.success("تم حفظ إعدادات الشهادة");
     } catch (e) { toast.error(e instanceof Error ? e.message : "تعذر الحفظ"); }
     finally { setBusy(null); }
   }
@@ -69,7 +70,7 @@ export function CourseCertificateSettings({ course }: { course: { id: string; ti
 
     <div className="dash-card p-4 space-y-3">
       <h4 className="font-bold">النصوص</h4>
-      <p className="text-xs text-muted-foreground">اكتب بالعربي، واضغط «ترجمة وحفظ» لتتحول النصوص للإنجليزية تلقائياً. الحقل الفارغ يستخدم النص الافتراضي.</p>
+      <p className="text-xs text-muted-foreground">راجع النصوص الإنجليزية قبل الحفظ. الحقل الفارغ يستخدم النص الافتراضي.</p>
       <div className="grid gap-3">
         {CERT_TEXT_FIELDS.map(([k, label]) => <div key={k} className="grid gap-2 sm:grid-cols-2">
           <label className="text-xs space-y-1"><span className="text-muted-foreground">{label}</span>
@@ -97,7 +98,7 @@ export function CourseCertificateSettings({ course }: { course: { id: string; ti
     </div>
 
     <div className="flex flex-wrap gap-2">
-      <Button onClick={() => void save(true)} disabled={!!busy}><Languages className="size-4" /> {busy === "translate" ? "جارٍ الترجمة…" : "ترجمة للإنجليزية وحفظ"}</Button>
+      <Button onClick={() => void save(true)} disabled={!!busy}><Languages className="size-4" /> {busy === "translate" ? "جارٍ الترجمة…" : "ترجمة ومراجعة"}</Button>
       <Button variant="outline" onClick={() => void save(false)} disabled={!!busy}><Save className="size-4" /> حفظ فقط</Button>
       <Button variant="ghost" onClick={() => setS(structuredClone(defaultCertificateSettings))} disabled={!!busy}><RotateCcw className="size-4" /> استعادة الافتراضي</Button>
     </div>
