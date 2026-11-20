@@ -160,16 +160,39 @@ export function Hero() {
           className="lg:col-span-5 order-1 lg:order-2 relative"
         >
           <div className="hero-portrait-stage relative mx-auto w-full max-w-[400px] sm:max-w-[440px] lg:max-w-[480px]">
-            <svg className="hero-portrait-lines" viewBox="0 0 480 480" fill="none" aria-hidden="true">
-              <g className="hero-line-guides">
-                <path d="M22 355V205Q22 185 42 185H106M374 110H420Q448 110 448 138V288" />
-                <path d="M46 389L112 323M366 326L431 391M66 145V119M53 132H79M399 66V90M387 78H411" />
-              </g>
-              <path className="hero-line-trace hero-line-trace-first" pathLength="100" d="M18 335V229Q18 197 50 197H94" />
-              <path className="hero-line-trace hero-line-trace-second" pathLength="100" d="M386 122H417Q436 122 436 141V270" />
-              <path className="hero-line-trace hero-line-trace-third" pathLength="100" d="M40 404L90 354M388 352L440 404" />
-              <path className="hero-line-detail" d="M12 360H32M12 367H26M438 293H458M444 300H458" />
-            </svg>
+            {/* soft ambient glow */}
+            <div className="pointer-events-none absolute -inset-10 -z-10" style={{ background: "radial-gradient(ellipse 55% 50% at 50% 42%, color-mix(in oklab, var(--accent) 24%, transparent), transparent 70%), radial-gradient(ellipse 45% 40% at 50% 92%, color-mix(in oklab, var(--navy) 30%, transparent), transparent 75%)" }} aria-hidden />
+
+            {/* outer dashed orbit with travelling light */}
+            <motion.div className="pointer-events-none absolute inset-x-2 top-2 aspect-square" animate={reduceMotion ? undefined : { rotate: 360 }} transition={{ duration: isMobile ? 60 : 40, repeat: Infinity, ease: "linear" }} aria-hidden>
+              <svg viewBox="0 0 100 100" className="h-full w-full opacity-60"><circle cx="50" cy="50" r="48.5" fill="none" stroke="var(--accent)" strokeOpacity="0.35" strokeWidth="0.35" strokeDasharray="1.5 3" /></svg>
+              <span className="absolute left-1/2 top-0 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full" style={{ background: "var(--accent)", boxShadow: "0 0 12px var(--accent)" }} />
+              <span className="absolute left-1/2 bottom-0 size-1.5 -translate-x-1/2 translate-y-1/2 rounded-full" style={{ background: "var(--primary-foreground)", boxShadow: "0 0 10px var(--accent)" }} />
+            </motion.div>
+
+            {/* counter-rotating inner arcs */}
+            <motion.div className="pointer-events-none absolute inset-x-10 top-10 aspect-square" animate={reduceMotion ? undefined : { rotate: -360 }} transition={{ duration: 26, repeat: Infinity, ease: "linear" }} aria-hidden>
+              <svg viewBox="0 0 100 100" className="h-full w-full">
+                <circle cx="50" cy="50" r="48" fill="none" stroke="var(--accent)" strokeOpacity="0.55" strokeWidth="0.6" strokeDasharray="20 282" strokeLinecap="round" />
+                <circle cx="50" cy="50" r="48" fill="none" stroke="var(--accent)" strokeOpacity="0.3" strokeWidth="0.4" strokeDasharray="8 294" strokeDashoffset="-150" strokeLinecap="round" />
+              </svg>
+            </motion.div>
+
+            {/* tilted elliptical orbit with a glass bead */}
+            <motion.div className="pointer-events-none absolute inset-x-0 top-[18%] aspect-[2/1]" style={{ rotate: -14 }} aria-hidden>
+              <svg viewBox="0 0 200 100" className="h-full w-full"><ellipse cx="100" cy="50" rx="98" ry="40" fill="none" stroke="var(--accent)" strokeOpacity="0.22" strokeWidth="0.5" /></svg>
+            </motion.div>
+
+            {/* floating glass sparks, purely decorative */}
+            {[
+              { pos: "top-[12%] start-[6%]", size: "size-10", delay: 0 },
+              { pos: "top-[44%] end-[2%]", size: "size-7", delay: 1.2 },
+              { pos: "bottom-[30%] start-[2%]", size: "size-6", delay: 2.2 },
+            ].map(({ pos, size, delay }) => (
+              <motion.span key={pos} className={`pointer-events-none absolute z-20 ${pos} ${size} glass-panel rounded-2xl rotate-45 grid place-items-center`} animate={isMobile || reduceMotion ? undefined : { y: [0, -10, 0], rotate: [45, 60, 45] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay }} aria-hidden>
+                <span className="size-1.5 rounded-full" style={{ background: "var(--accent)", boxShadow: "0 0 10px var(--accent)" }} />
+              </motion.span>
+            ))}
 
             {/* portrait — transparent cutout, floating */}
             <motion.img
@@ -183,6 +206,9 @@ export function Hero() {
               fetchPriority="high"
               decoding="async"
               className="hero-portrait relative z-10 mx-auto w-full"
+              style={{ filter: "drop-shadow(0 34px 44px color-mix(in oklab, var(--navy-deep) 55%, transparent))" }}
+              animate={isMobile || reduceMotion ? undefined : { y: [0, -10, 0] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
             />
 
             {/* signature name plate */}
