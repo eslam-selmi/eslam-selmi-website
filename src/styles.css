@@ -155,8 +155,7 @@
   color: var(--booking-foreground);
   border-color: var(--booking-border);
   background-color: var(--booking-surface);
-  background-image: radial-gradient(circle, var(--booking-dot) 1px, transparent 1.5px), radial-gradient(ellipse at 100% 0%, color-mix(in oklab, var(--booking-cyan) 30%, transparent), transparent 42%);
-  background-size: 28px 28px, 100% 100%;
+  background-image: radial-gradient(ellipse at 100% 0%, color-mix(in oklab, var(--booking-cyan) 30%, transparent), transparent 42%);
   box-shadow: var(--booking-shadow);
 }
 .booking-reference-muted { color: var(--booking-muted); }
@@ -225,10 +224,8 @@
   border: 1px solid var(--booking-border);
   background-color: var(--booking-surface);
   background-image:
-    radial-gradient(circle, var(--booking-dot) 1px, transparent 1.5px),
     radial-gradient(ellipse at 4% 0%, color-mix(in oklab, var(--booking-cyan) 26%, transparent), transparent 48%),
     radial-gradient(ellipse at 100% 100%, color-mix(in oklab, var(--lavender-deep) 26%, transparent), transparent 52%);
-  background-size: 28px 28px, 100% 100%, 100% 100%;
   box-shadow: var(--booking-shadow);
   color: var(--booking-foreground);
 }
@@ -975,17 +972,26 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 /* ---------- Programs: editorial index + feature ---------- */
 .prog-shell { display: grid; gap: 1.5rem; }
 @media (min-width: 1024px) { .prog-shell { grid-template-columns: 320px 1fr; gap: 2.5rem; align-items: start; } }
-.prog-index { display: flex; gap: .5rem; overflow-x: auto; scrollbar-width: none; border-block-start: 2px solid var(--foreground); }
-@media (min-width: 1024px) { .prog-index { flex-direction: column; gap: 0; overflow: visible; position: sticky; top: 6rem; } }
-.prog-tab { flex: 0 0 auto; min-width: 220px; display: grid; grid-template-columns: auto 1fr; column-gap: .9rem; row-gap: .2rem; text-align: start; padding: 1.1rem .25rem; border-block-end: 1px solid color-mix(in oklab, var(--foreground) 12%, transparent); color: var(--muted-foreground); transition: color .25s, padding .25s; position: relative; }
-.prog-tab::before { content: ""; position: absolute; inset-inline-start: 0; inset-block: 0; width: 2px; background: var(--accent); transform: scaleY(0); transition: transform .3s; }
-.prog-tab:hover { color: var(--foreground); }
-.prog-tab[data-active="true"] { color: var(--foreground); padding-inline-start: 1rem; }
-.prog-tab[data-active="true"]::before { transform: scaleY(1); }
-.prog-tab-num { grid-row: span 2; font-family: var(--font-heading-en); font-size: 1.6rem; font-weight: 800; line-height: 1; opacity: .5; }
-.prog-tab[data-active="true"] .prog-tab-num { opacity: 1; color: var(--accent); }
-.prog-tab-title { font-weight: 700; font-size: 1rem; line-height: 1.3; }
-.prog-tab-count { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; opacity: .7; }
+.prog-index { display: grid; gap: .65rem; min-width: 0; }
+@media (min-width: 1024px) { .prog-index { position: sticky; top: 6rem; } }
+.prog-index .prog-tab { width: 100%; min-width: 0; height: auto; min-height: 84px; display: grid; grid-template-columns: 42px minmax(0, 1fr) 20px; column-gap: .85rem; row-gap: .35rem; text-align: start; white-space: normal; padding: 1rem; border: 1px solid var(--border); border-radius: 8px; color: var(--muted-foreground); background: linear-gradient(125deg, color-mix(in oklab, var(--card) 96%, var(--accent)), var(--card)); transition: border-color .2s, background .2s, color .2s; position: relative; }
+.prog-index .prog-tab:hover { color: var(--foreground); border-color: color-mix(in oklab, var(--accent) 55%, var(--border)); }
+.prog-index .prog-tab[data-active="true"] { color: var(--foreground); border-color: var(--accent); background: linear-gradient(125deg, color-mix(in oklab, var(--accent) 14%, var(--card)), var(--card)); box-shadow: inset -3px 0 0 var(--accent); }
+html[dir="ltr"] .prog-index .prog-tab[data-active="true"] { box-shadow: inset 3px 0 0 var(--accent); }
+.prog-tab-num { grid-row: 1 / 3; display: grid; place-items: center; width: 42px; height: 42px; align-self: center; border-radius: 50%; border: 1px solid var(--border); font-family: var(--font-heading-en); font-size: 1rem; font-weight: 800; line-height: 1; color: var(--muted-foreground); background: var(--background); }
+.prog-tab[data-active="true"] .prog-tab-num { color: var(--accent); border-color: color-mix(in oklab, var(--accent) 35%, var(--border)); }
+.prog-tab-title { font-weight: 700; font-size: 1rem; line-height: 1.5; }
+.prog-tab-count { grid-column: 2; font-size: .75rem; font-weight: 600; color: var(--muted-foreground); }
+.prog-tab-arrow { grid-column: 3; grid-row: 1 / 3; align-self: center; opacity: .4; }
+.prog-tab[data-active="true"] .prog-tab-arrow { opacity: 1; color: var(--accent); }
+@media (max-width: 767px) {
+  .prog-shell { gap: 1rem; }
+  .prog-index { gap: .5rem; }
+  .prog-index .prog-tab { min-height: 72px; padding: .8rem; column-gap: .7rem; }
+  .prog-tab-title { font-size: .9rem; }
+  .prog-body { padding: 1.25rem; }
+}
+@media (prefers-reduced-motion: reduce) { .prog-index .prog-tab { transition: none; } }
 .prog-feature { display: grid; border: 1px solid color-mix(in oklab, var(--foreground) 12%, transparent); border-radius: 1.5rem; overflow: hidden; background: var(--card); }
 @media (min-width: 768px) { .prog-feature { grid-template-columns: 1fr 1.15fr; } }
 .prog-cover { position: relative; overflow: hidden; min-height: 240px; }
@@ -1011,10 +1017,8 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
   border: 1px solid var(--booking-border);
   background-color: var(--booking-surface);
   background-image:
-    radial-gradient(circle, var(--booking-dot) 1px, transparent 1.5px),
     radial-gradient(ellipse at 96% -12%, color-mix(in oklab, var(--booking-cyan) 26%, transparent), transparent 46%),
     radial-gradient(ellipse at -8% 110%, color-mix(in oklab, var(--lavender-deep) 24%, transparent), transparent 52%);
-  background-size: 26px 26px, 100% 100%, 100% 100%;
   box-shadow: var(--booking-shadow);
   color: var(--booking-foreground);
 }

@@ -109,6 +109,7 @@ import { useSiteMedia } from "@/lib/site-media";
 import { programMedia, mediaImage } from "@/lib/site-media-data";
 import { CoverReflection } from "@/components/CoverReflection";
 import { DEFAULT_PROGRAM_TRACKS, useSitePrograms, type ProgramTrack } from "@/lib/site-programs";
+import { Button } from "@/components/ui/button";
 
 export function Pillars() {
   const { t } = useI18n();
@@ -323,16 +324,28 @@ export function Programs() {
   return (
     <Section id="programs" eyebrow={t("programs_eyebrow")} title={t("programs_title")}>
       <div className="prog-shell">
-        <div className="prog-index" role="tablist" aria-label={t("programs_title")}>
+        <div className="prog-index" role="tablist" aria-orientation="vertical" aria-label={t("programs_title")}>
           {tracks.map((tr, i) => (
-            <button key={tr.key} type="button" role="tab" aria-selected={i === idx} onClick={() => setActive(i)} className="prog-tab" data-active={i === idx}>
+            <Button key={tr.key} variant="ghost" type="button" role="tab" id={`program-tab-${tr.key}`} aria-controls="program-detail" aria-selected={i === idx} tabIndex={i === idx ? 0 : -1} onClick={() => setActive(i)} onKeyDown={(event) => {
+              let next = i;
+              if (event.key === "ArrowDown") next = (i + 1) % tracks.length;
+              else if (event.key === "ArrowUp") next = (i - 1 + tracks.length) % tracks.length;
+              else if (event.key === "Home") next = 0;
+              else if (event.key === "End") next = tracks.length - 1;
+              else return;
+              event.preventDefault();
+              setActive(next);
+              const nextTrack = tracks[next];
+              if (nextTrack) document.getElementById(`program-tab-${nextTrack.key}`)?.focus();
+            }} className="prog-tab" data-active={i === idx}>
               <span className="prog-tab-num">{String(i + 1).padStart(2, "0")}</span>
               <span className="prog-tab-title">{ar ? tr.titleAr : tr.titleEn}</span>
               <span className="prog-tab-count">{tr.modules.length} {ar ? "محاور" : "modules"}</span>
-            </button>
+              <ArrowRight className="prog-tab-arrow rtl-flip" aria-hidden="true" />
+            </Button>
           ))}
         </div>
-        <motion.article key={cur.key} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }} className="prog-feature" role="tabpanel">
+        <motion.article key={cur.key} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }} className="prog-feature" role="tabpanel" id="program-detail" aria-labelledby={`program-tab-${cur.key}`}>
           <div className="group/cover clear-glass-cover prog-cover">
             <img src={img(cur, idx)} alt={ar ? cur.titleAr : cur.titleEn} width={1280} height={720} loading="lazy" decoding="async" />
             <CoverReflection />

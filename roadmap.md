@@ -82,3 +82,9 @@
 
 - [x] Rebuild the "أحدث الإضافات" section as a navy dotted glass console: live pill, display title, item count, staggered glass cards with per-kind tint, sheen and lift on hover, new-item pulse, relative dates.
 - [x] Verify Arabic and English, light and dark, desktop and mobile: card click opens the viewer, no overlap, no clipping, no horizontal scroll, no console errors.
+
+# Homepage mobile refinements
+
+- [x] Replace the marked program index with compact full-width selectors, readable labels and a clear selected state on mobile and desktop.
+- [x] Remove dotted background textures from latest additions, countries and consultation booking without changing their content.
+- [x] Verify real program switching and keyboard navigation, mobile/desktop layouts without overflow, and all three backgrounds without dots; 3 program tests pass.
