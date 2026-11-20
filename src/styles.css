@@ -9,6 +9,8 @@
 @import "@fontsource/manrope/latin-800.css";
 @import "@fontsource/sora/latin-600.css";
 @import "@fontsource/sora/latin-800.css";
+@import "@fontsource/caveat/latin-600.css";
+@import "@fontsource/aref-ruqaa/arabic-400.css";
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
@@ -1001,6 +1003,11 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
   animation: hero-name-shine 5s linear infinite;
 }
 @media (prefers-reduced-motion: reduce) { .hero-name-shine { animation: none; } }
+
+/* Hand-thread signature styling for the hero name */
+.hero-signature-name { display: inline-block; transform: rotate(-2.5deg); letter-spacing: 0.01em; }
+.hero-signature-en { font-family: "Caveat", "IBM Plex Sans Arabic", cursive; font-weight: 600; }
+.hero-signature-ar { font-family: "Aref Ruqaa", "IBM Plex Sans Arabic", serif; font-weight: 400; padding-bottom: 0.18em; }
 
 /* Top nav: distinctive gradient underline that sweeps in on hover */
 .nav-link { position: relative; }
