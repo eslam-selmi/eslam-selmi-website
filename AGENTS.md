@@ -28,3 +28,4 @@
 - Mobile homepage marquees use native swipe rails without repeated copies or background blur; desktop keeps its existing presentation.
 - Program, course and consultation covers use shared `site.media` CMS query options and stable program/course keys; administrator uploads retain the existing signed-link storage workflow without altering course records or permissions.
 - Visitor cursor effects use shared `site.effects` query options and measured rendered elements, not section templates; this keeps administrator control and cursor paths consistent with edited content and mobile layouts.
+- Service administration and public cards share the tested `site.services` CMS configuration; prices render only when both global pricing and the service price switch allow a valid amount, preserving unpriced defaults and saved section visibility.

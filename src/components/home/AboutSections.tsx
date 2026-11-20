@@ -64,6 +64,7 @@ import { useI18n, type Lang } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
 import { LatestAdditionsSection } from "@/components/LatestAdditions";
 import { useSiteContent } from "@/lib/site-content";
+import { DEFAULT_SERVICES, serviceIcons, useSiteServices, visibleServicePrice } from "@/lib/site-services";
 import { SitePopup } from "@/components/SitePopup";
 import { UniversalEmbedModal } from "@/components/UniversalEmbedModal";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -248,13 +249,18 @@ export function Journey() {
 export function Services() {
   const { t, lang } = useI18n();
   const { links } = useSiteProfile();
+  const { data: config = DEFAULT_SERVICES } = useSiteServices();
   return (
-    <Section id="services" eyebrow={t("services_eyebrow")} title={t("services_title")}>
+    <Section id="services" eyebrow={t("services_eyebrow")} title={(lang === "ar" ? config.titleAr : config.titleEn) || t("services_title")}>
       <p className="-mt-6 mb-10 text-center text-base text-muted-foreground max-w-2xl mx-auto">
-        {t("services_subtitle")}
+        {(lang === "ar" ? config.subtitleAr : config.subtitleEn) || t("services_subtitle")}
       </p>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {SERVICES.map((s, i) => (
+        {config.services.filter(s => s.visible).map((s, i) => {
+          const Icon = serviceIcons[s.icon];
+          const title = lang === "ar" ? s.titleAr : s.titleEn;
+          const price = visibleServicePrice(config, s);
+          return (
           <motion.div
             key={s.key}
             {...fadeUp}
@@ -262,13 +268,14 @@ export function Services() {
             className="relative glass-panel rounded-3xl p-6 group overflow-hidden transition hover:-translate-y-1 flex flex-col"
           >
             <div className="absolute -top-12 -end-12 size-32 rounded-full bg-[var(--gold)]/20 blur-2xl opacity-0 group-hover:opacity-100 transition" />
-            <s.icon className="size-7 text-gold" />
+            <Icon className="size-7 text-accent" />
             <div className="mt-4 text-xs text-muted-foreground font-mono">0{i + 1}</div>
-            <h3 className="mt-1 font-semibold text-lg leading-tight">{s.title[lang]}</h3>
-            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.desc[lang]}</p>
+            <h3 className="mt-1 font-semibold text-lg leading-tight">{title}</h3>
+            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{lang === "ar" ? s.descAr : s.descEn}</p>
+            {price !== null && <p className="mt-4 text-lg font-semibold text-accent" data-service-price>{new Intl.NumberFormat(lang === "ar" ? "ar-EG" : "en-US").format(price)} <span className="text-sm">{s.currency}</span></p>}
             <div className="mt-auto pt-5">
               <a
-                href={`${links.whatsapp}?text=${encodeURIComponent(lang === "ar" ? `مرحبًا إسلام، أرغب في طلب خدمة: ${s.title.ar}. هل يمكننا التحدث؟` : `Hi Eslam, I'd like to request the "${s.title.en}" service. Can we chat?`)}`}
+                href={`${links.whatsapp}?text=${encodeURIComponent(lang === "ar" ? `مرحبًا إسلام، أرغب في طلب خدمة: ${title}. هل يمكننا التحدث؟` : `Hi Eslam, I'd like to request the "${title}" service. Can we chat?`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group/btn relative inline-flex w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold overflow-hidden transition-all duration-300 hover:translate-y-[-1px]"
@@ -280,7 +287,7 @@ export function Services() {
                   boxShadow:
                     "0 10px 30px -14px color-mix(in oklab, var(--gold) 60%, transparent), inset 0 1px 0 color-mix(in oklab, var(--gold) 20%, transparent)",
                 }}
-                aria-label={`${t("svc_request_btn")} — ${s.title[lang]}`}
+                aria-label={`${t("svc_request_btn")} — ${title}`}
               >
                 <span
                   className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"
@@ -302,7 +309,7 @@ export function Services() {
               </a>
             </div>
           </motion.div>
-        ))}
+        ); })}
       </div>
     </Section>
   );

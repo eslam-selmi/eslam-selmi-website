@@ -1,5 +1,11 @@
 # Match administration to trainee portal
 
+# Service administration
+
+- [x] Add bilingual service and section editing, icons, ordering, visibility, addition and deletion in existing administration.
+- [x] Add optional per-service prices and a global switch that removes all price controls and public amounts.
+- [x] Verified add/save/reload, per-service and global price hiding, service visibility, and mobile administration/public layout with no overflow or runtime errors; restored original content and passed 9 service/program tests.
+
 # Executive website copy
 
 - [x] Replace public Arabic/English marketing clichés with direct factual copy, including Hero, services, programs, saved overrides, metadata, and translation instructions.
