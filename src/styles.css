@@ -9,7 +9,6 @@
 @import "@fontsource/manrope/latin-800.css";
 @import "@fontsource/sora/latin-600.css";
 @import "@fontsource/sora/latin-800.css";
-@import "@fontsource/allura/latin-400.css";
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
@@ -987,24 +986,6 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 @keyframes portrait-line-draw { 0%, 100% { stroke-dashoffset: 100; opacity: .15; } 28%, 72% { stroke-dashoffset: 0; opacity: .8; } }
 @media (max-width: 767px) { .hero-line-guides { opacity: .65; } .hero-line-trace-third { display: none; } }
 @media (prefers-reduced-motion: reduce) { .hero-line-trace { animation: none; stroke-dashoffset: 0; } }
-
-/* A restrained ink signature, identical in both languages, without a decorative rule or glow. */
-.hero-signature-name {
-  display: inline-block;
-  max-width: 100%;
-  font-family: "Allura", "IBM Plex Sans Arabic", cursive;
-  font-size: 3.5rem;
-  font-weight: 400;
-  line-height: 1.25;
-  letter-spacing: 0;
-  white-space: nowrap;
-  color: var(--foreground);
-  transform: rotate(-6deg);
-  text-shadow: none;
-  filter: none;
-  padding: 0.15em 0.2em;
-}
-@media (min-width: 768px) { .hero-signature-name { font-size: 4.25rem; } }
 
 /* Top nav: distinctive gradient underline that sweeps in on hover */
 .nav-link { position: relative; }

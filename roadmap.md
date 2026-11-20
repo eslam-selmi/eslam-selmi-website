@@ -1,5 +1,9 @@
 # Match administration to trainee portal
 
+# Portrait name removal
+
+- [x] Remove the name/signature below the homepage portrait and verify desktop/mobile display.
+
 # Administration structure and translation review
 
 - [x] Separate services, pillars, programs, graduate tools, media and visitor effects into dedicated navigation items; keep identity/contact, popups, maintenance and visibility separate; group the mobile navigation menu.

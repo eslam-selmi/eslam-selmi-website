@@ -194,17 +194,6 @@ export function Hero() {
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
             />
 
-            {/* signature name plate */}
-            <motion.div
-              initial={false}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.7 }}
-              className="relative z-20 -mt-6 text-center sm:-mt-8"
-            >
-              <span className="hero-signature-name" dir="ltr" aria-label={lang === "ar" ? nameAr : nameEn}>
-                {nameEn}
-              </span>
-            </motion.div>
           </div>
         </motion.div>
       </div>
