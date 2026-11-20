@@ -178,22 +178,6 @@ export function Hero() {
               </svg>
             </motion.div>
 
-            {/* tilted elliptical orbit with a glass bead */}
-            <motion.div className="pointer-events-none absolute inset-x-0 top-[18%] aspect-[2/1]" style={{ rotate: -14 }} aria-hidden>
-              <svg viewBox="0 0 200 100" className="h-full w-full"><ellipse cx="100" cy="50" rx="98" ry="40" fill="none" stroke="var(--accent)" strokeOpacity="0.22" strokeWidth="0.5" /></svg>
-            </motion.div>
-
-            {/* floating glass sparks, purely decorative */}
-            {[
-              { pos: "top-[12%] start-[6%]", size: "size-10", delay: 0 },
-              { pos: "top-[44%] end-[2%]", size: "size-7", delay: 1.2 },
-              { pos: "bottom-[30%] start-[2%]", size: "size-6", delay: 2.2 },
-            ].map(({ pos, size, delay }) => (
-              <motion.span key={pos} className={`pointer-events-none absolute z-20 ${pos} ${size} glass-panel rounded-2xl rotate-45 grid place-items-center`} animate={isMobile || reduceMotion ? undefined : { y: [0, -10, 0], rotate: [45, 60, 45] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay }} aria-hidden>
-                <span className="size-1.5 rounded-full" style={{ background: "var(--accent)", boxShadow: "0 0 10px var(--accent)" }} />
-              </motion.span>
-            ))}
-
             {/* portrait — transparent cutout, floating */}
             <motion.img
               src={portrait.src}
