@@ -9,8 +9,7 @@
 @import "@fontsource/manrope/latin-800.css";
 @import "@fontsource/sora/latin-600.css";
 @import "@fontsource/sora/latin-800.css";
-@import "@fontsource/caveat/latin-600.css";
-@import "@fontsource/aref-ruqaa/arabic-400.css";
+@import "@fontsource/allura/latin-400.css";
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
@@ -986,28 +985,26 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 .hero-line-trace-second { animation: portrait-line-draw 11s ease-in-out -4s infinite; }
 .hero-line-trace-third { animation: portrait-line-draw 13s ease-in-out -7s infinite; opacity: .6; }
 @keyframes portrait-line-draw { 0%, 100% { stroke-dashoffset: 100; opacity: .15; } 28%, 72% { stroke-dashoffset: 0; opacity: .8; } }
-.hero-signature-rule { width: 180px; height: 14px; margin: 12px auto 0; }
-.hero-signature-rule path { stroke: var(--accent); stroke-width: 1.2; stroke-linecap: round; stroke-dasharray: 100; animation: signature-rule-draw 10s ease-in-out infinite; }
-@keyframes signature-rule-draw { 0%, 100% { stroke-dashoffset: 100; opacity: .2; } 30%, 80% { stroke-dashoffset: 0; opacity: .8; } }
 @media (max-width: 767px) { .hero-line-guides { opacity: .65; } .hero-line-trace-third { display: none; } }
-@media (prefers-reduced-motion: reduce) { .hero-line-trace, .hero-signature-rule path { animation: none; stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) { .hero-line-trace { animation: none; stroke-dashoffset: 0; } }
 
-/* Hero signature name: shimmering gradient sweep across the name */
-@keyframes hero-name-shine { to { background-position: -200% center; } }
-.hero-name-shine {
-  background: linear-gradient(110deg, var(--foreground) 25%, var(--accent) 50%, var(--foreground) 75%);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: hero-name-shine 5s linear infinite;
+/* A restrained ink signature, identical in both languages, without a decorative rule or glow. */
+.hero-signature-name {
+  display: inline-block;
+  max-width: 100%;
+  font-family: "Allura", "IBM Plex Sans Arabic", cursive;
+  font-size: 3.5rem;
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: 0;
+  white-space: nowrap;
+  color: var(--foreground);
+  transform: rotate(-6deg);
+  text-shadow: none;
+  filter: none;
+  padding: 0.15em 0.2em;
 }
-@media (prefers-reduced-motion: reduce) { .hero-name-shine { animation: none; } }
-
-/* Hand-thread signature styling for the hero name */
-.hero-signature-name { display: inline-block; transform: rotate(-2.5deg); letter-spacing: 0.01em; }
-.hero-signature-en { font-family: "Caveat", "IBM Plex Sans Arabic", cursive; font-weight: 600; }
-.hero-signature-ar { font-family: "Aref Ruqaa", "IBM Plex Sans Arabic", serif; font-weight: 400; padding-bottom: 0.18em; }
+@media (min-width: 768px) { .hero-signature-name { font-size: 4.25rem; } }
 
 /* Top nav: distinctive gradient underline that sweeps in on hover */
 .nav-link { position: relative; }

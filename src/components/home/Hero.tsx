@@ -161,7 +161,7 @@ export function Hero() {
         >
           <div className="hero-portrait-stage relative mx-auto w-full max-w-[400px] sm:max-w-[440px] lg:max-w-[480px]">
             {/* soft ambient glow */}
-            <div className="pointer-events-none absolute -inset-10 -z-10" style={{ background: "radial-gradient(ellipse 55% 50% at 50% 42%, color-mix(in oklab, var(--accent) 18%, transparent), transparent 70%), radial-gradient(ellipse 42% 34% at 50% 94%, color-mix(in oklab, var(--navy) 18%, transparent), transparent 78%)" }} aria-hidden />
+            <div className="pointer-events-none absolute -inset-10 -z-10" style={{ background: "radial-gradient(ellipse 55% 50% at 50% 42%, color-mix(in oklab, var(--accent) 18%, transparent), transparent 70%)" }} aria-hidden />
 
             {/* outer dashed orbit with travelling light */}
             <motion.div className="pointer-events-none absolute inset-x-2 top-2 aspect-square" animate={reduceMotion ? undefined : { rotate: 360 }} transition={{ duration: isMobile ? 60 : 40, repeat: Infinity, ease: "linear" }} aria-hidden>
@@ -190,7 +190,6 @@ export function Hero() {
               fetchPriority="high"
               decoding="async"
               className="hero-portrait relative z-10 mx-auto w-full"
-              style={{ filter: "drop-shadow(0 20px 26px color-mix(in oklab, var(--navy-deep) 30%, transparent))" }}
               animate={isMobile || reduceMotion ? undefined : { y: [0, -10, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
             />
@@ -202,10 +201,9 @@ export function Hero() {
               transition={{ delay: 0.5, duration: 0.7 }}
               className="relative z-20 -mt-6 text-center sm:-mt-8"
             >
-              <span className={`hero-name-shine hero-signature-name leading-none ${lang === "ar" ? "hero-signature-ar text-[clamp(2.3rem,4.6vw,3.5rem)]" : "hero-signature-en text-[clamp(2.6rem,5vw,3.9rem)]"}`}>
-                {lang === "ar" ? nameAr : nameEn}
+              <span className="hero-signature-name" dir="ltr" aria-label={lang === "ar" ? nameAr : nameEn}>
+                {nameEn}
               </span>
-              <svg className="hero-signature-rule" viewBox="0 0 180 14" fill="none" aria-hidden="true"><path pathLength="100" d="M4 10Q52 2 94 7T176 4" /></svg>
             </motion.div>
           </div>
         </motion.div>
