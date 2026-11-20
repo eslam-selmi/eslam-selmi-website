@@ -87,4 +87,4 @@
 
 - [x] Replace the marked program index with compact full-width selectors, readable labels and a clear selected state on mobile and desktop.
 - [x] Remove dotted background textures from latest additions, countries and consultation booking without changing their content.
-- [x] Verify real program switching and keyboard navigation, mobile/desktop layouts without overflow, and all three backgrounds without dots; 3 program tests pass.
+- [x] Verify all three real program selections and keyboard navigation on mobile/desktop in light/dark themes, without overflow, and all three backgrounds without dots; 3 program tests pass.
