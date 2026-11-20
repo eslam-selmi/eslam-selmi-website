@@ -974,11 +974,21 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 @media (min-width: 1024px) { .prog-shell { grid-template-columns: 320px 1fr; gap: 2.5rem; align-items: start; } }
 .prog-index { display: grid; gap: .65rem; min-width: 0; }
 @media (min-width: 1024px) { .prog-index { position: sticky; top: 6rem; } }
-.prog-index .prog-tab { width: 100%; min-width: 0; height: auto; min-height: 84px; display: grid; grid-template-columns: 42px minmax(0, 1fr) 20px; column-gap: .85rem; row-gap: .35rem; text-align: start; white-space: normal; padding: 1rem; border: 1px solid var(--border); border-radius: 8px; color: var(--muted-foreground); background: linear-gradient(125deg, color-mix(in oklab, var(--card) 96%, var(--accent)), var(--card)); transition: border-color .2s, background .2s, color .2s; position: relative; }
-.prog-index .prog-tab:hover { color: var(--foreground); border-color: color-mix(in oklab, var(--accent) 55%, var(--border)); }
-.prog-index .prog-tab[data-active="true"] { color: var(--foreground); border-color: var(--accent); background: linear-gradient(125deg, color-mix(in oklab, var(--accent) 14%, var(--card)), var(--card)); box-shadow: inset -3px 0 0 var(--accent); }
-html[dir="ltr"] .prog-index .prog-tab[data-active="true"] { box-shadow: inset 3px 0 0 var(--accent); }
-.prog-tab-num { grid-row: 1 / 3; display: grid; place-items: center; width: 42px; height: 42px; align-self: center; border-radius: 50%; border: 1px solid var(--border); font-family: var(--font-heading-en); font-size: 1rem; font-weight: 800; line-height: 1; color: var(--muted-foreground); background: var(--background); }
+.prog-index .prog-tab { width: 100%; min-width: 0; height: auto; min-height: 84px; display: grid; grid-template-columns: 42px minmax(0, 1fr) 20px; column-gap: .85rem; row-gap: .35rem; text-align: start; white-space: normal; padding: 1rem; border: 1px solid var(--glass-border); border-radius: 8px; color: var(--muted-foreground); background: linear-gradient(130deg, color-mix(in oklab, var(--cover-highlight) 10%, transparent), transparent 52%), var(--glass); backdrop-filter: blur(14px) saturate(125%); box-shadow: var(--shadow-glass), var(--cover-edge-shadow); transition: border-color .25s, box-shadow .25s, color .25s, transform .25s; position: relative; isolation: isolate; overflow: hidden; }
+.prog-index .prog-tab::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(120deg, color-mix(in oklab, var(--accent) 13%, transparent), transparent 65%); opacity: 0; transition: opacity .3s; pointer-events: none; }
+.prog-index .prog-tab::after { content: ""; position: absolute; inset-block: -80%; inset-inline-start: -65%; width: 35%; background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--cover-highlight) 18%, transparent), transparent); transform: rotate(22deg); opacity: 0; pointer-events: none; }
+.prog-index .prog-tab > span, .prog-index .prog-tab > svg { position: relative; z-index: 1; }
+.prog-index .prog-tab:hover { color: var(--foreground); border-color: color-mix(in oklab, var(--accent) 55%, var(--glass-border)); }
+.prog-index .prog-tab[data-active="true"] { color: var(--foreground); border-color: color-mix(in oklab, var(--accent) 65%, var(--glass-border)); box-shadow: var(--shadow-glass), var(--cover-edge-shadow), inset -3px 0 0 var(--accent); }
+.prog-index .prog-tab[data-active="true"]::before, .prog-index .prog-tab:hover::before { opacity: 1; }
+html[dir="ltr"] .prog-index .prog-tab[data-active="true"] { box-shadow: var(--shadow-glass), var(--cover-edge-shadow), inset 3px 0 0 var(--accent); }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .prog-index .prog-tab:hover { transform: translateY(-2px); }
+  .prog-index .prog-tab:hover::after { animation: program-glass-sheen .8s ease-out; }
+}
+@keyframes program-glass-sheen { 0% { inset-inline-start: -65%; opacity: 0; } 20% { opacity: 1; } 100% { inset-inline-start: 130%; opacity: 0; } }
+.prog-index .prog-tab:active { transform: scale(.99); }
+.prog-tab-num { grid-row: 1 / 3; display: grid; place-items: center; width: 42px; height: 42px; align-self: center; border-radius: 50%; border: 1px solid var(--glass-border); font-family: var(--font-heading-en); font-size: 1rem; font-weight: 800; line-height: 1; color: var(--muted-foreground); background: color-mix(in oklab, var(--glass-strong) 70%, transparent); box-shadow: var(--cover-edge-shadow); }
 .prog-tab[data-active="true"] .prog-tab-num { color: var(--accent); border-color: color-mix(in oklab, var(--accent) 35%, var(--border)); }
 .prog-tab-title { font-weight: 700; font-size: 1rem; line-height: 1.5; }
 .prog-tab-count { grid-column: 2; font-size: .75rem; font-weight: 600; color: var(--muted-foreground); }
@@ -987,11 +997,11 @@ html[dir="ltr"] .prog-index .prog-tab[data-active="true"] { box-shadow: inset 3p
 @media (max-width: 767px) {
   .prog-shell { gap: 1rem; }
   .prog-index { gap: .5rem; }
-  .prog-index .prog-tab { min-height: 72px; padding: .8rem; column-gap: .7rem; }
+  .prog-index .prog-tab { min-height: 72px; padding: .8rem; column-gap: .7rem; backdrop-filter: blur(6px) saturate(115%); }
   .prog-tab-title { font-size: .9rem; }
   .prog-body { padding: 1.25rem; }
 }
-@media (prefers-reduced-motion: reduce) { .prog-index .prog-tab { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .prog-index .prog-tab, .prog-index .prog-tab::before { transition: none; } .prog-index .prog-tab:active { transform: none; } }
 .prog-feature { display: grid; border: 1px solid color-mix(in oklab, var(--foreground) 12%, transparent); border-radius: 1.5rem; overflow: hidden; background: var(--card); }
 @media (min-width: 768px) { .prog-feature { grid-template-columns: 1fr 1.15fr; } }
 .prog-cover { position: relative; overflow: hidden; min-height: 240px; }
