@@ -50,7 +50,7 @@ export function Nav({
         <div
           className={`bg-card/85 backdrop-blur-xl border border-foreground/10 rounded-full ps-3 pe-2 py-2 flex items-center justify-between gap-2 ${scrolled ? "shadow-[0_8px_30px_-12px_rgba(15,27,61,0.15)]" : ""}`}
         >
-          <Link to="/" className="flex items-center gap-2.5 group shrink-0">
+          <Link to="/" className="flex items-center gap-2.5 group shrink-0 ms-2">
             <BrandMark />
           </Link>
           <nav className="hidden xl:flex items-center gap-0.5">
