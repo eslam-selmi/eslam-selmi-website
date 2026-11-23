@@ -137,7 +137,7 @@ export function PortalShell({ userId, role, userLabel, children }: Props) {
             <Link to="/" reloadDocument aria-label={isAr ? "العودة إلى الموقع" : "Back to website"} className="flex items-center gap-2.5 group">
               <div className="relative">
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[var(--gold)]/30 to-transparent blur-md opacity-0 group-hover:opacity-100 transition" />
-                <img src={profile.logo} alt="Eslam Selmi" className="relative h-9 w-9 rounded-xl object-contain bg-white/10 p-1 border border-white/15 group-hover:border-[var(--gold)]/60 transition" />
+                <img src={profile.logoDark} alt="Eslam Selmi" className="relative h-9 w-9 rounded-xl object-contain bg-white/10 p-1 border border-white/15 group-hover:border-[var(--gold)]/60 transition" />
               </div>
               <div className="hidden sm:block leading-tight">
                 <p className="text-[10px] text-white/45 tracking-[0.18em] font-semibold">ESLAM SELMI</p>

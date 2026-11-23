@@ -20,7 +20,7 @@ export function SiteProfilePanel() {
   const [saving, setSaving] = useState(false);
   useEffect(() => { if (!dirty && query.isSuccess) setDraft(query.profile); }, [query.data, query.isSuccess, dirty]);
   function set(key: keyof SiteProfile, value: string) { setDirty(true); setDraft(prev => ({ ...prev, [key]: value })); }
-  async function upload(file: File | undefined, target: "portrait" | "logo" = "portrait") {
+  async function upload(file: File | undefined, target: "portrait" | "logo" | "logoDark" = "portrait") {
     if (!file) return;
     if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) return toast.error(t("اختر صورة JPG أو PNG أو WebP", "Choose a JPG, PNG or WebP image"));
     setUploading(true);
@@ -60,6 +60,11 @@ export function SiteProfilePanel() {
       <div className="space-y-3">
         <Button type="button" variant="outline" asChild><label className="cursor-pointer"><Camera className="size-4" />{uploading ? t("جارٍ الرفع…", "Uploading…") : t("تغيير لوجو الموقع", "Change site logo")}<input aria-label={t("رفع لوجو الموقع", "Upload site logo")} type="file" accept="image/jpeg,image/png,image/webp" disabled={uploading || saving} className="sr-only" onChange={e => { void upload(e.target.files?.[0], "logo"); e.target.value = ""; }} /></label></Button>
         <Button type="button" variant="ghost" onClick={() => set("logo", siteProfileDefaults.logo)}>{t("استعادة اللوجو الأصلي", "Restore original logo")}</Button>
+      </div>
+      <img src={draft.logoDark} alt={t("معاينة لوجو الوضع الداكن", "Dark-mode logo preview")} className="size-24 rounded-xl object-contain p-3" style={{ background: "#0b1736" }} />
+      <div className="space-y-3">
+        <Button type="button" variant="outline" asChild><label className="cursor-pointer"><Camera className="size-4" />{uploading ? t("جارٍ الرفع…", "Uploading…") : t("تغيير لوجو الوضع الداكن", "Change dark-mode logo")}<input aria-label={t("رفع لوجو الوضع الداكن", "Upload dark-mode logo")} type="file" accept="image/jpeg,image/png,image/webp" disabled={uploading || saving} className="sr-only" onChange={e => { void upload(e.target.files?.[0], "logoDark"); e.target.value = ""; }} /></label></Button>
+        <Button type="button" variant="ghost" onClick={() => set("logoDark", siteProfileDefaults.logoDark)}>{t("استعادة لوجو الوضع الداكن", "Restore dark-mode logo")}</Button>
       </div>
     </div>
     <div className="flex flex-wrap items-center gap-5 border-b border-border pb-6">

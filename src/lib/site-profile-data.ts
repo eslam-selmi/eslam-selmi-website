@@ -1,10 +1,12 @@
 import headshotAsset from "@/assets/portfolio/headshot-cutout.png.asset.json";
-import logoAsset from "@/assets/brand-logo.webp.asset.json";
+import logoAsset from "@/assets/brand-logo-light.png.asset.json";
+import logoDarkAsset from "@/assets/brand-logo-dark.png.asset.json";
 import type { Tables } from "@/integrations/supabase/types";
 
 export type SiteProfileRow = Pick<Tables<"site_content">, "id" | "content">;
 export type SiteProfile = {
   logo: string;
+  logoDark: string;
   portrait: string;
   phone: string;
   secondary_phone: string;
@@ -15,6 +17,7 @@ export type SiteProfile = {
 };
 export const siteProfileDefaults: SiteProfile = {
   logo: logoAsset.url,
+  logoDark: logoDarkAsset.url,
   portrait: headshotAsset.url,
   phone: "+966 555 376 228",
   secondary_phone: "+20 10 9727 9900",

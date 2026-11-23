@@ -2,25 +2,20 @@ import { DeferredBookingDialog } from "@/components/booking/DeferredBookingDialo
 import { motion } from "motion/react";
 import { useI18n } from "@/lib/i18n";
 import { fadeUp } from "@/components/home/data";
-import { useSiteProfile } from "@/lib/site-profile";
+import { ThemeLogo } from "@/components/ThemeLogo";
 export function CalendlyDialog() {
   return <DeferredBookingDialog />;
 }
 /* ---------- BRAND MARK ---------- */
 export function BrandMark({ size = 62 }: { size?: number }) {
   const { lang } = useI18n();
-  const { profile } = useSiteProfile();
   const displayName = lang === "ar" ? "إسلام سلمي" : "Eslam Selmi";
   return (
     <div className="flex items-center gap-2">
-      <img
-        src={profile.logo}
+      <ThemeLogo
+        size={size}
         alt={displayName}
-        width={size}
-        height={size}
-        className="shrink-0 object-contain drop-shadow-[0_1px_3px_rgba(80,120,255,0.2)] dark:[filter:drop-shadow(0_0_3px_rgba(255,255,255,0.25))_drop-shadow(0_0_8px_rgba(160,190,255,0.28))_brightness(1.08)]"
-        style={{ width: size, height: size }}
-        suppressHydrationWarning
+        className="shrink-0 object-contain drop-shadow-[0_1px_3px_rgba(80,120,255,0.2)]"
       />
       <span className="flex items-center leading-none">
         <span
