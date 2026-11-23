@@ -194,6 +194,26 @@ export function Hero() {
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
             />
 
+            {/* name plate — editorial, no frame */}
+            <motion.div
+              initial={false}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.15 }}
+              className="relative z-10 -mt-3 sm:-mt-5 flex flex-col items-center text-center"
+            >
+              <span
+                className="h-px w-16"
+                style={{ background: "linear-gradient(90deg, transparent, var(--accent), transparent)" }}
+                aria-hidden
+              />
+              <span className="mt-3 font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+                {lang === "ar" ? nameAr : nameEn}
+              </span>
+              <span className="mt-1.5 text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.32em] text-muted-foreground">
+                {lang === "ar" ? "رئيس التعلم وتطوير المواهب" : "Head of Learning & Talent"}
+              </span>
+            </motion.div>
+
           </div>
         </motion.div>
       </div>

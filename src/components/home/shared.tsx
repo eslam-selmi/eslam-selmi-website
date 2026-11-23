@@ -17,14 +17,6 @@ export function BrandMark({ size = 62 }: { size?: number }) {
         alt={displayName}
         className="shrink-0 object-contain drop-shadow-[0_1px_3px_rgba(80,120,255,0.2)]"
       />
-      <span className="flex items-center leading-none">
-        <span
-          className="font-display text-[15px] sm:text-[17px] font-bold tracking-tight text-foreground whitespace-nowrap"
-          suppressHydrationWarning
-        >
-          {displayName}
-        </span>
-      </span>
     </div>
   );
 }
