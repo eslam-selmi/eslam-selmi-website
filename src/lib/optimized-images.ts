@@ -56,8 +56,12 @@ export function snapshotThumbnail(src: string): string {
   return thumbnails.get(assetPath(src)) ?? src;
 }
 
+// Earlier saved address of the same cut-out; now served via the cleaned-edge variants.
+const LEGACY_PORTRAIT = "/__l5e/assets-v1/990ef1e9-0dab-4a8a-b36d-49e609c9cc10/headshot-cutout.png";
+
 export function portraitSources(src: string) {
   // Only substitute the known original; never replace administrator-uploaded portraits.
-  if (assetPath(src) !== original0.url) return { src, srcSet: undefined };
+  const p = assetPath(src);
+  if (p !== original0.url && p !== LEGACY_PORTRAIT) return { src, srcSet: undefined };
   return { src: optimized0.url, srcSet: `${optimized0.url} 640w, ${optimized1.url} 960w` };
 }
