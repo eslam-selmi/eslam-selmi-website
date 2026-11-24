@@ -7,6 +7,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import etecLicenseAsset from "@/assets/etec-license.png.asset.json";
 import { useSiteProfile } from "@/lib/site-profile";
 import { portraitSources } from "@/lib/optimized-images";
+import { ThemeLogo } from "@/components/ThemeLogo";
 import { Button } from "@/components/ui/button";
 
 export function Hero() {
@@ -204,8 +205,17 @@ export function Hero() {
                 style={{ background: "linear-gradient(90deg, transparent, var(--accent), transparent)" }}
                 aria-hidden
               />
-              <span className="mt-3 font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
-                {lang === "ar" ? nameAr : nameEn}
+              <span className="mt-4 flex items-center gap-3">
+                <ThemeLogo size={34} className="h-8 w-auto opacity-70" alt="" />
+                <span className="h-6 w-px bg-foreground/25" aria-hidden />
+                <span
+                  className="text-2xl sm:text-3xl text-foreground"
+                  style={{ fontFamily: '"Noto Kufi Arabic", sans-serif', fontWeight: 800 }}
+                  lang="ar"
+                  dir="rtl"
+                >
+                  {nameAr}
+                </span>
               </span>
             </motion.div>
 
