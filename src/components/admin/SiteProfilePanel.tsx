@@ -1,3 +1,4 @@
+import { portraitSources } from "@/lib/optimized-images";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Camera, Loader2, Save } from "lucide-react";
@@ -68,7 +69,7 @@ export function SiteProfilePanel() {
       </div>
     </div>
     <div className="flex flex-wrap items-center gap-5 border-b border-border pb-6">
-      <img src={draft.portrait} alt={t("معاينة الصورة الرئيسية", "Main portrait preview")} className="h-36 w-28 rounded-md object-cover object-top bg-secondary" />
+      <img src={portraitSources(draft.portrait).src} alt={t("معاينة الصورة الرئيسية", "Main portrait preview")} className="h-36 w-28 rounded-md object-cover object-top bg-secondary" />
       <div className="space-y-3">
         <Button type="button" variant="outline" asChild><label className="cursor-pointer"><Camera className="size-4" />{uploading ? t("جارٍ الرفع…", "Uploading…") : t("تغيير الصورة الرئيسية", "Change main portrait")}<input type="file" accept="image/jpeg,image/png,image/webp" disabled={uploading || saving} className="sr-only" onChange={e => { void upload(e.target.files?.[0]); e.target.value = ""; }} /></label></Button>
         <Button type="button" variant="ghost" onClick={() => set("portrait", siteProfileDefaults.portrait)}>{t("استعادة الصورة الأصلية", "Restore original portrait")}</Button>
