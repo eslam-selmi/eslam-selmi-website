@@ -61,11 +61,11 @@ export function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section id={id} className="px-4 sm:px-6 py-20 lg:py-28 relative overflow-hidden">
+    <section id={id} className="px-4 sm:px-6 py-16 lg:py-24 relative overflow-hidden">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
       <div className="absolute -end-40 top-20 size-80 rounded-full bg-accent/10 blur-3xl" />
       <div className="mx-auto max-w-7xl">
-        <motion.div {...fadeUp} className={title ? "mb-12 lg:mb-16" : "mb-0"}>
+        <motion.div {...fadeUp} className={title ? "mb-10 lg:mb-12" : "mb-0"}>
           {eyebrow && (
             <div className="inline-flex items-center gap-2 rounded-full bg-foreground/[0.06] border border-foreground/10 px-3.5 py-1.5 text-[11px] uppercase tracking-[0.28em] text-foreground font-bold mb-5">
               <span className="size-1.5 rounded-full bg-accent" />
@@ -73,7 +73,7 @@ export function Section({
             </div>
           )}
           {title && (
-            <h2 className="font-display leading-[1.05] tracking-tight text-foreground text-[clamp(1.9rem,4.4vw,3.75rem)] whitespace-normal lg:whitespace-nowrap">
+            <h2 className="font-display leading-[1.05] tracking-tight text-foreground section-title whitespace-normal lg:whitespace-nowrap">
               {title}
             </h2>
           )}

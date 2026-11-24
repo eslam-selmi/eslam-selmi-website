@@ -128,7 +128,7 @@ function Portfolio() {
       {isVisible("home.programs") && <DeferredSection id="programs"><Programs /></DeferredSection>}
 
       {isVisible("home.latest_additions") && (
-        <DeferredSection id="latest-additions"><div className="max-w-7xl mx-auto px-4 sm:px-5 py-12">
+        <DeferredSection id="latest-additions"><div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 lg:py-20">
           <LatestAdditionsSection />
         </div></DeferredSection>
       )}

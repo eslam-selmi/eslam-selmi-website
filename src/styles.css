@@ -1088,7 +1088,7 @@ html[dir="ltr"] .prog-index .prog-tab[data-active="true"] { box-shadow: var(--sh
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  border-radius: 40px;
+  border-radius: 28px;
   border: 1px solid var(--booking-border);
   background-color: var(--booking-surface);
   background-image:
@@ -1189,7 +1189,7 @@ html[dir="ltr"] .prog-index .prog-tab[data-active="true"] { box-shadow: var(--sh
 .additions-title {
   margin-top: .7rem;
   font-family: var(--font-heading-en);
-  font-size: clamp(1.55rem, 3.2vw, 2.5rem);
+  font-size: clamp(1.9rem, 3.6vw, 3rem);
   font-weight: 800;
   line-height: 1.12;
   letter-spacing: -.01em;
@@ -1426,3 +1426,6 @@ html[dir="rtl"] .additions-card:hover .additions-arrow { transform: translate(-3
 .vs-arrow { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 9999px; border: 1px solid var(--border); transition: background .2s; }
 .vs-arrow:hover { background: var(--muted); }
 @media (prefers-reduced-motion: reduce) { .vs-play::after { animation: none; } }
+
+/* Shared homepage section heading scale */
+.section-title { font-size: clamp(1.9rem, 3.6vw, 3rem); line-height: 1.1; }

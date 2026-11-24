@@ -18,11 +18,11 @@ export function TraineeReviews() {
   const avg = items.filter((i) => i.rating).reduce((a, i) => a + Number(i.rating), 0) / (items.filter((i) => i.rating).length || 1);
 
   return (
-    <section id="trainee-reviews" className="py-20 px-4">
-      <div className="max-w-6xl mx-auto">
+    <section id="trainee-reviews" className="py-16 lg:py-24 px-4 sm:px-6">
+      <div className="max-w-7xl mx-auto">
         <div className="text-center mb-10">
           <p className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">{isAr ? "آراء المتدربين" : "Trainee reviews"}</p>
-          <h2 className="mt-2 text-3xl sm:text-4xl font-bold text-foreground">{isAr ? "ماذا يقول من تدرّبوا معنا" : "What our trainees say"}</h2>
+          <h2 className="mt-2 font-display section-title font-bold tracking-tight text-foreground">{isAr ? "ماذا يقول من تدرّبوا معنا" : "What our trainees say"}</h2>
           <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-sm text-foreground">
             <span className="flex" dir="ltr">{[1, 2, 3, 4, 5].map((n) => <Star key={n} className={`w-4 h-4 ${n <= Math.round(avg) ? "fill-accent text-accent" : "text-muted-foreground/40"}`} />)}</span>
             <span className="font-bold tabular-nums">{avg.toFixed(1)}</span>
