@@ -210,7 +210,7 @@ export function Hero() {
                 <span className="h-6 w-px bg-foreground/25" aria-hidden />
                 <span
                   className="text-2xl sm:text-3xl text-foreground"
-                  style={{ fontFamily: '"Noto Kufi Arabic", sans-serif', fontWeight: 800 }}
+                  style={{ fontFamily: '"Thmanyah Serif Display", serif', fontWeight: 700 }}
                   lang="ar"
                   dir="rtl"
                 >
