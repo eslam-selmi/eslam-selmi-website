@@ -190,8 +190,6 @@ export function Hero() {
               fetchPriority="high"
               decoding="async"
               className="hero-portrait relative z-10 mx-auto w-full"
-              animate={isMobile || reduceMotion ? undefined : { y: [0, -10, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
             />
 
             {/* name plate — editorial, no frame */}
@@ -199,7 +197,7 @@ export function Hero() {
               initial={false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.15 }}
-              className="relative z-10 -mt-3 sm:-mt-5 flex flex-col items-center text-center"
+              className="relative z-20 -mt-16 sm:-mt-20 flex flex-col items-center text-center"
             >
               <span
                 className="h-px w-16"
