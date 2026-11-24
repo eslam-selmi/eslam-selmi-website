@@ -1400,7 +1400,6 @@ html[dir="rtl"] .additions-card:hover .additions-arrow { transform: translate(-3
   .additions-card:hover { transform: none; }
   .additions-card:hover .additions-tile { transform: none; }
 }
-}
 
 /* Portrait melts into the page: feathered bottom + soft sides, no hard cut edge */
 .hero-portrait {
