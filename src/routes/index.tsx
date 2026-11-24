@@ -9,6 +9,7 @@ import { ScrollTop } from "@/components/home/Floating";
 import { CalendlyDialog } from "@/components/home/shared";
 import { DeferredSection } from "@/components/home/DeferredSection";
 import type { ThemeMode } from "@/components/home/data";
+const VideoShowcase = lazy(() => import("@/components/home/VideoShowcase").then(m => ({ default: m.VideoShowcase })));
 const Journey = lazy(() => import("@/components/home/AboutSections").then(m => ({ default: m.Journey })));
 const Pillars = lazy(() => import("@/components/home/AboutSections").then(m => ({ default: m.Pillars })));
 const Programs = lazy(() => import("@/components/home/AboutSections").then(m => ({ default: m.Programs })));
@@ -132,6 +133,7 @@ function Portfolio() {
         </div></DeferredSection>
       )}
 
+      {isVisible("home.videos") && <DeferredSection id="videos"><VideoShowcase /></DeferredSection>}
       {isVisible("home.current_courses") && <DeferredSection id="current-courses"><CurrentCourses /></DeferredSection>}
 
       {isVisible("home.podcast") && <DeferredSection id="podcast"><Podcast /></DeferredSection>}

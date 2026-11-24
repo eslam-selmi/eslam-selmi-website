@@ -74,6 +74,7 @@ import { GraduateToolsPanel } from "@/components/admin/GraduateToolsPanel";
 import { BuildEffectsPanel } from "@/components/admin/BuildEffectsPanel";
 import { SiteMediaPanel } from "@/components/admin/SiteMediaPanel";
 import { ServicesPanel } from "@/components/admin/panels/ServicesPanel";
+import { VideosPanel } from "@/components/admin/panels/VideosPanel";
 import { PillarsPanel } from "@/components/admin/panels/PillarsPanel";
 import { AdminTranslationReview } from "@/components/admin/AdminTranslationReview";
 import { Course, EnrollmentRow } from "@/components/admin/panels/types";
@@ -102,7 +103,7 @@ type AdminSearch = {
     | "trainings"
     | "partners"
     | "contracts"
-    | "programs" | "services" | "pillars" | "graduate_tools" | "media" | "effects" | "visibility" | "popups" | "maintenance";
+    | "programs" | "services" | "pillars" | "videos" | "graduate_tools" | "media" | "effects" | "visibility" | "popups" | "maintenance";
 
   drawer?: string;
   editCourse?: string;
@@ -166,7 +167,7 @@ function AdminPage() {
     | "snapshots"
     | "partners"
     | "contracts"
-    | "programs" | "services" | "pillars" | "graduate_tools" | "media" | "effects" | "visibility" | "popups" | "maintenance"
+    | "programs" | "services" | "pillars" | "videos" | "graduate_tools" | "media" | "effects" | "visibility" | "popups" | "maintenance"
   >(search.tab || "overview");
 
   const tab = tabState;
@@ -319,6 +320,7 @@ function AdminPage() {
               items: [
                 { id: "services", label: t("الخدمات", "Services"), icon: Layers },
                 { id: "pillars", label: t("ثلاث ركائز", "Three pillars"), icon: Layers },
+                { id: "videos", label: t("قسم الفيديوهات", "Videos section"), icon: Layers },
                 { id: "programs", label: t("البرامج والمسارات", "Programs & tracks"), icon: BookOpen },
                 { id: "graduate_tools", label: t("أدوات الخريجين", "Graduate tools"), icon: Award },
                 { id: "trainings", label: t("التدريبات", "Trainings"), icon: Layers },
@@ -451,6 +453,8 @@ function AdminPage() {
                   <ProgramsPanel />
                 ) : tab === "services" ? (
                   <ServicesPanel />
+                ) : tab === "videos" ? (
+                  <VideosPanel />
                 ) : tab === "pillars" ? (
                   <PillarsPanel />
                 ) : tab === "graduate_tools" ? (

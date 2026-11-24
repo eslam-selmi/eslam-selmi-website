@@ -1408,3 +1408,21 @@ html[dir="rtl"] .additions-card:hover .additions-arrow { transform: translate(-3
   mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 92%), radial-gradient(ellipse 75% 95% at 50% 35%, #000 60%, transparent 100%);
   mask-composite: intersect;
 }
+
+/* ---------- Video showcase ---------- */
+.vs-stage { box-shadow: 0 40px 80px -40px color-mix(in oklab, var(--primary) 60%, transparent), inset 0 0 0 1px color-mix(in oklab, var(--foreground) 10%, transparent); background: var(--primary); }
+.vs-scrim { background: linear-gradient(to top, color-mix(in oklab, var(--primary) 88%, transparent), transparent 55%); }
+.vs-fallback { background: radial-gradient(circle at 30% 20%, color-mix(in oklab, var(--accent) 35%, transparent), transparent 60%), var(--primary); }
+.vs-play { color: var(--primary-foreground); background: color-mix(in oklab, var(--primary-foreground) 16%, transparent); backdrop-filter: blur(10px); border: 1px solid color-mix(in oklab, var(--primary-foreground) 35%, transparent); transition: transform .35s ease, background .35s ease; }
+.vs-play::after { content: ""; position: absolute; inset: -10px; border-radius: 9999px; border: 1px solid color-mix(in oklab, var(--primary-foreground) 25%, transparent); animation: vs-pulse 2.4s ease-out infinite; }
+.group:hover .vs-play { transform: translate(-50%, -50%) scale(1.08); background: color-mix(in oklab, var(--accent) 45%, transparent); }
+@keyframes vs-pulse { from { transform: scale(.9); opacity: 1; } to { transform: scale(1.35); opacity: 0; } }
+.vs-rail { scrollbar-width: none; cursor: grab; overscroll-behavior-x: contain; }
+.vs-rail::-webkit-scrollbar { display: none; }
+.vs-thumb > div { outline: 1px solid color-mix(in oklab, var(--foreground) 10%, transparent); transition: outline-color .3s, transform .3s; }
+.vs-thumb:hover > div { transform: translateY(-3px); }
+.vs-thumb[aria-current="true"] > div { outline: 2px solid var(--accent); }
+.vs-chip { color: var(--primary-foreground); background: color-mix(in oklab, var(--primary) 70%, transparent); padding: 2px 8px; border-radius: 9999px; }
+.vs-arrow { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 9999px; border: 1px solid var(--border); transition: background .2s; }
+.vs-arrow:hover { background: var(--muted); }
+@media (prefers-reduced-motion: reduce) { .vs-play::after { animation: none; } }
