@@ -58,30 +58,30 @@
   --card-foreground: oklch(0.18 0.04 252);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.18 0.04 252);
-  --primary: oklch(0.30 0.11 260);
+  --primary: oklch(0.22 0.06 252);
   --primary-foreground: oklch(0.99 0.004 230);
   --secondary: oklch(0.94 0.012 240);
   --secondary-foreground: oklch(0.22 0.06 252);
   --muted: oklch(0.95 0.008 240);
   --muted-foreground: oklch(0.46 0.025 250);
-  --accent: oklch(0.70 0.12 182);
+  --accent: oklch(0.72 0.12 195);
   --accent-foreground: oklch(0.16 0.04 252);
   --destructive: oklch(0.55 0.22 27);
   --destructive-foreground: oklch(1 0 0);
   --border: oklch(0.18 0.04 252 / 0.10);
   --input: oklch(0.18 0.04 252 / 0.14);
-  --ring: oklch(0.70 0.12 182);
+  --ring: oklch(0.72 0.12 195);
 
-  --gold: oklch(0.70 0.12 182);
-  --gold-soft: oklch(0.88 0.07 182);
-  --navy: oklch(0.30 0.11 260);
-  --consultation-surface: oklch(0.27 0.10 260);
-  --navy-deep: oklch(0.22 0.09 262);
+  --gold: oklch(0.78 0.14 78);
+  --gold-soft: oklch(0.88 0.09 82);
+  --navy: oklch(0.22 0.06 252);
+  --consultation-surface: oklch(0.20 0.05 252);
+  --navy-deep: oklch(0.14 0.05 252);
   --steel: oklch(0.62 0.04 240);
 
-  --lavender: oklch(0.70 0.12 182);
+  --lavender: oklch(0.72 0.12 195);
   --lavender-soft: oklch(0.90 0.05 200);
-  --lavender-deep: oklch(0.50 0.15 255);
+  --lavender-deep: oklch(0.48 0.13 210);
 
 
   --glass: oklch(1 0 0 / 0.78);
@@ -106,34 +106,34 @@
 }
 
 .dark {
-  --background: oklch(0.22 0.085 262);
+  --background: oklch(0.13 0.035 252);
   --foreground: oklch(0.97 0.008 230);
-  --card: oklch(0.27 0.095 260);
+  --card: oklch(0.18 0.04 252);
   --card-foreground: oklch(0.97 0.008 230);
-  --popover: oklch(0.25 0.09 260);
+  --popover: oklch(0.16 0.04 252);
   --popover-foreground: oklch(0.97 0.008 230);
   --primary: oklch(0.97 0.008 230);
   --primary-foreground: oklch(0.14 0.04 252);
-  --secondary: oklch(0.31 0.10 258);
+  --secondary: oklch(0.22 0.045 252);
   --secondary-foreground: oklch(0.97 0.008 230);
-  --muted: oklch(0.31 0.09 258);
-  --muted-foreground: oklch(0.80 0.04 245);
-  --accent: oklch(0.80 0.12 182);
+  --muted: oklch(0.22 0.04 252);
+  --muted-foreground: oklch(0.74 0.02 240);
+  --accent: oklch(0.78 0.11 195);
   --accent-foreground: oklch(0.14 0.04 252);
   --border: oklch(1 0 0 / 0.10);
   --input: oklch(1 0 0 / 0.14);
-  --ring: oklch(0.80 0.12 182);
-  --gold: oklch(0.80 0.12 182);
-  --gold-soft: oklch(0.90 0.07 182);
+  --ring: oklch(0.78 0.11 195);
+  --gold: oklch(0.82 0.14 80);
+  --gold-soft: oklch(0.88 0.10 82);
   --navy: oklch(0.92 0.02 230);
   --navy-deep: oklch(0.10 0.035 252);
   --steel: oklch(0.72 0.03 240);
-  --lavender: oklch(0.80 0.12 182);
+  --lavender: oklch(0.78 0.11 195);
   --lavender-soft: oklch(0.88 0.06 200);
-  --lavender-deep: oklch(0.60 0.15 255);
+  --lavender-deep: oklch(0.62 0.14 210);
 
-  --glass: oklch(0.28 0.10 258 / 0.70);
-  --glass-strong: oklch(0.27 0.10 258 / 0.92);
+  --glass: oklch(0.18 0.04 252 / 0.72);
+  --glass-strong: oklch(0.18 0.04 252 / 0.92);
   --glass-border: oklch(1 0 0 / 0.10);
   --shadow-glass: 0 28px 80px -36px oklch(0 0 0 / 0.6);
   --notification-success: oklch(0.79 0.14 162);
@@ -144,14 +144,14 @@
 }
 
 :root {
-  --booking-surface: oklch(0.27 0.10 260);
+  --booking-surface: oklch(0.145 0.035 245);
   --booking-foreground: oklch(0.97 0.012 230);
   --booking-muted: oklch(0.76 0.02 230);
-  --booking-cyan: oklch(0.80 0.12 182);
+  --booking-cyan: oklch(0.76 0.11 195);
   --booking-button-foreground: oklch(0.17 0.04 245);
-  --booking-border: oklch(0.80 0.12 182 / 0.30);
-  --booking-dot: oklch(0.80 0.12 182 / 0.18);
-  --booking-shadow: 0 32px 70px -30px oklch(0.80 0.12 182 / 0.30);
+  --booking-border: oklch(0.76 0.11 195 / 0.30);
+  --booking-dot: oklch(0.76 0.11 195 / 0.18);
+  --booking-shadow: 0 32px 70px -30px oklch(0.76 0.11 195 / 0.30);
 }
 .booking-reference-banner {
   color: var(--booking-foreground);
@@ -1400,18 +1400,6 @@ html[dir="rtl"] .additions-card:hover .additions-arrow { transform: translate(-3
   .additions-card:hover { transform: none; }
   .additions-card:hover .additions-tile { transform: none; }
 }
-
-/* Brand cover texture: fine diagonal lines + royal-blue glow */
-body {
-  background-image:
-    radial-gradient(ellipse 70% 50% at 85% 0%, color-mix(in oklab, var(--lavender-deep) 14%, transparent), transparent 70%),
-    repeating-linear-gradient(135deg, color-mix(in oklab, var(--foreground) 3.5%, transparent) 0 1px, transparent 1px 7px);
-  background-attachment: fixed;
-}
-.dark body {
-  background-image:
-    radial-gradient(ellipse 70% 55% at 85% 10%, oklch(0.55 0.16 255 / 0.45), transparent 70%),
-    repeating-linear-gradient(135deg, oklch(1 0 0 / 0.035) 0 1px, transparent 1px 7px);
 }
 
 /* Portrait melts into the page: feathered bottom + soft sides, no hard cut edge */
