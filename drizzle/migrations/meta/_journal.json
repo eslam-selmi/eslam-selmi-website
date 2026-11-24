@@ -36,6 +36,13 @@
       "when": 1793159046119,
       "tag": "0004_course_delivery_mode",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1795528768586,
+      "tag": "0005_security_admin_email_and_course_links",
+      "breakpoints": true
     }
   ]
 }

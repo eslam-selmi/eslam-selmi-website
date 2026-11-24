@@ -1,3 +1,4 @@
+import { csvSafeCell } from "@/lib/csv-safe";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Search, Download, User, BookOpen, X } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
@@ -18,8 +19,7 @@ export type ToolbarEnrollment = {
 export type ToolbarCourse = { id: string; title: string; active: boolean };
 
 function csvCell(v: unknown) {
-  const s = v == null ? "" : String(v);
-  return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  return csvSafeCell(v);
 }
 
 export function exportEnrollmentsCsv(rows: ToolbarEnrollment[]) {

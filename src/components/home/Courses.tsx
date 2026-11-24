@@ -124,7 +124,7 @@ export function CurrentCourses() {
       const { data } = await supabase
         .from("courses")
         .select(
-          "id,title,description,cover_emoji,price,currency,starts_at,ends_at,total_hours,online_url,brand_name,brand_tagline_ar,brand_tagline_en,course_goals,target_audience,is_upcoming,delivery_mode",
+          "id,title,description,cover_emoji,price,currency,starts_at,ends_at,total_hours,brand_name,brand_tagline_ar,brand_tagline_en,course_goals,target_audience,is_upcoming,delivery_mode",
         )
         .eq("active", true)
         .eq("is_archived", false)

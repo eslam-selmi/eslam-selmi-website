@@ -460,7 +460,7 @@ export type PublicCourse = {
   starts_at: string | null;
   ends_at: string | null;
   total_hours: number;
-  online_url: string | null;
+  online_url?: string | null;
   brand_name: string | null;
   brand_tagline_ar: string | null;
   brand_tagline_en: string | null;

@@ -1,3 +1,4 @@
+import { csvSafeCell } from "@/lib/csv-safe";
 import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -178,8 +179,7 @@ export function CourseLeadsPanel() {
       "admin_notes",
     ];
     const escape = (v: any) => {
-      const s = v == null ? "" : String(v);
-      return `"${s.replace(/"/g, '""')}"`;
+      return csvSafeCell(v);
     };
     const rows = filtered.map((l) => headers.map((h) => escape((l as any)[h])).join(","));
     const csv = [headers.join(","), ...rows].join("\n");

@@ -1,3 +1,4 @@
+import { csvSafeCell } from "@/lib/csv-safe";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
@@ -100,7 +101,7 @@ export function BookingsPanel() {
 
   function exportCsv() {
     const head = ["Date", "Time", "Duration", "Status", "Name", "Phone", "Email", "Topic", "Details", "Meeting link", "Admin notes", "Cancel reason"];
-    const cell = (v: unknown) => { const s = v == null ? "" : String(v); return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
+    const cell = csvSafeCell;
     const rows = filtered.map((s) => { const d = new Date(s.starts_at); return [
       d.toLocaleDateString("en-CA"), d.toTimeString().slice(0, 5), s.duration_minutes, labels[kind(s)], s.booker_name, s.booker_phone,
       s.booker_email, s.topic, s.details, s.meeting_url, s.admin_notes, s.cancel_reason,

@@ -1,3 +1,4 @@
+import { csvSafeCell } from "@/lib/csv-safe";
 import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -477,7 +478,7 @@ export function ExportDebtsModal({
             r.remaining,
             r.co?.currency || "",
           ]
-            .map((v) => `"${String(v).replace(/"/g, '""')}"`)
+            .map(csvSafeCell)
             .join(","),
         ),
       )
