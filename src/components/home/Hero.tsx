@@ -205,11 +205,11 @@ export function Hero() {
                 style={{ background: "linear-gradient(90deg, transparent, var(--accent), transparent)" }}
                 aria-hidden
               />
-              <span className="mt-4 flex items-center gap-3">
-                <ThemeLogo size={34} className="h-8 w-auto opacity-70" alt="" />
-                <span className="h-6 w-px bg-foreground/25" aria-hidden />
+              <span className="mt-5 flex items-center gap-4 sm:gap-5">
+                <ThemeLogo size={56} className="h-11 sm:h-14 w-auto opacity-80" alt="" />
+                <span className="h-10 sm:h-12 w-px bg-foreground/25" aria-hidden />
                 <span
-                  className="text-2xl sm:text-3xl text-foreground"
+                  className="text-[2rem] sm:text-[2.6rem] leading-none text-foreground"
                   style={{ fontFamily: '"Thmanyah Serif Display", serif', fontWeight: 700 }}
                   lang="ar"
                   dir="rtl"
