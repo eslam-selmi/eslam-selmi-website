@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { createShareLink, viewShareLink, startShareLink, reportShareProgress, revokeShareLink, type ShareStore } from "./course-share-service";
+import { createShareLink, viewShareLink, startShareLink, reportShareProgress, revokeShareLink, listShareLinks, openShareCourse, type ShareStore } from "./course-share-service";
 import type { ShareLinkRow } from "./course-share-core";
 
 function memStore(items = [{ id: "v1", kind: "video" }, { id: "f1", kind: "file" }], cues: Record<string, number> = { v1: 1 }) {
@@ -11,6 +11,8 @@ function memStore(items = [{ id: "v1", kind: "video" }, { id: "f1", kind: "file"
     async markClosed(id, at) { rows.find((x) => x.id === id)!.closed_at = at; calls.push("close"); },
     async revoke(id, at) { rows.find((x) => x.id === id)!.revoked_at = at; calls.push("revoke"); },
     async loadCourseItems() { return { items, cueCounts: cues }; },
+    async list() { return rows.map((r) => ({ ...r, course_title: "T", created_at: "2026-11-25T00:00:00Z" })); },
+    async loadCourseContent() { return { title: "T", description: "", modules: [] }; },
   };
   return { s, rows, calls };
 }
@@ -80,5 +82,22 @@ describe("share service", () => {
   it("wrong token is not found", async () => {
     const { s } = memStore();
     expect(await viewShareLink(s, "nope", null, now)).toEqual({ ok: false, reason: "not_found" });
+  });
+});
+
+describe("list and open", () => {
+  it("list shows status and no secrets; open follows the start gate", async () => {
+    const { s } = memStore();
+    const a = await createShareLink(s, { courseId: "c", adminId: "a", bindFirst: true });
+    const list = await listShareLinks(s, now);
+    expect(list[0].status).toBe("open");
+    expect(JSON.stringify(list)).not.toMatch(/hash|token/i);
+    expect((await openShareCourse(s, a.token, null, now)).ok).toBe(false);
+    const st: any = await startShareLink(s, a.token, null, now);
+    expect((await openShareCourse(s, a.token, st.claim, now)).ok).toBe(true);
+    expect((await openShareCourse(s, a.token, "other", now)).ok).toBe(false);
+    await revokeShareLink(s, a.id, now);
+    expect((await openShareCourse(s, a.token, st.claim, now)).ok).toBe(false);
+    expect((await listShareLinks(s, now))[0].status).toBe("revoked");
   });
 });

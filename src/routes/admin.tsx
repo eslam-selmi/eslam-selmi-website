@@ -42,6 +42,7 @@ import {
   ShieldCheck,
   LayoutDashboard,
   MoreHorizontal,
+  Link2,
 } from "lucide-react";
 import { findCountry } from "@/lib/countries";
 import { safeHref } from "@/lib/safe-url";
@@ -61,6 +62,7 @@ import { AdminToolbar } from "@/components/admin/AdminToolbar";
 import { TraineeDrawer } from "@/components/admin/TraineeDrawer";
 import { ExecutiveOverview } from "@/components/admin/ExecutiveOverview";
 import { CourseFeedbackPanel } from "@/components/admin/CourseFeedbackPanel";
+import { ShareLinksAdmin } from "@/components/share/ShareLinksAdmin";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ActivationsPanel } from "@/components/admin/panels/ActivationsPanel";
@@ -87,6 +89,7 @@ type AdminSearch = {
     | "enrollments"
     | "courses"
     | "coupons"
+    | "share"
     | "banned"
     | "additions"
     | "activations"
@@ -151,6 +154,7 @@ function AdminPage() {
     | "enrollments"
     | "courses"
     | "coupons"
+    | "share"
     | "banned"
     | "additions"
     | "activations"
@@ -313,6 +317,7 @@ function AdminPage() {
                 { id: "finance", label: t("المعاملات المالية", "Transactions"), icon: Wallet },
                 { id: "methods", label: t("طرق الدفع", "Payment methods"), icon: CreditCard },
                 { id: "coupons", label: t("كوبونات الخصم", "Coupons"), icon: Ticket },
+                { id: "share", label: t("روابط مشاركة الكورسات", "Course share links"), icon: Link2 },
                 { id: "packages", label: t("باقات الاستشارات", "Packages"), icon: Layers },
               ],
             },
@@ -431,6 +436,8 @@ function AdminPage() {
                     refresh={refresh}
                     onEdit={setEditingCourse}
                   />
+                ) : tab === "share" ? (
+                  <ShareLinksAdmin lang={lang} />
                 ) : tab === "coupons" ? (
                   <CouponsPanel courses={courses} />
                 ) : tab === "additions" ? (

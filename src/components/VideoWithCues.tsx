@@ -12,18 +12,24 @@ export function VideoWithCues({
   content,
   isAr,
   onError,
+  onProgress,
 }: {
   src: string;
   /** module_items.content; cues are parsed from it when present */
   content?: string | null;
   isAr: boolean;
   onError?: () => void;
+  /** optional: reports watch state (used by share links; nothing else needs it) */
+  onProgress?: (p: { ended: boolean; maxRatio: number; cuesAnswered: number }) => void;
 }) {
   const cues = useMemo(() => parseVideoCues(content), [content]);
   const ref = useRef<HTMLVideoElement>(null);
   const answered = useRef<Set<number>>(new Set());
   const [active, setActive] = useState<number>(-1);
   const [picked, setPicked] = useState<number | null>(null);
+  const maxRatio = useRef(0);
+  const ended = useRef(false);
+  const emit = () => onProgress?.({ ended: ended.current, maxRatio: maxRatio.current, cuesAnswered: answered.current.size });
 
   useEffect(() => {
     answered.current = new Set();
@@ -52,6 +58,7 @@ export function VideoWithCues({
 
   function resume() {
     if (active >= 0) answered.current.add(active);
+    emit();
     setActive(-1);
     setPicked(null);
     void ref.current?.play();
@@ -65,7 +72,8 @@ export function VideoWithCues({
         controls={!cue}
         controlsList="nodownload"
         playsInline
-        onTimeUpdate={check}
+        onTimeUpdate={() => { const v = ref.current; if (v && v.duration > 0) maxRatio.current = Math.max(maxRatio.current, v.currentTime / v.duration); check(); }}
+        onEnded={() => { ended.current = true; emit(); }}
         onSeeked={check}
         onError={onError}
         className="w-full h-full bg-black"

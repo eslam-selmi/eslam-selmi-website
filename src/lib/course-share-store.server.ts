@@ -51,4 +51,29 @@ export const supabaseShareStore: ShareStore = {
     for (const it of items) if (it.kind === "video") cueCounts[it.id] = parseVideoCues(it.content).length;
     return { items, cueCounts };
   },
+  async list() {
+    const { data, error } = await db().from("course_share_links").select(COLS + ",created_at,courses(title)").order("created_at", { ascending: false }).limit(200);
+    if (error) throw new Error("share list failed");
+    return ((data as any[]) ?? []).map((r) => ({ ...r, course_title: r.courses?.title ?? "" }));
+  },
+  async loadCourseContent(courseId) {
+    const { data: course } = await db().from("courses").select("title,description").eq("id", courseId).maybeSingle();
+    const { data: mods, error } = await db().from("course_modules").select("id,title,order_index").eq("course_id", courseId).order("order_index");
+    if (error) throw new Error("share content failed");
+    const ids = ((mods as { id: string }[]) ?? []).map((m) => m.id);
+    const { data: rows } = ids.length ? await db().from("module_items").select("id,module_id,kind,title,url,content,order_index").in("module_id", ids).order("order_index") : { data: [] };
+    const storage = (supabaseAdmin as unknown as { storage: { from: (b: string) => { createSignedUrl: (p: string, s: number) => Promise<{ data: { signedUrl: string } | null }> } } }).storage;
+    const items = await Promise.all(((rows as any[]) ?? []).map(async (it) => {
+      let url: string | null = it.url ?? null;
+      if (url && ["file", "video", "pdf"].includes(it.kind) && !/^https?:\/\//i.test(url)) {
+        const { data } = await storage.from("course-files").createSignedUrl(url, 3600);
+        url = data?.signedUrl ?? null;
+      }
+      return { id: it.id, module_id: it.module_id, kind: it.kind, title: it.title, url, content: it.content ?? null };
+    }));
+    return {
+      title: course?.title ?? "", description: course?.description ?? "",
+      modules: ((mods as any[]) ?? []).map((m) => ({ id: m.id, title: m.title, items: items.filter((i) => i.module_id === m.id).map(({ module_id, ...i }) => i) })),
+    };
+  },
 };

@@ -16,7 +16,14 @@ export interface ShareStore {
   markClosed(id: string, at: string): Promise<void>;
   revoke(id: string, at: string): Promise<void>;
   loadCourseItems(courseId: string): Promise<{ items: Item[]; cueCounts: Record<string, number> }>;
+  /** Admin list, newest first, with the course title. */
+  list(): Promise<(ShareLinkRow & { course_title: string; created_at: string })[]>;
+  /** Course content for a visitor. Storage paths must already be turned into short-lived signed URLs. */
+  loadCourseContent(courseId: string): Promise<VisitorCourse>;
 }
+
+export type VisitorItem = { id: string; kind: string; title: string; url: string | null; content: string | null };
+export type VisitorCourse = { title: string; description: string; modules: { id: string; title: string; items: VisitorItem[] }[] };
 
 export type CreateInput = { courseId: string; adminId: string; expiresAt?: string | null; autoClose?: boolean; bindFirst?: boolean };
 
@@ -69,4 +76,23 @@ export async function reportShareProgress(
 
 export async function revokeShareLink(store: ShareStore, id: string, now = new Date()) {
   await store.revoke(id, now.toISOString());
+}
+
+export type AdminLinkRow = { id: string; courseTitle: string; createdAt: string; expiresAt: string | null; autoClose: boolean; bindFirst: boolean; status: "open" | "closed" | "revoked" | "expired" };
+
+/** Never returns tokens or hashes. */
+export async function listShareLinks(store: ShareStore, now = new Date()): Promise<AdminLinkRow[]> {
+  return (await store.list()).map((r) => ({
+    id: r.id, courseTitle: r.course_title, createdAt: r.created_at, expiresAt: r.expires_at, autoClose: r.auto_close, bindFirst: r.bind_first,
+    status: r.revoked_at ? "revoked" : r.closed_at ? "closed" : r.expires_at && new Date(r.expires_at) <= now ? "expired" : "open",
+  }));
+}
+
+/** Course content for a visitor. Same gate as start: closed, revoked, expired, or another browser's claim get nothing. */
+export async function openShareCourse(store: ShareStore, token: string, claimCookie: string | null, now = new Date()) {
+  const link = await store.findByTokenHash(sha256(token));
+  const d = decideAccess(link, now, claimCookie);
+  if (!d.ok) return d;
+  if (d.needsClaim) return { ok: false as const, reason: "claimed_elsewhere" as const };
+  return { ok: true as const, course: await store.loadCourseContent(link!.course_id) };
 }
