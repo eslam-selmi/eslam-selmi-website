@@ -1355,3 +1355,27 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 .prog-panel .prog-modules { border-block-start-color: var(--sx-line); }
 .prog-panel .prog-modules li { border-block-end-color: color-mix(in oklab, var(--booking-foreground) 9%, transparent); }
 .prog-panel .prog-mod-num { color: var(--booking-cyan); }
+
+/* ======== Testimonials redesign: navy panel, turquoise line, gold hairline (matches Latest Additions) ======== */
+.tst-card {
+  --sx-line: color-mix(in oklab, var(--booking-cyan) 22%, transparent);
+  --sx-gold: color-mix(in oklab, var(--gold, oklch(0.78 0.14 90)) 70%, transparent);
+}
+/* Testimonials */
+.tst-card { position: relative; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; width: 300px; flex-shrink: 0; min-height: 320px; border-radius: 24px; border: 1px solid var(--sx-line); background-color: var(--booking-surface); background-image: radial-gradient(ellipse 70% 45% at 100% 0%, color-mix(in oklab, var(--booking-cyan) 14%, transparent), transparent 70%); box-shadow: var(--booking-shadow); color: var(--booking-foreground); padding: 1.75rem 1.5rem 1.4rem; transition: transform .35s, border-color .35s; }
+@media (min-width: 640px) { .tst-card { width: 360px; padding: 2rem 1.9rem 1.6rem; } }
+@media (min-width: 1024px) { .tst-card { width: 400px; } }
+.tst-card::before { content: ""; position: absolute; inset-inline: 10%; top: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--sx-gold), transparent); }
+@media (hover: hover) { .tst-card:hover { transform: translateY(-4px); border-color: color-mix(in oklab, var(--booking-cyan) 45%, transparent); } }
+.tst-mark { position: absolute; inset-block-start: -.35rem; inset-inline-end: 1.2rem; z-index: -1; font-family: Georgia, serif; font-size: 9rem; line-height: 1; font-weight: 700; color: color-mix(in oklab, var(--booking-cyan) 14%, transparent); user-select: none; }
+.tst-num { font-family: var(--font-heading-en); font-size: .75rem; font-weight: 800; letter-spacing: .18em; color: var(--booking-cyan); }
+.tst-stars { margin-top: .6rem; display: flex; gap: 2px; font-size: .8rem; }
+.tst-stars span { color: color-mix(in oklab, var(--booking-foreground) 18%, transparent); }
+.tst-stars span[data-on="true"] { color: var(--gold, oklch(0.78 0.14 90)); }
+.tst-quote { text-align: start; margin-top: 1rem; flex: 1; font-size: .95rem; line-height: 1.85; font-weight: 500; color: var(--booking-foreground); white-space: pre-line; display: -webkit-box; -webkit-line-clamp: 9; -webkit-box-orient: vertical; overflow: hidden; }
+.tst-who { margin-top: 1.4rem; padding-top: 1.1rem; display: flex; align-items: center; gap: .8rem; border-block-start: 1px solid color-mix(in oklab, var(--booking-foreground) 12%, transparent); }
+.tst-avatar { width: 46px; height: 46px; border-radius: 50%; object-fit: cover; flex-shrink: 0; box-shadow: 0 0 0 2px color-mix(in oklab, var(--booking-cyan) 45%, transparent); }
+.tst-avatar-fallback { display: grid; place-items: center; font-weight: 800; background: color-mix(in oklab, var(--booking-cyan) 18%, transparent); color: var(--booking-cyan); }
+.tst-name { font-weight: 800; font-size: .95rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tst-role { margin-top: .15rem; font-size: .75rem; color: var(--booking-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .tst-card { transition: none; } }
