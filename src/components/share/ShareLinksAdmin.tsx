@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { GuestAccessAdmin } from "./GuestAccessAdmin";
 import { ShareLinksPanel, type AdminShareLink } from "./ShareLinksPanel";
 import { createCourseShareLink, listCourseShareLinks, revokeCourseShareLink } from "@/lib/course-share.functions";
 
@@ -18,7 +19,8 @@ export function ShareLinksAdmin({ lang }: { lang: "ar" | "en" }) {
     void refresh();
   }, [refresh]);
   return (
-    <div className="space-y-3">
+    <div className="space-y-8">
+      <GuestAccessAdmin lang={lang} />
       {err && <p className="text-sm text-rose-300">{err}</p>}
       <ShareLinksPanel lang={lang} courses={courses} links={links} justCreated={created}
         onCreate={async (v) => { const r = await createCourseShareLink({ data: v }); setCreated({ url: `${window.location.origin}/share/${r.token}` }); await refresh(); }}

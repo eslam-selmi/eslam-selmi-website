@@ -14,6 +14,7 @@ import { Route as AccountRouteImport } from './routes/account'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as GraduatesRouteImport } from './routes/graduates'
+import { Route as GuestRouteImport } from './routes/guest'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PortalRouteImport } from './routes/portal'
@@ -50,6 +51,11 @@ const AuthRoute = AuthRouteImport.update({
 const GraduatesRoute = GraduatesRouteImport.update({
   id: '/graduates',
   path: '/graduates',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuestRoute = GuestRouteImport.update({
+  id: '/guest',
+  path: '/guest',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LibraryRoute = LibraryRouteImport.update({
@@ -119,6 +125,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/graduates': typeof GraduatesRoute
+  '/guest': typeof GuestRoute
   '/library': typeof LibraryRoute
   '/onboarding': typeof OnboardingRoute
   '/portal': typeof PortalRoute
@@ -138,6 +145,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/graduates': typeof GraduatesRoute
+  '/guest': typeof GuestRoute
   '/library': typeof LibraryRoute
   '/onboarding': typeof OnboardingRoute
   '/portal': typeof PortalRoute
@@ -158,6 +166,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/graduates': typeof GraduatesRoute
+  '/guest': typeof GuestRoute
   '/library': typeof LibraryRoute
   '/onboarding': typeof OnboardingRoute
   '/portal': typeof PortalRoute
@@ -179,6 +188,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/graduates'
+    | '/guest'
     | '/library'
     | '/onboarding'
     | '/portal'
@@ -198,6 +208,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/graduates'
+    | '/guest'
     | '/library'
     | '/onboarding'
     | '/portal'
@@ -217,6 +228,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/graduates'
+    | '/guest'
     | '/library'
     | '/onboarding'
     | '/portal'
@@ -237,6 +249,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
   GraduatesRoute: typeof GraduatesRoute
+  GuestRoute: typeof GuestRoute
   LibraryRoute: typeof LibraryRoute
   OnboardingRoute: typeof OnboardingRoute
   PortalRoute: typeof PortalRoute
@@ -286,6 +299,13 @@ declare module '@tanstack/react-router' {
       path: '/graduates'
       fullPath: '/graduates'
       preLoaderRoute: typeof GraduatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guest': {
+      id: '/guest'
+      path: '/guest'
+      fullPath: '/guest'
+      preLoaderRoute: typeof GuestRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/library': {
@@ -381,6 +401,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
   GraduatesRoute: GraduatesRoute,
+  GuestRoute: GuestRoute,
   LibraryRoute: LibraryRoute,
   OnboardingRoute: OnboardingRoute,
   PortalRoute: PortalRoute,
