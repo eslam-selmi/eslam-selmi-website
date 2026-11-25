@@ -24,6 +24,7 @@ import { Route as TrainerRouteImport } from './routes/trainer'
 import { Route as TrainingsRouteImport } from './routes/trainings'
 import { Route as CSlugRouteImport } from './routes/c.$slug'
 import { Route as OnboardingCertPreviewRouteImport } from './routes/onboarding_.cert-preview'
+import { Route as ShareTokenRouteImport } from './routes/share.$token'
 import { Route as VerifyIdRouteImport } from './routes/verify.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -101,6 +102,11 @@ const OnboardingCertPreviewRoute = OnboardingCertPreviewRouteImport.update({
   path: '/onboarding/cert-preview',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShareTokenRoute = ShareTokenRouteImport.update({
+  id: '/share/$token',
+  path: '/share/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VerifyIdRoute = VerifyIdRouteImport.update({
   id: '/verify/$id',
   path: '/verify/$id',
@@ -123,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/trainings': typeof TrainingsRoute
   '/c/$slug': typeof CSlugRoute
   '/onboarding/cert-preview': typeof OnboardingCertPreviewRoute
+  '/share/$token': typeof ShareTokenRoute
   '/verify/$id': typeof VerifyIdRoute
 }
 export interface FileRoutesByTo {
@@ -141,6 +148,7 @@ export interface FileRoutesByTo {
   '/trainings': typeof TrainingsRoute
   '/c/$slug': typeof CSlugRoute
   '/onboarding/cert-preview': typeof OnboardingCertPreviewRoute
+  '/share/$token': typeof ShareTokenRoute
   '/verify/$id': typeof VerifyIdRoute
 }
 export interface FileRoutesById {
@@ -160,6 +168,7 @@ export interface FileRoutesById {
   '/trainings': typeof TrainingsRoute
   '/c/$slug': typeof CSlugRoute
   '/onboarding_/cert-preview': typeof OnboardingCertPreviewRoute
+  '/share/$token': typeof ShareTokenRoute
   '/verify/$id': typeof VerifyIdRoute
 }
 export interface FileRouteTypes {
@@ -180,6 +189,7 @@ export interface FileRouteTypes {
     | '/trainings'
     | '/c/$slug'
     | '/onboarding/cert-preview'
+    | '/share/$token'
     | '/verify/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -198,6 +208,7 @@ export interface FileRouteTypes {
     | '/trainings'
     | '/c/$slug'
     | '/onboarding/cert-preview'
+    | '/share/$token'
     | '/verify/$id'
   id:
     | '__root__'
@@ -216,6 +227,7 @@ export interface FileRouteTypes {
     | '/trainings'
     | '/c/$slug'
     | '/onboarding_/cert-preview'
+    | '/share/$token'
     | '/verify/$id'
   fileRoutesById: FileRoutesById
 }
@@ -235,6 +247,7 @@ export interface RootRouteChildren {
   TrainingsRoute: typeof TrainingsRoute
   CSlugRoute: typeof CSlugRoute
   OnboardingCertPreviewRoute: typeof OnboardingCertPreviewRoute
+  ShareTokenRoute: typeof ShareTokenRoute
   VerifyIdRoute: typeof VerifyIdRoute
 }
 
@@ -345,6 +358,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingCertPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/share/$token': {
+      id: '/share/$token'
+      path: '/share/$token'
+      fullPath: '/share/$token'
+      preLoaderRoute: typeof ShareTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/verify/$id': {
       id: '/verify/$id'
       path: '/verify/$id'
@@ -371,6 +391,7 @@ const rootRouteChildren: RootRouteChildren = {
   TrainingsRoute: TrainingsRoute,
   CSlugRoute: CSlugRoute,
   OnboardingCertPreviewRoute: OnboardingCertPreviewRoute,
+  ShareTokenRoute: ShareTokenRoute,
   VerifyIdRoute: VerifyIdRoute,
 }
 export const routeTree = rootRouteImport
