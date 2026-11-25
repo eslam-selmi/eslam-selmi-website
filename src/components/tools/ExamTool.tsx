@@ -79,13 +79,15 @@ function Run({ ar, run, onDone }: { ar: boolean; run: Started; onDone: (r: Resul
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState(false);
   const done = useRef(false);
+  const ansRef = useRef<Record<string, number>>({});
+  ansRef.current = ans; // timer callback must read the latest answers, not the first render's empty object
   const q = run.questions[i];
 
   async function submit(timeout: boolean) {
     if (done.current) return;
-    if (!timeout) { const un = run.questions.filter((x) => ans[x.id] === undefined).length; if (un && !window.confirm(t(`باقي ${un} سؤال بدون إجابة. تسليم؟`, `${un} unanswered. Submit?`))) return; }
+    if (!timeout) { const un = run.questions.filter((x) => ansRef.current[x.id] === undefined).length; if (un && !window.confirm(t(`باقي ${un} سؤال بدون إجابة. تسليم؟`, `${un} unanswered. Submit?`))) return; }
     done.current = true; setBusy(true); setErr(false);
-    const { data, error } = await db.rpc("submit_exam", { p_attempt: run.attempt_id, p_answers: ans });
+    const { data, error } = await db.rpc("submit_exam", { p_attempt: run.attempt_id, p_answers: ansRef.current });
     if (error) { done.current = false; setBusy(false); setErr(true); return; }
     onDone(data as Result, timeout);
   }
