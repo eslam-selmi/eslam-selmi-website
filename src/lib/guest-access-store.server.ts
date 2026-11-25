@@ -1,6 +1,6 @@
 /** DRAFT service-role store for guest-access-service. The guest_access table does not exist until the reviewed SQL is applied. No auth.users involved. */
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import type { GuestStore } from "./guest-access-service";
+import { requireUpdated, type GuestStore } from "./guest-access-service";
 import { supabaseShareStore } from "./course-share-store.server";
 
 type Loose = { from: (t: string) => any };
@@ -20,17 +20,21 @@ export const supabaseGuestStore: GuestStore = {
   async setPassword(passwordHash) {
     const g = await this.getGuest(); if (!g) throw new Error("no guest");
     // one statement: new hash, version + 1, failures cleared
-    const { error } = await db().from("guest_access").update({ password_hash: passwordHash, version: g.version + 1, failed_count: 0, locked_until: null, updated_at: new Date().toISOString() }).eq("id", g.id).eq("version", g.version);
+    const { data, error } = await db().from("guest_access").update({ password_hash: passwordHash, version: g.version + 1, failed_count: 0, locked_until: null, updated_at: new Date().toISOString() }).eq("id", g.id).eq("version", g.version).select("id");
     if (error) throw new Error("guest password failed");
+    requireUpdated(data, "password reset");
   },
   async setEnabled(enabled) {
     const g = await this.getGuest(); if (!g) throw new Error("no guest");
-    const { error } = await db().from("guest_access").update({ enabled, version: g.version + 1, updated_at: new Date().toISOString() }).eq("id", g.id).eq("version", g.version);
+    const { data, error } = await db().from("guest_access").update({ enabled, version: g.version + 1, updated_at: new Date().toISOString() }).eq("id", g.id).eq("version", g.version).select("id");
     if (error) throw new Error("guest toggle failed");
+    requireUpdated(data, "toggle");
   },
   async recordFailure(max, lockMs) {
     // atomic in SQL (guest_record_failure); a read-modify-write here would lose parallel failures
-    await (supabaseAdmin as unknown as { rpc: (f: string, a: object) => Promise<unknown> }).rpc("guest_record_failure", { _max: max, _lock_seconds: Math.round(lockMs / 1000) });
+    const res = await (supabaseAdmin as unknown as { rpc: (f: string, a: object) => Promise<{ error: unknown }> }).rpc("guest_record_failure", { _max: max, _lock_seconds: Math.round(lockMs / 1000) });
+    // a missing or failing function must not silently turn the lock off: fail closed (login errors out)
+    if (res?.error) { console.error("guest lock counter failed"); throw new Error("guest lock unavailable"); }
   },
   async clearFailures() {
     await db().from("guest_access").update({ failed_count: 0, locked_until: null }).not("id", "is", null);

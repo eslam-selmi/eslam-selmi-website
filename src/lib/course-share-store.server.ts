@@ -69,7 +69,9 @@ export const supabaseShareStore: ShareStore = {
         const { data } = await storage.from("course-files").createSignedUrl(url, 1800);
         url = data?.signedUrl ?? null;
       }
-      return { id: it.id, module_id: it.module_id, kind: it.kind, title: it.title, url, content: it.content ?? null };
+      // content only where it is learner-facing: video question data, notes and text. Anything else is not sent.
+      const content = ["video", "note", "text"].includes(it.kind) ? (it.content ?? null) : null;
+      return { id: it.id, module_id: it.module_id, kind: it.kind, title: it.title, url, content };
     }));
     return {
       title: course?.title ?? "", description: course?.description ?? "",

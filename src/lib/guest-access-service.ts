@@ -51,6 +51,7 @@ export const LOCK_MS = 60_000;
 const b64 = (s: string) => Buffer.from(s).toString("base64url");
 const sign = (body: string, secret: string) => createHmac("sha256", secret).update(body).digest("base64url");
 export function makeSession(version: number, secret: string, now = new Date()): string {
+  if (!secret) throw new Error("guest session secret is missing");
   const body = b64(JSON.stringify({ v: version, e: now.getTime() + SESSION_TTL_MS }));
   return `${body}.${sign(body, secret)}`;
 }
@@ -121,4 +122,9 @@ export async function guestOpenCourse(store: GuestStore, token: string | null | 
   if (!(await sessionValid(store, token, secret))) return { ok: false as const, reason: "not_guest" as const };
   if (!(await store.listActiveCourses()).some((c) => c.id === courseId)) return { ok: false as const, reason: "not_found" as const };
   return { ok: true as const, course: await store.loadCourseContent(courseId) };
+}
+
+/** An optimistic UPDATE that matched no row means someone else changed the guest first. Never report that as success. */
+export function requireUpdated(rows: unknown, what: string): void {
+  if (!Array.isArray(rows) || rows.length !== 1) throw new Error(`${what}: guest changed at the same time, try again`);
 }

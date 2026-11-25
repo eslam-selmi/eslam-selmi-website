@@ -10,7 +10,7 @@ import type { VisitorCourse } from "@/lib/course-share-service";
 export const Route = createFileRoute("/guest")({
   ssr: false,
   component: GuestPage,
-  head: () => ({ meta: [{ title: "Courses" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Courses" }, { name: "robots", content: "noindex" }, { name: "referrer", content: "no-referrer" }] }),
 });
 
 function GuestPage() {

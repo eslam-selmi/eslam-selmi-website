@@ -23,7 +23,7 @@ function Item({ it, lang, p, onProgress }: { it: VisitorItem; lang: "ar" | "en";
           <VideoWithCues src={it.url} content={it.content} isAr={lang === "ar"} onProgress={(v) => onProgress(v)} />
         </div>
       )}
-      {it.kind === "embed" && it.url && /^https:\/\//i.test(it.url) && <iframe src={it.url} title={it.title} className="w-full aspect-video rounded-lg border-0" allowFullScreen onLoad={() => onProgress({ opened: true })} />}
+      {it.kind === "embed" && it.url && /^https:\/\//i.test(it.url) && <iframe referrerPolicy="no-referrer" src={it.url} title={it.title} className="w-full aspect-video rounded-lg border-0" allowFullScreen onLoad={() => onProgress({ opened: true })} />}
       {["pdf", "file", "link"].includes(it.kind) && href && (
         <a href={href} target="_blank" rel="noopener noreferrer" onClick={() => onProgress({ opened: true })} className="inline-block text-xs text-[#2dd4bf] underline">{p?.opened ? t.marked : t.open}</a>
       )}

@@ -9,7 +9,7 @@ import type { VisitorCourse } from "@/lib/course-share-service";
 /** Visitor page for a course share link. Opening only views; the start click claims. Progress is reported so auto-close can lock the link. */
 export const Route = createFileRoute("/share/$token")({
   component: SharePage,
-  head: () => ({ meta: [{ title: "Course" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Course" }, { name: "robots", content: "noindex" }, { name: "referrer", content: "no-referrer" }] }),
 });
 
 const ck = (t: string) => `share-claim:${t.slice(0, 8)}`;

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { createGuest, resetGuestPassword, setGuestEnabled, guestLogin, sessionValid, guestCourses, guestOpenCourse, guestSummary, generatePassword, makeSession, type GuestStore, type GuestRow } from "./guest-access-service";
+import { createGuest, resetGuestPassword, setGuestEnabled, guestLogin, sessionValid, guestCourses, guestOpenCourse, guestSummary, generatePassword, makeSession, requireUpdated, type GuestStore, type GuestRow } from "./guest-access-service";
 
 const SECRET = "test-secret";
 const now = new Date("2026-11-25T12:00:00Z");
@@ -68,5 +68,31 @@ describe("guest login (server-only session)", () => {
   });
   it("generated passwords are long and from the safe alphabet", () => {
     const a = generatePassword(); expect(a).toMatch(/^[a-zA-Z2-9]{18}$/); expect(a).not.toMatch(/[0O1lI]/); expect(a).not.toBe(generatePassword());
+  });
+});
+
+describe("update races and secrets", () => {
+  it("a zero-row or double-row update is an error, one row is fine", () => {
+    expect(() => requireUpdated([], "x")).toThrow(/changed at the same time/);
+    expect(() => requireUpdated(null, "x")).toThrow();
+    expect(() => requireUpdated([{ id: 1 }, { id: 2 }], "x")).toThrow();
+    expect(() => requireUpdated([{ id: 1 }], "x")).not.toThrow();
+  });
+  it("a store that rejects the reset means no password is returned", async () => {
+    const { s } = mem(); await createGuest(s, "a", "g@e.com");
+    s.setPassword = async () => { throw new Error("password reset: guest changed at the same time, try again"); };
+    await expect(resetGuestPassword(s)).rejects.toThrow();
+    s.setEnabled = async () => { throw new Error("toggle: guest changed at the same time, try again"); };
+    await expect(setGuestEnabled(s, false)).rejects.toThrow();
+  });
+  it("an empty secret can never mint or accept a session", async () => {
+    expect(() => makeSession(1, "")).toThrow();
+    const { s } = mem(); const r: any = await createGuest(s, "a", "g@e.com");
+    await expect(guestLogin(s, "g@e.com", r.password, "")).rejects.toThrow();
+  });
+  it("if the failure counter cannot be written, a wrong password errors out instead of passing silently", async () => {
+    const { s } = mem(); await createGuest(s, "a", "g@e.com");
+    s.recordFailure = async () => { throw new Error("guest lock unavailable"); };
+    await expect(guestLogin(s, "g@e.com", "wrong-password-x", "sec")).rejects.toThrow(/lock unavailable/);
   });
 });

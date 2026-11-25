@@ -8,7 +8,11 @@ import { supabaseGuestStore as store } from "./guest-access-store.server";
 
 const COOKIE = "guest_session";
 /** Derived from the existing server key; no new secret to manage. Changing the key logs every guest out. */
-const secret = () => createHmac("sha256", process.env.SUPABASE_SERVICE_ROLE_KEY ?? "").update("guest-session-v1").digest("hex");
+const secret = () => {
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!key) throw new Error("guest session key is missing");
+  return createHmac("sha256", key).update("guest-session-v1").digest("hex");
+};
 
 async function needAdmin(context: { supabase: any; userId: string }) {
   const { data } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
