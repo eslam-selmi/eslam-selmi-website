@@ -5,6 +5,7 @@
  */
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import type { ShareStore } from "./course-share-service";
+import { parseVideoCues } from "./video-cues";
 import type { ShareLinkRow } from "./course-share-core";
 
 type Loose = { from: (t: string) => any };
@@ -36,8 +37,18 @@ export const supabaseShareStore: ShareStore = {
     const { error } = await db().from("course_share_links").update({ revoked_at: at }).eq("id", id);
     if (error) throw new Error("share revoke failed");
   },
-  async loadCourseItems() {
-    // Needs the real course content tables and the cue storage; to be written against the live schema.
-    throw new Error("loadCourseItems not implemented: needs live schema");
+  async loadCourseItems(courseId) {
+    // Read-only. Items live in module_items under course_modules; cues are stored inside module_items.content.
+    const { data: mods, error: e1 } = await db().from("course_modules").select("id,order_index").eq("course_id", courseId).order("order_index");
+    if (e1) throw new Error("share items failed");
+    const ids = ((mods as { id: string }[]) ?? []).map((m) => m.id);
+    if (!ids.length) return { items: [], cueCounts: {} };
+    const { data: rows, error: e2 } = await (supabaseAdmin as unknown as { from: (t: string) => any })
+      .from("module_items").select("id,kind,content").in("module_id", ids);
+    if (e2) throw new Error("share items failed");
+    const items = ((rows as { id: string; kind: string; content: string | null }[]) ?? []).map((r) => ({ id: r.id, kind: r.kind, content: r.content }));
+    const cueCounts: Record<string, number> = {};
+    for (const it of items) if (it.kind === "video") cueCounts[it.id] = parseVideoCues(it.content).length;
+    return { items, cueCounts };
   },
 };
