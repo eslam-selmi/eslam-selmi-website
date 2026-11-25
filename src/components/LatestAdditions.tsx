@@ -70,18 +70,13 @@ const KIND_TOKEN: Record<Addition["kind"], string> = {
   embed: "var(--booking-cyan)",
 };
 
-const NEW_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
-
-function relativeDate(iso: string, isAr: boolean) {
-  const then = new Date(iso).getTime();
-  if (!Number.isFinite(then)) return "";
-  const days = Math.round((Date.now() - then) / (24 * 60 * 60 * 1000));
-  const rtf = new Intl.RelativeTimeFormat(isAr ? "ar" : "en", { numeric: "auto" });
-  if (days < 1) return rtf.format(0, "day");
-  if (days < 30) return rtf.format(-days, "day");
-  if (days < 365) return rtf.format(-Math.round(days / 30), "month");
-  return rtf.format(-Math.round(days / 365), "year");
-}
+const KIND_LABEL: Record<Addition["kind"], [string, string]> = {
+  video: ["فيديو", "Video"],
+  pdf: ["PDF", "PDF"],
+  file: ["ملف", "File"],
+  link: ["رابط", "Link"],
+  embed: ["عرض", "Embed"],
+};
 
 export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
   const { lang } = useI18n();
@@ -143,9 +138,6 @@ export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
 
   return (
     <section id="latest-additions" className="additions-panel px-5 py-6 sm:px-8 sm:py-9">
-      <span className="additions-scan" aria-hidden />
-      <Sparkles className="additions-watermark" aria-hidden />
-
       <header className="additions-head">
         <div className="min-w-0">
           <span className="additions-pill">
@@ -174,8 +166,7 @@ export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
             const Icon = iconFor(it.kind);
             const t = isAr ? it.title_ar : it.title_en;
             const sub = isAr ? it.subtitle_ar : it.subtitle_en;
-            const isNew = Date.now() - new Date(it.created_at).getTime() < NEW_WINDOW_MS;
-            const when = relativeDate(it.created_at, isAr);
+            const tag = it.custom_label;
             return (
               <Button
                 key={it.id}
@@ -185,19 +176,17 @@ export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
                 className="additions-card h-auto whitespace-normal text-start"
                 style={{ "--i": idx, "--acc": KIND_TOKEN[it.kind] } as React.CSSProperties}
               >
-                <span className="additions-tile" aria-hidden>
-                  <Icon className="size-[18px]" />
-                </span>
+                <span className="additions-num" aria-hidden>{String(idx + 1).padStart(2, "0")}</span>
                 <span className="additions-body">
-                  {it.custom_label && <span className="additions-label">{it.custom_label}</span>}
+                  <span className="additions-kindrow">
+                    <span className="additions-kind">
+                      <Icon className="size-[14px]" aria-hidden />
+                      {KIND_LABEL[it.kind][isAr ? 0 : 1]}
+                    </span>
+                    {tag && <span className="additions-label">{tag}</span>}
+                  </span>
                   <span className="additions-card-title">{t}</span>
                   {sub && <span className="additions-card-sub">{sub}</span>}
-                  {when && (
-                    <span className="additions-meta">
-                      {isNew && <span className="additions-new-dot" aria-hidden />}
-                      <span>{when}</span>
-                    </span>
-                  )}
                 </span>
                 <span className="additions-arrow" aria-hidden>
                   <ArrowUpRight className="size-[15px] rtl-flip" />
