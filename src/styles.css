@@ -948,7 +948,10 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 .certificate-partner { display:flex; align-items:center; gap:12px; margin-top:14px; font-size:13px; color:var(--certificate-muted); }
 .certificate-partner img { width:34px; height:34px; object-fit:contain; }
 .certificate-footer { position:absolute; inset-inline:64px; bottom:150px; display:flex; gap:40px; align-items:flex-end; }
-.certificate-date,.certificate-signature { width:fit-content; }
+.certificate-date,.certificate-signature { width:fit-content; flex:none; }
+.certificate-date .certificate-line-value { white-space:nowrap; }
+.certificate-signature { max-width:250px; }
+.certificate-signature .certificate-line-value > span { min-width:0; overflow-wrap:anywhere; }
 .certificate-line-value { font-size:16px; font-weight:600; color:var(--certificate-ink); padding-bottom:6px; border-bottom:1.5px solid var(--certificate-ink); min-height:34px; min-width:120px; display:flex; align-items:flex-end; gap:18px; padding-inline-end:4px; }
 .certificate-signature .certificate-line-value img { height:84px; margin-bottom:-6px; margin-inline-start:auto; }
 .certificate-date > span,.certificate-signature > span { display:block; margin-top:6px; font-size:12px; color:var(--certificate-muted); }
