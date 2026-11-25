@@ -754,7 +754,7 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
    ============================================================ */
 /* Mobile: native swipe rails replace continuously composited marquee loops. */
 @media (max-width: 767px) {
-  *:not(.marquee-track):not(.marquee-track-reverse):not(.marquee-track-rtl):not(.animate-marquee):not(.animate-marquee-slow):not(.animate-marquee-rtl):not(.animate-marquee-x):not(.animate-marquee-x-reverse):not(img),
+  *:not(.marquee-track):not(.marquee-track-reverse):not(.marquee-track-rtl):not(.animate-marquee):not(.animate-marquee-slow):not(.animate-marquee-rtl):not(.animate-marquee-x):not(.animate-marquee-x-reverse):not(.mt-glass-logo):not(.mt-glass-logo__glow):not(img),
   *::before,
   *::after {
     animation-duration: 0s !important;
@@ -795,6 +795,11 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
   .credential-badge::after {
     animation-duration: 1500ms !important;
     animation-delay: 720ms !important;
+  }
+  /* Maintenance logo glass sweep is the one intentional mobile animation here. */
+  .mt-glass-logo__shine::before {
+    animation-duration: 5.5s !important;
+    animation-iteration-count: infinite !important;
   }
 }
 
