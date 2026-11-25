@@ -85,18 +85,15 @@ export function MaintenancePage({ message, until }: Props) {
             color: "#fff",
           }}
         >
-          {/* Logo */}
+          {/* Logo: animated glass tile. The mark itself is unchanged. */}
           <div className="flex justify-center mb-5">
-            <div
-              className="relative w-24 h-24 md:w-28 md:h-28 rounded-2xl overflow-hidden flex items-center justify-center"
-              style={{
-                background: "linear-gradient(180deg, #122353 0%, #0b1736 100%)",
-                border: "1px solid oklch(0.78 0.14 90 / 0.4)",
-                boxShadow:
-                  "0 0 0 1px oklch(0.78 0.14 90 / 0.35), 0 0 40px -6px oklch(0.78 0.14 90 / 0.55)",
-              }}
-            >
-              <img src={profile.logoDark} alt="Eslam Selmi" width={96} height={96} className="w-full h-full object-contain p-3" />
+            <div className="mt-glass-logo" style={{ "--logo": `url(${profile.logoDark})` } as React.CSSProperties}>
+              <span aria-hidden className="mt-glass-logo__glow" />
+              <div className="mt-glass-logo__tile">
+                <img src={profile.logoDark} alt="Eslam Selmi" width={96} height={96} className="mt-glass-logo__img" />
+                <span aria-hidden className="mt-glass-logo__shine" />
+                <span aria-hidden className="mt-glass-logo__sheen" />
+              </div>
             </div>
           </div>
 
