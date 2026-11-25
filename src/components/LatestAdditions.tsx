@@ -70,8 +70,6 @@ const KIND_TOKEN: Record<Addition["kind"], string> = {
   embed: "var(--booking-cyan)",
 };
 
-const NEW_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
-
 const KIND_LABEL: Record<Addition["kind"], [string, string]> = {
   video: ["فيديو", "Video"],
   pdf: ["PDF", "PDF"],
@@ -168,8 +166,7 @@ export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
             const Icon = iconFor(it.kind);
             const t = isAr ? it.title_ar : it.title_en;
             const sub = isAr ? it.subtitle_ar : it.subtitle_en;
-            const isNew = Date.now() - new Date(it.created_at).getTime() < NEW_WINDOW_MS;
-            const tag = it.custom_label || (isNew ? (isAr ? "جديد" : "New") : null);
+            const tag = it.custom_label;
             return (
               <Button
                 key={it.id}
