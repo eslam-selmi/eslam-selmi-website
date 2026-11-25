@@ -118,7 +118,7 @@ export function Hero() {
           </motion.div>
 
           <Dialog open={licenseOpen} onOpenChange={setLicenseOpen}>
-            <DialogContent className="max-w-3xl p-2 sm:p-3 bg-card">
+            <DialogContent className="max-w-3xl w-[calc(100%-1.5rem)] max-h-[85dvh] bottom-auto top-[50%] translate-y-[-50%] rounded-2xl p-2 sm:p-3 bg-card data-[state=open]:slide-in-from-bottom-0 data-[state=closed]:slide-out-to-bottom-0">
               <img
                 src={etecLicenseAsset.url}
                 alt={lang === "ar" ? "رخصة مدرب مهنية — هيئة تقويم التعليم والتدريب" : "Professional Trainer License — ETEC"}
