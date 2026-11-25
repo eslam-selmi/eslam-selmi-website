@@ -1191,7 +1191,7 @@ html[dir="ltr"] .additions-pill { font-size: 11px; letter-spacing: .16em; text-t
   text-align: start;
   cursor: pointer;
   border: 0;
-  border-radius: 14px;
+  border-radius: 0;
   border-block-end: 1px solid color-mix(in oklab, var(--booking-foreground) 10%, transparent);
   background: transparent;
   transition: background-color .3s ease, padding .3s ease;
