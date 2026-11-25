@@ -6,6 +6,7 @@ import { useTranslatedTexts } from "@/lib/useTranslatedTexts";
 import { safeHref } from "@/lib/safe-url";
 import { Clock, Wallet, ExternalLink, Calendar, Layers, StickyNote, Link as LinkIcon, Paperclip, Check, ChevronLeft, PlayCircle } from "lucide-react";
 import { MediaViewerModal, type MediaItem } from "@/components/MediaViewerModal";
+import { visibleItemText } from "@/lib/video-cues";
 import type { Enrollment } from "./types";
 import type { Tables } from "@/integrations/supabase/types";
 import { AssignmentsSection } from "./Assignments";
@@ -180,7 +181,7 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
                            <Paperclip className="w-4 h-4 mt-0.5 text-emerald-300 shrink-0" />}
                           <div className="flex-1 min-w-0">
                             <p className="font-medium">{it.title}</p>
-                            {it.content && <p className="text-xs text-white/60 whitespace-pre-wrap mt-1">{it.content}</p>}
+                            {visibleItemText(it.content) && <p className="text-xs text-white/60 whitespace-pre-wrap mt-1">{visibleItemText(it.content)}</p>}
                             {openable && (
                               <button
                                 type="button"
@@ -189,6 +190,7 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
                                     title: it.title,
                                     kind: ["file", "video", "pdf", "embed"].includes(it.kind) ? it.kind : "link",
                                     url: it.url,
+                                    content: it.content,
                                     isStoragePath: isStorage,
                                   })
                                 }
