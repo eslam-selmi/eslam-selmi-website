@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { createGuest, resetGuestPassword, setGuestEnabled, guestLogin, sessionValid, guestCourses, guestOpenCourse, guestSummary, generatePassword, makeSession, type GuestStore, type GuestRow } from "./guest-access-service";
 
 const SECRET = "test-secret";
+const now = new Date("2026-11-25T12:00:00Z");
 function mem() {
   let g: GuestRow | null = null;
   const s: GuestStore = {
@@ -9,14 +10,13 @@ function mem() {
     async create(email, hash) { g = { id: "g1", email, password_hash: hash, version: 1, enabled: true, failed_count: 0, locked_until: null }; },
     async setPassword(hash) { g!.password_hash = hash; g!.version++; g!.failed_count = 0; g!.locked_until = null; },
     async setEnabled(e) { g!.enabled = e; g!.version++; },
-    async recordFailure(max, lockMs) { g!.failed_count++; if (g!.failed_count >= max) { g!.failed_count = 0; g!.locked_until = new Date(Date.now() + lockMs).toISOString(); } },
+    async recordFailure(max, lockMs) { g!.failed_count++; if (g!.failed_count >= max) { g!.failed_count = 0; g!.locked_until = new Date(now.getTime() + lockMs).toISOString(); } },
     async clearFailures() { g!.failed_count = 0; g!.locked_until = null; },
     async listActiveCourses() { return [{ id: "c1", title: "A", description: "" }]; },
     async loadCourseContent(id) { return { title: id, description: "", modules: [] }; },
   };
   return { s, row: () => g! };
 }
-const now = new Date("2026-11-25T12:00:00Z");
 
 describe("guest login (server-only session)", () => {
   it("creates one guest, shows the password once, stores only a hash", async () => {
