@@ -4,7 +4,7 @@
 
 CREATE TABLE public.tool_access (
  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
- tool text NOT NULL CHECK (tool IN ('tna','perf')),
+ tool text NOT NULL CHECK (tool IN ('tna','perf','exam')),
  granted_by uuid REFERENCES auth.users(id) ON DELETE SET NULL,
  granted_at timestamptz NOT NULL DEFAULT now(),
  PRIMARY KEY (user_id, tool)
@@ -74,5 +74,7 @@ INSERT INTO public.site_content (section_key, label, content, is_visible) VALUES
  ('home.tna_tool','قسم: أداة تحليل الاحتياجات التدريبية / TNA tool','{}'::jsonb,false),
  ('home.perf_tool','قسم: أداة قياس الأداء قبل التدريب / Performance tool','{}'::jsonb,false),
  ('nav.tna_tool','قائمة: تحليل الاحتياجات التدريبية / TNA','{}'::jsonb,true),
- ('nav.perf_tool','قائمة: قياس الأداء قبل التدريب / Performance','{}'::jsonb,false)
+ ('nav.perf_tool','قائمة: قياس الأداء قبل التدريب / Performance','{}'::jsonb,false),
+ ('home.exam_tool','قسم: محاكي رخصة المدرب / Trainer license practice','{}'::jsonb,false),
+ ('nav.exam_tool','قائمة: محاكي رخصة المدرب / Trainer license practice','{}'::jsonb,false)
 ON CONFLICT (section_key) DO NOTHING;

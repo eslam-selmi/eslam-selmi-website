@@ -48,6 +48,7 @@ import { safeHref } from "@/lib/safe-url";
 import { AdminSupportPanel } from "@/components/SupportTickets";
 import { assertAdmin } from "@/lib/admin-guard.functions";
 import { SiteManagementPanel } from "@/components/admin/SiteManagementPanel";
+import { PageAccessPanel } from "@/components/admin/PageAccessPanel";
 import { ToolsAccessPanel } from "@/components/admin/ToolsAccessPanel";
 import { SuccessCasesPanel } from "@/components/admin/SuccessCasesPanel";
 import { PartnersPanel } from "@/components/admin/PartnersPanel";
@@ -104,7 +105,7 @@ type AdminSearch = {
     | "trainings"
     | "partners"
     | "contracts"
-    | "programs" | "services" | "pillars" | "videos" | "graduate_tools" | "media" | "effects" | "visibility" | "popups" | "maintenance" | "tools";
+    | "programs" | "services" | "pillars" | "videos" | "graduate_tools" | "media" | "effects" | "visibility" | "popups" | "maintenance" | "tools" | "pages";
 
   drawer?: string;
   editCourse?: string;
@@ -168,7 +169,7 @@ function AdminPage() {
     | "snapshots"
     | "partners"
     | "contracts"
-    | "programs" | "services" | "pillars" | "videos" | "graduate_tools" | "media" | "effects" | "visibility" | "popups" | "maintenance" | "tools"
+    | "programs" | "services" | "pillars" | "videos" | "graduate_tools" | "media" | "effects" | "visibility" | "popups" | "maintenance" | "tools" | "pages"
   >(search.tab || "overview");
 
   const tab = tabState;
@@ -342,6 +343,7 @@ function AdminPage() {
                 { id: "site", label: t("هوية الموقع والتواصل", "Site identity & contact"), icon: Settings2 },
                 { id: "visibility", label: t("ظهور الأقسام ومحتوى الموقع", "Section visibility & content"), icon: ToggleRight },
                 { id: "tools", label: t("الأدوات: الظهور والصلاحيات", "Tools: visibility & access"), icon: ToggleRight },
+                { id: "pages", label: t("التابات: الظهور والقفل", "Tabs: visibility & lock"), icon: ToggleRight },
                 { id: "popups", label: t("الإعلانات المنبثقة", "Popup announcements"), icon: Sparkles },
                 { id: "effects", label: t("مؤثرات الزوار", "Visitor effects"), icon: Sparkles },
                 { id: "maintenance", label: t("وضع الصيانة", "Maintenance"), icon: Settings2 },
@@ -465,6 +467,8 @@ function AdminPage() {
                   <SiteMediaPanel />
                 ) : tab === "tools" ? (
                   <ToolsAccessPanel />
+                ) : tab === "pages" ? (
+                  <PageAccessPanel />
                 ) : tab === "effects" ? (
                   <BuildEffectsPanel />
                 ) : tab === "visibility" || tab === "popups" || tab === "maintenance" || tab === "site" ? (

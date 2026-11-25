@@ -1,6 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 
-export type ToolId = "tna" | "perf";
+export type ToolId = "tna" | "perf" | "exam";
 
 export const TOOLS: Record<ToolId, {
   ar: string; en: string; descAr: string; descEn: string;
@@ -21,10 +21,17 @@ export const TOOLS: Record<ToolId, {
     handout: { ar: "دليل قياس الأداء قبل التدريب", en: "Pre-training performance handbook" },
     siteKeys: { home: "home.perf_tool", nav: "nav.perf_tool" },
   },
+  exam: {
+    ar: "محاكي رخصة المدرب المهني", en: "Trainer license practice",
+    descAr: "تدريب بالوقت على أسئلة أصلية مبنية على دليل الهيئة، مع تحليل نقاط الضعف ومراجعة الأخطاء وبطاقات مذاكرة. ليست أسئلة الامتحان الفعلي.",
+    descEn: "Timed practice on original questions based on the official guide, with weakness analysis, mistake review and study cards. Not the actual exam.",
+    handout: { ar: "عن المحاكي", en: "About the simulator" },
+    siteKeys: { home: "home.exam_tool", nav: "nav.exam_tool" },
+  },
 };
 
 export const TOOL_IDS = Object.keys(TOOLS) as ToolId[];
-export const isToolId = (v: unknown): v is ToolId => v === "tna" || v === "perf";
+export const isToolId = (v: unknown): v is ToolId => v === "tna" || v === "perf" || v === "exam";
 
 // New tables are not in the generated types yet.
 const db = supabase as any;

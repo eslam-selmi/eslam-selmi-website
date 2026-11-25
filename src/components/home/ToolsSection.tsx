@@ -1,10 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { BarChart3, Target, ArrowRight } from "lucide-react";
+import { BarChart3, Target, GraduationCap, ArrowRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { useSiteContent } from "@/lib/site-content";
 import { TOOLS, TOOL_IDS } from "@/lib/tools";
 
-const ICONS = { tna: BarChart3, perf: Target } as const;
+const ICONS = { tna: BarChart3, perf: Target, exam: GraduationCap } as const;
 
 /** Home-page entry for the interactive tools. Each card follows its own site_content flag. */
 export function ToolsSection() {
