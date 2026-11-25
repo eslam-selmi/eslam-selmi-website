@@ -4,14 +4,21 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { generateChatCompletion } from "@lovable.dev/ai-gateway";
 
 const InputSchema = z.object({
-  texts: z.array(z.string().min(1).max(4000)).min(1).max(50),
+  texts: z.array(z.string().min(1).max(2000)).min(1).max(40),
   target: z.enum(["en", "ar"]),
 });
 
 export const translateTexts = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => InputSchema.parse(input))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    // Paid AI call: only activated learners and admins, not every new signup.
+    const { supabase, userId } = context;
+    const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+    if (!isAdmin) {
+      const { data: prof } = await supabase.from("profiles").select("activation_status").eq("id", userId).maybeSingle();
+      if ((prof as { activation_status?: string } | null)?.activation_status !== "active") throw new Error("forbidden");
+    }
     const targetName = data.target === "en" ? "English" : "Arabic";
     const systemPrompt = `You are a professional translator for an executive Learning & Development training platform. Translate the user-supplied items into clear, direct ${targetName}. Use a confident, factual business register focused on concrete services, work requirements, KPIs, and training ROI when present in the source. Avoid canned marketing language such as "innovative solutions", "unlock potential", "transform your journey", "حلول مبتكرة", and "إطلاق الإمكانات"; express the underlying meaning plainly without adding claims. Preserve meaning, numbers, percentages, qualifications, brand names, hashtags, URLs, and emojis. Never invent statistics, achievements, guarantees, or outcomes. Arabic and English must convey the same facts. Return strictly a JSON object: {"items":["...","..."]} in the SAME ORDER as input. No extra text.`;
 

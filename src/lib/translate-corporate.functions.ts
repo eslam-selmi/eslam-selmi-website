@@ -17,7 +17,10 @@ const InputSchema = z.object({
 export const translateArToEnCorporate = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => InputSchema.parse(input))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    // Admin tools only: a paid AI call must not be open to every signed-in account.
+    const { data: isAdmin, error: roleError } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    if (roleError || !isAdmin) throw new Error("forbidden");
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) {
       return { text: "", error: "AI translation unavailable" } as const;
