@@ -9,7 +9,7 @@ function mem() {
     async create(email, hash) { g = { id: "g1", email, password_hash: hash, version: 1, enabled: true, failed_count: 0, locked_until: null }; },
     async setPassword(hash) { g!.password_hash = hash; g!.version++; g!.failed_count = 0; g!.locked_until = null; },
     async setEnabled(e) { g!.enabled = e; g!.version++; },
-    async recordFailure(n, l) { g!.failed_count = n; g!.locked_until = l; },
+    async recordFailure(max, lockMs) { g!.failed_count++; if (g!.failed_count >= max) { g!.failed_count = 0; g!.locked_until = new Date(Date.now() + lockMs).toISOString(); } },
     async clearFailures() { g!.failed_count = 0; g!.locked_until = null; },
     async listActiveCourses() { return [{ id: "c1", title: "A", description: "" }]; },
     async loadCourseContent(id) { return { title: id, description: "", modules: [] }; },

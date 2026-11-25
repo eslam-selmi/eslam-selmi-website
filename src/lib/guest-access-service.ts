@@ -18,7 +18,8 @@ export interface GuestStore {
   setPassword(passwordHash: string): Promise<void>;
   /** One UPDATE: enabled flag, version + 1 (drops every existing session). */
   setEnabled(enabled: boolean): Promise<void>;
-  recordFailure(failedCount: number, lockedUntil: string | null): Promise<void>;
+  /** Atomic in the database: failed_count + 1, and lock for lockMs once it reaches max. */
+  recordFailure(max: number, lockMs: number): Promise<void>;
   clearFailures(): Promise<void>;
   listActiveCourses(): Promise<GuestCourseRef[]>;
   loadCourseContent(courseId: string): Promise<VisitorCourse>;
@@ -31,14 +32,16 @@ export function generatePassword(len = 18, rand: (n: number) => number[] = (n) =
   return out.join("");
 }
 
+/** Light cost on purpose: the password is server-generated with ~100 bits, so brute force is not the risk, and Workers CPU limits are. */
+const KDF = { N: 4096, r: 8, p: 1 } as const;
 export function hashPassword(pw: string): string {
   const salt = randomBytes(16);
-  return `scrypt$${salt.toString("hex")}$${scryptSync(pw, salt, 32).toString("hex")}`;
+  return `scrypt$${salt.toString("hex")}$${scryptSync(pw, salt, 32, KDF).toString("hex")}`;
 }
 export function checkPassword(pw: string, stored: string | null): boolean {
   const parts = (stored ?? "scrypt$00000000000000000000000000000000$" + "0".repeat(64)).split("$");
   const salt = Buffer.from(parts[1] ?? "", "hex"); const want = Buffer.from(parts[2] ?? "", "hex");
-  const got = scryptSync(pw, salt, 32); // always computed, so a missing guest costs the same time
+  const got = scryptSync(pw, salt, 32, KDF); // always computed, so a missing guest costs the same time
   return !!stored && want.length === got.length && timingSafeEqual(want, got);
 }
 
@@ -96,7 +99,7 @@ export async function guestLogin(store: GuestStore, email: string, password: str
   if (g?.locked_until && new Date(g.locked_until) > now) return { ok: false as const, reason: "locked" as const };
   const pwOk = checkPassword(String(password ?? ""), g?.password_hash ?? null);
   if (!g || !g.enabled || !pwOk || norm(String(email ?? "")) !== g.email) {
-    if (g) { const n = g.failed_count + 1; await store.recordFailure(n >= MAX_FAILS ? 0 : n, n >= MAX_FAILS ? new Date(now.getTime() + LOCK_MS).toISOString() : null); }
+    if (g) await store.recordFailure(MAX_FAILS, LOCK_MS);
     return { ok: false as const, reason: "bad_login" as const };
   }
   if (g.failed_count) await store.clearFailures();

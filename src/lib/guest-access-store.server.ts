@@ -28,8 +28,9 @@ export const supabaseGuestStore: GuestStore = {
     const { error } = await db().from("guest_access").update({ enabled, version: g.version + 1, updated_at: new Date().toISOString() }).eq("id", g.id).eq("version", g.version);
     if (error) throw new Error("guest toggle failed");
   },
-  async recordFailure(failedCount, lockedUntil) {
-    await db().from("guest_access").update({ failed_count: failedCount, locked_until: lockedUntil }).not("id", "is", null);
+  async recordFailure(max, lockMs) {
+    // atomic in SQL (guest_record_failure); a read-modify-write here would lose parallel failures
+    await (supabaseAdmin as unknown as { rpc: (f: string, a: object) => Promise<unknown> }).rpc("guest_record_failure", { _max: max, _lock_seconds: Math.round(lockMs / 1000) });
   },
   async clearFailures() {
     await db().from("guest_access").update({ failed_count: 0, locked_until: null }).not("id", "is", null);
