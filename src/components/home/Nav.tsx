@@ -54,7 +54,7 @@ export function Nav({
             <BrandMark />
           </Link>
           <nav className="hidden xl:flex items-center gap-0.5">
-            {NAV.map((n) => {
+            {NAV.filter((n) => !n.flag || isVisible(n.flag)).map((n) => {
               const baseCls =
                 "nav-link group px-2.5 py-1.5 text-[13px] font-bold text-foreground/85 hover:text-foreground transition-colors rounded-full hover:bg-foreground/5";
               const highlightCls =
@@ -81,7 +81,7 @@ export function Nav({
                     {t(n.key)}
                   </Link>
                 ) : (
-                  <Link key={n.id} to={n.to} className={baseCls}>
+                  <Link key={n.id} to={n.to} {...(n.search ? ({ search: n.search } as any) : {})} className={baseCls}>
                     <span className="nav-label">{t(n.key)}</span>
                   </Link>
                 );
@@ -272,7 +272,7 @@ export function Nav({
         </div>
         {open && (
           <div className="xl:hidden mt-2 glass-strong rounded-2xl p-3 grid gap-1">
-            {NAV_FULL.map((n) => {
+            {NAV_FULL.filter((n) => !n.flag || isVisible(n.flag)).map((n) => {
               if (n.action === "book") {
                 return (
                   <button
@@ -361,6 +361,7 @@ export function Nav({
                 <Link
                   key={n.id}
                   to={n.to}
+                  {...(n.search ? ({ search: n.search } as any) : {})}
                   onClick={() => setOpen(false)}
                   className="px-3 py-2 rounded-lg hover:bg-foreground/5 text-sm font-bold text-foreground/85"
                 >
