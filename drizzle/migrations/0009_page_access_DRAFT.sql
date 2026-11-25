@@ -60,7 +60,7 @@ begin
 end $$;
 
 create or replace function public.set_page_access(p_key text, p_mode text, p_password text default null)
-returns void language plpgsql security definer set search_path=public as $$
+returns void language plpgsql security definer set search_path=public, extensions as $$
 begin
   if not public.has_role(auth.uid(),'admin') then raise exception 'forbidden'; end if;
   if p_mode='password' and (p_password is null or length(p_password)<8)
@@ -76,7 +76,7 @@ begin
 end $$;
 
 create or replace function public.unlock_page(p_key text, p_password text) returns boolean
-language plpgsql security definer set search_path=public as $$
+language plpgsql security definer set search_path=public, extensions as $$
 declare h text; v int;
 begin
   if auth.uid() is null then raise exception 'login required'; end if;
