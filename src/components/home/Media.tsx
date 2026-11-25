@@ -134,7 +134,7 @@ export function Podcast() {
                   aria-label={t("podcast_play")}
                 >
                   <img
-                    src={`https://i.ytimg.com/vi/${active.id}/maxresdefault.jpg`}
+                    src={active.cover ?? `https://i.ytimg.com/vi/${active.id}/maxresdefault.jpg`}
                     alt={t(active.titleKey)}
                     width={1280}
                     height={720}
@@ -146,14 +146,24 @@ export function Podcast() {
                         `https://i.ytimg.com/vi/${active.id}/hqdefault.jpg`;
                     }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                  <div className="absolute inset-0 flex items-center justify-center">
+                  {!active.cover && (
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  )}
+                  <div
+                    className={
+                      active.cover
+                        ? "absolute bottom-3 left-3 lg:bottom-5 lg:left-5 flex items-center justify-center"
+                        : "absolute inset-0 flex items-center justify-center"
+                    }
+                  >
                     <div className="relative">
                       <span className="absolute inset-0 rounded-full bg-accent/40 blur-2xl scale-150 animate-pulse" />
-                      <div className="relative size-20 lg:size-24 rounded-full bg-white/95 backdrop-blur flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300">
+                      <div
+                        className={`relative ${active.cover ? "size-12 lg:size-16" : "size-20 lg:size-24"} rounded-full bg-white/95 backdrop-blur flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300`}
+                      >
                         <svg
                           viewBox="0 0 24 24"
-                          className="size-8 lg:size-10 text-[var(--navy)] ms-1"
+                          className={`${active.cover ? "size-6 lg:size-8 text-[#14336b]" : "size-8 lg:size-10 text-[var(--navy)]"} ms-1`}
                           fill="currentColor"
                         >
                           <path d="M8 5v14l11-7z" />
@@ -161,15 +171,17 @@ export function Podcast() {
                       </div>
                     </div>
                   </div>
-                  <div className="absolute bottom-0 inset-x-0 p-5 lg:p-7 text-start">
-                    <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-white/80 font-semibold mb-2">
-                      <span className="size-1.5 rounded-full bg-accent animate-pulse" />
-                      {t("podcast_eyebrow")} · {active.number}
+                  {!active.cover && (
+                    <div className="absolute bottom-0 inset-x-0 p-5 lg:p-7 text-start">
+                      <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-white/80 font-semibold mb-2">
+                        <span className="size-1.5 rounded-full bg-accent animate-pulse" />
+                        {t("podcast_eyebrow")} · {active.number}
+                      </div>
+                      <h3 className="text-white font-display text-xl lg:text-2xl leading-tight">
+                        {t(active.titleKey)}
+                      </h3>
                     </div>
-                    <h3 className="text-white font-display text-xl lg:text-2xl leading-tight">
-                      {t(active.titleKey)}
-                    </h3>
-                  </div>
+                  )}
                 </button>
               )}
             </div>

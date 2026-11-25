@@ -1,3 +1,7 @@
+import podcastEp01 from "@/assets/podcast/ep01.webp";
+import podcastEp02 from "@/assets/podcast/ep02.webp";
+import podcastEp03 from "@/assets/podcast/ep03.webp";
+import podcastEp04 from "@/assets/podcast/ep04.webp";
 import { Layers, Target, Lightbulb, HeartHandshake, GraduationCap, Award, TrendingUp, BarChart3, UserCheck, BadgeCheck, Presentation } from "lucide-react";
 import headshotAsset from "@/assets/portfolio/headshot-cutout.png.asset.json";
 import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
@@ -474,6 +478,7 @@ export const PODCAST_EPISODES = [
   {
     id: "f0cDZYSbrCU",
     number: "01",
+    cover: podcastEp01,
     titleKey: "podcast_ep1_title",
     descKey: "podcast_ep1_desc",
     duration: "—",
@@ -481,6 +486,7 @@ export const PODCAST_EPISODES = [
   {
     id: "XAOMhy9vyOI",
     number: "02",
+    cover: podcastEp02,
     titleKey: "podcast_ep2_title",
     descKey: "podcast_ep2_desc",
     duration: "—",
@@ -488,6 +494,7 @@ export const PODCAST_EPISODES = [
   {
     id: "yOYL9R84yyE",
     number: "03",
+    cover: podcastEp03,
     titleKey: "podcast_ep3_title",
     descKey: "podcast_ep3_desc",
     duration: "—",
@@ -495,6 +502,7 @@ export const PODCAST_EPISODES = [
   {
     id: "IGlDz6mCcU0",
     number: "04",
+    cover: podcastEp04,
     titleKey: "podcast_ep4_title",
     descKey: "podcast_ep4_desc",
     duration: "—",
