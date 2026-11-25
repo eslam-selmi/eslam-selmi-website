@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   Sparkles,
   FileText,
@@ -11,27 +12,13 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { MediaViewerModal, type MediaItem } from "./MediaViewerModal";
+import { AdditionContactDialog } from "./AdditionContactDialog";
+import { latestAdditionsOptions, type Addition } from "@/lib/latest-additions";
+import { Button } from "@/components/ui/button";
 
 const LAST_SEEN_KEY = "latest_additions_last_seen_at";
 
-export type Addition = {
-  id: string;
-  title_ar: string;
-  title_en: string;
-  subtitle_ar: string | null;
-  subtitle_en: string | null;
-  custom_label: string | null;
-  kind: "link" | "file" | "video" | "pdf" | "embed";
-  url: string;
-  created_at: string;
-};
-
-type Settings = {
-  title_ar: string;
-  title_en: string;
-  subtitle_ar: string | null;
-  subtitle_en: string | null;
-};
+export type { Addition } from "@/lib/latest-additions";
 
 export function useLatestAdditionsBadge() {
   const [hasNew, setHasNew] = useState(false);
@@ -98,30 +85,32 @@ function relativeDate(iso: string, isAr: boolean) {
 export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
   const { lang } = useI18n();
   const isAr = lang === "ar";
-  const [settings, setSettings] = useState<Settings | null>(null);
-  const [items, setItems] = useState<Addition[]>([]);
+  const { data, isPending } = useQuery(latestAdditionsOptions);
+  const settings = data?.settings;
+  const items = data?.items ?? [];
   const [viewing, setViewing] = useState<MediaItem | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [collecting, setCollecting] = useState<Addition | null>(null);
+  const [opened, setOpened] = useState<Set<string>>(() => new Set());
 
   useEffect(() => {
-    (async () => {
-      const [{ data: s }, { data: list }] = await Promise.all([
-        supabase.from("latest_additions_settings").select("*").limit(1).maybeSingle(),
-        supabase.from("latest_additions").select("*").order("created_at", { ascending: false }).limit(24),
-      ]);
-      setSettings((s as Settings) ?? null);
-      setItems((list ?? []) as Addition[]);
-      setLoading(false);
-      // mark seen as soon as the section is rendered
-      const latest = list?.[0]?.created_at;
-      if (latest) {
-        localStorage.setItem(LAST_SEEN_KEY, latest);
-        onView?.();
-      }
-    })();
-  }, [onView]);
+    const latest = data?.items[0]?.created_at;
+    if (latest) {
+      localStorage.setItem(LAST_SEEN_KEY, latest);
+      onView?.();
+    }
+  }, [data, onView]);
 
-  if (loading) return null;
+  function openItem(item: Addition) {
+    setViewing({
+      title: isAr ? item.title_ar : item.title_en,
+      subtitle: isAr ? item.subtitle_ar : item.subtitle_en,
+      kind: item.kind,
+      url: item.url,
+      isStoragePath: !/^https?:\/\//i.test(item.url) && ["file", "pdf", "video"].includes(item.kind),
+    });
+  }
+
+  if (isPending) return null;
 
   const title = settings ? (isAr ? settings.title_ar : settings.title_en) : isAr ? "أحدث الإضافات" : "Latest Additions";
   const subtitle = settings ? (isAr ? settings.subtitle_ar : settings.subtitle_en) : null;
@@ -159,23 +148,15 @@ export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
             const Icon = iconFor(it.kind);
             const t = isAr ? it.title_ar : it.title_en;
             const sub = isAr ? it.subtitle_ar : it.subtitle_en;
-            const isStorage = it.kind === "file" || it.kind === "pdf" || (it.kind === "video" && !/^https?:\/\//i.test(it.url));
             const isNew = Date.now() - new Date(it.created_at).getTime() < NEW_WINDOW_MS;
             const when = relativeDate(it.created_at, isAr);
             return (
-              <button
+              <Button
                 key={it.id}
+                variant="ghost"
                 type="button"
-                onClick={() =>
-                  setViewing({
-                    title: t,
-                    subtitle: sub,
-                    kind: it.kind,
-                    url: it.url,
-                    isStoragePath: isStorage,
-                  })
-                }
-                className="additions-card"
+                onClick={() => it.collect_contacts && !opened.has(it.id) ? setCollecting(it) : openItem(it)}
+                className="additions-card h-auto whitespace-normal text-start"
                 style={{ "--i": idx, "--acc": KIND_TOKEN[it.kind] } as React.CSSProperties}
               >
                 <span className="additions-tile" aria-hidden>
@@ -195,13 +176,18 @@ export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
                 <span className="additions-arrow" aria-hidden>
                   <ArrowUpRight className="size-[15px] rtl-flip" />
                 </span>
-              </button>
+              </Button>
             );
           })}
         </div>
       )}
 
       <MediaViewerModal item={viewing} onClose={() => setViewing(null)} />
+      {collecting && <AdditionContactDialog key={collecting.id} item={collecting} onClose={() => setCollecting(null)} onSaved={() => {
+        setOpened(previous => new Set(previous).add(collecting.id));
+        setCollecting(null);
+        openItem(collecting);
+      }} />}
     </section>
   );
 }

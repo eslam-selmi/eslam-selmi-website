@@ -108,16 +108,8 @@ export type CouponRow = {
   created_at: string;
 };
 
-export type LatestAdditionAdminRow = {
-  id: string;
-  title_ar: string;
-  title_en: string;
-  subtitle_ar: string | null;
-  subtitle_en: string | null;
-  custom_label: string | null;
+export type LatestAdditionAdminRow = Omit<Tables<"latest_additions">, "kind"> & {
   kind: "link" | "file" | "video" | "pdf" | "embed";
-  url: string;
-  created_at: string;
 };
 
 export type LatestAdditionsSettingsRow = {

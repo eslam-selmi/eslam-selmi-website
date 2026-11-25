@@ -1,5 +1,10 @@
 # Match administration to trainee portal
 
+# Latest addition contact collection
+
+- [ ] Add optional per-item name, phone and email collection before viewing.
+- [ ] Show private collected entries in latest-addition administration and verify save/readback and access rules.
+
 # Portrait name removal
 
 - [x] Remove the name/signature below the homepage portrait and verify desktop/mobile display.

@@ -62,11 +62,27 @@ import { CourseFeedbackPanel } from "@/components/admin/CourseFeedbackPanel";
 import { Button } from "@/components/ui/button";
 import { LatestAdditionAdminRow, LatestAdditionsSettingsRow, SnapshotRow, TestimonialAdminRow } from "@/components/admin/panels/types";
 import { AvatarUploadField, Input, Select } from "@/components/admin/panels/ui";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Switch } from "@/components/ui/switch";
+import { AdditionContacts } from "./AdditionContacts";
 
 export function LatestAdditionsPanel() {
   const { lang } = useI18n();
   const t = (a: string, b: string) => (lang === "ar" ? a : b);
-  const [items, setItems] = useState<LatestAdditionAdminRow[]>([]);
+  const queryClient = useQueryClient();
+  const { data: content } = useQuery({
+    queryKey: ["latest-additions", "admin"], staleTime: 30_000,
+    queryFn: async () => {
+      const [s, list] = await Promise.all([
+        supabase.from("latest_additions_settings").select("*").limit(1).maybeSingle(),
+        supabase.from("latest_additions").select("*").order("created_at", { ascending: false }),
+      ]);
+      if (s.error) throw s.error;
+      if (list.error) throw list.error;
+      return { settings: s.data, items: (list.data ?? []) as LatestAdditionAdminRow[] };
+    },
+  });
+  const items = content?.items ?? [];
   const [settings, setSettings] = useState<LatestAdditionsSettingsRow | null>(null);
   const [busy, setBusy] = useState(false);
   const [form, setForm] = useState({
@@ -77,20 +93,14 @@ export function LatestAdditionsPanel() {
     custom_label: "",
     kind: "link" as "link" | "embed",
     url: "",
+    collect_contacts: false,
   });
 
-  async function load() {
-    const [{ data: s }, { data: list }] = await Promise.all([
-      supabase.from("latest_additions_settings").select("*").limit(1).maybeSingle(),
-      supabase.from("latest_additions").select("*").order("created_at", { ascending: false }),
-    ]);
-    setSettings((s as LatestAdditionsSettingsRow) ?? null);
-    setItems((list as LatestAdditionAdminRow[]) ?? []);
-  }
+  const load = () => queryClient.invalidateQueries({ queryKey: ["latest-additions"] });
 
   useEffect(() => {
-    load();
-  }, []);
+    setSettings(content?.settings ?? null);
+  }, [content?.settings]);
 
   async function saveSettings() {
     if (!settings) return;
@@ -120,6 +130,7 @@ export function LatestAdditionsPanel() {
       custom_label: form.custom_label.trim() || null,
       kind: form.kind,
       url: form.url.trim(),
+      collect_contacts: form.collect_contacts,
     });
     setBusy(false);
     if (error) return toast.error(error.message);
@@ -132,6 +143,7 @@ export function LatestAdditionsPanel() {
       custom_label: "",
       kind: "link",
       url: "",
+      collect_contacts: false,
     });
     load();
   }
@@ -141,6 +153,13 @@ export function LatestAdditionsPanel() {
     const { error } = await supabase.from("latest_additions").delete().eq("id", id);
     if (error) return toast.error(error.message);
     load();
+  }
+
+  async function toggleCollection(item: LatestAdditionAdminRow, enabled: boolean) {
+    const { error } = await supabase.from("latest_additions").update({ collect_contacts: enabled }).eq("id", item.id);
+    if (error) return toast.error(t("تعذّر حفظ الاختيار", "Could not save selection"));
+    await load();
+    toast.success(t("تم حفظ الاختيار", "Selection saved"));
   }
 
   return (
@@ -237,6 +256,10 @@ export function LatestAdditionsPanel() {
         >
           {busy ? t("جارٍ الإضافة...", "Adding...") : t("إضافة", "Add")}
         </button>
+        <label className="flex items-center gap-3 text-sm">
+          <Switch checked={form.collect_contacts} onCheckedChange={collect_contacts => setForm({ ...form, collect_contacts })} />
+          {t("طلب الاسم والتليفون والإيميل قبل عرض الملف", "Request name, phone and email before viewing")}
+        </label>
       </form>
 
       <div className="dash-card dash-card-hover p-5">
@@ -262,6 +285,10 @@ export function LatestAdditionsPanel() {
                     [{it.kind}] {it.custom_label ? `· ${it.custom_label}` : ""} ·{" "}
                     {new Date(it.created_at).toLocaleString("ar-EG")}
                   </p>
+                  <label className="mt-3 flex items-center gap-3 text-sm text-foreground">
+                    <Switch checked={it.collect_contacts} onCheckedChange={enabled => void toggleCollection(it, enabled)} />
+                    {t("جمع بيانات قبل العرض", "Collect details before viewing")}
+                  </label>
                 </div>
                 <button
                   onClick={() => del(it.id)}
@@ -274,6 +301,7 @@ export function LatestAdditionsPanel() {
           </ul>
         )}
       </div>
+      <AdditionContacts items={items} />
     </div>
   );
 }

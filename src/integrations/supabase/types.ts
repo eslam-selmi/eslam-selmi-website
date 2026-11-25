@@ -1053,8 +1053,44 @@ export type Database = {
         }
         Relationships: []
       }
+      latest_addition_contacts: {
+        Row: {
+          addition_id: string
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          phone: string
+        }
+        Insert: {
+          addition_id: string
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          phone: string
+        }
+        Update: {
+          addition_id?: string
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          phone?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "latest_addition_contacts_addition_id_fkey"
+            columns: ["addition_id"]
+            isOneToOne: false
+            referencedRelation: "latest_additions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       latest_additions: {
         Row: {
+          collect_contacts: boolean
           created_at: string
           custom_label: string | null
           id: string
@@ -1066,6 +1102,7 @@ export type Database = {
           url: string
         }
         Insert: {
+          collect_contacts?: boolean
           created_at?: string
           custom_label?: string | null
           id?: string
@@ -1077,6 +1114,7 @@ export type Database = {
           url: string
         }
         Update: {
+          collect_contacts?: boolean
           created_at?: string
           custom_label?: string | null
           id?: string
