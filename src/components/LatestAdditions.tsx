@@ -94,6 +94,22 @@ export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
   const [signedIn, setSignedIn] = useState(false);
   const [givenDetails, setGivenDetails] = useState(false);
 
+  // Resolve the session on demand so a click before the first auth check
+  // finishes never shows the form to a signed-in member.
+  const handleCardClick = async (it: Addition) => {
+    let isIn = signedIn;
+    if (it.collect_contacts && !isIn && !givenDetails) {
+      try {
+        const { data } = await supabase.auth.getSession();
+        isIn = !!data.session?.user;
+      } catch {
+        isIn = false;
+      }
+    }
+    if (shouldAskForDetails({ collectContacts: !!it.collect_contacts, signedIn: isIn, alreadyGiven: givenDetails || hasGivenDetails() })) setCollecting(it);
+    else openItem(it);
+  };
+
   useEffect(() => {
     setGivenDetails(hasGivenDetails());
     let alive = true;
@@ -165,7 +181,7 @@ export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
                 key={it.id}
                 variant="ghost"
                 type="button"
-                onClick={() => shouldAskForDetails({ collectContacts: !!it.collect_contacts, signedIn, alreadyGiven: givenDetails }) ? setCollecting(it) : openItem(it)}
+                onClick={() => void handleCardClick(it)}
                 className="additions-card h-auto whitespace-normal text-start"
                 style={{ "--i": idx, "--acc": KIND_TOKEN[it.kind] } as React.CSSProperties}
               >
