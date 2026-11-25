@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { useEffect, useState } from "react";
 import { Globe2, X } from "lucide-react";
@@ -280,7 +281,7 @@ export function Snapshots() {
         </div>
       </div>
 
-      <AnimatePresence>
+      {typeof document !== "undefined" && createPortal(<AnimatePresence>
         {active !== null && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -335,7 +336,7 @@ export function Snapshots() {
             </div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>, document.body)}
     </Section>
   );
 }

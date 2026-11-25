@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import { BookingDialog } from "@/components/booking/BookingDialog";
 import { TraineeReviews } from "@/components/TraineeReviews";
 import { createFileRoute, Link, useRouterState } from "@tanstack/react-router";
@@ -191,7 +192,7 @@ export function Library() {
         </div>
       </motion.div>
 
-      {open && (
+      {open && typeof document !== "undefined" && createPortal(
         <div
           className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-sm"
           onClick={() => setOpen(false)}
@@ -236,7 +237,7 @@ export function Library() {
             />
           </div>
         </div>
-      )}
+      , document.body)}
     </Section>
   );
 }
