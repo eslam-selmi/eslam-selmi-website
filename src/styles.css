@@ -1327,3 +1327,31 @@ html[dir="rtl"] .additions-card:hover .additions-arrow { transform: translate(-3
   .mt-glass-logo, .mt-glass-logo__shine::before { animation: none; }
   .mt-glass-logo__shine::before { transform: translateX(60%) skewX(-18deg); opacity: 0.5; }
 }
+
+/* ======== Programs section redesign: navy panel, turquoise line, gold hairline (matches Latest Additions) ======== */
+.prog-panel {
+  --sx-line: color-mix(in oklab, var(--booking-cyan) 22%, transparent);
+  --sx-gold: color-mix(in oklab, var(--gold, oklch(0.78 0.14 90)) 70%, transparent);
+}
+.prog-panel::before { content: ""; position: absolute; inset-inline: 8%; top: 0; height: 1px; z-index: 2; background: linear-gradient(90deg, transparent, var(--sx-gold), transparent); }
+/* Programs */
+.prog-panel { position: relative; isolation: isolate; overflow: hidden; border-radius: 28px; border: 1px solid var(--sx-line); background-color: var(--booking-surface); background-image: radial-gradient(ellipse 60% 50% at 100% 0%, color-mix(in oklab, var(--booking-cyan) 14%, transparent), transparent 70%); box-shadow: var(--booking-shadow); color: var(--booking-foreground); padding: 1rem; gap: 1.25rem; }
+@media (min-width: 1024px) { .prog-panel { padding: 2rem; grid-template-columns: 300px 1fr; gap: 2.25rem; } }
+.prog-panel .prog-index { position: static; gap: 0; }
+@media (min-width: 1024px) { .prog-panel .prog-index { position: sticky; top: 6rem; } }
+.prog-panel .prog-index .prog-tab { min-height: 0; border: 0; border-radius: 0; border-block-end: 1px solid color-mix(in oklab, var(--booking-foreground) 10%, transparent); background: transparent; backdrop-filter: none; box-shadow: none; padding: 1.05rem .25rem; color: var(--booking-muted); }
+.prog-panel .prog-index .prog-tab::before, .prog-panel .prog-index .prog-tab::after { display: none; }
+.prog-panel .prog-index .prog-tab:hover { transform: none; color: var(--booking-foreground); border-color: color-mix(in oklab, var(--booking-foreground) 10%, transparent); }
+.prog-panel .prog-index .prog-tab[data-active="true"], html[dir="ltr"] .prog-panel .prog-index .prog-tab[data-active="true"] { color: var(--booking-foreground); box-shadow: none; border-block-end-color: var(--booking-cyan); background: linear-gradient(90deg, color-mix(in oklab, var(--booking-cyan) 10%, transparent), transparent); }
+html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { background: linear-gradient(270deg, color-mix(in oklab, var(--booking-cyan) 10%, transparent), transparent); }
+.prog-panel .prog-tab-num { width: auto; height: auto; border: 0; background: none; box-shadow: none; border-radius: 0; font-size: 1.5rem; color: color-mix(in oklab, var(--booking-foreground) 28%, transparent); justify-content: start; }
+.prog-panel .prog-tab[data-active="true"] .prog-tab-num { color: var(--booking-cyan); }
+.prog-panel .prog-tab-count { color: var(--booking-muted); }
+.prog-panel .prog-tab[data-active="true"] .prog-tab-arrow { color: var(--booking-cyan); }
+.prog-panel .prog-feature { border: 1px solid color-mix(in oklab, var(--booking-cyan) 16%, transparent); border-radius: 22px; background: color-mix(in oklab, var(--booking-foreground) 4%, var(--booking-surface)); color: var(--booking-foreground); }
+@media (min-width: 768px) { .prog-panel .prog-feature { grid-template-columns: 1fr 1.2fr; } }
+.prog-panel .prog-kicker { color: var(--booking-cyan); }
+.prog-panel .prog-intro, .prog-panel .prog-mod-desc { color: var(--booking-muted); }
+.prog-panel .prog-modules { border-block-start-color: var(--sx-line); }
+.prog-panel .prog-modules li { border-block-end-color: color-mix(in oklab, var(--booking-foreground) 9%, transparent); }
+.prog-panel .prog-mod-num { color: var(--booking-cyan); }

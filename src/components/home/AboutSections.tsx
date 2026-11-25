@@ -334,7 +334,7 @@ export function Programs() {
   const cur = tracks[idx];
   return (
     <Section id="programs" eyebrow={t("programs_eyebrow")} title={t("programs_title")}>
-      <div className="prog-shell">
+      <div className="prog-shell prog-panel">
         <div className="prog-index" role="tablist" aria-orientation="vertical" aria-label={t("programs_title")}>
           {tracks.map((tr, i) => (
             <Button key={tr.key} variant="ghost" type="button" role="tab" id={`program-tab-${tr.key}`} aria-controls="program-detail" aria-selected={i === idx} tabIndex={i === idx ? 0 : -1} onClick={() => setActive(i)} onKeyDown={(event) => {
