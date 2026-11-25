@@ -45,7 +45,7 @@ export function Nav({
   const isHome = pathname === "/";
   const hashHref = (id: string) => (isHome ? `#${id}` : `/#${id}`);
   return (
-    <header className={`fixed top-0 inset-x-0 z-50 transition-all ${scrolled ? "py-2" : "py-4"}`}>
+    <header className={`fixed top-0 inset-x-0 z-40 transition-all ${scrolled ? "py-2" : "py-4"}`}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div
           className={`bg-card/85 backdrop-blur-xl border border-foreground/10 rounded-full ps-3 pe-2 py-2 flex items-center justify-between gap-2 ${scrolled ? "shadow-[0_8px_30px_-12px_rgba(15,27,61,0.15)]" : ""}`}
