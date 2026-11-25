@@ -9,5 +9,12 @@ test("custom text overrides the default per language", () => {
 });
 
 test("invalid colors fall back to defaults", () => {
-  assert.equal(readCertificateSettings({ colors: { accent: "red" } }).colors.accent, "#1f7f9a");
+  assert.equal(readCertificateSettings({ colors: { accent: "red" } }).colors.accent, "#52d0cf");
+});
+
+test("signaturePath accepts a storage path and rejects traversal or non-strings", () => {
+  assert.equal(readCertificateSettings({ signaturePath: "certificate-signatures/c1/1.png" }).signaturePath, "certificate-signatures/c1/1.png");
+  assert.equal(readCertificateSettings({ signaturePath: "../x.png" }).signaturePath, "");
+  assert.equal(readCertificateSettings({ signaturePath: 5 }).signaturePath, "");
+  assert.equal(readCertificateSettings(null).signaturePath, "");
 });

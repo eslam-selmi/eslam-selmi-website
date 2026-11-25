@@ -1,3 +1,4 @@
+import { supabase } from "@/integrations/supabase/client";
 import { createRoot } from "react-dom/client";
 import { flushSync } from "react-dom";
 import QRCode from "qrcode";
@@ -43,14 +44,15 @@ export async function generateCertificatePdf(p: CertificatePayload): Promise<Blo
   host.className = "certificate-export-host";
   document.body.appendChild(host);
   const root = createRoot(host);
+  const signaturePath = p.settings?.signaturePath;
   try {
     const site = await new QueryClient().fetchQuery(siteProfileOptions);
-    const [fontEmbedCSS, logo, qr, courseLogo] = await Promise.all([
-      embeddedFonts(), asDataUrl(readSiteProfile(site?.content ?? null).logo),
+    const [fontEmbedCSS, logo, signature, qr, courseLogo] = await Promise.all([
+      embeddedFonts(), asDataUrl(readSiteProfile(site?.content ?? null).logo), signaturePath ? supabase.storage.from("course-files").createSignedUrl(signaturePath, 300).then(({ data, error }) => { if (error || !data?.signedUrl) throw new Error("Trainer signature image unavailable"); return asDataUrl(data.signedUrl); }) : Promise.resolve(undefined),
       QRCode.toDataURL(verificationUrl(p.certificateId), { errorCorrectionLevel: "M", width: 240, margin: 0 }),
       p.courseLogoUrl ? asDataUrl(p.courseLogoUrl).catch(() => undefined) : Promise.resolve(undefined),
     ]);
-    flushSync(() => root.render(<CertificateDocument payload={p} qr={qr} logo={logo} courseLogo={courseLogo} />));
+    flushSync(() => root.render(<CertificateDocument payload={p} qr={qr} logo={logo} courseLogo={courseLogo} signature={signature} />));
     await Promise.all(fonts.map(([family, weight]) => document.fonts.load(`${weight} 24px "${family}"`, family === "IBM Plex Sans Arabic" ? "شهادة إتمام" : "Certificate")));
     await document.fonts.ready;
     await Promise.all(Array.from(host.querySelectorAll("img")).map(img => img.decode()));
@@ -58,10 +60,10 @@ export async function generateCertificatePdf(p: CertificatePayload): Promise<Blo
     if (!(target instanceof HTMLElement)) throw new Error("Certificate layout is unavailable");
     const [{ toPng }, { default: jsPDF }] = await Promise.all([import("html-to-image"), import("jspdf")]);
     const image = await toPng(target, { width: CERTIFICATE_WIDTH, height: CERTIFICATE_HEIGHT, pixelRatio: 1.5, fontEmbedCSS, cacheBust: false });
-    const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4", compress: true });
+    const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4", compress: true });
     pdf.setProperties({ title: `${p.lang === "ar" ? "شهادة إتمام" : "Certificate of completion"} — ${p.studentName}`, author: "Eslam Selmi", subject: p.courseTitle });
-    pdf.addImage(image, "PNG", 0, 0, 297, 210, undefined, "FAST");
-    if (p.settings?.toggles.showQr !== false) pdf.link(p.lang === "ar" ? 20 : 235, 162, 52, 38, { url: verificationUrl(p.certificateId) });
+    pdf.addImage(image, "PNG", 0, 0, 210, 297, undefined, "FAST");
+    if (p.settings?.toggles.showQr !== false) pdf.link(p.lang === "ar" ? 21.2 : 157.8, 215.4, 31.2, 31.2, { url: verificationUrl(p.certificateId) });
     return pdf.output("blob");
   } catch (error) {
     throw new Error(`Certificate render failed (${p.lang}): ${error instanceof Error ? error.message : String(error)}`);

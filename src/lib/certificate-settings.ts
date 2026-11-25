@@ -31,13 +31,15 @@ export type CertificateSettings = {
   colors: { paper: string; ink: string; accent: string; line: string };
   toggles: Record<CertToggleKey, boolean>;
   titleScale: number; nameScale: number;
+  /** Storage path (course-files bucket) of this course's trainer signature image; empty = no signature drawn. */
+  signaturePath: string;
 };
 
 export const defaultCertificateSettings: CertificateSettings = {
   ar: {}, en: {},
-  colors: { paper: "#fcfdfe", ink: "#16244a", accent: "#1f7f9a", line: "#c6d3dc" },
+  colors: { paper: "#fbfcfd", ink: "#0b1f45", accent: "#52d0cf", line: "#c6d3dc" },
   toggles: { showBrand: true, showSpine: true, showLines: true, showFrame: true, showHours: true, showPartner: true, showDate: true, showSignature: true, showQr: true },
-  titleScale: 100, nameScale: 100,
+  titleScale: 100, nameScale: 100, signaturePath: "",
 };
 
 const isObj = (v: unknown): v is Record<string, unknown> => !!v && typeof v === "object" && !Array.isArray(v);
@@ -54,6 +56,7 @@ export function readCertificateSettings(raw: unknown): CertificateSettings {
     colors: Object.fromEntries(Object.entries(d.colors).map(([k, f]) => [k, typeof colors[k] === "string" && /^#[0-9a-f]{6}$/i.test(colors[k] as string) ? colors[k] : f])) as CertificateSettings["colors"],
     toggles: Object.fromEntries(Object.entries(d.toggles).map(([k, f]) => [k, typeof toggles[k] === "boolean" ? toggles[k] : f])) as CertificateSettings["toggles"],
     titleScale: num(raw.titleScale, 100), nameScale: num(raw.nameScale, 100),
+    signaturePath: typeof raw.signaturePath === "string" && raw.signaturePath.length <= 300 && !raw.signaturePath.includes("..") ? raw.signaturePath : "",
   };
 }
 

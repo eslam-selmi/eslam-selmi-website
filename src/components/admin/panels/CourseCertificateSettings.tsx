@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Languages, RotateCcw, Save } from "lucide-react";
+import { ImagePlus, Languages, RotateCcw, Save, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { CertificatePreview } from "@/components/certificates/CertificateDocument";
@@ -17,6 +17,7 @@ export function CourseCertificateSettings({ course }: { course: { id: string; ti
   const [s, setS] = useState<CertificateSettings>(defaultCertificateSettings);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<"save" | "translate" | null>(null);
+  const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<"ar" | "en">("ar");
 
   useEffect(() => {
@@ -52,6 +53,20 @@ export function CourseCertificateSettings({ course }: { course: { id: string; ti
       toast.success("تم حفظ إعدادات الشهادة");
     } catch (e) { toast.error(e instanceof Error ? e.message : "تعذر الحفظ"); }
     finally { setBusy(null); }
+  }
+
+  async function uploadSignature(file: File) {
+    if (!/^image\/(png|jpeg|webp)$/.test(file.type) || file.size > 2 * 1024 * 1024) return toast.error("ارفع صورة PNG أو JPG أو WEBP بحجم أقل من 2 ميجا");
+    setUploading(true);
+    try {
+      const ext = file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
+      const path = `certificate-signatures/${course.id}/${Date.now()}.${ext}`;
+      const { error } = await supabase.storage.from("course-files").upload(path, file, { contentType: file.type });
+      if (error) throw error;
+      setS((p) => ({ ...p, signaturePath: path }));
+      toast.success("تم رفع صورة التوقيع، احفظ الإعدادات لتطبيقها");
+    } catch (e) { toast.error(e instanceof Error ? e.message : "تعذر رفع الصورة"); }
+    finally { setUploading(false); }
   }
 
   if (loading) return <p className="text-sm text-muted-foreground">جارٍ التحميل…</p>;
@@ -90,6 +105,14 @@ export function CourseCertificateSettings({ course }: { course: { id: string; ti
       <div className="grid gap-3 sm:grid-cols-2">
         {([["titleScale", "حجم العنوان"], ["nameScale", "حجم اسم المتدرب"]] as const).map(([k, label]) => <label key={k} className="text-xs space-y-1"><span className="text-muted-foreground">{label}: {s[k]}%</span>
           <input type="range" min={60} max={150} value={s[k]} onChange={(e) => setS((p) => ({ ...p, [k]: Number(e.target.value) }))} className="w-full" /></label>)}
+      </div>
+      <div className="space-y-2">
+        <span className="text-xs text-muted-foreground">صورة توقيع المدرب لهذا الكورس (PNG بخلفية شفافة يفضّل). بدونها لا يظهر توقيع، يظهر الاسم فقط.</span>
+        <div className="flex flex-wrap items-center gap-2">
+          <label className="inline-flex"><input type="file" accept="image/png,image/jpeg,image/webp" className="sr-only" disabled={uploading} onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) void uploadSignature(f); }} />
+            <span className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-md border border-border px-3 text-sm"><ImagePlus className="size-4" /> {uploading ? "جارٍ الرفع…" : s.signaturePath ? "تغيير صورة التوقيع" : "رفع صورة التوقيع"}</span></label>
+          {s.signaturePath && <Button size="sm" variant="ghost" onClick={() => setS((p) => ({ ...p, signaturePath: "" }))}><Trash2 className="size-4" /> إزالة</Button>}
+        </div>
       </div>
       <div className="grid gap-2 sm:grid-cols-3">
         {CERT_TOGGLES.map(([k, label]) => <label key={k} className="flex items-center gap-2 text-sm">
