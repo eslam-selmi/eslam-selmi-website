@@ -6,6 +6,7 @@ import { useI18n } from "@/lib/i18n";
 import { safeHref } from "@/lib/safe-url";
 import { mediaSource } from "@/lib/media-url";
 import { Button } from "@/components/ui/button";
+import { VideoWithCues } from "@/components/VideoWithCues";
 
 export type MediaItem = {
   title: string;
@@ -137,13 +138,11 @@ export function MediaViewerModal({
             </div>
           ) : resolvedUrl ? (
             isVideoFile ? (
-              <video
+              <VideoWithCues
                 src={resolvedUrl}
-                controls
-                controlsList="nodownload"
-                playsInline
+                content={item.content}
+                isAr={isAr}
                 onError={() => setErr(isAr ? "تعذّر تشغيل الفيديو؛ يمكنك فتحه من المصدر." : "Video playback failed; open the source instead.")}
-                className="w-full h-full bg-black"
               />
             ) : isImageFile ? (
               <img src={resolvedUrl} alt="" className="w-full h-full object-contain" />

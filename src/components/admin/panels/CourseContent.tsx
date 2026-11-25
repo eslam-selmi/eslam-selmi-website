@@ -6,6 +6,8 @@ import { PortalShell } from "@/components/PortalShell";
 import { toast } from "sonner";
 import { generateCertificatePdf } from "@/lib/certificate";
 import { useI18n } from "@/lib/i18n";
+import { VideoCuesEditor } from "@/components/admin/VideoCuesEditor";
+import { isVideoFileItem, parseVideoCues, visibleItemText } from "@/lib/video-cues";
 import {
   Plus,
   Trash2,
@@ -202,6 +204,7 @@ export function ModuleCard({
   const [itemTitle, setItemTitle] = useState("");
   const [itemContent, setItemContent] = useState("");
   const [itemUrl, setItemUrl] = useState("");
+  const [cuesFor, setCuesFor] = useState<string | null>(null);
 
   async function addItem() {
     if (!itemTitle.trim()) return;
@@ -318,10 +321,27 @@ export function ModuleCard({
                   )}
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-sm">{it.title}</p>
-                    {it.content && (
+                    {visibleItemText(it.content) && (
                       <p className="text-xs text-white/55 whitespace-pre-wrap mt-0.5">
-                        {it.content}
+                        {visibleItemText(it.content)}
                       </p>
+                    )}
+                    {isVideoFileItem(it) && (
+                      <button
+                        type="button"
+                        onClick={() => setCuesFor(cuesFor === it.id ? null : it.id)}
+                        className="text-xs text-[var(--gold)] mt-1 hover:underline"
+                      >
+                        {t("أسئلة داخل الفيديو", "Questions in video")} ({parseVideoCues(it.content).length})
+                      </button>
+                    )}
+                    {cuesFor === it.id && (
+                      <VideoCuesEditor
+                        item={it}
+                        isAr={lang === "ar"}
+                        onSaved={onItemsChanged}
+                        onClose={() => setCuesFor(null)}
+                      />
                     )}
                     {it.url &&
                       (it.kind === "file" ? (
