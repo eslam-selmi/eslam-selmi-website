@@ -15,6 +15,7 @@ import { MediaViewerModal, type MediaItem } from "./MediaViewerModal";
 import { AdditionContactDialog } from "./AdditionContactDialog";
 import { latestAdditionsOptions, type Addition } from "@/lib/latest-additions";
 import { Button } from "@/components/ui/button";
+import { hasGivenDetails, rememberGivenDetails, shouldAskForDetails } from "@/lib/addition-contact-memory";
 
 const LAST_SEEN_KEY = "latest_additions_last_seen_at";
 
@@ -90,7 +91,16 @@ export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
   const items = data?.items ?? [];
   const [viewing, setViewing] = useState<MediaItem | null>(null);
   const [collecting, setCollecting] = useState<Addition | null>(null);
-  const [opened, setOpened] = useState<Set<string>>(() => new Set());
+  const [signedIn, setSignedIn] = useState(false);
+  const [givenDetails, setGivenDetails] = useState(false);
+
+  useEffect(() => {
+    setGivenDetails(hasGivenDetails());
+    let alive = true;
+    supabase.auth.getSession().then(({ data }) => { if (alive) setSignedIn(!!data.session?.user); }).catch(() => {});
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => { if (alive) setSignedIn(!!session?.user); });
+    return () => { alive = false; sub.subscription.unsubscribe(); };
+  }, []);
 
   useEffect(() => {
     const latest = data?.items[0]?.created_at;
@@ -155,7 +165,7 @@ export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
                 key={it.id}
                 variant="ghost"
                 type="button"
-                onClick={() => it.collect_contacts && !opened.has(it.id) ? setCollecting(it) : openItem(it)}
+                onClick={() => shouldAskForDetails({ collectContacts: !!it.collect_contacts, signedIn, alreadyGiven: givenDetails }) ? setCollecting(it) : openItem(it)}
                 className="additions-card h-auto whitespace-normal text-start"
                 style={{ "--i": idx, "--acc": KIND_TOKEN[it.kind] } as React.CSSProperties}
               >
@@ -184,7 +194,8 @@ export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
 
       <MediaViewerModal item={viewing} onClose={() => setViewing(null)} />
       {collecting && <AdditionContactDialog key={collecting.id} item={collecting} onClose={() => setCollecting(null)} onSaved={() => {
-        setOpened(previous => new Set(previous).add(collecting.id));
+        rememberGivenDetails();
+        setGivenDetails(true);
         setCollecting(null);
         openItem(collecting);
       }} />}
