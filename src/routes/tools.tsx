@@ -1,0 +1,191 @@
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { BarChart3, Target, Loader2, Lock, FileText, Download, X, ArrowLeft } from "lucide-react";
+import { useAuth } from "@/lib/portal-auth";
+import { PortalShell } from "@/components/PortalShell";
+import { useI18n } from "@/lib/i18n";
+import { TOOLS, fetchMyTools, isToolId, loadWorkspace, saveWorkspace, type ToolId } from "@/lib/tools";
+
+export const Route = createFileRoute("/tools")({
+  ssr: false,
+  validateSearch: (s: Record<string, unknown>): { t?: ToolId } => ({ t: isToolId(s.t) ? s.t : undefined }),
+  head: () => ({
+    meta: [
+      { title: "الأدوات التفاعلية · إسلام سلمي" },
+      { name: "robots", content: "noindex" },
+    ],
+  }),
+  component: ToolsPage,
+});
+
+const ICONS = { tna: BarChart3, perf: Target } as const;
+// Handbook and original Excel are delivered later through a gated private route, not from public/.
+const FILES: Partial<Record<ToolId, { handout?: string; excel?: string }>> = {};
+
+function ToolsPage() {
+  const { user, role, loading, activationStatus } = useAuth();
+  const { lang } = useI18n();
+  const nav = useNavigate();
+  const { t: active } = Route.useSearch();
+  const ar = lang === "ar";
+  const [allowed, setAllowed] = useState<ToolId[] | null>(null);
+  const [err, setErr] = useState(false);
+
+  useEffect(() => {
+    if (loading) return;
+    if (!user) { nav({ to: "/auth" }); return; }
+    if (role !== "admin" && (activationStatus === "pending" || activationStatus === "rejected")) { nav({ to: "/onboarding" }); return; }
+    fetchMyTools().then(setAllowed).catch(() => { setErr(true); setAllowed([]); });
+  }, [user, role, loading, activationStatus, nav]);
+
+  if (loading || !user || allowed === null) {
+    return <div className="min-h-screen grid place-items-center"><Loader2 className="w-6 h-6 animate-spin" /></div>;
+  }
+
+  return (
+    <PortalShell userId={user.id} role={role === "admin" ? "admin" : "trainee"} userLabel={user.email}>
+      <div className="space-y-5">
+        {active ? (
+          allowed.includes(active)
+            ? <ToolWorkspace key={active} tool={active} userId={user.id} ar={ar} />
+            : <Denied ar={ar} />
+        ) : (
+          <Chooser allowed={allowed} ar={ar} failed={err} />
+        )}
+      </div>
+    </PortalShell>
+  );
+}
+
+function Denied({ ar }: { ar: boolean }) {
+  return (
+    <div className="dash-card p-8 text-center space-y-3">
+      <Lock className="w-8 h-8 mx-auto opacity-60" />
+      <h2 className="text-xl font-bold">{ar ? "هذه الأداة غير متاحة لحسابك" : "This tool is not available for your account"}</h2>
+      <p className="text-sm opacity-70">{ar ? "تواصل مع الإدارة لتفعيلها لك." : "Contact the administrator to enable it."}</p>
+      <Link to="/tools" className="inline-flex h-10 px-4 items-center rounded-xl border border-white/15 text-sm font-semibold">{ar ? "رجوع" : "Back"}</Link>
+    </div>
+  );
+}
+
+function Chooser({ allowed, ar, failed }: { allowed: ToolId[]; ar: boolean; failed: boolean }) {
+  return (
+    <>
+      <div>
+        <h1 className="text-2xl font-extrabold">{ar ? "الأدوات التفاعلية" : "Interactive tools"}</h1>
+        <p className="text-sm opacity-70 mt-1">{ar ? "تحب تدخل على إيه؟ بياناتك محفوظة على حسابك ومتاحة من أي جهاز." : "Pick a tool. Your data is saved to your account and available on any device."}</p>
+      </div>
+      {failed && <div className="dash-card p-4 text-sm">{ar ? "تعذّر تحميل الأدوات المتاحة. حدّث الصفحة وحاول مرة ثانية." : "Could not load your tools. Refresh and try again."}</div>}
+      {allowed.length === 0 && !failed && (
+        <div className="dash-card p-8 text-center space-y-2">
+          <Lock className="w-8 h-8 mx-auto opacity-60" />
+          <p className="font-bold">{ar ? "لا توجد أدوات مفعّلة لحسابك حاليًا." : "No tools are enabled for your account yet."}</p>
+          <p className="text-sm opacity-70">{ar ? "تواصل مع الإدارة لتفعيلها." : "Contact the administrator to enable them."}</p>
+        </div>
+      )}
+      <div className="grid gap-4 sm:grid-cols-2">
+        {allowed.map((id) => {
+          const Icon = ICONS[id];
+          const m = TOOLS[id];
+          return (
+            <Link key={id} to="/tools" search={{ t: id }} className="dash-card dash-card-hover p-5 flex gap-4 items-start text-start">
+              <span className="w-11 h-11 rounded-xl grid place-items-center bg-[var(--gold)]/15 text-[var(--gold)] shrink-0"><Icon className="w-5 h-5" /></span>
+              <span>
+                <b className="block text-base">{ar ? m.ar : m.en}</b>
+                <span className="block text-sm opacity-70 mt-1">{ar ? m.descAr : m.descEn}</span>
+              </span>
+            </Link>
+          );
+        })}
+      </div>
+    </>
+  );
+}
+
+type Msg = { type?: string; tool?: string; data?: unknown; rev?: number; h?: number };
+
+function ToolWorkspace({ tool, userId, ar }: { tool: ToolId; userId: string; ar: boolean }) {
+  const m = TOOLS[tool];
+  const files = FILES[tool] || {};
+  const frame = useRef<HTMLIFrameElement>(null);
+  const rev = useRef(0);
+  const chain = useRef<Promise<unknown>>(Promise.resolve());
+  const [height, setHeight] = useState(900);
+  const [loadErr, setLoadErr] = useState(false);
+  const [intro, setIntro] = useState(false);
+  const origin = useMemo(() => (typeof window === "undefined" ? "" : window.location.origin), []);
+  const introKey = `tool-intro-${tool}`;
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && !sessionStorage.getItem(introKey)) setIntro(true);
+  }, [introKey]);
+
+  useEffect(() => {
+    const post = (msg: Record<string, unknown>) => frame.current?.contentWindow?.postMessage(msg, origin);
+    const onMsg = (e: MessageEvent) => {
+      if (e.origin !== origin || e.source !== frame.current?.contentWindow) return;
+      const msg = (e.data || {}) as Msg;
+      if (msg.tool && msg.tool !== tool) return;
+      if (msg.type === "tool-ready") {
+        loadWorkspace(tool)
+          .then((w) => { rev.current = w.revision; post({ type: "tool-init", tool, data: w.data }); })
+          .catch(() => setLoadErr(true));
+      } else if (msg.type === "tool-save") {
+        // Saves run one at a time, in order, so an older save never lands after a newer one.
+        chain.current = chain.current.then(async () => {
+          try { rev.current = await saveWorkspace(tool, msg.data, rev.current, userId); post({ type: "tool-saved", ok: true }); }
+          catch { post({ type: "tool-saved", ok: false }); }
+        });
+      } else if (msg.type === "tool-height" && typeof msg.h === "number") {
+        setHeight(Math.max(600, Math.min(20000, Math.ceil(msg.h))));
+      }
+    };
+    const flush = () => post({ type: "tool-flush" });
+    window.addEventListener("message", onMsg);
+    window.addEventListener("pagehide", flush);
+    document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flush(); });
+    return () => { flush(); window.removeEventListener("message", onMsg); window.removeEventListener("pagehide", flush); };
+  }, [tool, origin, userId]);
+
+  function closeIntro() { sessionStorage.setItem(introKey, "1"); setIntro(false); }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-center gap-2 justify-between">
+        <div className="flex items-center gap-3">
+          <Link to="/tools" className="h-10 w-10 grid place-items-center rounded-xl border border-white/15" aria-label={ar ? "رجوع" : "Back"}><ArrowLeft className="w-4 h-4 rtl-flip" /></Link>
+          <h1 className="text-xl font-extrabold">{ar ? m.ar : m.en}</h1>
+        </div>
+        <div className="flex gap-2">
+          <button type="button" onClick={() => setIntro(true)} className="h-10 px-3 rounded-xl border border-white/15 text-sm font-semibold inline-flex items-center gap-1.5"><FileText className="w-4 h-4" />{ar ? "دليل الاستخدام" : "Handbook"}</button>
+          {files.excel && <a href={files.excel} download className="h-10 px-3 rounded-xl border border-white/15 text-sm font-semibold inline-flex items-center gap-1.5"><Download className="w-4 h-4" />{ar ? "تنزيل الإكسيل الأصلي" : "Original Excel"}</a>}
+        </div>
+      </div>
+      {loadErr && <div className="dash-card p-4 text-sm">{ar ? "تعذّر تحميل بياناتك المحفوظة. حدّث الصفحة. لن نكتب فوق بياناتك." : "Could not load your saved data. Refresh. We will not overwrite your data."}</div>}
+      <div className="dash-card overflow-hidden p-0">
+        <iframe
+          ref={frame}
+          title={ar ? m.ar : m.en}
+          src={`/tools/workbook.html#embed=${tool}`}
+          style={{ width: "100%", height, border: 0, display: loadErr ? "none" : "block" }}
+        />
+      </div>
+      {intro && (
+        <div className="fixed inset-0 z-50 bg-black/60 grid place-items-center p-4" role="dialog" aria-modal="true">
+          <div className="dash-card max-w-md w-full p-6 space-y-4 relative">
+            <button type="button" onClick={closeIntro} aria-label={ar ? "إغلاق" : "Close"} className="absolute top-3 end-3 w-8 h-8 grid place-items-center rounded-lg hover:bg-white/10"><X className="w-4 h-4" /></button>
+            <h2 className="text-lg font-bold">{ar ? m.handout.ar : m.handout.en}</h2>
+            <p className="text-sm opacity-75">{ar ? "اقرأ الدليل قبل ما تبدأ. تقدر ترجع له في أي وقت من زر دليل الاستخدام." : "Read the handbook before you start. You can reopen it anytime."}</p>
+            {!files.handout && <p className="text-sm opacity-75">{ar ? "الدليل سيُضاف قريبًا." : "The handbook will be added soon."}</p>}
+            <div className="flex flex-wrap gap-2">
+              {files.handout && <a href={files.handout} target="_blank" rel="noreferrer" className="h-10 px-4 rounded-xl bg-[var(--gold)] text-black font-bold text-sm inline-flex items-center gap-1.5"><FileText className="w-4 h-4" />{ar ? "قراءة الآن" : "Read now"}</a>}
+              {files.handout && <a href={files.handout} download className="h-10 px-4 rounded-xl border border-white/15 text-sm font-semibold inline-flex items-center gap-1.5"><Download className="w-4 h-4" />{ar ? "تنزيل PDF" : "Download PDF"}</a>}
+              <button type="button" onClick={closeIntro} className="h-10 px-4 rounded-xl border border-white/15 text-sm font-semibold">{ar ? "ابدأ العمل" : "Start"}</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+

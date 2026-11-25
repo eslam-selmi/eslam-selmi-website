@@ -48,6 +48,7 @@ import { safeHref } from "@/lib/safe-url";
 import { AdminSupportPanel } from "@/components/SupportTickets";
 import { assertAdmin } from "@/lib/admin-guard.functions";
 import { SiteManagementPanel } from "@/components/admin/SiteManagementPanel";
+import { ToolsAccessPanel } from "@/components/admin/ToolsAccessPanel";
 import { SuccessCasesPanel } from "@/components/admin/SuccessCasesPanel";
 import { PartnersPanel } from "@/components/admin/PartnersPanel";
 import { ContractsPanel } from "@/components/admin/ContractsPanel";
@@ -103,7 +104,7 @@ type AdminSearch = {
     | "trainings"
     | "partners"
     | "contracts"
-    | "programs" | "services" | "pillars" | "videos" | "graduate_tools" | "media" | "effects" | "visibility" | "popups" | "maintenance";
+    | "programs" | "services" | "pillars" | "videos" | "graduate_tools" | "media" | "effects" | "visibility" | "popups" | "maintenance" | "tools";
 
   drawer?: string;
   editCourse?: string;
@@ -167,7 +168,7 @@ function AdminPage() {
     | "snapshots"
     | "partners"
     | "contracts"
-    | "programs" | "services" | "pillars" | "videos" | "graduate_tools" | "media" | "effects" | "visibility" | "popups" | "maintenance"
+    | "programs" | "services" | "pillars" | "videos" | "graduate_tools" | "media" | "effects" | "visibility" | "popups" | "maintenance" | "tools"
   >(search.tab || "overview");
 
   const tab = tabState;
@@ -340,6 +341,7 @@ function AdminPage() {
               items: [
                 { id: "site", label: t("هوية الموقع والتواصل", "Site identity & contact"), icon: Settings2 },
                 { id: "visibility", label: t("ظهور الأقسام ومحتوى الموقع", "Section visibility & content"), icon: ToggleRight },
+                { id: "tools", label: t("الأدوات: الظهور والصلاحيات", "Tools: visibility & access"), icon: ToggleRight },
                 { id: "popups", label: t("الإعلانات المنبثقة", "Popup announcements"), icon: Sparkles },
                 { id: "effects", label: t("مؤثرات الزوار", "Visitor effects"), icon: Sparkles },
                 { id: "maintenance", label: t("وضع الصيانة", "Maintenance"), icon: Settings2 },
@@ -461,6 +463,8 @@ function AdminPage() {
                   <GraduateToolsPanel />
                 ) : tab === "media" ? (
                   <SiteMediaPanel />
+                ) : tab === "tools" ? (
+                  <ToolsAccessPanel />
                 ) : tab === "effects" ? (
                   <BuildEffectsPanel />
                 ) : tab === "visibility" || tab === "popups" || tab === "maintenance" || tab === "site" ? (

@@ -152,8 +152,10 @@ export const waServiceLink = (serviceEn: string, lang: "en" | "ar") => {
   return `${WHATSAPP_BASE}?text=${encodeURIComponent(msg)}`;
 };
 // Primary nav — kept short and focused. The full set lives in the mobile menu.
-export const NAV: { id: string; key: string; to?: string; highlight?: boolean; action?: "book" }[] = [
+export const NAV: { id: string; key: string; to?: string; search?: { t: string }; flag?: string; highlight?: boolean; action?: "book" }[] = [
   { id: "services", key: "nav_services" },
+  { id: "tna-tool", key: "nav_tna", to: "/tools", search: { t: "tna" }, flag: "nav.tna_tool" },
+  { id: "perf-tool", key: "nav_perf", to: "/tools", search: { t: "perf" }, flag: "nav.perf_tool" },
   { id: "current-courses", key: "nav_courses" },
   { id: "trainings", key: "nav_trainings", to: "/trainings" },
   { id: "success-cases", key: "nav_success_cases", to: "/success-cases" },
@@ -161,8 +163,10 @@ export const NAV: { id: string; key: string; to?: string; highlight?: boolean; a
   { id: "book", key: "nav_book", action: "book", highlight: true },
 ];
 // Mobile menu mirrors the desktop top-bar exactly (same labels, same order).
-export const NAV_FULL: { id: string; key: string; to?: string; highlight?: boolean; action?: "book" }[] = [
+export const NAV_FULL: { id: string; key: string; to?: string; search?: { t: string }; flag?: string; highlight?: boolean; action?: "book" }[] = [
   { id: "services", key: "nav_services" },
+  { id: "tna-tool", key: "nav_tna", to: "/tools", search: { t: "tna" }, flag: "nav.tna_tool" },
+  { id: "perf-tool", key: "nav_perf", to: "/tools", search: { t: "perf" }, flag: "nav.perf_tool" },
   { id: "current-courses", key: "nav_courses" },
   { id: "trainings", key: "nav_trainings", to: "/trainings" },
   { id: "success-cases", key: "nav_success_cases", to: "/success-cases" },

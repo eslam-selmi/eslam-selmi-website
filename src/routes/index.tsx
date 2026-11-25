@@ -1,3 +1,4 @@
+import { ToolsSection } from "@/components/home/ToolsSection";
 import { createFileRoute } from "@tanstack/react-router";
 import { MotionConfig } from "motion/react";
 import { lazy, useEffect, useState } from "react";
@@ -125,6 +126,7 @@ function Portfolio() {
       {isVisible("home.journey") && <DeferredSection id="journey"><Journey /></DeferredSection>}
       {isVisible("home.brands") && <DeferredSection id="brands"><Brands /></DeferredSection>}
       {isVisible("home.services") && <DeferredSection id="services"><Services /></DeferredSection>}
+      <ToolsSection />
       {isVisible("home.programs") && <DeferredSection id="programs"><Programs /></DeferredSection>}
 
       {isVisible("home.latest_additions") && (
