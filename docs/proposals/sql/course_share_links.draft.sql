@@ -22,3 +22,15 @@ CREATE POLICY "admins manage share links" ON public.course_share_links
   WITH CHECK (public.has_role(auth.uid(), 'admin'::app_role));
 CREATE INDEX IF NOT EXISTS course_share_links_course_idx ON public.course_share_links(course_id);
 -- claim must be atomic: UPDATE ... SET claim_hash = $1 WHERE id = $2 AND claim_hash IS NULL (rows affected = 1 means this browser won)
+
+-- Email-code binding (prepared, off by default). Only needed if the code option is enabled.
+ALTER TABLE public.course_share_links ADD COLUMN IF NOT EXISTS bound_email text;
+CREATE TABLE IF NOT EXISTS public.course_share_codes (
+  link_id uuid PRIMARY KEY REFERENCES public.course_share_links(id) ON DELETE CASCADE,
+  code_hash text NOT NULL,
+  expires_at timestamptz NOT NULL,
+  attempts int NOT NULL DEFAULT 0,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+ALTER TABLE public.course_share_codes ENABLE ROW LEVEL SECURITY;
+-- no policies: service role only; hashes only, never the code
