@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import { getGuestAccount, createGuestAccount, resetGuestAccountPassword, setGuestAccountEnabled } from "@/lib/guest-access.functions";
 
 const T = {
-  ar: { title: "دخول الضيف", note: "إيميل وباسورد واحد يفتح كل الكورسات للتصفح فقط. الباسورد بيظهر مرة واحدة.", email: "إيميل الضيف", create: "إنشاء دخول الضيف", reset: "باسورد جديد", on: "شغال", off: "متوقف", enable: "تشغيل", disable: "إيقاف", once: "انسخ الباسورد الآن. مش هيظهر تاني.", exists: "فيه دخول ضيف موجود", bad: "الإيميل غير صحيح" },
-  en: { title: "Guest login", note: "One email and password that lets someone browse every course, read only. The password is shown once.", email: "Guest email", create: "Create guest login", reset: "New password", on: "On", off: "Off", enable: "Turn on", disable: "Turn off", once: "Copy the password now. It will not be shown again.", exists: "A guest login already exists", bad: "Invalid email" },
+  ar: { title: "دخول الضيف", note: "إيميل وباسورد واحد يفتح الكورسات المتاحة للتصفح فقط من صفحة /guest. الباسورد بيظهر مرة واحدة. إيقاف الدخول أو باسورد جديد يخرّج أي حد داخل فورًا.", email: "إيميل الضيف", create: "إنشاء دخول الضيف", reset: "باسورد جديد", on: "شغال", off: "متوقف", enable: "تشغيل", disable: "إيقاف", once: "انسخ الباسورد الآن. مش هيظهر تاني.", exists: "فيه دخول ضيف موجود", bad: "الإيميل غير صحيح" },
+  en: { title: "Guest login", note: "One email and password that lets someone browse the available courses, read only, at /guest. The password is shown once. Turning it off or setting a new password signs everyone out at once.", email: "Guest email", create: "Create guest login", reset: "New password", on: "On", off: "Off", enable: "Turn on", disable: "Turn off", once: "Copy the password now. It will not be shown again.", exists: "A guest login already exists", bad: "Invalid email" },
 };
 export function GuestAccessAdmin({ lang }: { lang: "ar" | "en" }) {
   const t = T[lang];

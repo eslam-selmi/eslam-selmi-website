@@ -1,5 +1,4 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { amIGuest } from "@/lib/guest-access.functions";
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/portal-auth";
@@ -82,8 +81,6 @@ function PortalPage() {
   useEffect(() => {
     if (!loading && !user) nav({ to: "/auth" });
     if (!loading && role === "admin") nav({ to: "/admin" });
-    // The shared guest login has no role: send it to the read-only course list.
-    if (!loading && user && role !== "admin") void amIGuest().then((r) => { if (r.guest) nav({ to: "/guest" }); }).catch(() => {});
     if (!loading && user && role !== "admin" && (activationStatus === "pending" || activationStatus === "rejected")) {
       nav({ to: "/onboarding" });
     }

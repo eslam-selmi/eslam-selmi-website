@@ -66,7 +66,7 @@ export const supabaseShareStore: ShareStore = {
     const items = await Promise.all(((rows as any[]) ?? []).map(async (it) => {
       let url: string | null = it.url ?? null;
       if (url && ["file", "video", "pdf"].includes(it.kind) && !/^https?:\/\//i.test(url)) {
-        const { data } = await storage.from("course-files").createSignedUrl(url, 3600);
+        const { data } = await storage.from("course-files").createSignedUrl(url, 1800);
         url = data?.signedUrl ?? null;
       }
       return { id: it.id, module_id: it.module_id, kind: it.kind, title: it.title, url, content: it.content ?? null };

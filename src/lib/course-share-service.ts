@@ -66,6 +66,7 @@ export async function reportShareProgress(
   if (!d.ok) return d;
   if (d.needsClaim) return { ok: false, reason: "claimed_elsewhere" };
   const { items, cueCounts } = await store.loadCourseItems(link!.course_id);
+  progress = sanitizeProgress(progress, items, cueCounts);
   const finished = courseFinished(items, progress, (i) => cueCounts[i.id] ?? 0);
   if (shouldClose(link!, finished)) {
     await store.markClosed(link!.id, now.toISOString());
@@ -95,4 +96,22 @@ export async function openShareCourse(store: ShareStore, token: string, claimCoo
   if (!d.ok) return d;
   if (d.needsClaim) return { ok: false as const, reason: "claimed_elsewhere" as const };
   return { ok: true as const, course: await store.loadCourseContent(link!.course_id) };
+}
+
+/** Keeps only known item ids and known fields, with bounded values. Whatever a browser sends, nothing else reaches the rules. */
+export function sanitizeProgress(raw: unknown, items: Item[], cueCounts: Record<string, number>): Progress {
+  const out: Progress = {};
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return out;
+  const src = raw as Record<string, unknown>;
+  for (const it of items) {
+    const p = src[it.id];
+    if (!p || typeof p !== "object" || Array.isArray(p)) continue;
+    const r = p as Record<string, unknown>; const max = cueCounts[it.id] ?? 0;
+    const num = (v: unknown, lo: number, hi: number) => (typeof v === "number" && Number.isFinite(v) ? Math.min(hi, Math.max(lo, v)) : undefined);
+    out[it.id] = {
+      ended: r.ended === true, opened: r.opened === true, markedDone: r.markedDone === true,
+      maxRatio: num(r.maxRatio, 0, 1), cuesAnswered: Math.floor(num(r.cuesAnswered, 0, max) ?? 0),
+    };
+  }
+  return out;
 }

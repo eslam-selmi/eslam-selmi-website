@@ -28,7 +28,8 @@ export const revokeCourseShareLink = createServerFn({ method: "POST" })
     return { ok: true as const };
   });
 
-export const viewCourseShare = createServerFn({ method: "GET" })
+/** POST so the token is never in a URL (access logs, history). */
+export const viewCourseShare = createServerFn({ method: "POST" })
   .inputValidator((d: { token: string; claim: string | null }) => ({ token: tokenOk(d.token), claim: d.claim }))
   .handler(async ({ data }) => viewShareLink(store, data.token, data.claim));
 

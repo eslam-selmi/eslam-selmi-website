@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { createShareLink, viewShareLink, startShareLink, reportShareProgress, revokeShareLink, listShareLinks, openShareCourse, type ShareStore } from "./course-share-service";
+import { createShareLink, viewShareLink, startShareLink, reportShareProgress, revokeShareLink, listShareLinks, openShareCourse, sanitizeProgress, type ShareStore } from "./course-share-service";
 import type { ShareLinkRow } from "./course-share-core";
 
 function memStore(items = [{ id: "v1", kind: "video" }, { id: "f1", kind: "file" }], cues: Record<string, number> = { v1: 1 }) {
@@ -99,5 +99,20 @@ describe("list and open", () => {
     await revokeShareLink(s, a.id, now);
     expect((await openShareCourse(s, a.token, st.claim, now)).ok).toBe(false);
     expect((await listShareLinks(s, now))[0].status).toBe("revoked");
+  });
+});
+
+describe("progress is bounded", () => {
+  it("drops unknown ids and fields, clamps numbers, ignores junk shapes", () => {
+    const items = [{ id: "v1", kind: "video" }];
+    const out = sanitizeProgress({ v1: { ended: true, maxRatio: 99, cuesAnswered: 50, evil: "x" }, zzz: { opened: true } }, items, { v1: 2 });
+    expect(out).toEqual({ v1: { ended: true, opened: false, markedDone: false, maxRatio: 1, cuesAnswered: 2 } });
+    expect(sanitizeProgress("x", items, {})).toEqual({}); expect(sanitizeProgress([1], items, {})).toEqual({});
+    expect(sanitizeProgress({ v1: { maxRatio: "1", cuesAnswered: NaN } }, items, { v1: 1 }).v1.cuesAnswered).toBe(0);
+  });
+  it("fake complete progress cannot close a link whose real items are not all there", async () => {
+    const { s } = memStore(); const a = await createShareLink(s, { courseId: "c", adminId: "a", autoClose: true });
+    const r: any = await reportShareProgress(s, a.token, null, { v1: { ended: true, maxRatio: 1, cuesAnswered: 99 } } as any, now);
+    expect(r.closed).toBe(false);
   });
 });

@@ -1,41 +1,42 @@
-/** DRAFT service-role store for guest-access-service. The guest_access table does not exist until the reviewed SQL is applied. */
+/** DRAFT service-role store for guest-access-service. The guest_access table does not exist until the reviewed SQL is applied. No auth.users involved. */
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import type { GuestStore } from "./guest-access-service";
 import { supabaseShareStore } from "./course-share-store.server";
 
 type Loose = { from: (t: string) => any };
 const db = () => supabaseAdmin as unknown as Loose;
+const COLS = "id,email,password_hash,version,enabled,failed_count,locked_until";
 
 export const supabaseGuestStore: GuestStore = {
   async getGuest() {
-    const { data, error } = await db().from("guest_access").select("user_id,email,enabled").limit(1).maybeSingle();
+    const { data, error } = await db().from("guest_access").select(COLS).limit(1).maybeSingle();
     if (error) throw new Error("guest lookup failed");
     return data ?? null;
   },
-  async createGuestUser(email, password, adminId) {
-    const { data, error } = await supabaseAdmin.auth.admin.createUser({ email, password, email_confirm: true, user_metadata: { guest: true } });
-    if (error || !data.user) throw new Error("guest create failed");
-    const id = data.user.id;
-    // The signup trigger gives every new user the trainee role; the guest keeps no role at all.
-    await db().from("user_roles").delete().eq("user_id", id);
-    // Mark the profile active so the portal does not send the guest to onboarding.
-    await db().from("profiles").update({ activation_status: "active", activated_at: new Date().toISOString() }).eq("id", id);
-    const { error: e2 } = await db().from("guest_access").insert({ user_id: id, email, enabled: true, created_by: adminId });
-    if (e2) { await supabaseAdmin.auth.admin.deleteUser(id); throw new Error("guest create failed"); }
-    return id;
+  async create(email, passwordHash, adminId) {
+    const { error } = await db().from("guest_access").insert({ email, password_hash: passwordHash, created_by: adminId });
+    if (error) throw new Error("guest create failed");
   },
-  async setPassword(userId, password) {
-    const { error } = await supabaseAdmin.auth.admin.updateUserById(userId, { password });
+  async setPassword(passwordHash) {
+    const g = await this.getGuest(); if (!g) throw new Error("no guest");
+    // one statement: new hash, version + 1, failures cleared
+    const { error } = await db().from("guest_access").update({ password_hash: passwordHash, version: g.version + 1, failed_count: 0, locked_until: null, updated_at: new Date().toISOString() }).eq("id", g.id).eq("version", g.version);
     if (error) throw new Error("guest password failed");
   },
-  async setEnabled(userId, enabled) {
-    const { error } = await supabaseAdmin.auth.admin.updateUserById(userId, { ban_duration: enabled ? "none" : "876000h" });
+  async setEnabled(enabled) {
+    const g = await this.getGuest(); if (!g) throw new Error("no guest");
+    const { error } = await db().from("guest_access").update({ enabled, version: g.version + 1, updated_at: new Date().toISOString() }).eq("id", g.id).eq("version", g.version);
     if (error) throw new Error("guest toggle failed");
-    const { error: e2 } = await db().from("guest_access").update({ enabled, updated_at: new Date().toISOString() }).eq("user_id", userId);
-    if (e2) throw new Error("guest toggle failed");
+  },
+  async recordFailure(failedCount, lockedUntil) {
+    await db().from("guest_access").update({ failed_count: failedCount, locked_until: lockedUntil }).not("id", "is", null);
+  },
+  async clearFailures() {
+    await db().from("guest_access").update({ failed_count: 0, locked_until: null }).not("id", "is", null);
   },
   async listActiveCourses() {
-    const { data, error } = await db().from("courses").select("id,title,description").eq("active", true).eq("is_archived", false).order("title");
+    // active, not archived, not "coming soon": paid courses are included
+    const { data, error } = await db().from("courses").select("id,title,description").eq("active", true).eq("is_archived", false).eq("is_upcoming", false).order("title");
     if (error) throw new Error("guest courses failed");
     return ((data as any[]) ?? []).map((c) => ({ id: c.id, title: c.title ?? "", description: c.description ?? "" }));
   },
