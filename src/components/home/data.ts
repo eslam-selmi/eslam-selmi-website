@@ -178,7 +178,6 @@ export const COUNTRIES = [
   { code: "ma", name: { en: "Morocco", ar: "المغرب" } },
   { code: "tn", name: { en: "Tunisia", ar: "تونس" } },
   { code: "jo", name: { en: "Jordan", ar: "الأردن" } },
-  { code: "ye", name: { en: "Yemen", ar: "اليمن" } },
 ];
 export const JOURNEY = [
   {

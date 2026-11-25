@@ -1379,3 +1379,39 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 .tst-name { font-weight: 800; font-size: .95rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .tst-role { margin-top: .15rem; font-size: .75rem; color: var(--booking-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 @media (prefers-reduced-motion: reduce) { .tst-card { transition: none; } }
+/* ======== Clients redesign: navy panel, turquoise line, gold hairline (matches Latest Additions) ======== */
+.world-panel {
+  --sx-line: color-mix(in oklab, var(--booking-cyan) 22%, transparent);
+  --sx-gold: color-mix(in oklab, var(--gold, oklch(0.78 0.14 90)) 70%, transparent);
+}
+.world-panel {
+  position: relative; isolation: isolate; overflow: hidden; border-radius: 28px;
+  border: 1px solid var(--sx-line); background-color: var(--booking-surface);
+  background-image: radial-gradient(ellipse 55% 60% at 0% 0%, color-mix(in oklab, var(--booking-cyan) 16%, transparent), transparent 70%);
+  box-shadow: var(--booking-shadow); color: var(--booking-foreground);
+  padding: 2rem 1.25rem; display: grid; gap: 2rem;
+}
+.world-panel::before { content: ""; position: absolute; inset-inline: 8%; top: 0; height: 1px; z-index: 2; background: linear-gradient(90deg, transparent, var(--sx-gold), transparent); }
+@media (min-width: 1024px) { .world-panel { grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr); gap: 2.5rem; padding: 2.5rem 3rem; align-items: center; } }
+.world-num { font-family: var(--font-heading-en); font-weight: 800; line-height: .82; font-size: clamp(7rem, 22vw, 12rem); letter-spacing: -.04em; background: linear-gradient(180deg, var(--booking-cyan), color-mix(in oklab, var(--booking-cyan) 10%, transparent) 95%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.world-copy { margin-top: 1.25rem; display: grid; gap: .9rem; justify-items: start; }
+.world-pill { display: inline-flex; align-items: center; gap: .5rem; border-radius: 999px; padding: .3rem .8rem; border: 1px solid color-mix(in oklab, var(--booking-cyan) 30%, transparent); background: color-mix(in oklab, var(--booking-cyan) 9%, transparent); font-size: 12px; font-weight: 700; color: var(--booking-cyan); }
+.world-lead { font-family: var(--font-heading-en); font-size: clamp(1.15rem, 2.2vw, 1.5rem); font-weight: 800; line-height: 1.5; color: var(--booking-foreground); }
+.world-region { font-size: .85rem; font-weight: 600; color: var(--booking-muted); }
+.world-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; column-gap: 1.5rem; }
+@media (min-width: 640px) { .world-list { column-gap: 2.5rem; } }
+.world-item { display: grid; grid-template-columns: 1.6rem 28px minmax(0, 1fr); align-items: center; gap: .7rem; padding: .85rem 0; border-block-end: 1px solid color-mix(in oklab, var(--booking-foreground) 10%, transparent); transition: padding .25s, background .25s; }
+.world-item:hover { background: color-mix(in oklab, var(--booking-cyan) 7%, transparent); padding-inline: .6rem; }
+.world-idx { font-family: var(--font-heading-en); font-size: .72rem; font-weight: 800; color: color-mix(in oklab, var(--booking-cyan) 70%, transparent); }
+.world-flag { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 1.5px color-mix(in oklab, var(--booking-cyan) 35%, transparent); }
+.world-name { font-weight: 700; font-size: .95rem; color: var(--booking-foreground); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 420px) { .world-item { grid-template-columns: 1.3rem 24px minmax(0, 1fr); gap: .5rem; } .world-flag { width: 24px; height: 24px; } .world-name { font-size: .85rem; } .world-list { column-gap: .9rem; } }
+
+@media (prefers-reduced-motion: reduce) { .world-item { transition: none; } }
+.world-globe { position: relative; display: grid; justify-items: center; min-width: 0; }
+.world-globe-stage { position: relative; width: min(100%, 580px); aspect-ratio: 1; }
+.world-globe-stage canvas { display: block; max-width: 100%; }
+.world-copy { margin-top: 0; gap: 1.1rem; }
+.world-hero .world-lead { font-size: clamp(1.3rem, 2.6vw, 1.9rem); }
+.world-map-stage { position: relative; width: min(100%, 720px); }
+.world-map-stage canvas { display: block; max-width: 100%; }

@@ -92,7 +92,7 @@ export const Route = createFileRoute("/")({
               provider: { "@id": "https://eslam-selmi.lovable.app/#person" },
               areaServed: ["Egypt", "Saudi Arabia", "MENA"],
               description:
-                "L&D strategy, talent management, performance & KPIs design, and corporate training programs for enterprises across 12 countries.",
+                "L&D strategy, talent management, performance & KPIs design, and corporate training programs for enterprises across 11 countries.",
             },
           ],
         }),

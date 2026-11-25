@@ -98,7 +98,7 @@ const en: Dict = {
 
   // clients
   clients_eyebrow: "Global Reach",
-  clients_title: "Trainees from 12 Countries",
+  clients_title: "Trainees from 11 Countries",
   clients_sub: "Every session delivered online — live and recorded.",
 
   // brands
@@ -302,7 +302,7 @@ const ar: Dict = {
   programs_track: "المسار",
 
   clients_eyebrow: "الانتشار",
-  clients_title: "متدربون من 12 دولة",
+  clients_title: "متدربون من 11 دولة",
   clients_sub: "كل التدريب أُقيم عن بُعد — مباشر ومسجل.",
 
   brands_eyebrow: "موثوق من",

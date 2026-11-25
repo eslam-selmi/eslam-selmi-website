@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { COUNTRIES, SNAPSHOTS, fadeUp } from "@/components/home/data";
 import { Section } from "@/components/home/shared";
+import { CountriesMap } from "@/components/home/CountriesMap";
 import { snapshotThumbnail } from "@/lib/optimized-images";
 
 export function Clients() {
@@ -17,53 +18,18 @@ export function Clients() {
       : "Egypt · KSA · UAE · Levant · North Africa";
   return (
     <Section id="clients" eyebrow={t("clients_eyebrow")} title={t("clients_title")}>
-      <motion.div {...fadeUp} className="atlas-panel px-5 py-7 sm:px-8 sm:py-9 lg:px-12 lg:py-11">
-        <span
-          aria-hidden="true"
-          dir="ltr"
-          className="atlas-watermark pointer-events-none absolute -bottom-12 start-1 -z-10 select-none font-display text-[150px] font-extrabold leading-none sm:text-[210px]"
-        >
-          12
-        </span>
-
-        <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-12">
-          <div className="min-w-0 space-y-5">
-            <span className="atlas-pill px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.24em]">
-              <Globe2 className="atlas-icon size-3.5" />
+      <motion.div {...fadeUp} className="world-panel">
+        <div className="world-hero">
+          <div className="world-copy">
+            <span className="world-pill">
+              <Globe2 className="size-3.5" aria-hidden="true" />
               {lang === "ar" ? "تدريب عن بُعد" : "Online delivery"}
             </span>
-            <p className="atlas-lead font-display text-xl font-extrabold leading-snug sm:text-2xl">
-              {t("clients_sub")}
-            </p>
-            <p className="atlas-region text-sm font-semibold">{region}</p>
-          </div>
-
-          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
-            {COUNTRIES.map((c, i) => (
-              <motion.div
-                key={c.code}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.03, duration: 0.4 }}
-                className="atlas-chip group flex items-center gap-2.5 rounded-2xl px-3 py-2.5"
-              >
-                <img
-                  src={`https://flagcdn.com/${c.code}.svg`}
-                  alt={c.name[lang]}
-                  loading="lazy"
-                  decoding="async"
-                  width={32}
-                  height={24}
-                  className="h-6 w-8 shrink-0 rounded-[4px] object-cover shadow-sm transition-transform duration-300 group-hover:scale-110"
-                />
-                <span className="atlas-chip-name min-w-0 truncate text-[13px] font-semibold">
-                  {c.name[lang]}
-                </span>
-              </motion.div>
-            ))}
+            <p className="world-lead">{t("clients_sub").replace(/\s*[\u2014\u2013]\s*/g, lang === "ar" ? "، " : ", ")}</p>
+            <p className="world-region">{region}</p>
           </div>
         </div>
+        <CountriesMap />
       </motion.div>
     </Section>
   );
