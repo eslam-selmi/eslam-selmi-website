@@ -9,6 +9,7 @@ type Q = { id: string; stem: string; domain: string; options: string[] };
 type Started = { attempt_id: string; duration_s: number; questions: Q[] };
 type Review = { id: string; domain: string; standard: string; correct_shown_index: number | null; explanation: string | null };
 type Result = { score: number; total: number; domain_scores: Record<string, number>; standard_scores: Record<string, { ok: number; total: number }>; review: Review[] };
+const GUIDE_URL = "https://media.etec.gov.sa/media/n4tgwnff/%D8%AF%D9%84%D9%8A%D9%84-%D8%A7%D9%84%D9%85%D8%AA%D9%82%D8%AF%D9%85-%D9%84%D8%A7%D8%AE%D8%AA%D8%A8%D8%A7%D8%B1-%D8%A7%D9%84%D8%B1%D8%AE%D8%B5%D8%A9-%D8%A7%D9%84%D9%85%D9%87%D9%86%D9%8A%D8%A9-%D9%84%D9%84%D9%85%D8%AF%D8%B1%D8%A8%D9%8A%D9%86.pdf";
 type Card = { standard_id: string; title: string; domain: string; weight_pct: number; source_coverage: string; active_questions?: number; key_points: { text: string; source: { title: string; url: string } }[]; common_trap?: string; reading: { title: string; url: string }[] };
 type Past = { id: string; submitted_at: string; score: number; count: number };
 
@@ -184,10 +185,11 @@ function Study({ ar }: { ar: boolean }) {
   const cov: Record<string, string> = { covered: t("مصادر موثقة", "Sourced"), partial: t("مصادر جزئية", "Partial sources"), uncovered: t("لا مصدر موثق", "No verified source") };
   return (
     <div className="space-y-3">
+      <p className="text-xs opacity-70">{t("الأوزان المعروضة هي أوزان المعايير في دليل المتقدم الرسمي. أسئلة التدريب هنا غير موزعة بهذه الأوزان، وعددها في كل معيار محدود.", "Weights shown are the standard weights in the official applicant guide. The practice questions here are not distributed by these weights, and each standard has only a few.")}</p>
       {cards.map((c) => (
         <div key={c.standard_id} className="dash-card p-5 space-y-2">
           <div className="flex justify-between gap-2 flex-wrap"><h3 className="font-bold">{c.standard_id} {c.title}</h3><span className="text-xs border border-white/15 rounded-md px-2 py-0.5">{cov[c.source_coverage] || c.source_coverage}</span></div>
-          <div className="text-xs opacity-60">{c.domain} | {t("وزن", "weight")} {c.weight_pct}%</div>
+          <div className="text-xs opacity-60">{c.domain} | {t("الوزن في الدليل الرسمي", "Official guide weight")} {c.weight_pct}% <a className="underline" href={`${GUIDE_URL}#page=${Number(c.standard_id.split(".")[0]) <= 5 ? 5 : 6}`} target="_blank" rel="noopener noreferrer">({t("دليل المتقدم 1447-2026، ص", "Applicant guide 1447-2026, p.")}{Number(c.standard_id.split(".")[0]) <= 5 ? 5 : 6})</a></div>
           {c.source_coverage !== "covered" && <p className="text-xs opacity-70">{t("المادة الموثقة لهذا المعيار محدودة.", "Limited verified material for this standard.")}</p>}
           <ul className="list-disc ps-5 space-y-1 text-sm">{c.key_points.map((k, n) => <li key={n}>{k.text} <a className="underline text-xs" href={k.source.url} target="_blank" rel="noopener noreferrer">({k.source.title})</a></li>)}</ul>
           {c.common_trap && <p className="text-sm"><b>{t("فخ شائع:", "Common trap:")}</b> {c.common_trap}</p>}
