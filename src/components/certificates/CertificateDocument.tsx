@@ -106,5 +106,5 @@ export function CertificatePreview({ payload }: { payload: CertificatePayload })
     QRCode.toDataURL(verificationUrl(payload.certificateId), { width: 240, margin: 0 }).then(url => { if (!cancelled) setQr(url); });
     return () => { cancelled = true; };
   }, [payload.certificateId]);
-  return <div ref={wrapper} className="certificate-preview"><div className="certificate-preview-content" style={{ transform: `scale(${scale})` }}><CertificateDocument payload={payload} qr={qr} logo={profile.logo} signature={signature} /></div></div>;
+  return <div ref={wrapper} className="certificate-preview"><div className="certificate-preview-content" style={{ "--certificate-scale": scale } as CSSProperties}><CertificateDocument payload={payload} qr={qr} logo={profile.logo} signature={signature} /></div></div>;
 }

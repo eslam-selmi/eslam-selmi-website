@@ -965,7 +965,8 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 .certificate-bottom-accent { position:absolute; bottom:34px; left:0; right:0; height:9px; background:var(--certificate-accent); }
 .certificate-bottom-band { position:absolute; bottom:0; left:0; right:0; height:34px; background:linear-gradient(90deg,var(--certificate-ink),var(--certificate-mid) 50%,var(--certificate-ink)); }
 .certificate-preview { width:100%; max-width:794px; aspect-ratio:794/1123; margin:auto; position:relative; overflow:hidden; }
-.certificate-preview-content { position:absolute; top:0; left:0; transform-origin:top left; }
+/* scale comes from a custom property: a global rule resets inline transform:scale() inside <main> */
+.certificate-preview-content { position:absolute; top:0; left:0; transform-origin:top left; transform:scale(var(--certificate-scale,0)); }
 .certificate-export-host { position:fixed; top:0; left:-20000px; width:794px; height:1123px; pointer-events:none; }
 
 /* Pulsing glow for a newly issued certificate until the trainee opens it */
