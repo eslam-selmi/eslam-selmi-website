@@ -257,9 +257,15 @@ function PortalPage() {
 
 
   async function downloadCert(url: string) {
+    // Open the tab synchronously (inside the tap) so Safari does not block it, then point it at the signed file.
+    const w = window.open("", "_blank");
     const { data, error } = await supabase.storage.from("certificates").createSignedUrl(url, 60);
-    if (error || !data) return toast.error("تعذّر تحميل الشهادة");
-    window.open(data.signedUrl, "_blank");
+    if (error || !data) {
+      w?.close();
+      return toast.error("تعذّر تحميل الشهادة");
+    }
+    if (w) w.location.href = data.signedUrl;
+    else window.location.href = data.signedUrl;
   }
 
   if (loading || !user) {

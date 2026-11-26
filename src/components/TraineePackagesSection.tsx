@@ -1,3 +1,4 @@
+import { Layers } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
@@ -87,7 +88,16 @@ export function TraineePackagesSection({ userId }: { userId: string }) {
   if (loading) {
     return <div className="py-6 grid place-items-center text-white/50"><Loader2 className="size-5 animate-spin" /></div>;
   }
-  if (packages.length === 0 && purchases.length === 0) return null;
+  if (packages.length === 0 && purchases.length === 0) {
+    const ar = typeof document === "undefined" || document.documentElement.getAttribute("lang") !== "en";
+    return (
+      <div className="rounded-2xl border border-dashed border-white/15 bg-white/[0.03] px-6 py-10 text-center">
+        <Layers className="mx-auto mb-3 size-7 text-[var(--nx-teal,#2dd4bf)]" />
+        <p className="text-sm font-semibold">{ar ? "لا توجد باقات استشارات متاحة الآن" : "No consulting packages available right now"}</p>
+        <p className="mt-1 text-xs text-white/50">{ar ? "ستظهر هنا الباقات التي تفعّلها الإدارة لك." : "Packages enabled for you will appear here."}</p>
+      </div>
+    );
+  }
 
   const activePurchase = purchases.find((p) => p.status === "approved" && p.sessions_remaining > 0);
 
