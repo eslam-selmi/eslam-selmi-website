@@ -356,12 +356,12 @@ export function ModuleCard({
                       />
                     )}
                     {allModules.length > 1 && !isVideoFileItem(it) && (
-                      <label className="mt-1.5 flex items-center gap-2 text-[11px] text-white/60">
+                      <label className="mt-1.5 flex flex-wrap items-center gap-2 text-[11px] text-white/60">
                         {t("تحت الوحدة:", "Under unit:")}
                         <select
                           value={(getItemUnit(it.content) && allModules.some((x: any) => x.id.toLowerCase() === getItemUnit(it.content)) ? allModules.find((x: any) => x.id.toLowerCase() === getItemUnit(it.content)).id : it.module_id)}
                           onChange={(e) => moveItem(it, e.target.value)}
-                          className="h-7 max-w-[16rem] rounded-md bg-white/5 border border-white/15 text-[11px] px-1.5"
+                          className="h-7 w-full min-w-0 sm:w-auto sm:max-w-[16rem] rounded-md bg-white/5 border border-white/15 text-[11px] px-1.5"
                         >
                           {allModules.map((x: any, k: number) => (
                             <option key={x.id} value={x.id} className="bg-[#0b1736]">{k + 1}. {x.title}</option>
