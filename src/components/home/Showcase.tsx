@@ -1,7 +1,7 @@
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { useEffect, useState } from "react";
-import { Globe2, X } from "lucide-react";
+import { Globe2, X, ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
@@ -159,79 +159,50 @@ export function Snapshots() {
     return () => window.removeEventListener("keydown", onKey);
   }, [active, shots.length]);
 
-  // Split snapshots across two tracks so the rows don't show the same images
-  const half = Math.ceil(shots.length / 2);
-  const setA = shots.slice(0, half);
-  const setB = shots.slice(half);
-  const trackA = [setA, setA, setA];
-  const trackBSet = setB.slice().reverse();
-  const trackB = [trackBSet, trackBSet, trackBSet];
-  const marqueeClass = dir === "rtl" ? "marquee-track-rtl" : "marquee-track";
-  const marqueeSlowClass = dir === "rtl" ? "marquee-track-rtl" : "marquee-track";
-
-  const Card = ({ src, i, originalIndex }: { src: string; i: number; originalIndex: number }) => (
-    <button
-      type="button"
-      onClick={() => setActive(originalIndex)}
-      className="group relative shrink-0 w-[200px] sm:w-[240px] lg:w-[260px] aspect-[4/5] overflow-hidden rounded-2xl border border-foreground/10 cursor-zoom-in shadow-[0_18px_50px_-30px_var(--foreground)] bg-foreground/[0.04]"
-      aria-label={`Open snapshot ${originalIndex + 1}`}
-    >
-      <img
-        src={snapshotThumbnail(src)}
-        alt={`Snapshot ${originalIndex + 1}`}
-        loading="lazy"
-        decoding="async"
-        width={260}
-        height={325}
-        className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
-      />
-      <div className="image-scrim absolute inset-0 opacity-0 group-hover:opacity-100 transition" />
-      <div className="absolute bottom-3 start-3 text-xs text-primary-foreground opacity-0 group-hover:opacity-100 transition font-semibold tracking-wider uppercase">
-        View →
-      </div>
-    </button>
-  );
+  const [cur, setCur] = useState(0);
+  const [hover, setHover] = useState(false);
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    setReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }, []);
+  useEffect(() => {
+    if (reduced || hover || active !== null || shots.length < 2) return;
+    const id = window.setInterval(() => setCur((c) => (c + 1) % shots.length), 5500);
+    return () => window.clearInterval(id);
+  }, [reduced, hover, active, shots.length]);
+  const go = (d: number) => setCur((c) => (c + d + shots.length) % shots.length);
+  const isAr = dir === "rtl";
 
   return (
     <Section id="snapshots" eyebrow={t("snapshots_eyebrow")} title={t("snapshots_title")}>
-      <div className="space-y-6 marquee-mask">
-        <div className="mobile-swipe-rail overflow-hidden" dir="ltr">
-          <div
-            className={`flex gap-7 w-max ${marqueeClass} hover:[animation-play-state:paused]`}
-            style={{ animationDuration: "34s" }}
-          >
-            {trackA.map((set, copy) => (
-              <div key={`a-copy-${copy}`} className="flex shrink-0 gap-7" aria-hidden={copy > 0}>
-                {set.map((src, idx) => (
-                  <Card
-                    key={`a-${copy}-${idx}`}
-                    src={snapshotThumbnail(src)}
-                    i={idx}
-                    originalIndex={shots.indexOf(src)}
-                  />
-                ))}
-              </div>
-            ))}
-          </div>
+      <div className="snap-gallery" dir="ltr" onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
+        <div className="snap-stage">
+          <AnimatePresence mode="popLayout" initial={false}>
+            <motion.button
+              key={cur}
+              type="button"
+              onClick={() => setActive(cur)}
+              className="snap-frame cursor-zoom-in"
+              initial={{ opacity: 0, scale: 1.03 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: reduced ? 0 : 0.7, ease: "easeOut" }}
+              aria-label={isAr ? `فتح الصورة ${cur + 1}` : `Open photo ${cur + 1}`}
+            >
+              <img src={shots[cur]} alt={isAr ? `صورة ${cur + 1} من ${shots.length}` : `Photo ${cur + 1} of ${shots.length}`} className="snap-img" decoding="async" />
+              <span className="snap-expand" aria-hidden="true"><Maximize2 className="size-4" /></span>
+            </motion.button>
+          </AnimatePresence>
+          <button type="button" className="snap-arrow snap-prev" onClick={() => go(-1)} aria-label={isAr ? "السابقة" : "Previous"}><ChevronLeft className="size-5" /></button>
+          <button type="button" className="snap-arrow snap-next" onClick={() => go(1)} aria-label={isAr ? "التالية" : "Next"}><ChevronRight className="size-5" /></button>
+          <span className="snap-count" dir="ltr">{String(cur + 1).padStart(2, "0")} / {String(shots.length).padStart(2, "0")}</span>
         </div>
-        <div className="mobile-swipe-rail overflow-hidden" dir="ltr">
-          <div
-            className={`flex gap-7 w-max ${marqueeSlowClass} hover:[animation-play-state:paused]`}
-            style={{ animationDuration: "44s" }}
-          >
-            {trackB.map((set, copy) => (
-              <div key={`b-copy-${copy}`} className="flex shrink-0 gap-7" aria-hidden={copy > 0}>
-                {set.map((src, idx) => (
-                  <Card
-                    key={`b-${copy}-${idx}`}
-                    src={snapshotThumbnail(src)}
-                    i={idx}
-                    originalIndex={shots.indexOf(src)}
-                  />
-                ))}
-              </div>
-            ))}
-          </div>
+        <div className="snap-thumbs" role="tablist">
+          {shots.map((src, i) => (
+            <button key={i} type="button" role="tab" aria-selected={i === cur} aria-label={isAr ? `الصورة ${i + 1}` : `Photo ${i + 1}`} onClick={() => setCur(i)} className="snap-thumb" data-on={i === cur}>
+              <img src={snapshotThumbnail(src)} alt="" loading="lazy" decoding="async" />
+            </button>
+          ))}
         </div>
       </div>
 
