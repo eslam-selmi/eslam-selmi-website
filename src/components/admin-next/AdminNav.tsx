@@ -76,7 +76,6 @@ export function buildAdminNav(
         { id: "tools", label: t("الأدوات: الظهور والصلاحيات", "Tools: visibility & access"), icon: ToggleRight },
         { id: "pages", label: t("التابات: الظهور والقفل", "Tabs: visibility & lock"), icon: ToggleRight },
         { id: "popups", label: t("الإعلانات المنبثقة", "Popup announcements"), icon: Sparkles },
-        { id: "effects", label: t("مؤثرات الزوار", "Visitor effects"), icon: Sparkles },
         { id: "maintenance", label: t("وضع الصيانة", "Maintenance"), icon: Settings2 },
         { id: "tickets", label: t("تذاكر الدعم", "Support tickets"), icon: LifeBuoy },
       ],

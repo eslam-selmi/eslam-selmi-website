@@ -32,7 +32,6 @@ import { BannedPanel, EnrollmentsTable } from "@/components/admin/panels/Enrollm
 import { FinancePanel, PaymentMethodsPanel } from "@/components/admin/panels/Finance";
 import { ProgramsPanel } from "@/components/admin/ProgramsPanel";
 import { GraduateToolsPanel } from "@/components/admin/GraduateToolsPanel";
-import { BuildEffectsPanel } from "@/components/admin/BuildEffectsPanel";
 import { SiteMediaPanel } from "@/components/admin/SiteMediaPanel";
 import { ServicesPanel } from "@/components/admin/panels/ServicesPanel";
 import { VideosPanel } from "@/components/admin/panels/VideosPanel";
@@ -336,8 +335,6 @@ function AdminPage() {
           <ToolsAccessPanel />
         ) : tab === "pages" ? (
           <PageAccessPanel />
-        ) : tab === "effects" ? (
-          <BuildEffectsPanel />
         ) : tab === "visibility" || tab === "popups" || tab === "maintenance" || tab === "site" ? (
           <SiteManagementPanel section={tab === "site" ? "profile" : tab === "visibility" ? "content" : tab} />
         ) : tab === "leads" ? (
