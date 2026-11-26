@@ -6,11 +6,11 @@ function esc(s: string) {
 }
 
 export function downloadSessionIcs(s: {
-  id: string; title: string; courseTitle?: string; startsAt: string; durationMinutes: number; url?: string | null;
+  id: string; title: string; courseTitle?: string; description?: string; startsAt: string; durationMinutes: number; url?: string | null;
 }) {
   const start = new Date(s.startsAt);
   const end = new Date(start.getTime() + (Number(s.durationMinutes) || 60) * 60000);
-  const desc = [s.courseTitle, s.url].filter(Boolean).join("\n");
+  const desc = [s.description, s.courseTitle, s.url].filter(Boolean).join("\n");
   const lines = [
     "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Eslam Selmi//Portal//EN", "CALSCALE:GREGORIAN", "METHOD:PUBLISH",
     "BEGIN:VEVENT",

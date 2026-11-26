@@ -35,5 +35,5 @@ export function outlookCalUrl(e: CalEvent) {
 }
 
 export function downloadIcs(e: CalEvent) {
-  downloadSessionIcs({ id: e.id, title: e.title, startsAt: e.startsAt, durationMinutes: e.durationMinutes, url: e.url });
+  downloadSessionIcs({ id: e.id, title: e.title, startsAt: e.startsAt, durationMinutes: e.durationMinutes, url: e.url, description: e.details });
 }

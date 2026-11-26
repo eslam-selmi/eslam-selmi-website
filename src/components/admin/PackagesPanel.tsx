@@ -93,7 +93,11 @@ export function PackagesPanel() {
   }
 
   async function deletePackage(id: string) {
-    if (!window.confirm(t("حذف هذه الباقة؟", "Delete this package?"))) return;
+    const used = purchases.filter((x) => x.package_id === id).length;
+    const msg = used > 0
+      ? t(`الباقة دي عليها ${used} طلب شراء. الأفضل توقفها بدل الحذف. تحذفها برضه؟`, `This package has ${used} purchase request(s). Deactivating is safer than deleting. Delete anyway?`)
+      : t("حذف هذه الباقة؟", "Delete this package?");
+    if (!window.confirm(msg)) return;
     const { error } = await supabase.from("consultation_packages").delete().eq("id", id);
     if (error) { toast.error(error.message); return; }
     toast.success(t("تم الحذف", "Deleted"));
@@ -206,7 +210,7 @@ export function PackagesPanel() {
                     </button>
                   </div>
                 </div>
-                <div className="mt-3 flex items-center gap-3 text-xs">
+                <div className="mt-3 flex items-center gap-3 text-xs flex-wrap">
                   <span className="px-2 h-6 grid place-items-center rounded bg-[var(--gold)]/15 text-[var(--gold)] font-bold">
                     {p.sessions_count} {t("جلسة", "sessions")}
                   </span>
@@ -215,6 +219,15 @@ export function PackagesPanel() {
                     className={`ms-auto px-2 h-6 rounded text-[11px] font-bold ${p.active ? "bg-emerald-500/15 text-emerald-300" : "bg-white/10 text-white/60"}`}>
                     {p.active ? t("نشط", "Active") : t("متوقف", "Inactive")}
                   </button>
+                </div>
+                <div className="mt-2 text-[11px] text-white/50">
+                  {(() => {
+                    const mine = purchases.filter((x) => x.package_id === p.id);
+                    const pend = mine.filter((x) => x.status === "pending").length;
+                    const appr = mine.filter((x) => x.status === "approved").length;
+                    return t(`${mine.length} طلب · ${pend} معلّق · ${appr} مفعّل`, `${mine.length} requests · ${pend} pending · ${appr} active`);
+                  })()}
+                  {p.sessions_count >= 1 && p.price > 0 && ` · ${Math.round((p.price / p.sessions_count) * 100) / 100} ${p.currency}/${t("جلسة", "session")}`}
                 </div>
                 {(p.description_ar || p.description_en) && (
                   <p className="mt-2 text-xs text-white/60 line-clamp-2">{isAr ? p.description_ar : p.description_en}</p>
@@ -325,9 +338,19 @@ function PackageForm({
   t: (a: string, b: string) => string;
 }) {
   const [form, setForm] = useState<any>({ ...initial });
+  const [showErr, setShowErr] = useState(false);
+  const sessions = Number(form.sessions_count) || 0;
+  const price = Number(form.price) || 0;
+  const errors: string[] = [];
+  if (!String(form.name_ar || "").trim()) errors.push(t("اكتب اسم الباقة بالعربي", "Enter the Arabic name"));
+  if (!String(form.name_en || "").trim()) errors.push(t("اكتب اسم الباقة بالإنجليزي", "Enter the English name"));
+  if (!Number.isInteger(sessions) || sessions < 1) errors.push(t("عدد الجلسات لازم رقم صحيح ١ أو أكتر", "Sessions must be a whole number, 1 or more"));
+  if (price < 0) errors.push(t("السعر لا يكون سالب", "Price cannot be negative"));
+  const perSession = sessions >= 1 ? Math.round((price / sessions) * 100) / 100 : 0;
+  const cur = String(form.currency || "").trim().toUpperCase() || "USD";
   return (
     <div className="fixed inset-0 z-50 grid place-items-center p-4 bg-black/60 backdrop-blur-sm" onClick={onCancel}>
-      <form onSubmit={(e) => { e.preventDefault(); onSave(form); }} onClick={(e) => e.stopPropagation()}
+      <form onSubmit={(e) => { e.preventDefault(); if (errors.length) { setShowErr(true); return; } onSave(form); }} noValidate onClick={(e) => e.stopPropagation()}
         className="w-full max-w-lg rounded-3xl bg-[#0c1224] border border-white/10 p-6 space-y-3 shadow-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between">
           <h3 className="font-display font-extrabold text-base text-white">
@@ -337,7 +360,7 @@ function PackageForm({
             <X className="size-4" />
           </button>
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Field label={t("الاسم (عربي)", "Name (AR)")} required>
             <input value={form.name_ar} onChange={(e) => setForm({ ...form, name_ar: e.target.value })}
               className="w-full rounded-xl px-3 py-2.5 text-sm bg-white/5 text-white border border-white/10 outline-none focus:border-[var(--gold)]/50" required />
@@ -347,7 +370,7 @@ function PackageForm({
               className="w-full rounded-xl px-3 py-2.5 text-sm bg-white/5 text-white border border-white/10 outline-none focus:border-[var(--gold)]/50" required />
           </Field>
         </div>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <Field label={t("عدد الجلسات", "Sessions")} required>
             <input type="number" min={1} value={form.sessions_count} onChange={(e) => setForm({ ...form, sessions_count: Number(e.target.value) })}
               className="w-full rounded-xl px-3 py-2.5 text-sm bg-white/5 text-white border border-white/10 outline-none focus:border-[var(--gold)]/50" required />
@@ -379,6 +402,34 @@ function PackageForm({
             {t("نشط", "Active")}
           </label>
         </div>
+        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3 space-y-2">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-white/50">{t("معاينة كما ستظهر", "Preview")}</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {(["ar", "en"] as const).map((l) => (
+              <div key={l} dir={l === "ar" ? "rtl" : "ltr"} className="rounded-xl bg-white/5 p-3">
+                <div className="font-bold text-white text-sm">{(l === "ar" ? form.name_ar : form.name_en) || "—"}</div>
+                <div className="mt-1.5 flex items-center gap-2 text-xs">
+                  <span className="px-2 h-6 grid place-items-center rounded bg-[var(--gold)]/15 text-[var(--gold)] font-bold">
+                    {sessions || 0} {l === "ar" ? "جلسة" : "sessions"}
+                  </span>
+                  <span className="text-white/80 font-bold">{price} {cur}</span>
+                </div>
+                {(l === "ar" ? form.description_ar : form.description_en) && (
+                  <p className="mt-1.5 text-xs text-white/60">{l === "ar" ? form.description_ar : form.description_en}</p>
+                )}
+              </div>
+            ))}
+          </div>
+          {sessions >= 1 && price > 0 && (
+            <div className="text-[11px] text-white/50">{t(`سعر الجلسة الواحدة ≈ ${perSession} ${cur}`, `Per session ≈ ${perSession} ${cur}`)}</div>
+          )}
+          {price === 0 && <div className="text-[11px] text-amber-300/80">{t("السعر ٠: الباقة هتظهر مجانية", "Price is 0: the package shows as free")}</div>}
+        </div>
+        {showErr && errors.length > 0 && (
+          <ul className="rounded-xl bg-red-500/10 border border-red-500/30 p-3 text-xs text-red-200 space-y-1 list-disc ps-5">
+            {errors.map((e) => <li key={e}>{e}</li>)}
+          </ul>
+        )}
         <div className="flex justify-end gap-2 pt-2">
           <button type="button" onClick={onCancel} className="px-4 h-10 rounded-xl text-sm font-semibold text-white/70 hover:text-white">
             {t("إلغاء", "Cancel")}

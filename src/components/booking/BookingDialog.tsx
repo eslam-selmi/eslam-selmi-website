@@ -279,7 +279,7 @@ export function BookingDialog({ initiallyOpen = false }: { initiallyOpen?: boole
             <div className="rounded-3xl p-6 space-y-4" style={{ background: "color-mix(in oklab, var(--gold) 10%, var(--card))", border: "1px solid color-mix(in oklab, var(--gold) 40%, transparent)" }}>
               <div className="flex items-center gap-3">
                 <div className="size-12 rounded-full grid place-items-center" style={{ background: gold, color: "var(--accent-foreground)" }}><Check className="size-6" strokeWidth={3} /></div>
-                <div className="font-display font-extrabold text-xl">{tx("تم تأكيد حجزك ✨", "Booking confirmed ✨")}</div>
+                <div className="font-display font-extrabold text-xl">{tx("تم تأكيد حجزك", "Booking confirmed")}</div>
               </div>
               <SessionSummary b={done} />
               <div className="flex gap-2">
