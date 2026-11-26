@@ -1443,20 +1443,3 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 .tst-name { color: var(--foreground); font-size: .875rem; }
 .tst-role { color: var(--muted-foreground); }
 @media (hover: hover) { .tst-card:hover { box-shadow: 0 10px 24px rgb(0 0 0 / .08); } }
-
-/* Snapshots gallery: one featured photo with calm cross-fade and a thumbnail rail */
-.snap-gallery { max-width: 1000px; margin-inline: auto; }
-.snap-stage { position: relative; aspect-ratio: 16 / 10; border-radius: 1.25rem; overflow: hidden; border: 1px solid var(--border); background: color-mix(in oklab, var(--foreground) 6%, transparent); }
-.snap-frame { position: absolute; inset: 0; display: block; width: 100%; height: 100%; padding: 0; border: 0; background: transparent; }
-.snap-img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
-.snap-expand { position: absolute; inset-block-end: .75rem; inset-inline-end: .75rem; display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 999px; background: rgb(0 0 0 / .45); color: #fff; backdrop-filter: blur(6px); }
-.snap-arrow { position: absolute; top: 50%; translate: 0 -50%; z-index: 2; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 999px; background: color-mix(in oklab, var(--background) 82%, transparent); color: var(--foreground); border: 1px solid var(--border); backdrop-filter: blur(8px); transition: transform .2s; }
-.snap-arrow:hover { transform: scale(1.06); }
-.snap-prev { left: .75rem; } .snap-next { right: .75rem; }
-.snap-count { position: absolute; inset-block-end: .75rem; inset-inline-start: .75rem; z-index: 2; padding: .25rem .7rem; border-radius: 999px; background: rgb(0 0 0 / .45); color: #fff; font-size: .75rem; font-weight: 700; letter-spacing: .08em; backdrop-filter: blur(6px); }
-.snap-thumbs { display: flex; gap: .6rem; margin-top: .9rem; overflow-x: auto; padding-bottom: .4rem; scrollbar-width: thin; }
-.snap-thumb { flex: 0 0 auto; width: 4.5rem; aspect-ratio: 4 / 3; border-radius: .6rem; overflow: hidden; border: 2px solid transparent; opacity: .55; padding: 0; transition: opacity .2s, border-color .2s; }
-.snap-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.snap-thumb:hover { opacity: .9; }
-.snap-thumb[data-on="true"] { opacity: 1; border-color: var(--accent); }
-@media (max-width: 640px) { .snap-stage { aspect-ratio: 4 / 3; border-radius: 1rem; } .snap-arrow { width: 2.25rem; height: 2.25rem; } .snap-thumb { width: 3.5rem; } }
