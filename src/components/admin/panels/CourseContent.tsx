@@ -1,3 +1,4 @@
+import { regroupByUnit, getItemUnit, setItemUnit } from "@/lib/item-unit";
 import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -94,7 +95,7 @@ export function CourseContent({ courseId }: { courseId: string }) {
       (its ?? []).forEach((it: any) => {
         (grouped[it.module_id] ||= []).push(it);
       });
-      setItems(grouped);
+      setItems(regroupByUnit(ids, grouped));
     } else {
       setItems({});
     }
@@ -172,6 +173,7 @@ export function CourseContent({ courseId }: { courseId: string }) {
               m={m}
               index={i}
               items={items[m.id] ?? []}
+              allModules={modules}
               onToggle={() => toggleComplete(m)}
               onDelete={() => delModule(m.id)}
               onChangeOnlineUrl={(url: string) => updateOnlineUrl(m.id, url)}
@@ -192,6 +194,7 @@ export function ModuleCard({
   onDelete,
   onChangeOnlineUrl,
   onItemsChanged,
+  allModules = [],
 }: any) {
   const { lang } = useI18n();
   const t = (a: string, b: string) => (lang === "ar" ? a : b);
@@ -205,6 +208,15 @@ export function ModuleCard({
   const [itemContent, setItemContent] = useState("");
   const [itemUrl, setItemUrl] = useState("");
   const [cuesFor, setCuesFor] = useState<string | null>(null);
+
+  async function moveItem(it: any, target: string) {
+    const home = String(it.module_id).toLowerCase();
+    const next = setItemUnit(it.content, target.toLowerCase() === home ? null : target);
+    const { error } = await supabase.from("module_items").update({ content: next }).eq("id", it.id);
+    if (error) return toast.error(error.message);
+    toast.success(t("تم نقل البند تحت الوحدة", "Item moved under the unit"));
+    onItemsChanged();
+  }
 
   async function addItem() {
     if (!itemTitle.trim()) return;
@@ -342,6 +354,20 @@ export function ModuleCard({
                         onSaved={onItemsChanged}
                         onClose={() => setCuesFor(null)}
                       />
+                    )}
+                    {allModules.length > 1 && !isVideoFileItem(it) && (
+                      <label className="mt-1.5 flex items-center gap-2 text-[11px] text-white/60">
+                        {t("تحت الوحدة:", "Under unit:")}
+                        <select
+                          value={(getItemUnit(it.content) && allModules.some((x: any) => x.id.toLowerCase() === getItemUnit(it.content)) ? allModules.find((x: any) => x.id.toLowerCase() === getItemUnit(it.content)).id : it.module_id)}
+                          onChange={(e) => moveItem(it, e.target.value)}
+                          className="h-7 max-w-[16rem] rounded-md bg-white/5 border border-white/15 text-[11px] px-1.5"
+                        >
+                          {allModules.map((x: any, k: number) => (
+                            <option key={x.id} value={x.id} className="bg-[#0b1736]">{k + 1}. {x.title}</option>
+                          ))}
+                        </select>
+                      </label>
                     )}
                     {it.url &&
                       (it.kind === "file" ? (

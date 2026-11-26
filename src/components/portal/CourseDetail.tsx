@@ -1,3 +1,4 @@
+import { regroupByUnit } from "@/lib/item-unit";
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -38,7 +39,7 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
         const { data: its } = await supabase.from("module_items").select("*").in("module_id", modules.map((m) => m.id)).order("order_index");
         (its ?? []).forEach((it) => { (items[it.module_id] ||= []).push(it); });
       }
-      return { modules, items, sessions: sRes.data ?? [], payments: pRes.data ?? [], installments: iRes.data ?? [] };
+      return { modules, items: regroupByUnit(modules.map((m) => m.id), items), sessions: sRes.data ?? [], payments: pRes.data ?? [], installments: iRes.data ?? [] };
     },
   });
   const modules = detail.data?.modules ?? [];

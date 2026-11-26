@@ -1,3 +1,4 @@
+import { stripItemUnit } from "./item-unit";
 /**
  * Time-coded questions inside a course video.
  * Stored as text in module_items.content (no schema change), behind a marker
@@ -64,7 +65,7 @@ export function serializeVideoCues(cues: VideoCue[]): string | null {
 /** Text safe to show to people: cue storage is hidden. */
 export function visibleItemText(content: string | null | undefined): string | null {
   if (!content || hasVideoCues(content)) return null;
-  return content;
+  return stripItemUnit(content);
 }
 
 /** "1:30" or "90" or "1:02:03" to seconds, null when invalid. */
