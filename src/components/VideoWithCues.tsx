@@ -147,7 +147,7 @@ export function VideoWithCues({
           aria-modal="true"
           dir={isAr ? "rtl" : "ltr"}
           data-testid="video-question"
-          className="absolute inset-0 z-10 bg-black/75 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 overflow-auto"
+          className="absolute max-sm:fixed inset-0 z-10 max-sm:z-[95] bg-black/75 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 overflow-auto"
         >
           <div className="w-full max-w-xl rounded-2xl border border-white/15 bg-[#0b1736] p-4 sm:p-5 shadow-2xl my-auto">
             <p className="text-[11px] text-[var(--gold)] mb-1">
