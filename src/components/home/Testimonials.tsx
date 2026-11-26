@@ -146,12 +146,12 @@ export function Testimonials() {
 }
 
 export function TestimonialsScroller({ items, isAr }: { items: TestimonialRow[]; isAr: boolean }) {
-  // Editorial wall: plain quotes in two calm columns (one on mobile), every quote and role shown in full.
+  // Brand cards: equal navy cards side by side (one column on phones). Centered quote, portrait, name and role, every word visible.
   return (
-    <div className="tst-wall">
+    <div className="tst-deck">
       {items.map((it) => (
         <figure key={it.id} className="tst-card">
-          <span className="tst-mark" aria-hidden dir="ltr">&ldquo;</span>
+          <span className="tst-mark" aria-hidden dir="ltr">&rdquo;</span>
           <blockquote className="tst-quote" dir="auto">{it.quote}</blockquote>
           <figcaption className="tst-who">
             {it.avatar_url ? (
@@ -159,10 +159,8 @@ export function TestimonialsScroller({ items, isAr }: { items: TestimonialRow[];
             ) : (
               <span className="tst-avatar tst-avatar-fallback" aria-hidden>{it.name.charAt(0)}</span>
             )}
-            <span className="min-w-0">
-              <span className="tst-name">{it.name}</span>
-              <span className="tst-role">{[it.role, it.company].filter(Boolean).join(" · ")}</span>
-            </span>
+            <span className="tst-name">{it.name}</span>
+            <span className="tst-role">{[it.role, it.company].filter(Boolean).join(" · ")}</span>
           </figcaption>
         </figure>
       ))}

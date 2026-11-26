@@ -20,14 +20,27 @@ CREATE UNIQUE INDEX IF NOT EXISTS guest_access_email_unique ON public.guest_acce
 ALTER TABLE public.guest_access ENABLE ROW LEVEL SECURITY;
 REVOKE ALL ON public.guest_access FROM PUBLIC, anon, authenticated;
 
-CREATE TABLE IF NOT EXISTS public.guest_course_access (
-  guest_id uuid NOT NULL REFERENCES public.guest_access(id) ON DELETE CASCADE,
-  course_id uuid NOT NULL REFERENCES public.courses(id) ON DELETE CASCADE,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  PRIMARY KEY (guest_id, course_id)
-);
-ALTER TABLE public.guest_course_access ENABLE ROW LEVEL SECURITY;
-REVOKE ALL ON public.guest_course_access FROM PUBLIC, anon, authenticated;
+-- First run only: a guest that existed before this change could browse every available course.
+-- Keep exactly that for it by linking it to the courses available today. Later runs never re-add anything.
+DO $mig$
+DECLARE fresh boolean := to_regclass('public.guest_course_access') IS NULL;
+BEGIN
+  CREATE TABLE IF NOT EXISTS public.guest_course_access (
+    guest_id uuid NOT NULL REFERENCES public.guest_access(id) ON DELETE CASCADE,
+    course_id uuid NOT NULL REFERENCES public.courses(id) ON DELETE CASCADE,
+    created_at timestamptz NOT NULL DEFAULT now(),
+    PRIMARY KEY (guest_id, course_id)
+  );
+  ALTER TABLE public.guest_course_access ENABLE ROW LEVEL SECURITY;
+  REVOKE ALL ON public.guest_course_access FROM PUBLIC, anon, authenticated;
+  IF fresh THEN
+    INSERT INTO public.guest_course_access (guest_id, course_id)
+    SELECT g.id, c.id FROM public.guest_access g CROSS JOIN public.courses c
+    WHERE c.active = true AND c.is_archived = false AND c.is_upcoming = false
+    ON CONFLICT DO NOTHING;
+  END IF;
+END
+$mig$;
 
 DROP FUNCTION IF EXISTS public.guest_record_failure(int, int);
 CREATE OR REPLACE FUNCTION public.guest_record_failure(_id uuid, _max int, _lock_seconds int)
