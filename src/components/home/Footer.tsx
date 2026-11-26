@@ -145,7 +145,7 @@ export function Footer() {
           </a>
         </div>
         <div className="text-xs text-muted-foreground">
-          {(lang === "ar" ? profile.footer_ar : profile.footer_en) || `© ${new Date().getFullYear()} · ${t("footer_rights")}`}
+          {(lang === "ar" ? profile.footer_ar : profile.footer_en) || `© ${Math.max(2027, new Date().getFullYear())} · ${t("footer_rights")}`}
         </div>
       </div>
     </footer>
