@@ -24,7 +24,7 @@ function Item({ it, lang, p, onProgress }: { it: VisitorItem; lang: "ar" | "en";
       {text && <p className="text-xs text-white/65 whitespace-pre-wrap">{text}</p>}
       {(it.kind === "video" || playInline === "video") && it.url && (
         <div className="aspect-video overflow-hidden rounded-lg">
-          <VideoWithCues src={it.url} content={it.content} isAr={lang === "ar"} onProgress={(v) => onProgress(v)} />
+          <VideoWithCues src={it.url} content={it.content} isAr={lang === "ar"} onProgress={(v) => onProgress(playInline === "video" ? { ...v, opened: v.ended } : v)} />
         </div>
       )}
       {(it.kind === "embed" || playInline === "embed") && it.url && /^https:\/\//i.test(media?.url || it.url) && <iframe referrerPolicy="no-referrer" src={media?.url || it.url} title={it.title} className="w-full aspect-video rounded-lg border-0" allowFullScreen onLoad={() => onProgress({ opened: true })} />}

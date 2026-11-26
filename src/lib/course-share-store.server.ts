@@ -70,7 +70,8 @@ export const supabaseShareStore: ShareStore = {
         url = data?.signedUrl ?? null;
       }
       // content only where it is learner-facing: video question data, notes and text. Anything else is not sent.
-      const content = ["video", "note", "text"].includes(it.kind) ? (it.content ?? null) : null;
+      // Lectures stored as a link or file (the TNA unit videos) carry their questions too; only content that starts with the cue marker is sent for them.
+      const content = ["video", "note", "text"].includes(it.kind) || (["link", "file"].includes(it.kind) && typeof it.content === "string" && it.content.startsWith("[[video-cues:v1]]")) ? (it.content ?? null) : null;
       return { id: it.id, module_id: it.module_id, kind: it.kind, title: it.title, url, content };
     }));
     return {
