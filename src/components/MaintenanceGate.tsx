@@ -21,13 +21,23 @@ export function MaintenanceGate({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let alive = true;
     (async () => {
-      const { data } = await supabase
-        .from("site_content")
-        .select("content")
-        .eq("section_key", "site.maintenance")
-        .maybeSingle();
+      let data: { content: unknown } | null = null;
+      let failed = true;
+      // Fail closed: a failed read must never open a site that is under maintenance. Retry, then keep the maintenance page.
+      for (let i = 0; i < 3 && failed; i++) {
+        const res = await supabase
+          .from("site_content")
+          .select("content")
+          .eq("section_key", "site.maintenance")
+          .maybeSingle();
+        if (!res.error) { data = res.data; failed = false; } else if (i < 2) { await new Promise((r) => setTimeout(r, 800)); }
+      }
       if (!alive) return;
-      const c = (data?.content ?? {}) as Partial<Config>;
+      if (failed) {
+        setConfig({ enabled: true, message_ar: "", message_en: "", until: null });
+        return;
+      }
+      const c = ((data as { content?: unknown } | null)?.content ?? {}) as Partial<Config>;
       setConfig({
         enabled: !!c.enabled,
         message_ar: c.message_ar || "",
@@ -42,10 +52,10 @@ export function MaintenanceGate({ children }: { children: React.ReactNode }) {
     let alive = true;
     const sync = async () => {
       try {
-        const { data } = await supabase.auth.getSession();
-        if (alive) setSignedIn(!!data.session?.user);
+        const { data, error } = await supabase.auth.getSession();
+        if (alive) setSignedIn(!error && !!data.session?.user);
       } catch {
-        if (alive) setSignedIn(true); // fail open
+        if (alive) setSignedIn(false); // a broken or stale session must not open a maintenance site
       }
       if (alive) setSessionChecked(true);
     };
