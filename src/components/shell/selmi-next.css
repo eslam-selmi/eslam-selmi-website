@@ -394,3 +394,4 @@
   :root:not(.dark) .nx header { border-radius: 0 0 16px 16px; }
   .nx-frame { display: block; }
 }
+:root:not(.dark) .nx .nx-side-brand img { background: oklch(0.24 0.07 258); border-radius: 12px; padding: 6px; }
