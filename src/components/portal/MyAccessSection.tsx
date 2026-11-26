@@ -98,11 +98,11 @@ export function MyAccessSection({ userId, enrollments, onGo }: {
                 <div className="font-bold text-sm">{ar ? TOOLS[id].ar : TOOLS[id].en}</div>
                 {has ? (
                   <>
-                    <span className="text-xs text-emerald-300 inline-flex items-center gap-1"><CheckCircle2 className="size-3.5" />{t("متاح لك", "You have access")}</span>
+                    <span className="text-xs text-emerald-700 dark:text-emerald-300 inline-flex items-center gap-1"><CheckCircle2 className="size-3.5" />{t("متاح لك", "You have access")}</span>
                     <Link to="/tools" search={{ t: id }} className="nx-btn nx-btn-primary text-xs text-center">{t("فتح الأداة", "Open tool")}</Link>
                   </>
                 ) : st === "pending" ? (
-                  <span className="text-xs text-amber-300 inline-flex items-center gap-1"><Clock className="size-3.5" />{t("طلبك قيد المراجعة", "Request pending review")}</span>
+                  <span className="text-xs text-amber-700 dark:text-amber-300 inline-flex items-center gap-1"><Clock className="size-3.5" />{t("طلبك قيد المراجعة", "Request pending review")}</span>
                 ) : (
                   <>
                     <span className="text-xs text-white/60 inline-flex items-center gap-1"><Lock className="size-3.5" />{st === "rejected" ? t("الطلب السابق لم يُقبل", "Previous request was not approved") : t("غير مفعّلة على حسابك", "Not enabled on your account")}</span>

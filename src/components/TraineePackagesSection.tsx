@@ -163,7 +163,7 @@ export function TraineePackagesSection({ userId }: { userId: string }) {
               )}
               <div className="mt-3 flex items-center gap-2">
                 <span className="px-2 h-7 grid place-items-center rounded bg-[var(--gold)]/15 text-[var(--gold)] font-bold text-xs">
-                  {p.sessions_count} {t("جلسة", "sessions")}
+                  {p.sessions_count} {t("جلسة", p.sessions_count === 1 ? "session" : "sessions")}
                 </span>
                 <span className="text-white font-bold text-sm ms-auto">{p.price} {p.currency}</span>
               </div>
