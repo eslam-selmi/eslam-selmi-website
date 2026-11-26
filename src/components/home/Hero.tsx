@@ -200,11 +200,6 @@ export function Hero() {
               transition={{ duration: 0.7, delay: 0.15 }}
               className="relative z-20 -mt-16 sm:-mt-20 flex flex-col items-center text-center"
             >
-              <span
-                className="h-px w-16"
-                style={{ background: "linear-gradient(90deg, transparent, var(--accent), transparent)" }}
-                aria-hidden
-              />
               <span className="mt-5 flex items-center gap-4 sm:gap-5">
                 <ThemeLogo size={56} className="h-11 sm:h-14 w-auto opacity-80" alt="" />
                 <span className="h-10 sm:h-12 w-px bg-foreground/25" aria-hidden />
