@@ -97,7 +97,7 @@ function VerifyPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <Field label={tt("تاريخ الإصدار", "Issue date")} icon={Calendar}>
                     <p className="font-semibold">
-                      <bdi dir="ltr">{new Date(d!.issued_at).toLocaleDateString(isAr ? "ar-EG-u-nu-latn" : "en-GB", { year: "numeric", month: "long", day: "numeric" })}</bdi>
+                      <bdi dir={isAr ? "rtl" : "ltr"}>{new Date(d!.issued_at).toLocaleDateString(isAr ? "ar-EG-u-nu-latn" : "en-GB", { year: "numeric", month: "long", day: "numeric" })}</bdi>
                     </p>
                   </Field>
                   {Number(d!.total_hours) > 0 && (
