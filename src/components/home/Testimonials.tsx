@@ -153,23 +153,28 @@ function TestimonialCard({ it }: { it: TestimonialRow }) {
   const stars = typeof it.rating === "number" && it.rating >= 1 && it.rating <= 5 ? Math.round(it.rating) : 0;
   return (
     <figure className="tg-card">
-      <figcaption className="tg-head">
-        {it.avatar_url ? (
-          <img src={it.avatar_url} alt="" loading="lazy" draggable={false} className="tg-avatar" />
-        ) : (
-          <span className="tg-avatar tg-avatar-fallback" aria-hidden>{it.name.charAt(0)}</span>
-        )}
-        <span className="tg-id">
+      {it.avatar_url ? (
+        <img src={it.avatar_url} alt="" loading="lazy" draggable={false} className="tg-avatar" />
+      ) : (
+        <span className="tg-avatar tg-avatar-fallback" aria-hidden>{it.name.charAt(0)}</span>
+      )}
+      <div className="tg-glass">
+        <figcaption className="tg-tab">
           <span className="tg-name">{it.name}</span>
           <span className="tg-role">{[it.role, it.company].filter(Boolean).join(" · ")}</span>
-        </span>
-      </figcaption>
-      <blockquote className="tg-quote" dir="auto">{it.quote}</blockquote>
-      {long && (
-        <button type="button" className="tg-more" onClick={() => setOpen(true)} aria-haspopup="dialog">
-          {isAr ? "اقرأ الرأي كاملًا" : "Read full feedback"}
-        </button>
-      )}
+        </figcaption>
+        <blockquote className="tg-quote" dir="auto">{it.quote}</blockquote>
+        {long && (
+          <button type="button" className="tg-more" onClick={() => setOpen(true)} aria-haspopup="dialog">
+            {isAr ? "اقرأ الرأي كاملًا" : "Read full feedback"}
+          </button>
+        )}
+        {stars > 0 && (
+          <div className="tg-stars" role="img" aria-label={`${stars}/5`}>
+            {Array.from({ length: 5 }, (_, k) => <span key={k} data-on={k < stars ? "true" : "false"}>★</span>)}
+          </div>
+        )}
+      </div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="tg-dialog" aria-describedby={undefined}>
           <DialogTitle className="tg-dialog-title">{it.name}</DialogTitle>
@@ -177,11 +182,6 @@ function TestimonialCard({ it }: { it: TestimonialRow }) {
           <blockquote className="tg-dialog-quote" dir="auto">{it.quote}</blockquote>
         </DialogContent>
       </Dialog>
-      {stars > 0 && (
-        <div className="tg-stars" role="img" aria-label={`${stars}/5`}>
-          {Array.from({ length: 5 }, (_, k) => <span key={k} data-on={k < stars ? "true" : "false"}>★</span>)}
-        </div>
-      )}
     </figure>
   );
 }
