@@ -906,14 +906,16 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 /* Gold CTAs keep their navy ink */
 :root:not(.dark) .dash-shell [class*="text-[#0b1736]"] { color: #0b1736; }
 /* Always-dark navy panels (drawers, modals) keep light text in the light theme */
-:root:not(.dark) .dash-shell [class*="bg-[#0b1736]"] { color: #fff; }
-:root:not(.dark) .dash-shell [class*="bg-[#0b1736]"] [class*="text-white"] { color: rgba(255,255,255,.92); }
-:root:not(.dark) .dash-shell [class*="bg-[#0b1736]"] [class*="text-white/30"], :root:not(.dark) .dash-shell [class*="bg-[#0b1736]"] [class*="text-white/35"], :root:not(.dark) .dash-shell [class*="bg-[#0b1736]"] [class*="text-white/40"], :root:not(.dark) .dash-shell [class*="bg-[#0b1736]"] [class*="text-white/45"] { color: rgba(255,255,255,.5); }
-:root:not(.dark) .dash-shell [class*="bg-[#0b1736]"] [class*="text-white/50"], :root:not(.dark) .dash-shell [class*="bg-[#0b1736]"] [class*="text-white/55"], :root:not(.dark) .dash-shell [class*="bg-[#0b1736]"] [class*="text-white/60"], :root:not(.dark) .dash-shell [class*="bg-[#0b1736]"] [class*="text-white/65"] { color: rgba(255,255,255,.65); }
-:root:not(.dark) .dash-shell [class*="bg-[#0b1736]"] [class*="text-white/70"], :root:not(.dark) .dash-shell [class*="bg-[#0b1736]"] [class*="text-white/75"], :root:not(.dark) .dash-shell [class*="bg-[#0b1736]"] [class*="text-white/80"], :root:not(.dark) .dash-shell [class*="bg-[#0b1736]"] [class*="text-white/85"] { color: rgba(255,255,255,.82); }
-:root:not(.dark) .dash-shell [class*="bg-[#0b1736]"] [class*="bg-white/"] { background-color: rgba(255,255,255,.05); }
-:root:not(.dark) .dash-shell [class*="bg-[#0b1736]"] [class*="border-white/"] { border-color: rgba(255,255,255,.12); }
-:root:not(.dark) .dash-shell [class*="bg-[#0b1736]"] [class*="text-[#0b1736]"] { color: #0b1736; }
+:root:not(.dark) [class*="bg-[#0b1736]"] { color: #fff; }
+:root:not(.dark) [class*="bg-[#0b1736]"] [class*="text-white"] { color: rgba(255,255,255,.92); }
+:root:not(.dark) [class*="bg-[#0b1736]"] [class*="text-white/30"], :root:not(.dark) [class*="bg-[#0b1736]"] [class*="text-white/35"], :root:not(.dark) [class*="bg-[#0b1736]"] [class*="text-white/40"], :root:not(.dark) [class*="bg-[#0b1736]"] [class*="text-white/45"] { color: rgba(255,255,255,.5); }
+:root:not(.dark) [class*="bg-[#0b1736]"] [class*="text-white/50"], :root:not(.dark) [class*="bg-[#0b1736]"] [class*="text-white/55"], :root:not(.dark) [class*="bg-[#0b1736]"] [class*="text-white/60"], :root:not(.dark) [class*="bg-[#0b1736]"] [class*="text-white/65"] { color: rgba(255,255,255,.65); }
+:root:not(.dark) [class*="bg-[#0b1736]"] [class*="text-white/70"], :root:not(.dark) [class*="bg-[#0b1736]"] [class*="text-white/75"], :root:not(.dark) [class*="bg-[#0b1736]"] [class*="text-white/80"], :root:not(.dark) [class*="bg-[#0b1736]"] [class*="text-white/85"] { color: rgba(255,255,255,.82); }
+:root:not(.dark) [class*="bg-[#0b1736]"] [class*="bg-white/"] { background-color: rgba(255,255,255,.05); }
+:root:not(.dark) [class*="bg-[#0b1736]"] [class*="border-white/"] { border-color: rgba(255,255,255,.12); }
+:root:not(.dark) [class*="bg-[#0b1736]"] [class*="text-[#0b1736]"] { color: #0b1736; }
+:root:not(.dark) [class*="bg-[#0b1736]"] input:not([type="checkbox"]):not([type="radio"]):not([type="file"]), :root:not(.dark) [class*="bg-[#0b1736]"] select, :root:not(.dark) [class*="bg-[#0b1736]"] textarea { color:#fff; background-color:rgba(255,255,255,.06); border-color:rgba(255,255,255,.16); }
+:root:not(.dark) [class*="bg-[#0b1736]"] input::placeholder, :root:not(.dark) [class*="bg-[#0b1736]"] textarea::placeholder { color:rgba(255,255,255,.45); }
 
 /* Administration inherits the trainee dashboard theme and glass surfaces. */
 .admin-workspace { display:flex; flex-direction:column; gap:24px; }
