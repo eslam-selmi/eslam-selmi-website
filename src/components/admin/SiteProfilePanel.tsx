@@ -1,13 +1,14 @@
 import { portraitSources } from "@/lib/optimized-images";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Camera, Loader2, Save } from "lucide-react";
+import { Camera, Loader2, Plus, Save, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { siteProfileKey, useSiteProfile } from "@/lib/site-profile";
-import { siteProfileDefaults, type SiteProfile } from "@/lib/site-profile-data";
+import { siteProfileDefaults, parseSocialUrl, SOCIAL_PLATFORMS, type SiteProfile } from "@/lib/site-profile-data";
+import { SocialIcon, PLATFORM_NAMES } from "@/components/social-links";
 import { invalidateSiteContent } from "@/lib/site-content";
 
 export function SiteProfilePanel() {
@@ -20,7 +21,8 @@ export function SiteProfilePanel() {
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   useEffect(() => { if (!dirty && query.isSuccess) setDraft(query.profile); }, [query.data, query.isSuccess, dirty]);
-  function set(key: keyof SiteProfile, value: string) { setDirty(true); setDraft(prev => ({ ...prev, [key]: value })); }
+  function setSocials(v: SiteProfile["socials"]) { setDirty(true); setDraft(prev => ({ ...prev, socials: v })); }
+  function set(key: Exclude<keyof SiteProfile, "socials">, value: string) { setDirty(true); setDraft(prev => ({ ...prev, [key]: value })); }
   async function upload(file: File | undefined, target: "portrait" | "logo" | "logoDark" = "portrait") {
     if (!file) return;
     if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) return toast.error(t("اختر صورة JPG أو PNG أو WebP", "Choose a JPG, PNG or WebP image"));
@@ -39,12 +41,12 @@ export function SiteProfilePanel() {
   async function save(event: React.FormEvent) {
     event.preventDefault();
     if (!/^https:\/\/(www\.)?linkedin\.com\//i.test(draft.linkedin)) return toast.error(t("أدخل رابط LinkedIn صحيحًا يبدأ بـ https://", "Enter a valid https LinkedIn profile URL"));
-    for (const k of ["facebook","instagram","x","youtube","tiktok"] as const) { if (draft[k] && !/^https:\/\/[^\s]+$/i.test(draft[k].trim())) return toast.error(t("الروابط الاجتماعية لازم تبدأ بـ https://", "Social links must start with https://")); }
+    for (const so of draft.socials) { if (!so.url.trim() && !so.label) continue; if (!parseSocialUrl(so.url)) return toast.error(t("رابط غير صالح: لازم رابط https:// كامل لموقع حقيقي", "Invalid link: enter a full https:// address of a real site")); }
     setSaving(true);
     try {
       const { error } = query.data?.id
-        ? await supabase.from("site_content").update({ content: { ...draft }, is_visible: true }).eq("id", query.data.id)
-        : await supabase.from("site_content").insert({ section_key: "site.profile", label: "الصورة وبيانات التواصل والحقوق", content: { ...draft }, is_visible: true });
+        ? await supabase.from("site_content").update({ content: { ...draft, socials: draft.socials.filter((x) => x.url.trim()).map((x) => ({ platform: x.platform, url: parseSocialUrl(x.url), ...(x.label?.trim() ? { label: x.label.trim() } : {}) })) }, is_visible: true }).eq("id", query.data.id)
+        : await supabase.from("site_content").insert({ section_key: "site.profile", label: "الصورة وبيانات التواصل والحقوق", content: { ...draft, socials: draft.socials.filter((x) => x.url.trim()).map((x) => ({ platform: x.platform, url: parseSocialUrl(x.url), ...(x.label?.trim() ? { label: x.label.trim() } : {}) })) }, is_visible: true });
       if (error) throw error;
       await client.invalidateQueries({ queryKey: siteProfileKey });
       invalidateSiteContent();
@@ -82,12 +84,18 @@ export function SiteProfilePanel() {
         ["secondary_phone", t("رقم الهاتف الإضافي", "Additional phone"), "tel"],
         ["email", t("البريد الإلكتروني للتواصل", "Contact email"), "email"],
         ["linkedin", t("رابط حساب LinkedIn", "LinkedIn profile URL"), "url"],
-        ["facebook", t("رابط فيسبوك (اختياري)", "Facebook URL (optional)"), "url"],
-        ["instagram", t("رابط إنستجرام (اختياري)", "Instagram URL (optional)"), "url"],
-        ["x", t("رابط X / تويتر (اختياري)", "X / Twitter URL (optional)"), "url"],
-        ["youtube", t("رابط يوتيوب (اختياري)", "YouTube URL (optional)"), "url"],
-        ["tiktok", t("رابط تيك توك (اختياري)", "TikTok URL (optional)"), "url"],
-      ] as const).map(([key, label, type]) => <label key={key} className="space-y-2 text-sm text-foreground"><span className="block">{label}</span><input type={type} required={!["secondary_phone","facebook","instagram","x","youtube","tiktok"].includes(key)} dir="ltr" value={draft[key]} onChange={e => set(key, e.target.value)} className="h-11 w-full border border-input rounded-md bg-card px-3" /></label>)}
+      ] as const).map(([key, label, type]) => <label key={key} className="space-y-2 text-sm text-foreground"><span className="block">{label}</span><input type={type} required={key !== "secondary_phone"} dir="ltr" value={draft[key]} onChange={e => set(key, e.target.value)} className="h-11 w-full border border-input rounded-md bg-card px-3" /></label>)}
+    </div>
+    <div className="space-y-3 border-t border-border pt-6">
+      <h3 className="font-semibold text-foreground">{t("منصات التواصل الاجتماعي", "Social platforms")}</h3>
+      <p className="text-sm text-muted-foreground">{t("أي رابط تضيفه هنا يظهر للزوار في أسفل الموقع. سيب الرابط فاضي لو مش عاوز المنصة تظهر.", "Any link you add shows to visitors in the site footer. Leave a link empty to hide it.")}</p>
+      {draft.socials.map((so, i) => <div key={i} className="grid gap-2 sm:grid-cols-[11rem_1fr_9rem_auto] items-center">
+        <select value={so.platform} onChange={e => setSocials(draft.socials.map((x, j) => j === i ? { ...x, platform: e.target.value } : x))} className="h-11 border border-input rounded-md bg-card px-2 text-sm">{SOCIAL_PLATFORMS.map(p => <option key={p} value={p}>{PLATFORM_NAMES[p][lang === "ar" ? 0 : 1]}</option>)}</select>
+        <input type="url" dir="ltr" placeholder="https://" value={so.url} onChange={e => setSocials(draft.socials.map((x, j) => j === i ? { ...x, url: e.target.value } : x))} className="h-11 border border-input rounded-md bg-card px-3" />
+        <input type="text" placeholder={t("اسم (اختياري)", "Label (optional)")} value={so.label ?? ""} onChange={e => setSocials(draft.socials.map((x, j) => j === i ? { ...x, label: e.target.value } : x))} className="h-11 border border-input rounded-md bg-card px-3 text-sm" />
+        <Button type="button" variant="ghost" size="icon" aria-label={t("حذف", "Remove")} onClick={() => setSocials(draft.socials.filter((_, j) => j !== i))}><Trash2 className="size-4" /></Button>
+      </div>)}
+      <Button type="button" variant="outline" onClick={() => setSocials([...draft.socials, { platform: "facebook", url: "" }])}><Plus className="size-4" />{t("إضافة منصة", "Add platform")}</Button>
     </div>
     <div className="grid gap-5 sm:grid-cols-2 border-t border-border pt-6">
       <label className="space-y-2 text-sm"><span className="block">{t("النص أسفل الموقع — عربي", "Footer text — Arabic")}</span><textarea dir="rtl" rows={3} value={draft.footer_ar} placeholder="© 2026 · جميع الحقوق محفوظة." onChange={e => set("footer_ar", e.target.value)} className="w-full rounded-md border border-input bg-card p-3" /></label>

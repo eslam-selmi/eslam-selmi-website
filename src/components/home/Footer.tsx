@@ -9,7 +9,7 @@ import {
   Layers,
   MessageCircle,
   Mail,
-  Linkedin, Facebook, Instagram, Twitter, Youtube, Music2,
+  Linkedin,
   Phone,
   ArrowRight,
   CheckCircle2,
@@ -104,6 +104,7 @@ import snap16Asset from "@/assets/snapshots/snap-16.jpg.asset.json";
 import { LINKEDIN, WHATSAPP } from "@/components/home/data";
 import { BrandMark } from "@/components/home/shared";
 import { useSiteProfile } from "@/lib/site-profile";
+import { SocialIcon, socialLabel } from "@/components/social-links";
 
 export function Footer() {
   const { t, lang } = useI18n();
@@ -128,9 +129,9 @@ export function Footer() {
             <Linkedin className="size-4" />
           </a>
           {links.socials.map((so) => (
-            <a key={so.key} href={so.href} target="_blank" rel="noopener noreferrer" aria-label={so.key}
+            <a key={so.href} href={so.href} target="_blank" rel="noopener noreferrer" aria-label={socialLabel(so, lang)} title={socialLabel(so, lang)}
               className="size-9 grid place-items-center rounded-full border border-foreground/15 hover:bg-foreground/5 transition">
-              {(() => { const I = ({ facebook: Facebook, instagram: Instagram, x: Twitter, youtube: Youtube, tiktok: Music2 } as Record<string, typeof Linkedin>)[so.key]; return <I className="size-4" />; })()}
+              <SocialIcon platform={so.platform} />
             </a>
           ))}
           <a
