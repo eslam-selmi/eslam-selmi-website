@@ -146,107 +146,26 @@ export function Testimonials() {
 }
 
 export function TestimonialsScroller({ items, isAr }: { items: TestimonialRow[]; isAr: boolean }) {
-  const tt = (a: string, b: string) => (isAr ? a : b);
-  const scrollerRef = useRef<HTMLDivElement | null>(null);
-  const dragState = useRef<{ down: boolean; startX: number; startScroll: number; moved: boolean }>(
-    { down: false, startX: 0, startScroll: 0, moved: false },
-  );
-
-  function onMouseDown(e: React.MouseEvent) {
-    const el = scrollerRef.current;
-    if (!el) return;
-    dragState.current = { down: true, startX: e.pageX, startScroll: el.scrollLeft, moved: false };
-    el.classList.add("cursor-grabbing");
-  }
-  function onMouseMove(e: React.MouseEvent) {
-    const el = scrollerRef.current;
-    const s = dragState.current;
-    if (!el || !s.down) return;
-    const dx = e.pageX - s.startX;
-    if (Math.abs(dx) > 4) s.moved = true;
-    el.scrollLeft = s.startScroll - dx;
-  }
-  function endDrag() {
-    const el = scrollerRef.current;
-    if (!el) return;
-    dragState.current.down = false;
-    el.classList.remove("cursor-grabbing");
-  }
-  function scrollByCards(dir: 1 | -1) {
-    const el = scrollerRef.current;
-    if (!el) return;
-    const card = el.querySelector("article");
-    const step = card ? (card as HTMLElement).offsetWidth + 24 : 360;
-    el.scrollBy({ left: step * dir, behavior: "smooth" });
-  }
-
+  // Editorial wall: plain quotes in two calm columns (one on mobile), every quote and role shown in full.
   return (
-    <div className="relative -mx-4 sm:-mx-6">
-      {/* Arrow controls (desktop) */}
-      <div className="hidden md:flex absolute inset-y-0 start-2 z-10 items-center">
-        <button
-          type="button"
-          onClick={() => scrollByCards(isAr ? 1 : -1)}
-          aria-label={tt("السابق", "Previous")}
-          className="size-11 grid place-items-center rounded-full bg-background/80 backdrop-blur border border-foreground/15 shadow-lg hover:scale-105 hover:bg-background transition"
-        >
-          <ArrowRight className="size-4 rotate-180 rtl-flip" />
-        </button>
-      </div>
-      <div className="hidden md:flex absolute inset-y-0 end-2 z-10 items-center">
-        <button
-          type="button"
-          onClick={() => scrollByCards(isAr ? -1 : 1)}
-          aria-label={tt("التالي", "Next")}
-          className="size-11 grid place-items-center rounded-full bg-background/80 backdrop-blur border border-foreground/15 shadow-lg hover:scale-105 hover:bg-background transition"
-        >
-          <ArrowRight className="size-4 rtl-flip" />
-        </button>
-      </div>
-
-      <div
-        ref={scrollerRef}
-        onMouseDown={onMouseDown}
-        onMouseMove={onMouseMove}
-        onMouseLeave={endDrag}
-        onMouseUp={endDrag}
-        className="tst-rail flex gap-5 overflow-x-auto px-4 sm:px-12 pb-6 pt-2 snap-x snap-mandatory cursor-grab select-none scroll-smooth"
-        style={{
-          scrollbarWidth: "none",
-          WebkitOverflowScrolling: "touch",
-          maskImage:
-            "linear-gradient(90deg, transparent 0, #000 4%, #000 96%, transparent 100%)",
-          WebkitMaskImage:
-            "linear-gradient(90deg, transparent 0, #000 4%, #000 96%, transparent 100%)",
-        }}
-      >
-        <style>{`.cursor-grab::-webkit-scrollbar{display:none}`}</style>
-        {items.map((it, n) => (
-          <article key={it.id} onDragStart={(e) => e.preventDefault()} className="tst-card snap-center">
-            <span className="tst-mark" aria-hidden dir="ltr">&ldquo;</span>
-            <span className="tst-num" aria-hidden dir="ltr">{String(n + 1).padStart(2, "0")}</span>
-            {it.rating != null && it.rating > 0 && (
-              <div className="tst-stars" aria-label={`${it.rating}/5`}>
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <span key={i} data-on={i < (it.rating ?? 0)}>&#9733;</span>
-                ))}
-              </div>
+    <div className="tst-wall">
+      {items.map((it) => (
+        <figure key={it.id} className="tst-card">
+          <span className="tst-mark" aria-hidden dir="ltr">&ldquo;</span>
+          <blockquote className="tst-quote" dir="auto">{it.quote}</blockquote>
+          <figcaption className="tst-who">
+            {it.avatar_url ? (
+              <img src={it.avatar_url} alt="" loading="lazy" draggable={false} className="tst-avatar" />
+            ) : (
+              <span className="tst-avatar tst-avatar-fallback" aria-hidden>{it.name.charAt(0)}</span>
             )}
-            <p className="tst-quote" dir="auto">{it.quote}</p>
-            <div className="tst-who">
-              {it.avatar_url ? (
-                <img src={it.avatar_url} alt={it.name} loading="lazy" draggable={false} className="tst-avatar" />
-              ) : (
-                <div className="tst-avatar tst-avatar-fallback">{it.name.charAt(0)}</div>
-              )}
-              <div className="min-w-0">
-                <div className="tst-name">{it.name}</div>
-                <div className="tst-role">{[it.role, it.company].filter(Boolean).join(" · ")}</div>
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
+            <span className="min-w-0">
+              <span className="tst-name">{it.name}</span>
+              <span className="tst-role">{[it.role, it.company].filter(Boolean).join(" · ")}</span>
+            </span>
+          </figcaption>
+        </figure>
+      ))}
     </div>
   );
 }

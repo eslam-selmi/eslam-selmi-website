@@ -1485,3 +1485,13 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 .world-chip img { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; }
 .world-chip[data-lead="true"] { border-color: color-mix(in oklab, var(--booking-cyan) 55%, transparent); }
 .tst-role { display: block; -webkit-line-clamp: unset; }
+
+/* Testimonials wall (final): masonry columns, plain quotes, hairline rules, nothing clipped */
+.tst-wall { column-count: 1; column-gap: 3.5rem; max-width: 1040px; margin-inline: auto; }
+@media (min-width: 768px) { .tst-wall { column-count: 2; } }
+.tst-wall .tst-card, .tst-wall .tst-card:hover { display: block; width: auto; break-inside: avoid; margin: 0 0 2.25rem; padding: 1.5rem 0 0; border: 0; border-top: 1px solid color-mix(in oklab, var(--foreground) 16%, transparent); background: none; box-shadow: none; transform: none; }
+.tst-wall .tst-card + .tst-card { border-inline-start: 0; }
+.tst-wall .tst-mark { height: 2.4rem; font-size: 4rem; color: var(--accent); }
+.tst-wall .tst-quote { margin: .5rem 0 0; font-size: 1.02rem; line-height: 1.9; font-weight: 500; text-align: start; white-space: pre-line; }
+.tst-wall .tst-who { display: flex; margin-top: 1.1rem; }
+.tst-wall .tst-name, .tst-wall .tst-role { display: block; }
