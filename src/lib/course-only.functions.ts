@@ -28,10 +28,14 @@ export const createCourseOnlyAccount = createServerFn({ method: "POST" })
     });
     if (error || !created.user) throw new Error(error?.message || "Failed to create user");
     const uid = created.user.id;
-    const { error: pErr } = await supabaseAdmin.from("profiles").upsert({
-      id: uid, email, full_name: data.full_name, force_password_reset: true, activation_status: "active",
-    });
-    if (pErr) throw new Error(pErr.message);
+    // The profile guard trigger only lets an admin session change activation and password-reset flags, so this runs as the signed-in admin, not the service role.
+    const { error: pErr } = await context.supabase.from("profiles").update({
+      full_name: data.full_name, force_password_reset: true, activation_status: "active",
+    }).eq("id", uid);
+    if (pErr) {
+      await supabaseAdmin.auth.admin.deleteUser(uid).catch(() => {});
+      throw new Error(pErr.message);
+    }
     const { error: fErr } = await (supabaseAdmin as any).from("course_only_accounts").insert({ user_id: uid, created_by: context.userId });
     if (fErr) throw new Error(fErr.message);
     const { error: eErr } = await supabaseAdmin.from("enrollments").insert({ user_id: uid, course_id: data.course_id, status: "approved" });
