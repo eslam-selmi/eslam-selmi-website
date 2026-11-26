@@ -216,7 +216,7 @@ function AuthPage() {
               <div className="pointer-events-none absolute -top-28 -start-28 w-80 h-80 rounded-full bg-[var(--nx-teal)]/10 blur-3xl" />
               <div className="pointer-events-none absolute -bottom-32 -end-24 w-80 h-80 rounded-full bg-[var(--nx-gold)]/[0.08] blur-3xl" />
               <div className="relative">
-                <div className="inline-flex rounded-[22px] p-4" style={{ background: "linear-gradient(180deg, #0d1a3d 0%, #08122a 100%)", border: "1px solid oklch(0.78 0.14 90 / 0.28)" }}><div className="mt-glass-logo" style={{ "--logo": `url(${siteProfile.logoDark})` } as React.CSSProperties}>
+                <div className="inline-flex"><div className="mt-glass-logo" style={{ "--logo": `url(${siteProfile.logoDark})` } as React.CSSProperties}>
                   <span aria-hidden className="mt-glass-logo__glow" />
                   <div className="mt-glass-logo__tile">
                     <img src={siteProfile.logoDark} alt="Eslam Selmi" width={96} height={96} className="mt-glass-logo__img" />
@@ -261,7 +261,7 @@ function AuthPage() {
             <div className="nx-card relative p-6 sm:p-9 nx-rise">
               <span className="nx-hero-line" />
               <div className="flex flex-col items-center text-center mb-7">
-                <div className="lg:hidden mb-3 rounded-[22px] p-3" style={{ background: "linear-gradient(180deg, #0d1a3d 0%, #08122a 100%)", border: "1px solid oklch(0.78 0.14 90 / 0.28)" }}><div className="mt-glass-logo" style={{ "--logo": `url(${siteProfile.logoDark})` } as React.CSSProperties}>
+                <div className="lg:hidden mb-3 inline-flex"><div className="mt-glass-logo" style={{ "--logo": `url(${siteProfile.logoDark})` } as React.CSSProperties}>
                   <span aria-hidden className="mt-glass-logo__glow" />
                   <div className="mt-glass-logo__tile">
                     <img src={siteProfile.logoDark} alt="Eslam Selmi" width={96} height={96} className="mt-glass-logo__img" />
