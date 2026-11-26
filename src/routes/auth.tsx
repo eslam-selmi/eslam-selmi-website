@@ -198,7 +198,7 @@ function AuthPage() {
     <div dir="rtl" className="nx nx-bg min-h-screen relative overflow-hidden font-[var(--font-body-ar)]" style={{ "--nx-font-display": "var(--font-heading-ar)" } as React.CSSProperties}>
       <div className="absolute inset-0 nx-grid-overlay pointer-events-none" />
 
-      <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6 py-6 sm:py-10 min-h-screen flex flex-col">
+      <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6 py-4 sm:py-6 min-h-screen flex flex-col">
         <div className="flex items-center justify-between">
           <Link to="/" className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-white/55 hover:text-white transition">
             <ArrowLeft className="h-3.5 w-3.5 rtl-flip" />
@@ -207,16 +207,16 @@ function AuthPage() {
           <span className="nx-chip"><ShieldCheck className="w-3 h-3 text-[var(--nx-teal)]" /> اتصال مشفّر</span>
         </div>
 
-        <div className="flex-1 flex items-center py-8">
-          <div className="w-full mx-auto max-w-md">
+        <div className="flex-1 flex items-center py-3">
+          <div className="w-full mx-auto max-w-[24rem]">
 
 
 
             {/* Form card */}
-            <div className="nx-card relative p-6 sm:p-9 nx-rise">
+            <div className="nx-card relative p-5 sm:p-7 nx-rise">
               <span className="nx-hero-line" />
-              <div className="flex flex-col items-center text-center mb-7">
-                <div className="mb-4 inline-flex"><div className="mt-glass-logo" style={{ "--logo": `url(${siteProfile.logoDark})` } as React.CSSProperties}>
+              <div className="flex flex-col items-center text-center mb-5">
+                <div className="mb-2 inline-flex" style={{ zoom: 0.72 }}><div className="mt-glass-logo" style={{ "--logo": `url(${siteProfile.logoDark})` } as React.CSSProperties}>
                   <span aria-hidden className="mt-glass-logo__glow" />
                   <div className="mt-glass-logo__tile">
                     <img src={siteProfile.logo} alt="Eslam Selmi" width={96} height={96} className="mt-glass-logo__img auth-logo-light" />
@@ -226,7 +226,7 @@ function AuthPage() {
                   </div>
                 </div></div>
                 <p className="nx-eyebrow justify-center">{isAdminView ? "لوحة التحكم" : mode === "login" ? "أهلاً بعودتك" : "حساب جديد"}</p>
-                <h2 className="nx-display text-2xl sm:text-[27px] mt-2">
+                <h2 className="nx-display text-xl sm:text-[24px] mt-1.5">
                   {isAdminView ? "دخول الإدارة" : mode === "login" ? "تسجيل الدخول" : "إنشاء حساب"}
                 </h2>
                 <p className="mt-2 text-[13px] text-white/50">
@@ -245,7 +245,7 @@ function AuthPage() {
                   el.setCustomValidity(el.validity.valueMissing ? "هذا الحقل مطلوب" : el.validity.typeMismatch ? "اكتب بريدًا إلكترونيًا صحيحًا" : el.validity.tooShort ? "القيمة قصيرة جدًا" : "القيمة غير صالحة");
                 }}
                 onInputCapture={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
-                className="space-y-4"
+                className="space-y-3"
               >
                 {!isAdminView && mode === "signup" && (
                   <>
@@ -352,7 +352,7 @@ function AuthPage() {
                 </div>
               )}
 
-              <hr className="nx-divider my-6" />
+              <hr className="nx-divider my-4" />
               <div className="flex justify-center">
                 {isAdminView ? (
                   <button type="button" onClick={() => { setPassword(""); setAuthRole("trainee"); nav({ to: "/auth", search: { role: "trainee" } as never, replace: true }); }} className="text-[12px] font-semibold text-white/45 hover:text-white/80 transition">
