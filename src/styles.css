@@ -1484,16 +1484,18 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 .cm-stage { position: relative; display: grid; place-items: center; height: clamp(260px, 40vw, 380px); }
 .cm-scene { display: flex; align-items: center; justify-content: center; gap: clamp(1.5rem, 5vw, 4rem); width: 100%; animation: cm-life var(--cm-dur) ease-in-out both; }
 .cm-shape { height: clamp(190px, 31vw, 320px); width: clamp(170px, 31vw, 320px); overflow: visible; }
-.cm-outline { fill: color-mix(in oklab, var(--accent) 16%, transparent); fill-opacity: 0; stroke: var(--accent); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; vector-effect: non-scaling-stroke; animation: cm-draw 1.9s cubic-bezier(.45,0,.2,1) .1s forwards, cm-fill 1s ease 1.5s forwards; }
+.cm-outline { fill: color-mix(in oklab, var(--accent) 16%, transparent); fill-opacity: 0; stroke: var(--accent); stroke-width: 0.6; stroke-linejoin: round; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: cm-draw 1.9s cubic-bezier(.45,0,.2,1) .1s forwards, cm-fill 1s ease 1.5s forwards, cm-solid 0.01s linear 2.05s forwards; }
 .cm-label { display: grid; justify-items: start; gap: .85rem; min-width: 9rem; }
 .cm-flag { width: clamp(96px, 15vw, 150px); aspect-ratio: 3 / 2; object-fit: cover; border-radius: 10px; border: 1px solid color-mix(in oklab, var(--foreground) 18%, transparent); opacity: 0; animation: cm-in .8s cubic-bezier(.2,.7,.2,1) 1.1s forwards; }
 .cm-name { font-family: var(--font-heading, inherit); font-weight: 800; font-size: clamp(1.3rem, 3vw, 2rem); line-height: 1.2; color: var(--foreground); opacity: 0; animation: cm-in .8s cubic-bezier(.2,.7,.2,1) 1.35s forwards; }
 .cm-count { direction: ltr; unicode-bidi: isolate; font-size: .78rem; font-weight: 700; letter-spacing: .12em; color: var(--accent); opacity: 0; animation: cm-in .8s ease 1.5s forwards; font-variant-numeric: tabular-nums; }
 .cm-stage[data-live="false"] .cm-scene, .cm-stage[data-live="false"] .cm-outline, .cm-stage[data-live="false"] .cm-flag, .cm-stage[data-live="false"] .cm-name, .cm-stage[data-live="false"] .cm-count { animation: none; }
-.cm-stage[data-live="false"] .cm-outline { stroke-dashoffset: 0; fill-opacity: 1; }
+.cm-stage[data-live="false"] .cm-outline { stroke-dashoffset: 0; stroke-dasharray: none; fill-opacity: 1; }
 .cm-stage[data-live="false"] .cm-flag, .cm-stage[data-live="false"] .cm-name, .cm-stage[data-live="false"] .cm-count { opacity: 1; }
 @keyframes cm-draw { to { stroke-dashoffset: 0; } }
 @keyframes cm-fill { to { fill-opacity: 1; } }
+/* After the draw-on finishes, drop the dash so the whole outline is a solid closed line. */
+@keyframes cm-solid { to { stroke-dasharray: none; stroke-dashoffset: 0; } }
 @keyframes cm-in { from { opacity: 0; transform: translateX(-12px); } to { opacity: 1; transform: none; } }
 @keyframes cm-life { 0%, 88% { opacity: 1; filter: none; } 100% { opacity: 0; filter: blur(3px); } }
 @media (max-width: 560px) { .cm-scene { gap: 1rem; } .cm-label { min-width: 0; } .cm-stage { height: 260px; } }
