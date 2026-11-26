@@ -23,10 +23,16 @@ export function Nav({
   const toolsRef = useRef<HTMLDivElement>(null);
   const [scrolled, setScrolled] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const portalRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setSignedIn(!!data.session));
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSignedIn(!!s));
+    const checkAdmin = async (uid?: string) => {
+      if (!uid) { setIsAdmin(false); return; }
+      const { data } = await supabase.rpc("has_role", { _user_id: uid, _role: "admin" });
+      setIsAdmin(data === true);
+    };
+    supabase.auth.getSession().then(({ data }) => { setSignedIn(!!data.session); void checkAdmin(data.session?.user.id); });
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => { setSignedIn(!!s); setTimeout(() => void checkAdmin(s?.user.id), 0); });
     return () => sub.subscription.unsubscribe();
   }, []);
   useEffect(() => {
@@ -228,6 +234,36 @@ export function Nav({
                     >
                       {lang === "ar" ? "بوابة الدخول" : "Access Portal"}
                     </div>
+                    {signedIn ? (
+                      <Link
+                        to={isAdmin ? "/admin" : "/portal"}
+                        onClick={() => setPortalOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 transition-colors group"
+                        style={{ color: "white" }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = "oklch(0.75 0.13 85 / 0.10)")}
+                        onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                      >
+                        <span
+                          className="size-9 grid place-items-center rounded-xl shrink-0"
+                          style={{
+                            background: "linear-gradient(135deg, oklch(0.75 0.13 85 / 0.25), oklch(0.75 0.13 85 / 0.08))",
+                            border: "1px solid oklch(0.75 0.13 85 / 0.40)",
+                          }}
+                        >
+                          {isAdmin ? <ShieldCheck className="size-4" style={{ color: "var(--accent)" }} /> : <GraduationCap className="size-4" style={{ color: "var(--accent)" }} />}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-bold leading-tight">
+                            {isAdmin ? (lang === "ar" ? "لوحة الإدارة" : "Admin dashboard") : (lang === "ar" ? "بوابتي" : "My portal")}
+                          </div>
+                          <div className="text-[11px] opacity-60 leading-tight mt-0.5">
+                            {lang === "ar" ? "أنت مسجّل الدخول" : "You are signed in"}
+                          </div>
+                        </div>
+                        <ArrowRight className="size-4 opacity-50 group-hover:opacity-100 group-hover:translate-x-0.5 rtl-flip transition-all" />
+                      </Link>
+                    ) : (
+                      <>
                     <Link
                       to="/auth"
                       search={{ role: "admin" }}
@@ -290,6 +326,8 @@ export function Nav({
                       </div>
                       <ArrowRight className="size-4 opacity-50 group-hover:opacity-100 group-hover:translate-x-0.5 rtl-flip transition-all" />
                     </Link>
+                      </>
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -416,6 +454,23 @@ export function Nav({
             >
               <Calendar className="size-4" /> {t("book_cta")}
             </button>
+            {signedIn ? (
+              <div className="mt-2 pt-2 border-t border-foreground/10">
+                <Link
+                  to={isAdmin ? "/admin" : "/portal"}
+                  onClick={() => setOpen(false)}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition"
+                  style={{
+                    background: "linear-gradient(135deg, oklch(0.75 0.13 85 / 0.18), oklch(0.75 0.13 85 / 0.05))",
+                    border: "1px solid oklch(0.75 0.13 85 / 0.45)",
+                    color: "var(--accent)",
+                  }}
+                >
+                  {isAdmin ? <ShieldCheck className="size-4" /> : <GraduationCap className="size-4" />}
+                  {isAdmin ? (lang === "ar" ? "لوحة الإدارة" : "Admin dashboard") : (lang === "ar" ? "بوابتي" : "My portal")}
+                </Link>
+              </div>
+            ) : (
             <div className="mt-2 pt-2 border-t border-foreground/10 grid grid-cols-2 gap-2">
               <Link
                 to="/auth"
@@ -448,6 +503,7 @@ export function Nav({
                 {lang === "ar" ? "المتدربين" : "Trainees"}
               </Link>
             </div>
+            )}
           </div>
         )}
       </div>

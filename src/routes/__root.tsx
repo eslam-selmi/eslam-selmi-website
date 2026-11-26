@@ -1,9 +1,12 @@
+import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
+  useNavigate,
   HeadContent,
   Scripts,
   type ErrorComponentProps,
@@ -21,6 +24,14 @@ import { TextEditLayer } from "@/components/home/TextEditLayer";
 import { SiteBranding } from "@/components/SiteBranding";
 
 function NotFoundComponent() {
+  const pathname = useRouterState({ select: (st) => st.location.pathname });
+  const navigate = useNavigate();
+  const isCoursesAlias = pathname.replace(/\/+$/, "") === "/courses";
+  useEffect(() => {
+    // "/courses" has no page of its own: the course list lives on the home page.
+    if (isCoursesAlias) void navigate({ to: "/", hash: "current-courses", replace: true });
+  }, [isCoursesAlias, navigate]);
+  if (isCoursesAlias) return null;
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
