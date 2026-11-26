@@ -11,8 +11,8 @@
   --nx-gold: oklch(0.84 0.13 82);
   --nx-gold-deep: oklch(0.72 0.13 75);
   --nx-ink: oklch(0.97 0.008 230);
-  --nx-ink-60: oklch(0.97 0.008 230 / 0.6);
-  --nx-ink-40: oklch(0.97 0.008 230 / 0.4);
+  --nx-ink-60: oklch(0.97 0.008 230 / 0.88);
+  --nx-ink-40: oklch(0.97 0.008 230 / 0.74);
   --nx-line: oklch(1 0 0 / 0.09);
   --nx-line-strong: oklch(1 0 0 / 0.16);
   --nx-card: linear-gradient(165deg, oklch(1 0 0 / 0.055), oklch(1 0 0 / 0.02) 55%);
@@ -426,3 +426,13 @@
 @media (max-width: 640px) { .nx .nx-admin-hero { padding: 20px 18px !important; } }
 
 .nx h1, .nx h2, .nx h3, .nx .font-display { font-family: var(--nx-font-display); }
+
+/* Dark surfaces: grey text is hard to read, so secondary text is near-white (light theme keeps dark text). */
+:root.dark .nx .text-white\/30, :root.dark .nx .text-white\/35, :root.dark .nx .text-white\/40, :root.dark .nx .text-white\/45,
+:root.dark .nx .text-white\/50, :root.dark .nx .text-white\/55, :root.dark .nx .text-white\/60, :root.dark .nx .text-white\/65,
+:root.dark .nx .text-white\/70 { color: oklch(0.97 0.008 230 / 0.9) !important; }
+:root.dark .nx .text-muted-foreground, :root.dark .nx .text-slate-400, :root.dark .nx .text-slate-500, :root.dark .nx .text-gray-400, :root.dark .nx .text-gray-500 { color: oklch(0.93 0.01 230 / 0.92) !important; }
+:root.dark .nx .nx-input::placeholder, :root.dark .nx input::placeholder, :root.dark .nx textarea::placeholder { color: oklch(0.97 0.008 230 / 0.62); }
+:root.dark .nx { --muted-foreground: oklch(0.9 0.015 240); }
+:root.dark .nx p.opacity-40, :root.dark .nx p.opacity-50, :root.dark .nx p.opacity-60, :root.dark .nx p.opacity-70,
+:root.dark .nx span.opacity-40, :root.dark .nx span.opacity-50, :root.dark .nx span.opacity-60, :root.dark .nx span.opacity-70 { opacity: 0.9; }
