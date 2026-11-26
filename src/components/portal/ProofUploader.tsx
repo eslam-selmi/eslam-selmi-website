@@ -73,13 +73,13 @@ export function ProofUploader({ enrollmentId, userId, currency, remaining, onUpl
         <>
           <div>
             <p className="text-[11px] text-white/60 mb-2">{isAr ? "1. اختر طريقة الدفع" : "1. Choose a payment method"}</p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {methods.map((m) => {
                 const active = selected?.id === m.id;
                 return (
                   <button key={m.id} type="button" onClick={() => setSelected(m)}
                     className={`text-xs px-3 py-2 rounded-lg border text-start transition ${active ? "bg-[var(--gold)]/25 border-[var(--gold)] text-white" : "bg-white/5 border-white/15 text-white/80 hover:bg-white/10"}`}>
-                    <span className="flex items-center gap-2"><PaymentLogo name={`${m.name_en || ""} ${m.name_ar || ""}`} /><span className="font-semibold block">{isAr ? m.name_ar : m.name_en}</span></span>
+                    <span className="flex items-center gap-3 min-h-8"><PaymentLogo name={`${m.name_en || ""} ${m.name_ar || ""}`} /><span className="font-semibold block whitespace-nowrap">{isAr ? m.name_ar : m.name_en}</span></span>
                   </button>
                 );
               })}
