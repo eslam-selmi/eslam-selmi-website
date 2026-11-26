@@ -20,7 +20,7 @@ export function useWelcomeGreeting(userId: string | undefined, firstName: string
     const k = `portal-greeted-${userId}`;
     if (sessionStorage.getItem(k)) return;
     sessionStorage.setItem(k, "1");
-    const t = setTimeout(() => toast(lang === "ar" ? `${timeGreeting(lang)} يا ${firstName} 👋` : `${timeGreeting(lang)}, ${firstName} 👋`, {
+    const t = setTimeout(() => toast(lang === "ar" ? `${timeGreeting(lang)} يا ${firstName}` : `${timeGreeting(lang)}, ${firstName}`, {
       description: lang === "ar" ? "مرحبًا بعودتك. يمكنك متابعة كورساتك وتقدمك." : "Welcome back. Review your courses and progress.",
     }), 600);
     return () => clearTimeout(t);
@@ -38,17 +38,17 @@ export function PersonalMessage({ lang, firstName, enrollments, continueTarget, 
 
   let icon = Sparkles, title = "", body = "", cta = "", action: () => void = () => onGo("available");
   if (newCerts > 0) {
-    icon = Award; title = ar ? `مبروك يا ${firstName}! 🎉` : `Congratulations, ${firstName}! 🎉`;
+    icon = Award; title = ar ? `مبروك يا ${firstName}!` : `Congratulations, ${firstName}!`;
     body = ar ? "شهادتك صدرت وجاهزة للتحميل." : "Your certificate has been issued and is ready to download.";
     cta = ar ? "افتح شهاداتي" : "Open my certificates"; action = () => onGo("certificates");
   } else if (continueTarget) {
     const p = continueTarget.progress, left = continueTarget.total - continueTarget.done, course = continueTarget.en.courses?.title ?? "";
     icon = p >= 70 ? Flame : Rocket;
-    title = ar ? (p === 0 ? `جاهز تبدأ يا ${firstName}؟` : p >= 70 ? `قربت جداً يا ${firstName}! 🔥` : `مكمّل بقوة يا ${firstName} 💪`) : (p === 0 ? `Ready to start, ${firstName}?` : p >= 70 ? `Almost there, ${firstName}! 🔥` : `Keep going, ${firstName} 💪`);
+    title = ar ? (p === 0 ? `جاهز تبدأ يا ${firstName}؟` : p >= 70 ? `قربت جداً يا ${firstName}!` : `مكمّل بقوة يا ${firstName}`) : (p === 0 ? `Ready to start, ${firstName}?` : p >= 70 ? `Almost there, ${firstName}!` : `Keep going, ${firstName}`);
     body = ar ? `أنجزت ${p}% من «${course}». متبقي ${left} محاضرة.` : `You've completed ${p}% of “${course}”. ${left} lecture(s) remaining.`;
     cta = ar ? "كمّل الكورس" : "Continue the course"; action = () => onOpenCourse(continueTarget.en);
   } else if (readyForCert) {
-    icon = Send; title = ar ? `خلّصت يا ${firstName}! 👏` : `You finished, ${firstName}! 👏`;
+    icon = Send; title = ar ? `خلّصت يا ${firstName}!` : `You finished, ${firstName}!`;
     body = ar ? `أنهيت «${readyForCert.courses?.title ?? ""}». اطلب شهادتك دلوقتي عشان نصدرهالك.` : `You completed “${readyForCert.courses?.title ?? ""}”. Request your certificate now.`;
     cta = ar ? "اطلب الشهادة" : "Request certificate"; action = () => onOpenCourse(readyForCert);
   } else if (pending.length) {
