@@ -418,3 +418,9 @@
   :root:not(.dark) .nx header { border-radius: 18px; }
 }
 :root:not(.dark) .nx header a > img { background-color: oklch(0.24 0.07 258) !important; border-color: transparent !important; }
+
+/* Admin overview title card: inner spacing */
+.nx .nx-admin-hero { padding: 28px 32px !important; overflow: hidden; }
+.nx .nx-admin-hero > .relative { gap: 16px; align-items: flex-end; }
+.nx .nx-admin-hero .nx-display { margin-top: 6px; }
+@media (max-width: 640px) { .nx .nx-admin-hero { padding: 20px 18px !important; } }

@@ -32,7 +32,7 @@ export function AdminOverview({
   return (
     <section className="space-y-6" aria-label={t("نظرة عامة تنفيذية", "Executive overview")}>
       {/* Executive header */}
-      <header className="relative nx-rise pb-1">
+      <header className="relative nx-rise nx-admin-hero px-5 py-5 sm:px-8 sm:py-7">
         <span className="nx-hero-line" />
         <div className="pointer-events-none absolute -top-24 -end-24 w-72 h-72 rounded-full bg-[var(--nx-teal)]/10 blur-3xl" />
         <div className="relative flex flex-wrap items-end justify-between gap-4">
