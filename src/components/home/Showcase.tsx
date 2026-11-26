@@ -48,10 +48,10 @@ export function Brands() {
   }) => (
     <div className="shrink-0 group">
       <div
-        className="relative h-24 w-44 md:h-28 md:w-52 rounded-2xl bg-white border border-border/30 overflow-hidden flex items-center justify-center px-5 py-3 transition-all duration-500 group-hover:-translate-y-1.5"
+        className="relative h-16 w-36 md:h-20 md:w-44 rounded-xl bg-white border border-border/30 overflow-hidden flex items-center justify-center px-4 py-2 transition-all duration-500 group-hover:-translate-y-1"
         style={{
           boxShadow:
-            "0 18px 40px -12px color-mix(in oklab, var(--primary) 35%, transparent), 0 6px 16px -6px rgba(0,0,0,0.25)",
+            "0 1px 2px rgba(0,0,0,0.08)",
         }}
       >
         <img
@@ -64,7 +64,7 @@ export function Brands() {
           className="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105"
         />
       </div>
-      <p className="mt-3 text-center text-[12px] font-semibold tracking-wide text-foreground/85">
+      <p className="mt-2 text-center text-[12px] font-semibold tracking-wide text-foreground/85">
         {lang === "ar" ? b.nameAr : b.name}
       </p>
       <p className="text-center text-[10px] tracking-widest uppercase text-muted-foreground/70 mt-0.5">
@@ -75,7 +75,7 @@ export function Brands() {
 
   return (
     <Section id="brands" eyebrow={t("brands_eyebrow")} title={t("brands_title")}>
-      <div className="grid lg:grid-cols-[1fr_auto] gap-8 items-end mb-10">
+      <div className="grid lg:grid-cols-[1fr_auto] gap-6 items-end mb-6">
         <p className="text-muted-foreground max-w-2xl">{t("brands_desc")}</p>
         <div className="flex items-center gap-3 text-sm">
           <span className="font-display text-4xl font-bold text-gradient-gold leading-none">
