@@ -1553,3 +1553,25 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 .tst-deck .tst-quote, .tst-deck .tst-card[data-long] .tst-quote { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; overflow: hidden; flex: 1 1 auto; }
 .tst-deck .tst-more { display: none; }
 .tst-deck .tst-quote, .tst-deck .tst-card[data-long] .tst-quote { flex: 0 0 auto; line-height: 1.75; height: calc(1.75em * 5); max-height: calc(1.75em * 5); -webkit-line-clamp: 5; }
+
+/* Testimonials: frosted glass cards (translucent, blurred, light border) */
+#testimonials { position: relative; isolation: isolate; }
+#testimonials::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(40% 55% at 12% 30%, color-mix(in oklab, var(--accent) 16%, transparent), transparent 70%), radial-gradient(38% 50% at 88% 70%, color-mix(in oklab, var(--accent) 11%, transparent), transparent 70%); }
+.tst-deck .tst-card, .tst-deck .tst-card:hover, .dark .tst-deck .tst-card, .dark .tst-deck .tst-card:hover {
+  background: linear-gradient(160deg, color-mix(in oklab, #fff 62%, transparent), color-mix(in oklab, #fff 38%, transparent));
+  -webkit-backdrop-filter: blur(18px) saturate(140%); backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid color-mix(in oklab, #fff 70%, var(--accent) 20%);
+  color: var(--foreground);
+}
+.dark .tst-deck .tst-card, .dark .tst-deck .tst-card:hover {
+  background: linear-gradient(160deg, color-mix(in oklab, #fff 11%, transparent), color-mix(in oklab, #fff 5%, transparent));
+  border: 1px solid color-mix(in oklab, #fff 20%, transparent);
+  color: oklch(0.97 0.008 230);
+}
+.tst-deck .tst-quote { color: var(--foreground); }
+.dark .tst-deck .tst-quote { color: oklch(0.96 0.01 230); }
+.tst-deck .tst-role { color: color-mix(in oklab, var(--foreground) 68%, transparent); }
+.dark .tst-deck .tst-role { color: oklch(0.82 0.02 240); }
+.tst-deck .tst-name { color: color-mix(in oklab, var(--accent) 70%, var(--foreground)); }
+.dark .tst-deck .tst-name { color: var(--accent); }
+.tst-deck .tst-card::before { background: var(--accent); }
