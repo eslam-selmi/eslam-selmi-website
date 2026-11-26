@@ -1,6 +1,7 @@
 import { csvSafeCell } from "@/lib/csv-safe";
 import { fetchBookingQuestions, saveBookingQuestions, splitDetails, MAX_QUESTIONS, type BookingQuestion } from "@/lib/booking-questions";
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { useI18n } from "@/lib/i18n";
@@ -219,16 +220,17 @@ export function BookingsPanel() {
 }
 
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 grid place-items-center p-4 bg-black/60 backdrop-blur-sm" onClick={onClose}>
-      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl bg-[#0c1224] border border-white/10 p-6 space-y-4 shadow-2xl">
+      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl bg-[#0b1736] border border-white/10 p-6 space-y-4 shadow-2xl">
         <div className="flex items-center justify-between">
           <h3 className="font-display font-extrabold text-base text-white">{title}</h3>
           <button onClick={onClose} className="size-8 grid place-items-center rounded-md text-white/60 hover:bg-white/5"><X className="size-4" /></button>
         </div>
         {children}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
@@ -382,7 +384,7 @@ function SettingsModal({ onClose, onGenerated }: { onClose: () => void; onGenera
         <Lbl l={t("نهاية الاستراحة", "Break end")}><input type="time" value={hm(s.break_end)} onChange={(e) => setS({ ...s, break_end: e.target.value || null })} className={inputCls} /></Lbl>
       </div>
       <Lbl l={t("المنطقة الزمنية", "Timezone")}>
-        <select value={s.timezone} onChange={(e) => setS({ ...s, timezone: e.target.value })} className={inputCls + " bg-[#0c1224]"}>
+        <select value={s.timezone} onChange={(e) => setS({ ...s, timezone: e.target.value })} className={inputCls + " bg-[#0b1736]"}>
           {["Africa/Cairo", "Asia/Riyadh", "Asia/Dubai", "Asia/Kuwait", "Asia/Qatar", "Europe/London"].map((z) => <option key={z}>{z}</option>)}
         </select>
       </Lbl>

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { toast } from "sonner";
@@ -348,10 +349,10 @@ function PackageForm({
   if (price < 0) errors.push(t("السعر لا يكون سالب", "Price cannot be negative"));
   const perSession = sessions >= 1 ? Math.round((price / sessions) * 100) / 100 : 0;
   const cur = String(form.currency || "").trim().toUpperCase() || "USD";
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 grid place-items-center p-4 bg-black/60 backdrop-blur-sm" onClick={onCancel}>
       <form onSubmit={(e) => { e.preventDefault(); if (errors.length) { setShowErr(true); return; } onSave(form); }} noValidate onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-lg rounded-3xl bg-[#0c1224] border border-white/10 p-6 space-y-3 shadow-2xl max-h-[90vh] overflow-y-auto">
+        className="w-full max-w-lg rounded-3xl bg-[#0b1736] border border-white/10 p-6 space-y-3 shadow-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between">
           <h3 className="font-display font-extrabold text-base text-white">
             {form.id ? t("تعديل الباقة", "Edit package") : t("باقة جديدة", "New package")}
@@ -366,7 +367,7 @@ function PackageForm({
               className="w-full rounded-xl px-3 py-2.5 text-sm bg-white/5 text-white border border-white/10 outline-none focus:border-[var(--gold)]/50" required />
           </Field>
           <Field label={t("الاسم (إنجليزي)", "Name (EN)")} required>
-            <input value={form.name_en} onChange={(e) => setForm({ ...form, name_en: e.target.value })}
+            <input dir="ltr" value={form.name_en} onChange={(e) => setForm({ ...form, name_en: e.target.value })}
               className="w-full rounded-xl px-3 py-2.5 text-sm bg-white/5 text-white border border-white/10 outline-none focus:border-[var(--gold)]/50" required />
           </Field>
         </div>
@@ -389,7 +390,7 @@ function PackageForm({
             className="w-full rounded-xl px-3 py-2.5 text-sm bg-white/5 text-white border border-white/10 outline-none focus:border-[var(--gold)]/50 resize-none" />
         </Field>
         <Field label={t("الوصف (إنجليزي)", "Description (EN)")}>
-          <textarea value={form.description_en || ""} onChange={(e) => setForm({ ...form, description_en: e.target.value })} rows={2}
+          <textarea dir="ltr" value={form.description_en || ""} onChange={(e) => setForm({ ...form, description_en: e.target.value })} rows={2}
             className="w-full rounded-xl px-3 py-2.5 text-sm bg-white/5 text-white border border-white/10 outline-none focus:border-[var(--gold)]/50 resize-none" />
         </Field>
         <div className="grid grid-cols-2 gap-3">
@@ -441,7 +442,8 @@ function PackageForm({
           </button>
         </div>
       </form>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

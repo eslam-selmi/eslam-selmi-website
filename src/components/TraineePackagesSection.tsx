@@ -1,5 +1,6 @@
 import { Layers } from "lucide-react";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { toast } from "sonner";
@@ -177,10 +178,10 @@ export function TraineePackagesSection({ userId }: { userId: string }) {
         </div>
       )}
 
-      {buying && (
+      {buying && createPortal(
         <div className="fixed inset-0 z-50 grid place-items-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setBuying(null)}>
           <form onSubmit={submitPurchase} onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-md rounded-3xl bg-[#0c1224] border border-white/10 p-6 space-y-4 shadow-2xl">
+            className="w-full max-w-md rounded-3xl bg-[#0b1736] border border-white/10 p-6 space-y-4 shadow-2xl">
             <div className="flex items-center justify-between">
               <h3 className="font-display font-extrabold text-base text-white">
                 {t("طلب باقة", "Request package")}: {isAr ? buying.name_ar : buying.name_en}
@@ -218,7 +219,8 @@ export function TraineePackagesSection({ userId }: { userId: string }) {
               </button>
             </div>
           </form>
-        </div>
+        </div>,
+        document.body,
       )}
     </section>
   );
