@@ -168,7 +168,6 @@ export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
       ) : (
         <div className="additions-grid">
           {items.map((it, idx) => {
-            const Icon = iconFor(it.kind);
             const t = isAr ? it.title_ar : it.title_en;
             const sub = isAr ? it.subtitle_ar : it.subtitle_en;
             const tag = it.custom_label;
@@ -183,13 +182,7 @@ export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
               >
                 <span className="additions-num" aria-hidden>{String(idx + 1).padStart(2, "0")}</span>
                 <span className="additions-body">
-                  <span className="additions-kindrow">
-                    <span className="additions-kind">
-                      <Icon className="size-[14px]" aria-hidden />
-                      {KIND_LABEL[it.kind][isAr ? 0 : 1]}
-                    </span>
-                    {tag && <span className="additions-label">{tag}</span>}
-                  </span>
+                  {tag && <span className="additions-kindrow"><span className="additions-label">{tag}</span></span>}
                   <span className="additions-card-title">{t}</span>
                   {sub && <span className="additions-card-sub">{sub}</span>}
                 </span>
