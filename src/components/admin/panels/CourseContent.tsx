@@ -365,8 +365,8 @@ export function ModuleCard({
                           onChange={(e) => moveItem(it, e.target.value)}
                           className="h-7 w-full min-w-0 sm:w-auto sm:max-w-[16rem] rounded-md bg-white/5 border border-white/15 text-[11px] px-1.5"
                         >
-                          {allModules.map((x: any, k: number) => (
-                            <option key={x.id} value={x.id} className="bg-[#0b1736]">{k + 1}. {x.title}</option>
+                          {orderModulesForDisplay(allModules as any[]).map(({ m: x, num }: any) => (
+                            <option key={x.id} value={x.id} className="bg-[#0b1736]">{num ? `${num}. ` : ""}{x.title}</option>
                           ))}
                         </select>
                       </label>
