@@ -146,12 +146,12 @@ export function CourseContent({ courseId }: { courseId: string }) {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-xl border border-white/10 bg-white/5 p-3 flex gap-2">
+      <div className="rounded-xl border border-white/10 bg-white/5 p-3 flex flex-wrap gap-2">
         <input
           value={newTitle}
           onChange={(e) => setNewTitle(e.target.value)}
           placeholder={t("عنوان باب جديد...", "New module title...")}
-          className="flex-1 h-10 px-3 rounded-lg bg-white/5 border border-white/15 text-sm focus:outline-none focus:border-[var(--gold)]/60"
+          className="flex-1 min-w-0 basis-40 h-10 px-3 rounded-lg bg-white/5 border border-white/15 text-sm focus:outline-none focus:border-[var(--gold)]/60"
         />
         <button
           onClick={addModule}
