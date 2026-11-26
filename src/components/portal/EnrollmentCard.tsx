@@ -41,7 +41,7 @@ export function EnrollmentCard({ en, onOpen, onWithdraw, progress = 0, doneCount
           </div>
 
           <div className="flex-1 min-w-0">
-            <h3 className="font-bold text-lg leading-snug line-clamp-2">{c?.title}</h3>
+            <h3 className="font-bold text-lg leading-snug line-clamp-2">{c?.title || (isAr ? "كورس غير متاح حاليًا" : "Course currently unavailable")}</h3>
             <span className={`mt-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border text-[11px] ${status.chip}`}>
               <SIcon className="w-3 h-3" /> {status.label}
             </span>
@@ -109,7 +109,12 @@ export function EnrollmentCard({ en, onOpen, onWithdraw, progress = 0, doneCount
           <p className="mt-4 text-sm text-rose-200/80 bg-rose-500/5 border border-rose-400/15 rounded-xl p-3">{en.notes}</p>
         )}
 
-        {en.status === "approved" && (
+        {en.status === "approved" && !c && (
+          <p className="mt-auto text-center text-sm text-white/60 bg-white/5 border border-white/10 rounded-xl p-3" style={{ marginTop: "1.25rem" }}>
+            {isAr ? "الكورس ده مش متاح للعرض دلوقتي. تواصل مع الدعم لو محتاج تفاصيل." : "This course is not open for viewing right now. Contact support if you need details."}
+          </p>
+        )}
+        {en.status === "approved" && c && (
           <button onClick={onOpen}
             className="mt-auto w-full h-12 rounded-xl font-bold flex items-center justify-center gap-2 hover:brightness-110 transition shadow-[0_16px_34px_-18px_rgba(212,175,55,0.9)]"
             style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736", marginTop: "1.25rem" }}>
