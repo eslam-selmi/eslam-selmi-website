@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, Search, Mail, Phone, Globe, MessageCircle, Loader2, ChevronLeft } from "lucide-react";
+import { Ban, CheckCircle2, ArrowRight, Search, Mail, Phone, Globe, MessageCircle, Loader2, ChevronLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
+import { toast } from "sonner";
 
 type Prof = {
   id: string; full_name: string | null; email: string | null; phone: string | null; country: string | null;
   avatar_url: string | null; account_blocked: boolean; activation_status: string; created_at: string; activated_at: string | null;
 };
-type Enr = { id: string; user_id: string; course_id: string; status: string; certificate_issued: boolean; created_at: string; courses: { title: string | null } | null };
+type Enr = { id: string; user_id: string; course_id: string; status: string; certificate_issued: boolean; blocked: boolean; created_at: string; courses: { title: string | null } | null };
 type Mod = { course_id: string; completed_by_admin: boolean | null };
 type Filter = "all" | "approved" | "pending" | "none" | "blocked";
 
@@ -33,7 +34,7 @@ export function SubscribersPanel() {
     (async () => {
       const [p, e, m] = await Promise.all([
         supabase.from("profiles").select("id,full_name,email,phone,country,avatar_url,account_blocked,activation_status,created_at,activated_at").order("created_at", { ascending: false }).limit(2000),
-        supabase.from("enrollments").select("id,user_id,course_id,status,certificate_issued,created_at,courses(title)").order("created_at", { ascending: false }).limit(5000),
+        supabase.from("enrollments").select("id,user_id,course_id,status,certificate_issued,blocked,created_at,courses(title)").order("created_at", { ascending: false }).limit(5000),
         supabase.from("course_modules").select("course_id,completed_by_admin").limit(5000),
       ]);
       setProfiles((p.data as Prof[]) ?? []);
@@ -42,6 +43,30 @@ export function SubscribersPanel() {
       setLoading(false);
     })();
   }, []);
+
+  const toggleAccount = async (p: Prof) => {
+    const next = !p.account_blocked;
+    const name = p.full_name || p.email || "";
+    const msg = next
+      ? t(`إيقاف حساب «${name}» بالكامل؟\nلن يستطيع الدخول للمنصة، وتنتهي جلسته عند فتح الصفحة التالية. لا يتم حذف أي بيانات أو اشتراكات، ويمكنك إعادة التفعيل في أي وقت.`, `Suspend the whole account of "${name}"?\nThey will not be able to use the platform and their session ends on the next page load. No data or enrollments are deleted, and you can reactivate at any time.`)
+      : t(`إعادة تفعيل حساب «${name}»؟`, `Reactivate the account of "${name}"?`);
+    if (!window.confirm(msg)) return;
+    const { data, error } = await supabase.from("profiles").update({ account_blocked: next }).eq("id", p.id).select("id,account_blocked");
+    if (error || !data?.length || data[0].account_blocked !== next) { toast.error(error?.message ?? t("لم يتم الحفظ", "Not saved")); return; }
+    setProfiles((a) => a.map((x) => (x.id === p.id ? { ...x, account_blocked: next } : x)));
+    toast.success(next ? t("تم إيقاف الحساب", "Account suspended") : t("تمت إعادة تفعيل الحساب", "Account reactivated"));
+  };
+  const toggleCourse = async (e: Enr) => {
+    const next = !e.blocked;
+    const msg = next
+      ? t(`إيقاف الوصول لكورس «${e.courses?.title}» فقط؟\nباقي الكورسات والحساب لا يتأثرون، ولا يتم حذف أي سجل. يمكنك إعادة الفتح في أي وقت.`, `Suspend access to "${e.courses?.title}" only?\nTheir other courses and the account are not affected and no record is deleted. You can restore it at any time.`)
+      : t(`إعادة فتح الوصول لكورس «${e.courses?.title}»؟`, `Restore access to "${e.courses?.title}"?`);
+    if (!window.confirm(msg)) return;
+    const { data, error } = await supabase.from("enrollments").update({ blocked: next }).eq("id", e.id).select("id,blocked");
+    if (error || !data?.length || data[0].blocked !== next) { toast.error(error?.message ?? t("لم يتم الحفظ", "Not saved")); return; }
+    setEnrs((a) => a.map((x) => (x.id === e.id ? { ...x, blocked: next } : x)));
+    toast.success(next ? t("تم إيقاف الوصول للكورس", "Course access suspended") : t("تمت إعادة فتح الكورس", "Course access restored"));
+  };
 
   const byUser = useMemo(() => {
     const m = new Map<string, Enr[]>();
@@ -76,7 +101,7 @@ export function SubscribersPanel() {
 
   if (openId) {
     const p = profiles.find((x) => x.id === openId);
-    if (p) return <SubscriberDetail p={p} enrs={byUser.get(p.id) ?? []} units={units} onBack={() => setOpenId(null)} t={t} fmt={fmt} statusLabel={statusLabel} />;
+    if (p) return <SubscriberDetail p={p} enrs={byUser.get(p.id) ?? []} units={units} onBack={() => setOpenId(null)} onAccount={() => toggleAccount(p)} onCourse={toggleCourse} t={t} fmt={fmt} statusLabel={statusLabel} />;
   }
 
   const filters: { id: Filter; label: string }[] = [
@@ -121,7 +146,7 @@ export function SubscribersPanel() {
             <span>{t("الكورسات", "Courses")}</span>
             <span>{t("الحالة", "Status")}</span>
             <span>{t("تاريخ الانضمام", "Joined")}</span>
-            <span />
+            <span className="text-end">{t("إجراء", "Action")}</span>
           </div>
           <ul className="divide-y divide-current/10">
             {rows.map((p) => {
@@ -129,7 +154,7 @@ export function SubscribersPanel() {
               const more = (byUser.get(p.id) ?? []).length - es.length;
               return (
                 <li key={p.id}>
-                  <button onClick={() => setOpenId(p.id)} className="w-full px-4 sm:px-5 py-3.5 text-start grid sub-cols items-center gap-x-4 gap-y-2 hover:bg-black/[.03] dark:hover:bg-white/[.04] transition">
+                  <div role="button" tabIndex={0} onKeyDown={(ev) => { if (ev.key === "Enter") setOpenId(p.id); }} onClick={() => setOpenId(p.id)} className="cursor-pointer w-full px-4 sm:px-5 py-3.5 text-start grid sub-cols items-center gap-x-4 gap-y-2 hover:bg-black/[.03] dark:hover:bg-white/[.04] transition">
                     <span className="flex items-center gap-3 min-w-0">
                       <Avatar p={p} />
                       <span className="min-w-0">
@@ -149,8 +174,10 @@ export function SubscribersPanel() {
                       {es.length === 0 ? <span className="opacity-60">{t("بدون اشتراك", "No enrollment")}</span> : es.map((e) => <span key={e.id} className="flex h-6 items-center"><span className={`px-2 py-0.5 rounded-md text-[10px] ${sc(e.status)}`}>{statusLabel(e.status)}</span></span>)}
                     </span>
                     <span className="text-xs opacity-70 whitespace-nowrap">{fmt(p.created_at)}</span>
-                    <ChevronLeft className="hidden lg:block w-4 h-4 opacity-40 rtl:rotate-0 ltr:rotate-180" />
-                  </button>
+                    <button type="button" onClick={(ev) => { ev.stopPropagation(); toggleAccount(p); }} title={p.account_blocked ? t("إعادة تفعيل الحساب", "Reactivate account") : t("إيقاف الحساب", "Suspend account")} aria-label={p.account_blocked ? t("إعادة تفعيل الحساب", "Reactivate account") : t("إيقاف الحساب", "Suspend account")} className={`h-8 w-8 rounded-lg inline-flex items-center justify-center border border-current/15 hover:bg-black/5 dark:hover:bg-white/10 ${p.account_blocked ? "text-emerald-600 dark:text-emerald-300" : "text-rose-600 dark:text-rose-300"}`}>
+                      {p.account_blocked ? <CheckCircle2 className="w-4 h-4" /> : <Ban className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </li>
               );
             })}
@@ -176,8 +203,8 @@ function Avatar({ p, big }: { p: Prof; big?: boolean }) {
     : <span className={`${size} rounded-full shrink-0 flex items-center justify-center font-bold bg-[var(--nx-teal)]/15 text-[var(--nx-teal)]`}>{(p.full_name || "?").slice(0, 1)}</span>;
 }
 
-function SubscriberDetail({ p, enrs, units, onBack, t, fmt, statusLabel }: {
-  p: Prof; enrs: Enr[]; units: Map<string, { done: number; total: number }>; onBack: () => void;
+function SubscriberDetail({ p, enrs, units, onBack, onAccount, onCourse, t, fmt, statusLabel }: {
+  p: Prof; enrs: Enr[]; units: Map<string, { done: number; total: number }>; onBack: () => void; onAccount: () => void; onCourse: (e: Enr) => void;
   t: (a: string, b: string) => string; fmt: (d?: string | null) => string; statusLabel: (s: string) => string;
 }) {
   const [pay, setPay] = useState<any[] | null>(null);
@@ -206,6 +233,7 @@ function SubscriberDetail({ p, enrs, units, onBack, t, fmt, statusLabel }: {
           <div className="flex flex-wrap gap-2 mt-3">
             <span className={`text-[11px] px-2 py-1 rounded-md ${p.account_blocked ? sc("rejected") : sc("approved")}`}>{p.account_blocked ? t("موقوف", "Blocked") : t("نشط", "Active")}</span>
             <span className="text-[11px] px-2 py-1 rounded-md bg-black/5 dark:bg-white/10">{t("التفعيل", "Activation")}: {p.activation_status}</span>
+            <button type="button" onClick={onAccount} className={`text-[11px] px-3 py-1 rounded-md font-semibold inline-flex items-center gap-1.5 ${p.account_blocked ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300" : "bg-rose-500/15 text-rose-700 dark:text-rose-300"}`}>{p.account_blocked ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Ban className="w-3.5 h-3.5" />}{p.account_blocked ? t("إعادة تفعيل الحساب", "Reactivate account") : t("إيقاف الحساب بالكامل", "Suspend whole account")}</button>
           </div>
         </div>
       </div>
@@ -225,7 +253,8 @@ function SubscriberDetail({ p, enrs, units, onBack, t, fmt, statusLabel }: {
             const u = units.get(e.course_id);
             return (
               <div key={e.id} className="rounded-xl border border-current/10 p-3 space-y-2">
-                <div className="flex items-center gap-2"><span className="flex-1 min-w-0 text-sm font-semibold truncate">{e.courses?.title}</span><span className={`px-2 py-0.5 rounded-md text-[10px] ${sc(e.status)}`}>{statusLabel(e.status)}</span></div>
+                <div className="flex items-center gap-2"><span className="flex-1 min-w-0 text-sm font-semibold truncate">{e.courses?.title}</span><span className={`px-2 py-0.5 rounded-md text-[10px] ${sc(e.status)}`}>{statusLabel(e.status)}</span>{e.blocked && <span className="px-2 py-0.5 rounded-md text-[10px] bg-rose-500/15 text-rose-700 dark:text-rose-300">{t("الوصول موقوف", "Access suspended")}</span>}</div>
+                <button type="button" onClick={() => onCourse(e)} className="nx-btn-ghost h-8 px-3 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5">{e.blocked ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Ban className="w-3.5 h-3.5" />}{e.blocked ? t("إعادة فتح هذا الكورس", "Restore this course") : t("إيقاف الوصول لهذا الكورس فقط", "Suspend this course only")}</button>
                 <p className="text-[11px] opacity-60">{fmt(e.created_at)}{e.certificate_issued ? ` · ${t("شهادة صادرة", "Certificate issued")}` : ""}</p>
                 {e.status === "approved" && u && u.total > 0 && (
                   <p className="text-[11px] opacity-70">{t("محتوى الكورس (ليس تقدّم هذا المتدرب):", "Course content (not this trainee's progress):")} <span dir="ltr">{u.done}/{u.total}</span> {t("وحدة أنهاها المدرّب", "units marked complete by the trainer")}</p>

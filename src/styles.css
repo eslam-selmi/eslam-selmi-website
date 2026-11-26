@@ -1636,5 +1636,5 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 
 /* subscribers table */
 .sub-cols { grid-template-columns: 1fr; }
-@media (min-width: 1024px) { .sub-cols { grid-template-columns: minmax(0,1.3fr) minmax(0,1.3fr) minmax(0,1.5fr) 6.5rem 7rem 1.25rem; } }
+@media (min-width: 1024px) { .sub-cols { grid-template-columns: minmax(0,1.3fr) minmax(0,1.3fr) minmax(0,1.5fr) 6.5rem 7rem 2.25rem; } }
 @media (max-width: 1023px) { .sub-cols { padding-block: 1rem; } }
