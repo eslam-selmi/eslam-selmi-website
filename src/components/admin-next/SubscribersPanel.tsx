@@ -10,7 +10,7 @@ type Prof = {
 };
 type Enr = { id: string; user_id: string; course_id: string; status: string; certificate_issued: boolean; blocked: boolean; created_at: string; courses: { title: string | null } | null };
 type Mod = { course_id: string; completed_by_admin: boolean | null };
-type Filter = "all" | "approved" | "pending" | "none" | "blocked";
+type Inst = { enrollment_id: string; amount: number; paid: boolean; due_date: string | null; currency: string };
 
 const sc = (s: string) =>
   s === "approved" ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300"
@@ -26,17 +26,25 @@ export function SubscribersPanel() {
   const [mods, setMods] = useState<Mod[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
-  const [filter, setFilter] = useState<Filter>("all");
+  const [insts, setInsts] = useState<Inst[]>([]);
+  const [fCourse, setFCourse] = useState("all");
+  const [fStatus, setFStatus] = useState("all");
+  const [fAcct, setFAcct] = useState("all");
+  const [fPay, setFPay] = useState("all");
+  const [fFrom, setFFrom] = useState("");
+  const [fTo, setFTo] = useState("");
   const [openId, setOpenIdRaw] = useState<string | null>(null);
   const setOpenId = (v: string | null) => { setOpenIdRaw(v); requestAnimationFrame(() => window.scrollTo({ top: 0 })); };
 
   useEffect(() => {
     (async () => {
-      const [p, e, m] = await Promise.all([
+      const [p, e, m, ins] = await Promise.all([
         supabase.from("profiles").select("id,full_name,email,phone,country,avatar_url,account_blocked,activation_status,created_at,activated_at").order("created_at", { ascending: false }).limit(2000),
         supabase.from("enrollments").select("id,user_id,course_id,status,certificate_issued,blocked,created_at,courses(title)").order("created_at", { ascending: false }).limit(5000),
         supabase.from("course_modules").select("course_id,completed_by_admin").limit(5000),
+        supabase.from("installments").select("enrollment_id,amount,paid,due_date,currency").limit(10000),
       ]);
+      setInsts((ins.data as Inst[]) ?? []);
       setProfiles((p.data as Prof[]) ?? []);
       setEnrs((e.data as unknown as Enr[]) ?? []);
       setMods((m.data as Mod[]) ?? []);
@@ -48,7 +56,7 @@ export function SubscribersPanel() {
     const next = !p.account_blocked;
     const name = p.full_name || p.email || "";
     const msg = next
-      ? t(`إيقاف حساب «${name}» بالكامل؟\nلن يستطيع الدخول للمنصة، وتنتهي جلسته عند فتح الصفحة التالية. لا يتم حذف أي بيانات أو اشتراكات، ويمكنك إعادة التفعيل في أي وقت.`, `Suspend the whole account of "${name}"?\nThey will not be able to use the platform and their session ends on the next page load. No data or enrollments are deleted, and you can reactivate at any time.`)
+      ? t(`إيقاف حساب «${name}» بالكامل؟\nلن يستطيع الدخول للمنصة، وتنتهي جلسته عند فتح الصفحة التالية. تنبيه: الإيقاف يُطبَّق حاليًا من واجهة المنصة فقط، والحماية على مستوى الخادم لسه غير مفعّلة. لا يتم حذف أي بيانات أو اشتراكات، ويمكنك إعادة التفعيل في أي وقت.`, `Suspend the whole account of "${name}"?\nThey will not be able to use the platform and their session ends on the next page load. Note: this is currently enforced by the app UI only; server-side enforcement is not active yet. No data or enrollments are deleted, and you can reactivate at any time.`)
       : t(`إعادة تفعيل حساب «${name}»؟`, `Reactivate the account of "${name}"?`);
     if (!window.confirm(msg)) return;
     const { data, error } = await supabase.from("profiles").update({ account_blocked: next }).eq("id", p.id).select("id,account_blocked");
@@ -83,18 +91,52 @@ export function SubscribersPanel() {
     return m;
   }, [mods]);
 
+  const instByEnr = useMemo(() => {
+    const m = new Map<string, Inst[]>();
+    for (const i of insts) m.set(i.enrollment_id, [...(m.get(i.enrollment_id) ?? []), i]);
+    return m;
+  }, [insts]);
+  const today = new Date().toISOString().slice(0, 10);
+  // Recorded dues only: unpaid installment rows. No installment rows = "not recorded", never "paid" or "zero".
+  const payState = (uid: string) => {
+    const es = byUser.get(uid) ?? [];
+    const all = es.flatMap((e) => instByEnr.get(e.id) ?? []);
+    const unpaid = all.filter((i) => !i.paid);
+    const overdue = unpaid.filter((i) => i.due_date && i.due_date.slice(0, 10) < today);
+    return { recorded: all.length > 0, unpaid, overdue, owed: unpaid.reduce((n, i) => n + Number(i.amount), 0), cur: unpaid[0]?.currency ?? "" };
+  };
+  const courseOptions = useMemo(() => {
+    const m = new Map<string, string>();
+    for (const e of enrs) if (e.courses?.title) m.set(e.course_id, e.courses.title);
+    return [...m.entries()];
+  }, [enrs]);
+
   const rows = useMemo(() => {
     const s = q.trim().toLowerCase();
     return profiles.filter((p) => {
       const es = byUser.get(p.id) ?? [];
-      if (filter === "approved" && !es.some((e) => e.status === "approved")) return false;
-      if (filter === "pending" && !es.some((e) => e.status === "pending")) return false;
-      if (filter === "none" && es.length > 0) return false;
-      if (filter === "blocked" && !p.account_blocked) return false;
+      const ce = fCourse === "all" ? es : es.filter((e) => e.course_id === fCourse);
+      if (fCourse !== "all" && ce.length === 0) return false;
+      if (fStatus === "none" && es.length > 0) return false;
+      if (["approved", "pending", "rejected"].includes(fStatus) && !ce.some((e) => e.status === fStatus)) return false;
+      if (fAcct === "blocked" && !p.account_blocked) return false;
+      if (fAcct === "active" && p.account_blocked) return false;
+      if (fAcct === "course_blocked" && !es.some((e) => e.blocked)) return false;
+      if (fFrom && p.created_at.slice(0, 10) < fFrom) return false;
+      if (fTo && p.created_at.slice(0, 10) > fTo) return false;
+      if (fPay !== "all") {
+        const ps = payState(p.id);
+        if (fPay === "owing" && ps.unpaid.length === 0) return false;
+        if (fPay === "overdue" && ps.overdue.length === 0) return false;
+        if (fPay === "clear" && !(ps.recorded && ps.unpaid.length === 0)) return false;
+        if (fPay === "unrecorded" && !(es.some((e) => e.status === "approved") && !ps.recorded)) return false;
+      }
       if (!s) return true;
       return [p.full_name, p.email, p.phone, p.country, ...es.map((e) => e.courses?.title)].some((v) => (v ?? "").toLowerCase().includes(s));
     });
-  }, [profiles, byUser, q, filter]);
+  }, [profiles, byUser, q, fCourse, fStatus, fAcct, fPay, fFrom, fTo, instByEnr]);
+  const anyFilter = fCourse !== "all" || fStatus !== "all" || fAcct !== "all" || fPay !== "all" || !!fFrom || !!fTo || !!q;
+  const resetFilters = () => { setFCourse("all"); setFStatus("all"); setFAcct("all"); setFPay("all"); setFFrom(""); setFTo(""); setQ(""); };
 
   const statusLabel = (s: string) => (s === "approved" ? t("مقبول", "Approved") : s === "rejected" ? t("مرفوض", "Rejected") : t("قيد المراجعة", "Pending"));
   const fmt = (d?: string | null) => (d ? new Date(d).toLocaleDateString(isAr ? "ar-EG" : "en-GB", { dateStyle: "medium" }) : "—");
@@ -104,13 +146,6 @@ export function SubscribersPanel() {
     if (p) return <SubscriberDetail p={p} enrs={byUser.get(p.id) ?? []} units={units} onBack={() => setOpenId(null)} onAccount={() => toggleAccount(p)} onCourse={toggleCourse} t={t} fmt={fmt} statusLabel={statusLabel} />;
   }
 
-  const filters: { id: Filter; label: string }[] = [
-    { id: "all", label: t("الكل", "All") },
-    { id: "approved", label: t("لديه كورس مقبول", "Approved course") },
-    { id: "pending", label: t("بانتظار المراجعة", "Pending") },
-    { id: "none", label: t("بدون اشتراك", "No enrollment") },
-    { id: "blocked", label: t("موقوف", "Blocked") },
-  ];
 
   return (
     <section className="space-y-4" aria-label={t("المشتركون", "Subscribers")}>
@@ -124,14 +159,45 @@ export function SubscribersPanel() {
             <input value={q} onChange={(e) => setQ(e.target.value)} className="nx-input w-full h-11 ps-10 pe-3 rounded-xl" placeholder={t("ابحث بالاسم أو البريد أو الهاتف أو الكورس", "Search name, email, phone or course")} />
           </label>
         </div>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {filters.map((f) => (
-            <button key={f.id} onClick={() => setFilter(f.id)} aria-pressed={filter === f.id}
-              className={`h-8 px-3 rounded-full text-xs font-semibold border transition ${filter === f.id ? "bg-[var(--nx-teal)] text-white border-transparent" : "border-current/20 opacity-80 hover:opacity-100"}`}>
-              {f.label}
-            </button>
-          ))}
+        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <label className="text-[11px] font-semibold opacity-80 space-y-1"><span>{t("الكورس", "Course")}</span>
+            <select value={fCourse} onChange={(e) => setFCourse(e.target.value)} className="nx-input h-10 rounded-xl px-3 text-sm w-full">
+              <option value="all">{t("كل الكورسات", "All courses")}</option>
+              {courseOptions.map(([id, title]) => <option key={id} value={id}>{title}</option>)}
+            </select></label>
+          <label className="text-[11px] font-semibold opacity-80 space-y-1"><span>{t("حالة الاشتراك", "Enrollment status")}</span>
+            <select value={fStatus} onChange={(e) => setFStatus(e.target.value)} className="nx-input h-10 rounded-xl px-3 text-sm w-full">
+              <option value="all">{t("الكل", "All")}</option>
+              <option value="approved">{t("مقبول", "Approved")}</option>
+              <option value="pending">{t("قيد المراجعة", "Pending")}</option>
+              <option value="rejected">{t("مرفوض", "Rejected")}</option>
+              <option value="none">{t("بدون اشتراك", "No enrollment")}</option>
+            </select></label>
+          <label className="text-[11px] font-semibold opacity-80 space-y-1"><span>{t("الحساب والوصول", "Account and access")}</span>
+            <select value={fAcct} onChange={(e) => setFAcct(e.target.value)} className="nx-input h-10 rounded-xl px-3 text-sm w-full">
+              <option value="all">{t("الكل", "All")}</option>
+              <option value="active">{t("حساب نشط", "Active account")}</option>
+              <option value="blocked">{t("حساب موقوف", "Suspended account")}</option>
+              <option value="course_blocked">{t("وصول كورس موقوف", "A course suspended")}</option>
+            </select></label>
+          <label className="text-[11px] font-semibold opacity-80 space-y-1"><span>{t("المستحقات (حسب الأقساط المسجّلة)", "Dues (recorded installments)")}</span>
+            <select value={fPay} onChange={(e) => setFPay(e.target.value)} className="nx-input h-10 rounded-xl px-3 text-sm w-full">
+              <option value="all">{t("الكل", "All")}</option>
+              <option value="owing">{t("عليه أقساط غير مسددة", "Has unpaid installments")}</option>
+              <option value="overdue">{t("أقساط متأخرة (تاريخها فات)", "Overdue installments")}</option>
+              <option value="clear">{t("كل الأقساط المسجّلة مسددة", "All recorded installments paid")}</option>
+              <option value="unrecorded">{t("اشتراك مقبول بدون أقساط مسجّلة", "Approved, no installments recorded")}</option>
+            </select></label>
+          <label className="text-[11px] font-semibold opacity-80 space-y-1"><span>{t("انضم من", "Joined from")}</span>
+            <input type="date" value={fFrom} onChange={(e) => setFFrom(e.target.value)} className="nx-input h-10 rounded-xl px-3 text-sm w-full" /></label>
+          <label className="text-[11px] font-semibold opacity-80 space-y-1"><span>{t("انضم حتى", "Joined to")}</span>
+            <input type="date" value={fTo} onChange={(e) => setFTo(e.target.value)} className="nx-input h-10 rounded-xl px-3 text-sm w-full" /></label>
         </div>
+        <div className="mt-3 flex items-center justify-between gap-3 text-xs">
+          <span className="font-semibold">{rows.length} {t("من", "of")} {profiles.length} {t("مشترك", "subscribers")}</span>
+          {anyFilter && <button type="button" onClick={resetFilters} className="underline opacity-80 hover:opacity-100">{t("مسح الفلاتر", "Clear filters")}</button>}
+        </div>
+        <p className="mt-2 text-[11px] opacity-60">{t("المستحقات تعتمد على جدول الأقساط المسجّل فقط. غياب الدفع أو غياب الأقساط لا يعني مديونية.", "Dues use recorded installments only. A missing payment or missing installments is not treated as debt.")}</p>
       </div>
 
       {loading ? (
@@ -159,6 +225,7 @@ export function SubscribersPanel() {
                       <Avatar p={p} />
                       <span className="min-w-0">
                         <span className="block font-bold truncate">{p.full_name || t("بدون اسم", "No name")}</span>
+                        {(() => { const ps = payState(p.id); return ps.unpaid.length > 0 ? <span className={`inline-block me-1 mt-0.5 text-[10px] px-2 py-0.5 rounded-md ${ps.overdue.length ? "bg-rose-500/15 text-rose-700 dark:text-rose-300" : "bg-amber-400/20 text-amber-700 dark:text-amber-200"}`}>{ps.overdue.length ? t("متأخر", "Overdue") : t("أقساط مستحقة", "Dues")} · {ps.owed.toLocaleString()} {ps.cur}</span> : null; })()}
                         {p.account_blocked && <span className="inline-block mt-0.5 text-[10px] px-2 py-0.5 rounded-md bg-rose-500/15 text-rose-700 dark:text-rose-300">{t("موقوف", "Blocked")}</span>}
                       </span>
                     </span>
