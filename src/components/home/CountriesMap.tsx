@@ -78,13 +78,6 @@ export function CountriesMap() {
           ctx.beginPath(); ctx.arc(x, y, r0 * (1.05 + 0.45 * g), 0, 7); ctx.fill();
         }
       });
-      // borderless: dissolve the dot field into the panel with an elliptical fade
-      ctx.save(); ctx.globalCompositeOperation = "destination-in";
-      ctx.translate(W / 2, ROOM + mapH / 2); ctx.scale(1, (mapH * 0.56) / (W * 0.5));
-      const fade = ctx.createRadialGradient(0, 0, W * 0.5 * 0.62, 0, 0, W * 0.5);
-      fade.addColorStop(0, "rgba(0,0,0,1)"); fade.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = fade; ctx.fillRect(-W, -W, W * 2, W * 2); ctx.restore();
-
       const fam = getComputedStyle(box).fontFamily;
       const rtl = lang === "ar";
       reveal.forEach((code, i) => {

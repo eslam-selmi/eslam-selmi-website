@@ -16,7 +16,6 @@ export function Clients() {
     <Section id="clients" eyebrow={t("clients_eyebrow")} title={t("clients_title")}>
       <motion.div {...fadeUp} className="world-panel">
         <div className="world-stage-frame">
-          <span className="world-stage-ring" aria-hidden="true" />
           <CountriesMap />
         </div>
       </motion.div>
