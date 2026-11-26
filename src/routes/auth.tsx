@@ -219,8 +219,8 @@ function AuthPage() {
                 <div className="mb-4 inline-flex"><div className="mt-glass-logo" style={{ "--logo": `url(${siteProfile.logoDark})` } as React.CSSProperties}>
                   <span aria-hidden className="mt-glass-logo__glow" />
                   <div className="mt-glass-logo__tile">
-                    <img src={siteProfile.logo} alt="Eslam Selmi" width={96} height={96} className="mt-glass-logo__img dark:hidden" />
-                    <img src={siteProfile.logoDark} alt="" aria-hidden width={96} height={96} className="mt-glass-logo__img hidden dark:block" />
+                    <img src={siteProfile.logo} alt="Eslam Selmi" width={96} height={96} className="mt-glass-logo__img auth-logo-light" />
+                    <img src={siteProfile.logoDark} alt="" aria-hidden width={96} height={96} className="mt-glass-logo__img auth-logo-dark" />
                     <span aria-hidden className="mt-glass-logo__shine" />
                     <span aria-hidden className="mt-glass-logo__sheen" />
                   </div>

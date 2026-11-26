@@ -1417,3 +1417,8 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 .world-hero .world-lead { font-size: clamp(1.3rem, 2.6vw, 1.9rem); }
 .world-map-stage { position: relative; width: min(100%, 720px); }
 .world-map-stage canvas { display: block; max-width: 100%; }
+
+/* Sign-in logo: one variant per theme (white mark in dark mode, navy mark in light mode). */
+.auth-logo-dark { display: none; }
+:root.dark .auth-logo-light, .dark .auth-logo-light { display: none; }
+:root.dark .auth-logo-dark, .dark .auth-logo-dark { display: block; }
