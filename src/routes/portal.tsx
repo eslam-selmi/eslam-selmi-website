@@ -452,7 +452,7 @@ function PortalPage() {
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {trAvailable.map((c) => (
-                <div key={c.id} className="group nx-card nx-card-hover p-5 flex flex-col">
+                <div key={c.id} className="group nx-card nx-card-hover p-5 flex flex-col h-full">
                   <div className="flex items-start gap-3 mb-3">
                     <div className="w-12 h-12 rounded-2xl bg-[var(--nx-teal)]/10 border border-[var(--nx-teal)]/25 flex items-center justify-center text-2xl shrink-0">
                       {c.cover_emoji || "🎓"}
