@@ -20,9 +20,9 @@ export function TraineeReviews() {
   return (
     <section id="trainee-reviews" className="py-16 lg:py-24 px-4 sm:px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-10">
-          <p className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">{isAr ? "آراء المتدربين" : "Trainee reviews"}</p>
-          <h2 className="mt-2 font-display section-title font-bold tracking-tight text-foreground">{isAr ? "ماذا يقول من تدرّبوا معنا" : "What our trainees say"}</h2>
+        <div className="mb-10 lg:mb-12">
+          <div className="inline-flex items-center gap-2 rounded-full bg-foreground/[0.06] border border-foreground/10 px-3.5 py-1.5 text-[11px] uppercase tracking-[0.28em] text-foreground font-bold mb-5"><span className="size-1.5 rounded-full bg-accent" />{isAr ? "آراء المتدربين" : "Trainee reviews"}</div>
+          <h2 className="font-display leading-[1.05] section-title tracking-tight text-foreground">{isAr ? "ماذا يقول من تدرّبوا معنا" : "What our trainees say"}</h2>
           <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-sm text-foreground">
             <span className="flex" dir="ltr">{[1, 2, 3, 4, 5].map((n) => <Star key={n} className={`w-4 h-4 ${n <= Math.round(avg) ? "fill-accent text-accent" : "text-muted-foreground/40"}`} />)}</span>
             <span className="font-bold tabular-nums">{avg.toFixed(1)}</span>

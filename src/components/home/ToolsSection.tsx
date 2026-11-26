@@ -14,10 +14,11 @@ export function ToolsSection() {
   if (ids.length === 0) return null;
   const ar = lang === "ar";
   return (
-    <section id="tools" className="max-w-7xl mx-auto px-4 sm:px-6 py-16 lg:py-20">
-      <h2 className="text-2xl sm:text-3xl font-extrabold">{ar ? "أدوات تفاعلية" : "Interactive tools"}</h2>
-      <p className="mt-2 text-foreground/70 max-w-2xl">{ar ? "أدوات تعمل مباشرة في الموقع، وبياناتك تُحفظ على حسابك. تحتاج تسجيل دخول وصلاحية من الإدارة." : "Tools that run on the site, with your data saved to your account. Requires sign-in and access from the administrator."}</p>
-      <div className="mt-8 grid gap-4 sm:grid-cols-2">
+    <section id="tools" className="max-w-7xl mx-auto px-4 sm:px-6 py-16 lg:py-24">
+      <div className="inline-flex items-center gap-2 rounded-full bg-foreground/[0.06] border border-foreground/10 px-3.5 py-1.5 text-[11px] uppercase tracking-[0.28em] text-foreground font-bold mb-5"><span className="size-1.5 rounded-full bg-accent" />{ar ? "الأدوات" : "Tools"}</div>
+      <h2 className="font-display leading-[1.05] tracking-tight text-foreground section-title">{ar ? "أدوات تفاعلية" : "Interactive tools"}</h2>
+      <p className="mt-4 text-foreground/70 max-w-2xl">{ar ? "أدوات تعمل مباشرة في الموقع، وبياناتك تُحفظ على حسابك. تحتاج تسجيل دخول وصلاحية من الإدارة." : "Tools that run on the site, with your data saved to your account. Requires sign-in and access from the administrator."}</p>
+      <div className="mt-10 lg:mt-12 grid gap-4 sm:grid-cols-2">
         {ids.map((id) => {
           const Icon = ICONS[id];
           const m = TOOLS[id];
