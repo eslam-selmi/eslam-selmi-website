@@ -55,6 +55,8 @@ function PortalPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [courses, setCourses] = useState<Course[]>([]);
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
+  // Titles of courses with an issued certificate, kept even if the course is later set inactive.
+  const [certCourses, setCertCourses] = useState<Record<string, { id: string; title: string; total_hours: number | null }>>({});
   const [modules, setModules] = useState<ModuleRow[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [showUpload, setShowUpload] = useState(false);
@@ -99,6 +101,12 @@ function PortalPage() {
     setProfile(p.data);
     setCourses((c.data as Course[]) ?? []);
     setEnrollments((e.data as any) ?? []);
+    if (((e.data as any[]) ?? []).some((x) => x.certificate_issued && !x.courses)) {
+      const cc = await (supabase as any).rpc("my_certificate_courses");
+      const map: Record<string, { id: string; title: string; total_hours: number | null }> = {};
+      for (const r of (cc.data as any[]) ?? []) map[r.course_id] = { id: r.course_id, title: r.title, total_hours: r.total_hours };
+      setCertCourses(map);
+    }
     // Modules for approved enrollments → used to compute hours-as-progress
     const approvedCourseIds = ((e.data as any[]) ?? [])
       .filter((x) => x.status === "approved")
@@ -380,7 +388,9 @@ function PortalPage() {
         <section id="certificates" className="scroll-mt-24">
           <SectionHeader icon={GraduationCap} hint={isAr ? "إنجازاتك" : "Your achievements"} title={isAr ? "شهاداتي" : "My certificates"} />
           <MyCertificatesSection
-            enrollments={trEnrollments.filter((e) => e.certificate_issued && (e.certificate_url_ar || e.certificate_url_en || e.certificate_url))}
+            enrollments={trEnrollments
+              .filter((e) => e.certificate_issued && (e.certificate_url_ar || e.certificate_url_en || e.certificate_url))
+              .map((e) => (e.courses || !certCourses[e.course_id] ? e : { ...e, courses: certCourses[e.course_id] as any }))}
             onDownload={downloadCert}
             lang={lang}
           />

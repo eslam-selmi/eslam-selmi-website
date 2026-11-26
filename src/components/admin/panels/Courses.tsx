@@ -70,11 +70,13 @@ import { courseDeliveryMode } from "@/lib/course-delivery";
 export function CoursesPanel({
   courses,
   enrollments,
+  loaded = true,
   refresh,
   onEdit,
 }: {
   courses: Course[];
   enrollments: EnrollmentRow[];
+  loaded?: boolean;
   refresh: () => void;
   onEdit: (c: Course) => void;
 }) {
@@ -199,7 +201,11 @@ export function CoursesPanel({
   return (
     <div className="grid lg:grid-cols-[1fr_360px] gap-6">
       <div className="space-y-3">
-        {courses.length === 0 ? (
+        {courses.length === 0 && !loaded ? (
+          <div className="rounded-2xl border border-dashed border-white/15 p-8 text-center text-white/50 text-sm flex items-center justify-center gap-2">
+            <Loader2 className="w-4 h-4 animate-spin" /> {t("جارٍ تحميل الكورسات…", "Loading courses…")}
+          </div>
+        ) : courses.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-white/15 p-8 text-center text-white/50 text-sm">
             {t("لا توجد كورسات. أضف أول كورس →", "No courses yet. Add your first course →")}
           </div>

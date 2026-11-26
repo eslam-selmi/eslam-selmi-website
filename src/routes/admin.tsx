@@ -90,6 +90,7 @@ function AdminPage() {
 
   const [pendingActivations, setPendingActivations] = useState<number>(0);
   const [courses, setCourses] = useState<Course[]>([]);
+  const [dataLoaded, setDataLoaded] = useState(false);
   const [enrollments, setEnrollments] = useState<EnrollmentRow[]>([]);
 
   const [drawerId, setDrawerId] = useState<string | null>(search.drawer || null);
@@ -145,6 +146,7 @@ function AdminPage() {
     }
     setCourses((c.data as Course[]) ?? []);
     setEnrollments(enrollList.map((r) => ({ ...r, profiles: profileMap[r.user_id] ?? null })));
+    setDataLoaded(true);
   }
   useEffect(() => {
     if (role === "admin") refresh();
@@ -290,6 +292,7 @@ function AdminPage() {
           <CoursesPanel
             courses={courses}
             enrollments={enrollments}
+            loaded={dataLoaded}
             refresh={refresh}
             onEdit={setEditingCourse}
           />

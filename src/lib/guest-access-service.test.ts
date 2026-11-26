@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { createGuest, resetGuestPassword, setGuestEnabled, guestLogin, sessionValid, guestCourses, guestOpenCourse, guestSummary, generatePassword, makeSession, requireUpdated, type GuestStore, type GuestRow } from "./guest-access-service";
 
 const SECRET = "test-secret";
-const now = new Date("2026-11-25T12:00:00Z");
+const now = new Date(); // real clock: later calls in the service use the current time too
 function mem() {
   let g: GuestRow | null = null;
   const s: GuestStore = {
