@@ -9,7 +9,7 @@ export const Route = createFileRoute("/verify/$id")({
   component: VerifyPage,
   head: () => ({
     meta: [
-      { title: "Certificate Verification — Eslam Selmi Academy" },
+      { title: "التحقق من الشهادة · Certificate Verification — إسلام سلمي" },
       { name: "description", content: "Verify the authenticity of a certificate issued by Eslam Selmi Academy." },
       { property: "og:title", content: "Certificate Verification — Eslam Selmi" },
       { property: "og:description", content: "Verify the authenticity of a certificate issued by Eslam Selmi." },
@@ -47,10 +47,10 @@ function VerifyPage() {
       <header className="relative z-10 max-w-3xl mx-auto px-6 py-6 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3">
           <img src={profile.logoDark} alt="" className="h-10 w-auto" />
-          <span className="text-sm tracking-widest text-white/70 uppercase">Eslam Selmi Academy</span>
+          <span className="text-sm text-white/70">إسلام سلمي · Eslam Selmi</span>
         </Link>
         <Link to="/" className="text-xs text-white/60 hover:text-white flex items-center gap-1">
-          <ArrowLeft className="w-3.5 h-3.5" /> Home
+          <ArrowLeft className="w-3.5 h-3.5" /> الرئيسية · Home
         </Link>
       </header>
 
@@ -59,16 +59,17 @@ function VerifyPage() {
           {state.loading ? (
             <div className="flex flex-col items-center gap-3 py-10 text-white/70">
               <Loader2 className="w-8 h-8 animate-spin text-[var(--gold)]" />
-              <p className="text-sm">Verifying certificate…</p>
+              <p className="text-sm">جارٍ التحقق من الشهادة… · Verifying certificate…</p>
             </div>
           ) : !valid ? (
             <div className="text-center space-y-3 py-6">
               <div className="w-16 h-16 mx-auto rounded-full bg-rose-500/15 border border-rose-500/40 flex items-center justify-center">
                 <XCircle className="w-8 h-8 text-rose-300" />
               </div>
-              <h1 className="text-xl font-bold">Certificate not found</h1>
+              <h1 className="text-xl font-bold">الشهادة غير موجودة · Certificate not found</h1>
               <p className="text-sm text-white/60">
-                This certificate ID is invalid, has not been issued yet, or has been revoked. Please double-check the QR code or the URL.
+                رقم الشهادة غير صحيح أو لم يُصدر بعد أو تم إلغاؤه. تأكد من رمز QR أو الرابط.
+                <br />This certificate ID is invalid, has not been issued yet, or has been revoked. Please double-check the QR code or the URL.
               </p>
               <p className="text-[11px] text-white/40 font-mono break-all" dir="ltr">{id}</p>
             </div>
@@ -83,16 +84,16 @@ function VerifyPage() {
                     <CheckCircle2 className="w-4 h-4 text-[#0b1736]" />
                   </div>
                 </div>
-                <p className="text-[11px] uppercase tracking-[0.3em] text-emerald-300 font-semibold">Verified Credential</p>
-                <h1 className="text-2xl sm:text-3xl font-bold">This certificate is authentic</h1>
+                <p className="text-[11px] uppercase tracking-[0.3em] text-emerald-300 font-semibold">شهادة موثّقة · Verified Credential</p>
+                <h1 className="text-2xl sm:text-3xl font-bold">هذه الشهادة أصلية · This certificate is authentic</h1>
                 <p className="text-sm text-white/60 max-w-md">
-                  Issued and digitally verified by Eslam Selmi Academy. The data below was retrieved live from our records.
+                  صادرة ومعتمدة رقميًا من إسلام سلمي. · Issued and digitally verified by Eslam Selmi. The data below was retrieved live from our records.
                 </p>
               </div>
 
               <div className="border-t border-white/10 pt-6 space-y-4">
                 {(d!.trainee_name_en || d!.trainee_name_ar) && (
-                  <Field label="Awarded to">
+                  <Field label="مُنحت إلى · Awarded to">
                     <div className="space-y-0.5">
                       {d!.trainee_name_en && <p className="text-lg font-bold" dir="ltr">{d!.trainee_name_en}</p>}
                       {d!.trainee_name_ar && <p className="text-base font-semibold text-white/85" dir="rtl">{d!.trainee_name_ar}</p>}
@@ -100,25 +101,25 @@ function VerifyPage() {
                   </Field>
                 )}
 
-                <Field label="Course" icon={Award}>
+                <Field label="الدورة · Course" icon={Award}>
                   <p className="font-semibold">{d!.course_title}</p>
                   {d!.course_description && <p className="text-xs text-white/55 mt-1">{d!.course_description.slice(0, 200)}</p>}
                 </Field>
 
                 <div className="grid sm:grid-cols-2 gap-4">
                   {Number(d!.total_hours) > 0 && (
-                    <Field label="Training hours" icon={Clock}>
+                    <Field label="ساعات التدريب · Training hours" icon={Clock}>
                       <p className="font-semibold">{d!.total_hours} hours</p>
                     </Field>
                   )}
-                  <Field label="Date of issue" icon={Calendar}>
+                  <Field label="تاريخ الإصدار · Date of issue" icon={Calendar}>
                     <p className="font-semibold">
                       {new Date(d!.issued_at).toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" })}
                     </p>
                   </Field>
                 </div>
 
-                <Field label="Certificate ID">
+                <Field label="رقم الشهادة · Certificate ID">
                   <p className="text-xs font-mono text-white/70 break-all" dir="ltr">{d!.certificate_id}</p>
                 </Field>
               </div>
@@ -132,7 +133,7 @@ function VerifyPage() {
         </div>
 
         <p className="text-center text-[11px] text-white/40 mt-6">
-          © {new Date().getFullYear()} Eslam Selmi Academy. All rights reserved.
+          © {new Date().getFullYear()} Eslam Selmi · إسلام سلمي
         </p>
       </main>
     </div>

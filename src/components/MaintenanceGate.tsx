@@ -15,6 +15,7 @@ const ALLOWED_PREFIXES = ["/admin", "/auth", "/portal", "/trainer", "/onboarding
 export function MaintenanceGate({ children }: { children: React.ReactNode }) {
   const [config, setConfig] = useState<Config | null>(null);
   const [signedIn, setSignedIn] = useState<boolean>(false);
+  const [sessionChecked, setSessionChecked] = useState(false);
   const location = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
@@ -46,6 +47,7 @@ export function MaintenanceGate({ children }: { children: React.ReactNode }) {
       } catch {
         if (alive) setSignedIn(true); // fail open
       }
+      if (alive) setSessionChecked(true);
     };
     sync();
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
@@ -54,6 +56,16 @@ export function MaintenanceGate({ children }: { children: React.ReactNode }) {
     return () => { alive = false; sub.subscription.unsubscribe(); };
   }, []);
 
+  const allowedPath = ALLOWED_PREFIXES.some((p) => location === p || location.startsWith(p + "/"));
+  if ((!config || !sessionChecked) && !allowedPath) {
+    // Until the maintenance setting and the session are known, keep the page hidden so visitors never see it flash.
+    return (
+      <>
+        <div aria-hidden style={{ visibility: "hidden" }}>{children}</div>
+        <div aria-hidden style={{ position: "fixed", inset: 0, zIndex: 9999, background: "#07112a" }} />
+      </>
+    );
+  }
   if (!config) return <>{children}</>;
   if (!config.enabled) return <>{children}</>;
   if (signedIn) return <>{children}</>;

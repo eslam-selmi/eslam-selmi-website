@@ -282,7 +282,15 @@ function AuthPage() {
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form
+                onSubmit={handleSubmit}
+                onInvalidCapture={(e) => {
+                  const el = e.target as HTMLInputElement;
+                  el.setCustomValidity(el.validity.valueMissing ? "هذا الحقل مطلوب" : el.validity.typeMismatch ? "اكتب بريدًا إلكترونيًا صحيحًا" : el.validity.tooShort ? "القيمة قصيرة جدًا" : "القيمة غير صالحة");
+                }}
+                onInputCapture={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
+                className="space-y-4"
+              >
                 {!isAdminView && mode === "signup" && (
                   <>
                     <Field label="الاسم الكامل" value={fullName} onChange={setFullName} placeholder="الاسم الثلاثي" required />
@@ -380,7 +388,7 @@ function AuthPage() {
                   {mode === "login" ? "ليس لديك حساب؟ " : "لديك حساب بالفعل؟ "}
                   <button
                     type="button"
-                    onClick={() => setMode(mode === "login" ? "signup" : "login")}
+                    onClick={() => { setPassword(""); setMode(mode === "login" ? "signup" : "login"); }}
                     className="text-[var(--nx-teal)] hover:underline font-bold"
                   >
                     {mode === "login" ? "إنشاء حساب" : "تسجيل الدخول"}
@@ -391,13 +399,13 @@ function AuthPage() {
               <hr className="nx-divider my-6" />
               <div className="flex justify-center">
                 {isAdminView ? (
-                  <button type="button" onClick={() => setAuthRole("trainee")} className="text-[12px] font-semibold text-white/45 hover:text-white/80 transition">
+                  <button type="button" onClick={() => { setPassword(""); setAuthRole("trainee"); nav({ to: "/auth", search: { role: "trainee" } as never, replace: true }); }} className="text-[12px] font-semibold text-white/45 hover:text-white/80 transition">
                     دخول المتدربين
                   </button>
                 ) : (
                   <button
                     type="button"
-                    onClick={() => { setAuthRole("admin"); setMode("login"); }}
+                    onClick={() => { setPassword(""); setAuthRole("admin"); setMode("login"); nav({ to: "/auth", search: { role: "admin" } as never, replace: true }); }}
                     className="text-[12px] font-semibold text-white/45 hover:text-white/80 transition"
                   >
                     دخول الإدارة
