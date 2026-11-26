@@ -178,7 +178,7 @@ function TextEditInner({ children }: { children: ReactNode }) {
     <div ref={ref}>
       {children}
       {isAdmin && (
-        <div data-text-edit-ui className="fixed bottom-24 start-5 z-[60] flex flex-col gap-2">
+        <div data-text-edit-ui className="fixed bottom-24 start-5 z-[45] flex flex-col gap-2">
           {editing && (
             <Button size="sm" variant="secondary" onClick={() => setListOpen(true)}>
               {ar ? `النصوص المعدّلة (${entries.length})` : `Edited texts (${entries.length})`}
