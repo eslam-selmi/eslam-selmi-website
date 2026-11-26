@@ -254,7 +254,7 @@ export function Nav({
                         </span>
                         <div className="flex-1 min-w-0">
                           <div className="text-sm font-bold leading-tight">
-                            {isAdmin ? (lang === "ar" ? "لوحة الإدارة" : "Admin dashboard") : (lang === "ar" ? "بوابتي" : "My portal")}
+                            {isAdmin ? (lang === "ar" ? "لوحة الإدارة" : "Admin dashboard") : (lang === "ar" ? "حسابي" : "My portal")}
                           </div>
                           <div className="text-[11px] opacity-60 leading-tight mt-0.5">
                             {lang === "ar" ? "أنت مسجّل الدخول" : "You are signed in"}
@@ -467,7 +467,7 @@ export function Nav({
                   }}
                 >
                   {isAdmin ? <ShieldCheck className="size-4" /> : <GraduationCap className="size-4" />}
-                  {isAdmin ? (lang === "ar" ? "لوحة الإدارة" : "Admin dashboard") : (lang === "ar" ? "بوابتي" : "My portal")}
+                  {isAdmin ? (lang === "ar" ? "لوحة الإدارة" : "Admin dashboard") : (lang === "ar" ? "حسابي" : "My portal")}
                 </Link>
               </div>
             ) : (
