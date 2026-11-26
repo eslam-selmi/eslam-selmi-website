@@ -209,12 +209,12 @@ export function Hero() {
                 <ThemeLogo size={56} className="h-11 sm:h-14 w-auto opacity-80" alt="" />
                 <span className="h-10 sm:h-12 w-px bg-foreground/25" aria-hidden />
                 <span
-                  className="text-[2rem] sm:text-[2.6rem] leading-none text-foreground"
-                  style={{ fontFamily: '"Thmanyah Serif Display", serif', fontWeight: 700 }}
-                  lang="ar"
-                  dir="rtl"
+                  className={lang === "ar" ? "text-[2rem] sm:text-[2.6rem] leading-none text-foreground" : "text-[1.6rem] sm:text-[2.1rem] leading-none tracking-tight text-foreground"}
+                  style={lang === "ar" ? { fontFamily: '"Thmanyah Serif Display", serif', fontWeight: 700 } : { fontFamily: "var(--font-heading-en)", fontWeight: 700 }}
+                  lang={lang === "ar" ? "ar" : "en"}
+                  dir={lang === "ar" ? "rtl" : "ltr"}
                 >
-                  {nameAr}
+                  {lang === "ar" ? nameAr : nameEn}
                 </span>
               </span>
             </motion.div>
