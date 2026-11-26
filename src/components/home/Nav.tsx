@@ -1,7 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { useEffect, useRef, useState } from "react";
-import { Sparkles, Linkedin, ArrowRight, Menu, X, Calendar, GraduationCap, Languages, Moon, Sun, Rocket, ShieldCheck, KeyRound } from "lucide-react";
+import { ChevronDown, Sparkles, Linkedin, ArrowRight, Menu, X, Calendar, GraduationCap, Languages, Moon, Sun, Rocket, ShieldCheck, KeyRound } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n, type Lang } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
@@ -19,6 +19,8 @@ export function Nav({
   const { isVisible } = useSiteContent();
   const [open, setOpen] = useState(false);
   const [portalOpen, setPortalOpen] = useState(false);
+  const [toolsOpen, setToolsOpen] = useState(false);
+  const toolsRef = useRef<HTMLDivElement>(null);
   const [scrolled, setScrolled] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
   const portalRef = useRef<HTMLDivElement>(null);
@@ -30,6 +32,7 @@ export function Nav({
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       if (portalRef.current && !portalRef.current.contains(e.target as Node)) setPortalOpen(false);
+      if (toolsRef.current && !toolsRef.current.contains(e.target as Node)) setToolsOpen(false);
     };
     document.addEventListener("mousedown", onClick);
     return () => document.removeEventListener("mousedown", onClick);
@@ -53,12 +56,38 @@ export function Nav({
           <Link to="/" className="flex items-center gap-2.5 group shrink-0 ms-2">
             <BrandMark />
           </Link>
-          <nav className="hidden min-[1380px]:flex items-center gap-0.5">
-            {NAV.filter((n) => !n.flag || isVisible(n.flag)).map((n) => {
+          <nav className="hidden xl:flex items-center gap-0.5">
+            {NAV.filter((n) => !n.flag || isVisible(n.flag)).map((n, idx, arr) => {
+              if (n.id === "tna-tool" || n.id === "perf-tool" || n.id === "exam-tool") {
+                if (n.id !== arr.find((x) => x.id.endsWith("-tool"))?.id) return null;
+                const tools = arr.filter((x) => x.id.endsWith("-tool"));
+                return (
+                  <div key="tools-group" className="relative" ref={toolsRef}>
+                    <button
+                      type="button"
+                      onClick={() => setToolsOpen((v) => !v)}
+                      aria-expanded={toolsOpen}
+                      className="nav-link group inline-flex items-center gap-1 whitespace-nowrap px-2.5 py-1.5 text-[13px] font-bold text-foreground/85 hover:text-foreground transition-colors rounded-full hover:bg-foreground/5"
+                    >
+                      <span className="nav-label">{lang === "ar" ? "الأدوات" : "Tools"}</span>
+                      <ChevronDown className={`size-3.5 transition-transform ${toolsOpen ? "rotate-180" : ""}`} />
+                    </button>
+                    {toolsOpen && (
+                      <div className="absolute start-0 mt-2 w-64 rounded-2xl border border-foreground/10 bg-card/95 backdrop-blur-xl shadow-xl p-1.5 z-50">
+                        {tools.map((tl) => (
+                          <Link key={tl.id} to="/tools" search={tl.search as any} onClick={() => setToolsOpen(false)} className="block rounded-xl px-3 py-2 text-[13px] font-bold text-foreground/90 hover:bg-foreground/5">
+                            {t(tl.key)}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
               const baseCls =
-                "nav-link group px-2.5 py-1.5 text-[13px] font-bold text-foreground/85 hover:text-foreground transition-colors rounded-full hover:bg-foreground/5";
+                "nav-link group whitespace-nowrap px-2.5 py-1.5 text-[13px] font-bold text-foreground/85 hover:text-foreground transition-colors rounded-full hover:bg-foreground/5";
               const highlightCls =
-                "group relative inline-flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-extrabold rounded-full transition-all hover:-translate-y-0.5 cursor-pointer";
+                "group relative inline-flex items-center gap-1.5 whitespace-nowrap px-3 py-1.5 text-[13px] font-extrabold rounded-full transition-all hover:-translate-y-0.5 cursor-pointer";
               const highlightStyle = {
                 background:
                   "linear-gradient(135deg, color-mix(in oklab, var(--gold) 22%, transparent), color-mix(in oklab, var(--gold) 8%, transparent))",
@@ -94,7 +123,7 @@ export function Nav({
             })}
             <Link
               to="/graduates"
-              className="ms-2 group inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-extrabold tracking-tight border-2 transition-all hover:-translate-y-0.5"
+              className="ms-2 group inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1.5 text-[12px] font-extrabold tracking-tight border-2 transition-all hover:-translate-y-0.5"
               style={{
                 borderColor: "var(--accent)",
                 color: "var(--accent)",
@@ -265,13 +294,13 @@ export function Nav({
                 )}
               </AnimatePresence>
             </div>
-            <button className="min-[1380px]:hidden p-2" onClick={() => setOpen((v) => !v)} aria-label="Menu">
+            <button className="xl:hidden p-2" onClick={() => setOpen((v) => !v)} aria-label="Menu">
               {open ? <X className="size-5" /> : <Menu className="size-5" />}
             </button>
           </div>
         </div>
         {open && (
-          <div className="min-[1380px]:hidden mt-2 glass-strong rounded-2xl p-3 grid gap-1">
+          <div className="xl:hidden mt-2 glass-strong rounded-2xl p-3 grid gap-1">
             {NAV_FULL.filter((n) => !n.flag || isVisible(n.flag)).map((n) => {
               if (n.action === "book") {
                 return (

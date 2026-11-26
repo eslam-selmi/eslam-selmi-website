@@ -208,60 +208,15 @@ function AuthPage() {
         </div>
 
         <div className="flex-1 flex items-center py-8">
-          <div className="w-full grid lg:grid-cols-[1.05fr_1fr] gap-6 lg:gap-10 items-stretch">
+          <div className="w-full mx-auto max-w-md">
 
-            {/* Brand panel */}
-            <aside className="nx-card relative overflow-hidden p-7 sm:p-10 hidden lg:flex flex-col justify-between">
-              <span className="nx-hero-line" />
-              <div className="pointer-events-none absolute -top-28 -start-28 w-80 h-80 rounded-full bg-[var(--nx-teal)]/10 blur-3xl" />
-              <div className="pointer-events-none absolute -bottom-32 -end-24 w-80 h-80 rounded-full bg-[var(--nx-gold)]/[0.08] blur-3xl" />
-              <div className="relative">
-                <div className="inline-flex"><div className="mt-glass-logo" style={{ "--logo": `url(${siteProfile.logoDark})` } as React.CSSProperties}>
-                  <span aria-hidden className="mt-glass-logo__glow" />
-                  <div className="mt-glass-logo__tile">
-                    <img src={siteProfile.logoDark} alt="Eslam Selmi" width={96} height={96} className="mt-glass-logo__img" />
-                    <span aria-hidden className="mt-glass-logo__shine" />
-                    <span aria-hidden className="mt-glass-logo__sheen" />
-                  </div>
-                </div></div>
-                <p className="nx-eyebrow mt-8">{isAdminView ? "منطقة الإدارة" : "منصة إسلام سلمي التدريبية"}</p>
-                <h1 className="nx-display text-balance text-[34px] xl:text-[42px] leading-[1.2] mt-3">
-                  {isAdminView ? "كل إدارة موقعك في مكان واحد." : "رحلتك التدريبية تبدأ من هنا."}
-                </h1>
-                <p className="text-white/55 text-sm leading-relaxed mt-4 max-w-md">
-                  {isAdminView
-                    ? "الكورسات، الطلبات، الحجوزات، المحتوى والدعم — لوحة واحدة مصممة لتنجز عملك اليومي بوضوح."
-                    : "تابع كورساتك وساعاتك التدريبية، حمّل شهاداتك، واحجز استشاراتك — كل ذلك من بوابة واحدة ذكية."}
-                </p>
-              </div>
-              {!isAdminView && (
-                <div className="relative grid grid-cols-3 gap-3 mt-10">
-                  {[
-                    { icon: GraduationCap, t: "كورسات عملية", d: "محتوى تطبيقي مباشر" },
-                    { icon: Award, t: "شهادات موثقة", d: "تحميل فوري وتحقق" },
-                    { icon: Clock3, t: "تقدم واضح", d: "ساعاتك أولاً بأول" },
-                  ].map((f) => (
-                    <div key={f.t} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-3.5">
-                      <f.icon className="w-5 h-5 text-[var(--nx-teal)]" />
-                      <p className="text-[12.5px] font-bold mt-2.5">{f.t}</p>
-                      <p className="text-[10.5px] text-white/45 mt-1 leading-relaxed">{f.d}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-              {isAdminView && (
-                <div className="relative mt-10 rounded-2xl border border-[var(--nx-gold)]/25 bg-[var(--nx-gold)]/[0.06] p-4 flex items-center gap-3">
-                  <ShieldCheck className="w-5 h-5 text-[var(--nx-gold)] shrink-0" />
-                  <p className="text-[12px] text-white/65 leading-relaxed">هذه المنطقة مخصصة لإدارة الموقع فقط. صلاحيات الدخول تُراجع من الخادم في كل زيارة.</p>
-                </div>
-              )}
-            </aside>
+
 
             {/* Form card */}
             <div className="nx-card relative p-6 sm:p-9 nx-rise">
               <span className="nx-hero-line" />
               <div className="flex flex-col items-center text-center mb-7">
-                <div className="lg:hidden mb-3 inline-flex"><div className="mt-glass-logo" style={{ "--logo": `url(${siteProfile.logoDark})` } as React.CSSProperties}>
+                <div className="mb-4 inline-flex"><div className="mt-glass-logo" style={{ "--logo": `url(${siteProfile.logoDark})` } as React.CSSProperties}>
                   <span aria-hidden className="mt-glass-logo__glow" />
                   <div className="mt-glass-logo__tile">
                     <img src={siteProfile.logoDark} alt="Eslam Selmi" width={96} height={96} className="mt-glass-logo__img" />
