@@ -1629,3 +1629,7 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 .tst-deck .tst-quote, .tst-deck .tst-card[data-long] .tst-quote { flex: 0 0 auto; height: calc(1.9em * 5); min-height: calc(1.9em * 5); -webkit-line-clamp: 5; }
 .tst-deck .tst-who { margin-top: auto; padding-top: 1.1rem; align-items: center; min-height: 4.5rem; }
 .tst-deck .tst-readmore { display: none; }
+
+/* v4: avatars share one baseline */
+.tst-deck .tst-who { align-items: flex-start; min-height: 5.2rem; }
+.tst-deck .tst-who > .tst-id { padding-top: .1rem; }
