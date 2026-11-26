@@ -1556,7 +1556,6 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 
 /* Testimonials: frosted glass cards (translucent, blurred, light border) */
 #testimonials { position: relative; isolation: isolate; }
-#testimonials::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(40% 55% at 12% 30%, color-mix(in oklab, var(--accent) 16%, transparent), transparent 70%), radial-gradient(38% 50% at 88% 70%, color-mix(in oklab, var(--accent) 11%, transparent), transparent 70%); }
 .tst-deck .tst-card, .tst-deck .tst-card:hover, .dark .tst-deck .tst-card, .dark .tst-deck .tst-card:hover {
   background: linear-gradient(160deg, color-mix(in oklab, #fff 62%, transparent), color-mix(in oklab, #fff 38%, transparent));
   -webkit-backdrop-filter: blur(18px) saturate(140%); backdrop-filter: blur(18px) saturate(140%);
