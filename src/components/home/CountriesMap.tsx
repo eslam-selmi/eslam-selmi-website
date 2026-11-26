@@ -85,7 +85,7 @@ export function CountriesMap() {
         const [lo, la] = POS[code]; const m = px(lo, la);
         const j = slotOf[code];
         const cx = (W * (j + 0.5)) / n;
-        const row = j % ROWS;
+        const row = (j + 1) % ROWS; // odd slots (Egypt, Saudi Arabia) sit in the upper row
         const bob = reduced ? 0 : Math.sin(t * 1.15 + j * 1.7) * 2.2;
         const fy = 4 + row * RO + bob + (1 - a) * 8;
         const fx = Math.max(2, Math.min(W - FW - 2, cx - FW / 2));
