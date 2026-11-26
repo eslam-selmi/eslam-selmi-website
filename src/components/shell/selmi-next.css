@@ -18,7 +18,7 @@
   --nx-card: linear-gradient(165deg, oklch(1 0 0 / 0.055), oklch(1 0 0 / 0.02) 55%);
   --nx-card-solid: oklch(0.17 0.04 253);
   --nx-radius: 20px;
-  --nx-font-display: "Thmanyah Serif Display", "IBM Plex Sans Arabic", serif;
+  --nx-font-display: "IBM Plex Sans Arabic", "Tajawal", sans-serif;
   --nx-shadow: 0 24px 60px -28px oklch(0 0 0 / 0.55);
   color: var(--nx-ink);
 }
@@ -424,3 +424,5 @@
 .nx .nx-admin-hero > .relative { gap: 16px; align-items: flex-end; }
 .nx .nx-admin-hero .nx-display { margin-top: 6px; }
 @media (max-width: 640px) { .nx .nx-admin-hero { padding: 20px 18px !important; } }
+
+.nx h1, .nx h2, .nx h3, .nx .font-display { font-family: var(--nx-font-display); }
