@@ -61,7 +61,7 @@ export function CertificateDocument({ payload: p, qr, logo = brandLogoAsset.url,
       <p className="certificate-intro">{tx("intro")}</p>
       <h2 className="certificate-student" style={{ fontSize: `${nameSize}px` }}>{student}</h2>
       <p className="certificate-bridge">{tx("bridge")}</p>
-      <h3 className="certificate-course">{s[p.lang].courseTitle?.trim() || p.courseTitle}</h3>
+      <h3 className="certificate-course">{(s[p.lang].courseTitle?.trim() || p.courseTitle).replace(/[\p{Extended_Pictographic}\uFE0F\u200D]+/gu, "").replace(/\s{2,}/g, " ").trim()}</h3>
       {on.showHours && Number(p.totalHours) > 0 && <p className="certificate-hours"><strong>{p.totalHours}</strong><span>{tx("hoursLabel")}</span></p>}
       {on.showPartner && p.courseBrandName && <div className="certificate-partner">{courseLogo && <img src={courseLogo} alt="" />}<span>{p.courseBrandName}</span></div>}
     </main>
