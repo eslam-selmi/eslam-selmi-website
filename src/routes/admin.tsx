@@ -191,12 +191,14 @@ function AdminPage() {
     staleTime: 30_000,
     enabled: role === "admin",
     queryFn: async () => {
-      const [b, s, tr] = await Promise.all([
+      const [b, s, tr, pk, li] = await Promise.all([
         supabase.from("consultation_slots").select("id", { count: "exact", head: true }).eq("status", "booked").gte("starts_at", new Date().toISOString()),
         supabase.from("support_tickets").select("id", { count: "exact", head: true }).in("status", ["open", "pending_admin"]),
         (supabase as any).from("tool_access_requests").select("id", { count: "exact", head: true }).eq("status", "pending"),
+        (supabase as any).from("consultation_package_purchases").select("id", { count: "exact", head: true }).eq("status", "pending"),
+        (supabase as any).from("course_interests").select("id", { count: "exact", head: true }).eq("status", "new"),
       ]);
-      return { bookings: b.error ? null : b.count ?? 0, tickets: s.error ? null : s.count ?? 0, toolRequests: tr.error ? 0 : tr.count ?? 0 };
+      return { packagePurchases: pk.error ? 0 : pk.count ?? 0, courseLeads: li.error ? 0 : li.count ?? 0, bookings: b.error ? null : b.count ?? 0, tickets: s.error ? null : s.count ?? 0, toolRequests: tr.error ? 0 : tr.count ?? 0 };
     },
   });
   useEffect(() => {
@@ -206,6 +208,8 @@ function AdminPage() {
       .on("postgres_changes", { event: "*", schema: "public", table: "consultation_slots" }, invalidate)
       .on("postgres_changes", { event: "*", schema: "public", table: "support_tickets" }, invalidate)
       .on("postgres_changes", { event: "*", schema: "public", table: "tool_access_requests" }, invalidate)
+      .on("postgres_changes", { event: "*", schema: "public", table: "consultation_package_purchases" }, invalidate)
+      .on("postgres_changes", { event: "*", schema: "public", table: "course_interests" }, invalidate)
       .subscribe();
     return () => { void supabase.removeChannel(channel); };
   }, [role, queryClient]);
@@ -240,7 +244,9 @@ function AdminPage() {
         { key: "activations", title: t("تفعيل حسابات", "Account activations"), detail: t("حسابات جديدة بانتظار التفعيل", "New accounts awaiting activation"), count: pendingActivations, onOpen: () => setTab("activations") },
         { key: "enrollments", title: t("طلبات الانضمام", "Enrollment requests"), detail: t("بانتظار المراجعة والقبول", "Awaiting review"), count: pending, onOpen: () => setTab("enrollments") },
         { key: "tools", title: t("طلبات الوصول للأدوات", "Tool access requests"), detail: t("بانتظار قرارك", "Awaiting your decision"), count: overviewCounts.data?.toolRequests ?? 0, onOpen: () => setTab("tools") },
-        { key: "tickets", title: t("تذاكر الدعم", "Support tickets"), detail: t("مفتوحة أو بانتظار ردك", "Open or awaiting your reply"), count: overviewCounts.data?.tickets ?? 0, onOpen: () => setTab("support" as any) },
+        { key: "packages", title: t("طلبات شراء باقات الاستشارات", "Consultation package purchases"), detail: t("بانتظار المراجعة", "Awaiting review"), count: overviewCounts.data?.packagePurchases ?? 0, onOpen: () => setTab("packages") },
+        { key: "leads", title: t("اهتمامات جديدة بالكورسات", "New course interests"), detail: t("لم تتم مراجعتها", "Not yet reviewed"), count: overviewCounts.data?.courseLeads ?? 0, onOpen: () => setTab("leads") },
+        { key: "tickets", title: t("تذاكر الدعم", "Support tickets"), detail: t("مفتوحة أو بانتظار ردك", "Open or awaiting your reply"), count: overviewCounts.data?.tickets ?? 0, onOpen: () => setTab("tickets") },
       ]}
       userId={user.id}
       userLabel={user.email}
