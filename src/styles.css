@@ -766,7 +766,7 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
    ============================================================ */
 /* Mobile: native swipe rails replace continuously composited marquee loops. */
 @media (max-width: 767px) {
-  *:not(.marquee-track):not(.marquee-track-reverse):not(.marquee-track-rtl):not(.animate-marquee):not(.animate-marquee-slow):not(.animate-marquee-rtl):not(.animate-marquee-x):not(.animate-marquee-x-reverse):not(.mt-glass-logo):not(.mt-glass-logo__glow):not(img),
+  *:not(.marquee-track):not(.marquee-track-reverse):not(.marquee-track-rtl):not(.animate-marquee):not(.animate-marquee-slow):not(.animate-marquee-rtl):not(.animate-marquee-x):not(.animate-marquee-x-reverse):not(.mt-glass-logo):not(.mt-glass-logo__glow):not(img):not(.cm-scene):not(.cm-outline):not(.cm-flag):not(.cm-name):not(.cm-count),
   *::before,
   *::after {
     animation-duration: 0s !important;
