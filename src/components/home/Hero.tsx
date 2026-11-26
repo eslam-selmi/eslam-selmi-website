@@ -54,7 +54,7 @@ export function Hero() {
             initial={false}
             animate={{ opacity: 1, y: 0 }}
             className="inline-flex items-center gap-2 text-[11px] sm:text-xs font-bold uppercase tracking-[0.28em]"
-            style={{ color: "var(--accent)" }}
+            style={{ color: "var(--accent-ink)" }}
           >
             <span className="h-px w-8" style={{ background: "var(--accent)" }} />
             {lang === "ar" ? "استشارات التعلم والتطوير وإدارة المواهب" : "Learning & Development and Talent Consulting"}

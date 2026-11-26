@@ -92,7 +92,7 @@ export function Nav({
                 background:
                   "linear-gradient(135deg, color-mix(in oklab, var(--gold) 22%, transparent), color-mix(in oklab, var(--gold) 8%, transparent))",
                 border: "1.5px solid color-mix(in oklab, var(--gold) 55%, transparent)",
-                color: "var(--accent)",
+                color: "var(--accent-ink)",
                 boxShadow: "0 0 0 3px color-mix(in oklab, var(--gold) 10%, transparent)",
               } as const;
               if (n.action === "book") {
@@ -126,7 +126,7 @@ export function Nav({
               className="ms-2 group inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1.5 text-[12px] font-extrabold tracking-tight border-2 transition-all hover:-translate-y-0.5"
               style={{
                 borderColor: "var(--accent)",
-                color: "var(--accent)",
+                color: "var(--accent-ink)",
                 background:
                   "linear-gradient(135deg, oklch(0.75 0.13 85 / 0.10), oklch(0.75 0.13 85 / 0.02))",
                 boxShadow: "0 0 0 3px oklch(0.75 0.13 85 / 0.08)",
