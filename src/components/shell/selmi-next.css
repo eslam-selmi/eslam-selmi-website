@@ -397,3 +397,23 @@
 :root:not(.dark) .nx .nx-side-brand img { background: oklch(0.24 0.07 258); border-radius: 12px; padding: 6px; }
 :root:not(.dark) .nx header a > img { background: oklch(0.24 0.07 258); border-color: transparent; }
 :root:not(.dark) .nx .nx-side .nx-card .grid > div { border: 0; background: #fff; border-radius: 10px; }
+
+/* Dark mode top bar: lighter frosted glass, consistent rounded corners (floating bar, same shape as light). */
+:root.dark .nx header {
+  background: linear-gradient(135deg, oklch(0.42 0.06 245 / 0.34), oklch(0.30 0.05 255 / 0.30)) !important;
+  backdrop-filter: blur(24px) saturate(165%); -webkit-backdrop-filter: blur(24px) saturate(165%);
+  border: 1px solid oklch(1 0 0 / 0.16) !important; border-radius: 20px;
+  box-shadow: 0 10px 34px -14px oklch(0 0 0 / 0.55), inset 0 1px 0 oklch(1 0 0 / 0.14);
+}
+:root.dark .nx header > div:first-child { display: none; }
+:root.dark .nx header .nx-icon-btn, :root.dark .nx header button:not(.nx-icon-btn) { background: oklch(1 0 0 / 0.08); border-color: oklch(1 0 0 / 0.16); }
+:root.dark .nx-side { background: linear-gradient(180deg, oklch(0.24 0.045 255 / 0.55), oklch(0.18 0.04 256 / 0.55)); backdrop-filter: blur(20px); }
+:root.dark .nx-bg { background:
+    radial-gradient(1100px 520px at 88% -8%, oklch(0.82 0.12 190 / 0.18), transparent 60%),
+    radial-gradient(800px 500px at 10% -10%, oklch(0.55 0.14 250 / 0.45), transparent 65%),
+    linear-gradient(180deg, oklch(0.20 0.045 255) 0%, oklch(0.14 0.035 258) 70%); }
+@media (max-width: 1023px) {
+  .nx header { margin: 10px 10px 0; position: sticky; top: 8px; }
+  :root.dark .nx header { border-radius: 18px; }
+  :root:not(.dark) .nx header { border-radius: 18px; }
+}
