@@ -175,7 +175,18 @@ function AuthPage() {
         toast.success("مرحباً بك");
       }
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : "حدث خطأ");
+      {
+        const m = err instanceof Error ? err.message : "";
+        const ar: Array<[RegExp, string]> = [
+          [/invalid login credentials/i, "البريد الإلكتروني أو كلمة المرور غير صحيحة"],
+          [/email not confirmed/i, "لم يتم تأكيد البريد الإلكتروني بعد"],
+          [/already registered|already been registered/i, "هذا البريد مسجّل بالفعل، جرّب تسجيل الدخول"],
+          [/rate limit|too many/i, "محاولات كثيرة، انتظر قليلًا ثم أعد المحاولة"],
+          [/password.*(least|short|weak)/i, "كلمة المرور ضعيفة، استخدم ٨ أحرف على الأقل"],
+        ];
+        const hit = ar.find(([re]) => re.test(m));
+        toast.error(hit ? hit[1] : /[\u0600-\u06FF]/.test(m) ? m : "تعذّر إكمال العملية، حاول مرة أخرى");
+      }
     } finally {
       setBusy(false);
     }
