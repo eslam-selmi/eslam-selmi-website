@@ -26,7 +26,8 @@ export function SubscribersPanel() {
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
-  const [openId, setOpenId] = useState<string | null>(null);
+  const [openId, setOpenIdRaw] = useState<string | null>(null);
+  const setOpenId = (v: string | null) => { setOpenIdRaw(v); requestAnimationFrame(() => window.scrollTo({ top: 0 })); };
 
   useEffect(() => {
     (async () => {
@@ -131,11 +132,9 @@ export function SubscribersPanel() {
                     </span>
                     <span className="min-w-0 space-y-1.5">
                       {es.length === 0 ? <span className="text-xs opacity-60">{t("لا توجد اشتراكات", "No enrollments")}</span> : es.slice(0, 3).map((e) => {
-                        const u = units.get(e.course_id);
                         return (
                           <span key={e.id} className="flex items-center gap-2 text-xs min-w-0">
                             <span className="truncate flex-1">{e.courses?.title}</span>
-                            {e.status === "approved" && u && u.total > 0 && <span className="opacity-70 tabular-nums" dir="ltr">{u.done}/{u.total}</span>}
                             <span className={`px-2 py-0.5 rounded-md text-[10px] shrink-0 ${sc(e.status)}`}>{statusLabel(e.status)}</span>
                           </span>
                         );
@@ -195,7 +194,7 @@ function SubscriberDetail({ p, enrs, units, onBack, t, fmt, statusLabel }: {
       <div className="nx-card p-5 sm:p-7 flex flex-wrap items-center gap-4">
         <Avatar p={p} big />
         <div className="min-w-0 flex-1">
-          <h1 className="nx-display text-2xl sm:text-[28px] truncate">{p.full_name || t("بدون اسم", "No name")}</h1>
+          <h1 className="nx-display text-2xl sm:text-[28px] break-words">{p.full_name || t("بدون اسم", "No name")}</h1>
           <p className="text-xs opacity-70 mt-1">{t("انضم", "Joined")} {fmt(p.created_at)}</p>
           <div className="flex flex-wrap gap-2 mt-3">
             <span className={`text-[11px] px-2 py-1 rounded-md ${p.account_blocked ? sc("rejected") : sc("approved")}`}>{p.account_blocked ? t("موقوف", "Blocked") : t("نشط", "Active")}</span>
@@ -217,19 +216,18 @@ function SubscriberDetail({ p, enrs, units, onBack, t, fmt, statusLabel }: {
           {enrs.length === 0 && <p className="text-sm opacity-60">{t("لا توجد اشتراكات", "No enrollments")}</p>}
           {enrs.map((e) => {
             const u = units.get(e.course_id);
-            const pct = u && u.total ? Math.round((u.done / u.total) * 100) : null;
             return (
               <div key={e.id} className="rounded-xl border border-current/10 p-3 space-y-2">
                 <div className="flex items-center gap-2"><span className="flex-1 min-w-0 text-sm font-semibold truncate">{e.courses?.title}</span><span className={`px-2 py-0.5 rounded-md text-[10px] ${sc(e.status)}`}>{statusLabel(e.status)}</span></div>
                 <p className="text-[11px] opacity-60">{fmt(e.created_at)}{e.certificate_issued ? ` · ${t("شهادة صادرة", "Certificate issued")}` : ""}</p>
-                {e.status === "approved" && pct !== null && (
-                  <div><div className="h-1.5 rounded-full bg-black/10 dark:bg-white/10 overflow-hidden"><div className="h-full bg-[var(--nx-teal)]" style={{ width: `${pct}%` }} /></div>
-                    <p className="text-[11px] opacity-60 mt-1" dir="ltr" style={{ textAlign: "start" }}>{u!.done}/{u!.total} {t("وحدة مكتملة", "units completed")}</p></div>
+                {e.status === "approved" && u && u.total > 0 && (
+                  <p className="text-[11px] opacity-70">{t("محتوى الكورس (ليس تقدّم هذا المتدرب):", "Course content (not this trainee's progress):")} <span dir="ltr">{u.done}/{u.total}</span> {t("وحدة أنهاها المدرّب", "units marked complete by the trainer")}</p>
+                )}</p></div>
                 )}
               </div>
             );
           })}
-          <p className="text-[11px] opacity-50">{t("تقدّم الوحدات يُسجّله المدرّب على مستوى الكورس.", "Unit progress is marked by the trainer per course.")}</p>
+          <p className="text-[11px] opacity-50">{t("لا يوجد تتبّع لتقدّم كل متدرب على حدة؛ الأرقام تخص محتوى الكورس.", "Per-trainee progress is not tracked; the figures describe the course content.")}</p>
         </div>
         <div className="nx-card p-5 space-y-3">
           <div className="flex items-center justify-between"><h2 className="font-bold">{t("المدفوعات", "Payments")}</h2>{pay && pay.length > 0 && <span className="text-xs font-bold">{approvedTotal.toLocaleString()} {cur}</span>}</div>

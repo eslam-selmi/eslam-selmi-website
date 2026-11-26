@@ -261,12 +261,12 @@ function AdminPage() {
             title={currentSection?.label || ""}
           />
         )}
-        <AdminToolbar
+        {tab !== "subscribers" && <AdminToolbar
           enrollments={enrollments}
           courses={courses}
           onTrainee={setTraineeId}
           onCourse={(id) => { setTab("courses"); setEditingCourseId(id); }}
-        />
+        />}
         {tab === "overview" ? (
           <AdminOverview
             lang={lang}
