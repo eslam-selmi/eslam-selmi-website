@@ -1477,13 +1477,29 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 .tst-name { font-size: .95rem; white-space: normal; overflow: visible; }
 .tst-role { white-space: normal; overflow: visible; text-overflow: clip; margin-top: .2rem; font-size: .78rem; line-height: 1.5; color: var(--muted-foreground); }
 
-/* Clients map: calm dot map with the countries listed as a clean row of chips (no floating flags, no connectors) */
+/* Clients map: one country at a time, real outline plus its flag */
 .world-stage-frame { width: min(100%, 760px); }
-.world-map-stage { width: min(100%, 560px); margin-inline: auto; }
-.world-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: .55rem .6rem; margin: 1.1rem auto 0; padding: 0; list-style: none; max-width: 640px; }
-.world-chip { display: inline-flex; align-items: center; gap: .5rem; padding: .3rem .9rem; padding-inline-start: .35rem; border-radius: 999px; border: 1px solid color-mix(in oklab, var(--booking-foreground) 14%, transparent); font-size: .85rem; font-weight: 600; color: var(--booking-foreground); }
-.world-chip img { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; }
-.world-chip[data-lead="true"] { border-color: color-mix(in oklab, var(--booking-cyan) 55%, transparent); }
+.cm-stage { display: grid; place-items: center; height: clamp(230px, 34vw, 300px); }
+.cm-scene { display: flex; align-items: center; justify-content: center; gap: clamp(1.25rem, 4vw, 2.75rem); width: 100%; animation: cm-life var(--cm-dur) ease-in-out both; }
+.cm-shape { height: clamp(170px, 26vw, 250px); width: clamp(150px, 26vw, 250px); overflow: visible; }
+.cm-outline { fill: color-mix(in oklab, var(--accent) 22%, transparent); fill-opacity: 0; stroke: var(--accent); stroke-width: 1.6; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; vector-effect: non-scaling-stroke; animation: cm-draw 1.5s cubic-bezier(.5,0,.2,1) .15s forwards, cm-fill .8s ease 1.2s forwards; }
+.cm-label { display: grid; justify-items: start; gap: .7rem; min-width: 7.5rem; opacity: 0; animation: cm-in .7s ease .95s forwards; }
+.cm-flag { width: clamp(84px, 14vw, 128px); aspect-ratio: 3 / 2; object-fit: cover; border-radius: 6px; border: 1px solid color-mix(in oklab, var(--foreground) 22%, transparent); }
+.cm-name { font-family: var(--font-heading, inherit); font-weight: 800; font-size: clamp(1.15rem, 2.4vw, 1.6rem); color: var(--foreground); }
+.cm-stage[data-live="false"] .cm-scene, .cm-stage[data-live="false"] .cm-outline, .cm-stage[data-live="false"] .cm-label { animation: none; }
+.cm-stage[data-live="false"] .cm-outline { stroke-dashoffset: 0; fill-opacity: 1; }
+.cm-stage[data-live="false"] .cm-label { opacity: 1; }
+@keyframes cm-draw { to { stroke-dashoffset: 0; } }
+@keyframes cm-fill { to { fill-opacity: 1; } }
+@keyframes cm-in { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
+@keyframes cm-life { 0%, 86% { opacity: 1; } 100% { opacity: 0; } }
+@media (max-width: 480px) { .cm-scene { gap: 1rem; } .cm-label { min-width: 0; } }
+.cm-ctrl { display: flex; align-items: center; justify-content: center; gap: .6rem; margin-top: .75rem; }
+.cm-btn { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; border: 1px solid color-mix(in oklab, var(--foreground) 25%, transparent); color: var(--foreground); }
+.cm-dots { display: flex; flex-wrap: wrap; justify-content: center; }
+.cm-dot { display: grid; place-items: center; width: 24px; height: 24px; }
+.cm-dot span { width: 7px; height: 7px; border-radius: 50%; background: color-mix(in oklab, var(--foreground) 28%, transparent); transition: background .3s, transform .3s; }
+.cm-dot[data-on="true"] span { background: var(--accent); transform: scale(1.5); }
 .tst-role { display: block; -webkit-line-clamp: unset; }
 
 /* Testimonials wall (final): masonry columns, plain quotes, hairline rules, nothing clipped */
