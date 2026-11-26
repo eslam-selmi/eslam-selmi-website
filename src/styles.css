@@ -919,6 +919,8 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 :root:not(.dark) [class*="bg-[#0b1736]"] [class*="text-[#0b1736]"] { color: #0b1736; }
 :root:not(.dark) [class*="bg-[#0b1736]"] input:not([type="checkbox"]):not([type="radio"]):not([type="file"]), :root:not(.dark) [class*="bg-[#0b1736]"] select, :root:not(.dark) [class*="bg-[#0b1736]"] textarea { color:#fff; background-color:rgba(255,255,255,.06); border-color:rgba(255,255,255,.16); }
 :root:not(.dark) [class*="bg-[#0b1736]"] input::placeholder, :root:not(.dark) [class*="bg-[#0b1736]"] textarea::placeholder { color:rgba(255,255,255,.45); }
+/* Cards inside always-dark navy drawers stay dark glass in the light theme (otherwise white card + light text) */
+:root:not(.dark) [class*="bg-[#0b1736]"] .dash-card { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.12); box-shadow: none; color: #fff; }
 
 /* Administration inherits the trainee dashboard theme and glass surfaces. */
 .admin-workspace { display:flex; flex-direction:column; gap:24px; }
