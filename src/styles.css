@@ -1443,3 +1443,7 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 .tst-name { color: var(--foreground); font-size: .875rem; }
 .tst-role { color: var(--muted-foreground); }
 @media (hover: hover) { .tst-card:hover { box-shadow: 0 10px 24px rgb(0 0 0 / .08); } }
+
+/* Snapshots are display-only: no selection, no touch callout, images ignore pointer */
+.snap-card { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.snap-card img { pointer-events: none; -webkit-user-drag: none; }

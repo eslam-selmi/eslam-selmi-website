@@ -1,7 +1,4 @@
-import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "motion/react";
-import { useEffect, useState } from "react";
-import { Globe2, X } from "lucide-react";
+import { motion } from "motion/react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
@@ -144,21 +141,6 @@ export function Snapshots() {
   });
   const shots = dbShots.length > 0 ? dbShots : SNAPSHOTS;
   const { t, dir } = useI18n();
-  const [active, setActive] = useState<number | null>(null);
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (active === null) return;
-      if (e.key === "Escape") setActive(null);
-      if (e.key === "ArrowRight")
-        setActive((a) => (a === null ? null : (a + 1) % shots.length));
-      if (e.key === "ArrowLeft")
-        setActive((a) => (a === null ? null : (a - 1 + shots.length) % shots.length));
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [active, shots.length]);
-
   // Split snapshots across two tracks so the rows don't show the same images
   const half = Math.ceil(shots.length / 2);
   const setA = shots.slice(0, half);
@@ -169,27 +151,25 @@ export function Snapshots() {
   const marqueeClass = dir === "rtl" ? "marquee-track-rtl" : "marquee-track";
   const marqueeSlowClass = dir === "rtl" ? "marquee-track-rtl" : "marquee-track";
 
-  const Card = ({ src, i, originalIndex }: { src: string; i: number; originalIndex: number }) => (
-    <button
-      type="button"
-      onClick={() => setActive(originalIndex)}
-      className="group relative shrink-0 w-[200px] sm:w-[240px] lg:w-[260px] aspect-[4/5] overflow-hidden rounded-2xl border border-foreground/10 cursor-zoom-in shadow-[0_18px_50px_-30px_var(--foreground)] bg-foreground/[0.04]"
-      aria-label={`Open snapshot ${originalIndex + 1}`}
+  const Card = ({ src, originalIndex }: { src: string; i: number; originalIndex: number }) => (
+    <div
+      role="img"
+      aria-label={`Snapshot ${originalIndex + 1}`}
+      onContextMenu={(e) => e.preventDefault()}
+      onDragStart={(e) => e.preventDefault()}
+      className="snap-card relative shrink-0 w-[200px] sm:w-[240px] lg:w-[260px] aspect-[4/5] overflow-hidden rounded-2xl border border-foreground/10 shadow-[0_18px_50px_-30px_var(--foreground)] bg-foreground/[0.04]"
     >
       <img
         src={snapshotThumbnail(src)}
-        alt={`Snapshot ${originalIndex + 1}`}
+        alt=""
         loading="lazy"
         decoding="async"
+        draggable={false}
         width={260}
         height={325}
-        className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+        className="absolute inset-0 w-full h-full object-cover object-center"
       />
-      <div className="image-scrim absolute inset-0 opacity-0 group-hover:opacity-100 transition" />
-      <div className="absolute bottom-3 start-3 text-xs text-primary-foreground opacity-0 group-hover:opacity-100 transition font-semibold tracking-wider uppercase">
-        View →
-      </div>
-    </button>
+    </div>
   );
 
   return (
@@ -235,62 +215,6 @@ export function Snapshots() {
         </div>
       </div>
 
-      {typeof document !== "undefined" && createPortal(<AnimatePresence>
-        {active !== null && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="modal-backdrop fixed inset-0 z-[100] backdrop-blur-md grid place-items-center p-4"
-            onClick={() => setActive(null)}
-          >
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setActive(null);
-              }}
-              className="absolute top-5 end-5 size-10 grid place-items-center rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground"
-              aria-label="Close"
-            >
-              <X className="size-5" />
-            </button>
-            <motion.img
-              key={active}
-              initial={{ scale: 0.94, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              src={shots[active]}
-              alt=""
-              className="max-h-[88vh] max-w-[92vw] object-contain rounded-xl shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
-            />
-            <div className="absolute bottom-5 inset-x-0 flex justify-center gap-3">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setActive((a) =>
-                    a === null ? null : (a - 1 + shots.length) % shots.length,
-                  );
-                }}
-                className="px-4 py-2 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground text-sm"
-              >
-                ← Prev
-              </button>
-              <span className="px-4 py-2 rounded-full bg-primary-foreground/10 text-primary-foreground text-sm">
-                {active + 1} / {shots.length}
-              </span>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setActive((a) => (a === null ? null : (a + 1) % shots.length));
-                }}
-                className="px-4 py-2 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground text-sm"
-              >
-                Next →
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>, document.body)}
     </Section>
   );
 }
