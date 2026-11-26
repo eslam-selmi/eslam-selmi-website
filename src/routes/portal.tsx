@@ -290,7 +290,7 @@ function PortalPage() {
       <PortalSidebar
         items={navItems}
         tab={tab}
-        onSelect={(id) => { setTab(id); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+        onSelect={(id) => { setViewingId(null); setTab(id); window.scrollTo({ top: 0, behavior: "smooth" }); }}
         onAccount={() => setAccountOpen(true)}
         summary={stats}
         profile={{
@@ -314,7 +314,7 @@ function PortalPage() {
       <PortalTabBar
         items={navItems}
         tab={tab}
-        onSelect={(id) => { setTab(id); window.scrollTo({ top: 0 }); }}
+        onSelect={(id) => { setViewingId(null); setTab(id); window.scrollTo({ top: 0 }); }}
         lang={lang}
       />
     ),
