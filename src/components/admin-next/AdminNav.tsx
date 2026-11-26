@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 
 export type AdminTabId =
-  | "overview" | "enrollments" | "courses" | "coupons" | "share" | "banned" | "additions"
+  | "overview" | "enrollments" | "courses" | "coupons" | "banned" | "additions"
   | "activations" | "finance" | "methods" | "feedback" | "tickets" | "site" | "leads"
   | "testimonials" | "success_cases" | "bookings" | "packages" | "interviews"
   | "snapshots" | "trainings" | "partners" | "contracts" | "programs" | "services"
@@ -43,7 +43,6 @@ export function buildAdminNav(
         { id: "finance", label: t("المعاملات المالية", "Transactions"), icon: CreditCard },
         { id: "methods", label: t("طرق الدفع", "Payment methods"), icon: CreditCard },
         { id: "coupons", label: t("كوبونات الخصم", "Coupons"), icon: Ticket },
-        { id: "share", label: t("حسابات مرتبطة بكورس", "Course-only accounts"), icon: Link2 },
         { id: "packages", label: t("باقات الاستشارات", "Packages"), icon: Layers },
       ],
     },

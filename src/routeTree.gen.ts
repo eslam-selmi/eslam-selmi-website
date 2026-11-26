@@ -13,7 +13,6 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/auth'
-import { Route as CourseChar123slugChar125RouteImport } from './routes/course-{$slug}'
 import { Route as GraduatesRouteImport } from './routes/graduates'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
@@ -46,12 +45,6 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CourseChar123slugChar125Route =
-  CourseChar123slugChar125RouteImport.update({
-    id: '/course-{$slug}',
-    path: '/course-{$slug}',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const GraduatesRoute = GraduatesRouteImport.update({
   id: '/graduates',
   path: '/graduates',
@@ -113,7 +106,6 @@ export interface FileRoutesByFullPath {
   '/account': typeof AccountRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
-  '/course-{$slug}': typeof CourseChar123slugChar125Route
   '/graduates': typeof GraduatesRoute
   '/library': typeof LibraryRoute
   '/onboarding': typeof OnboardingRoute
@@ -131,7 +123,6 @@ export interface FileRoutesByTo {
   '/account': typeof AccountRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
-  '/course-{$slug}': typeof CourseChar123slugChar125Route
   '/graduates': typeof GraduatesRoute
   '/library': typeof LibraryRoute
   '/onboarding': typeof OnboardingRoute
@@ -150,7 +141,6 @@ export interface FileRoutesById {
   '/account': typeof AccountRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
-  '/course-{$slug}': typeof CourseChar123slugChar125Route
   '/graduates': typeof GraduatesRoute
   '/library': typeof LibraryRoute
   '/onboarding': typeof OnboardingRoute
@@ -170,7 +160,6 @@ export interface FileRouteTypes {
     | '/account'
     | '/admin'
     | '/auth'
-    | '/course-{$slug}'
     | '/graduates'
     | '/library'
     | '/onboarding'
@@ -188,7 +177,6 @@ export interface FileRouteTypes {
     | '/account'
     | '/admin'
     | '/auth'
-    | '/course-{$slug}'
     | '/graduates'
     | '/library'
     | '/onboarding'
@@ -206,7 +194,6 @@ export interface FileRouteTypes {
     | '/account'
     | '/admin'
     | '/auth'
-    | '/course-{$slug}'
     | '/graduates'
     | '/library'
     | '/onboarding'
@@ -225,7 +212,6 @@ export interface RootRouteChildren {
   AccountRoute: typeof AccountRoute
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
-  CourseChar123slugChar125Route: typeof CourseChar123slugChar125Route
   GraduatesRoute: typeof GraduatesRoute
   LibraryRoute: typeof LibraryRoute
   OnboardingRoute: typeof OnboardingRoute
@@ -267,13 +253,6 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/course-{$slug}': {
-      id: '/course-{$slug}'
-      path: '/course-{$slug}'
-      fullPath: '/course-{$slug}'
-      preLoaderRoute: typeof CourseChar123slugChar125RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/graduates': {
@@ -361,7 +340,6 @@ const rootRouteChildren: RootRouteChildren = {
   AccountRoute: AccountRoute,
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
-  CourseChar123slugChar125Route: CourseChar123slugChar125Route,
   GraduatesRoute: GraduatesRoute,
   LibraryRoute: LibraryRoute,
   OnboardingRoute: OnboardingRoute,
