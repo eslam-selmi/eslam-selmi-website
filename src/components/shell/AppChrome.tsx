@@ -97,7 +97,7 @@ export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileB
           </aside>
         )}
         <div className="nx-main flex-1 min-w-0 relative">
-      <header className="sticky top-0 z-40 border-b border-white/[0.07] bg-[oklch(0.13_0.035_258/0.78)] backdrop-blur-2xl">
+      <header className="sticky top-0 z-[60] border-b border-white/[0.07] bg-[oklch(0.13_0.035_258/0.78)] backdrop-blur-2xl">
         <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[var(--nx-teal)]/35 to-transparent" />
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
