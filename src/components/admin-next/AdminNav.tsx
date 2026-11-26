@@ -43,7 +43,7 @@ export function buildAdminNav(
         { id: "finance", label: t("المعاملات المالية", "Transactions"), icon: CreditCard },
         { id: "methods", label: t("طرق الدفع", "Payment methods"), icon: CreditCard },
         { id: "coupons", label: t("كوبونات الخصم", "Coupons"), icon: Ticket },
-        { id: "share", label: t("روابط مشاركة الكورسات", "Course share links"), icon: Link2 },
+        { id: "share", label: t("حسابات مرتبطة بكورس", "Course-only accounts"), icon: Link2 },
         { id: "packages", label: t("باقات الاستشارات", "Packages"), icon: Layers },
       ],
     },

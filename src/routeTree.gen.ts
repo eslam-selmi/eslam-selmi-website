@@ -13,8 +13,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CourseChar123slugChar125RouteImport } from './routes/course-{$slug}'
 import { Route as GraduatesRouteImport } from './routes/graduates'
-import { Route as GuestRouteImport } from './routes/guest'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PortalRouteImport } from './routes/portal'
@@ -24,7 +24,6 @@ import { Route as ToolsRouteImport } from './routes/tools'
 import { Route as TrainingsRouteImport } from './routes/trainings'
 import { Route as CSlugRouteImport } from './routes/c.$slug'
 import { Route as OnboardingCertPreviewRouteImport } from './routes/onboarding_.cert-preview'
-import { Route as ShareTokenRouteImport } from './routes/share.$token'
 import { Route as VerifyIdRouteImport } from './routes/verify.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -47,14 +46,15 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CourseChar123slugChar125Route =
+  CourseChar123slugChar125RouteImport.update({
+    id: '/course-{$slug}',
+    path: '/course-{$slug}',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const GraduatesRoute = GraduatesRouteImport.update({
   id: '/graduates',
   path: '/graduates',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GuestRoute = GuestRouteImport.update({
-  id: '/guest',
-  path: '/guest',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LibraryRoute = LibraryRouteImport.update({
@@ -102,11 +102,6 @@ const OnboardingCertPreviewRoute = OnboardingCertPreviewRouteImport.update({
   path: '/onboarding/cert-preview',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ShareTokenRoute = ShareTokenRouteImport.update({
-  id: '/share/$token',
-  path: '/share/$token',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const VerifyIdRoute = VerifyIdRouteImport.update({
   id: '/verify/$id',
   path: '/verify/$id',
@@ -118,8 +113,8 @@ export interface FileRoutesByFullPath {
   '/account': typeof AccountRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/course-{$slug}': typeof CourseChar123slugChar125Route
   '/graduates': typeof GraduatesRoute
-  '/guest': typeof GuestRoute
   '/library': typeof LibraryRoute
   '/onboarding': typeof OnboardingRoute
   '/portal': typeof PortalRoute
@@ -129,7 +124,6 @@ export interface FileRoutesByFullPath {
   '/trainings': typeof TrainingsRoute
   '/c/$slug': typeof CSlugRoute
   '/onboarding/cert-preview': typeof OnboardingCertPreviewRoute
-  '/share/$token': typeof ShareTokenRoute
   '/verify/$id': typeof VerifyIdRoute
 }
 export interface FileRoutesByTo {
@@ -137,8 +131,8 @@ export interface FileRoutesByTo {
   '/account': typeof AccountRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/course-{$slug}': typeof CourseChar123slugChar125Route
   '/graduates': typeof GraduatesRoute
-  '/guest': typeof GuestRoute
   '/library': typeof LibraryRoute
   '/onboarding': typeof OnboardingRoute
   '/portal': typeof PortalRoute
@@ -148,7 +142,6 @@ export interface FileRoutesByTo {
   '/trainings': typeof TrainingsRoute
   '/c/$slug': typeof CSlugRoute
   '/onboarding/cert-preview': typeof OnboardingCertPreviewRoute
-  '/share/$token': typeof ShareTokenRoute
   '/verify/$id': typeof VerifyIdRoute
 }
 export interface FileRoutesById {
@@ -157,8 +150,8 @@ export interface FileRoutesById {
   '/account': typeof AccountRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/course-{$slug}': typeof CourseChar123slugChar125Route
   '/graduates': typeof GraduatesRoute
-  '/guest': typeof GuestRoute
   '/library': typeof LibraryRoute
   '/onboarding': typeof OnboardingRoute
   '/portal': typeof PortalRoute
@@ -168,7 +161,6 @@ export interface FileRoutesById {
   '/trainings': typeof TrainingsRoute
   '/c/$slug': typeof CSlugRoute
   '/onboarding_/cert-preview': typeof OnboardingCertPreviewRoute
-  '/share/$token': typeof ShareTokenRoute
   '/verify/$id': typeof VerifyIdRoute
 }
 export interface FileRouteTypes {
@@ -178,8 +170,8 @@ export interface FileRouteTypes {
     | '/account'
     | '/admin'
     | '/auth'
+    | '/course-{$slug}'
     | '/graduates'
-    | '/guest'
     | '/library'
     | '/onboarding'
     | '/portal'
@@ -189,7 +181,6 @@ export interface FileRouteTypes {
     | '/trainings'
     | '/c/$slug'
     | '/onboarding/cert-preview'
-    | '/share/$token'
     | '/verify/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -197,8 +188,8 @@ export interface FileRouteTypes {
     | '/account'
     | '/admin'
     | '/auth'
+    | '/course-{$slug}'
     | '/graduates'
-    | '/guest'
     | '/library'
     | '/onboarding'
     | '/portal'
@@ -208,7 +199,6 @@ export interface FileRouteTypes {
     | '/trainings'
     | '/c/$slug'
     | '/onboarding/cert-preview'
-    | '/share/$token'
     | '/verify/$id'
   id:
     | '__root__'
@@ -216,8 +206,8 @@ export interface FileRouteTypes {
     | '/account'
     | '/admin'
     | '/auth'
+    | '/course-{$slug}'
     | '/graduates'
-    | '/guest'
     | '/library'
     | '/onboarding'
     | '/portal'
@@ -227,7 +217,6 @@ export interface FileRouteTypes {
     | '/trainings'
     | '/c/$slug'
     | '/onboarding_/cert-preview'
-    | '/share/$token'
     | '/verify/$id'
   fileRoutesById: FileRoutesById
 }
@@ -236,8 +225,8 @@ export interface RootRouteChildren {
   AccountRoute: typeof AccountRoute
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
+  CourseChar123slugChar125Route: typeof CourseChar123slugChar125Route
   GraduatesRoute: typeof GraduatesRoute
-  GuestRoute: typeof GuestRoute
   LibraryRoute: typeof LibraryRoute
   OnboardingRoute: typeof OnboardingRoute
   PortalRoute: typeof PortalRoute
@@ -247,7 +236,6 @@ export interface RootRouteChildren {
   TrainingsRoute: typeof TrainingsRoute
   CSlugRoute: typeof CSlugRoute
   OnboardingCertPreviewRoute: typeof OnboardingCertPreviewRoute
-  ShareTokenRoute: typeof ShareTokenRoute
   VerifyIdRoute: typeof VerifyIdRoute
 }
 
@@ -281,18 +269,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/course-{$slug}': {
+      id: '/course-{$slug}'
+      path: '/course-{$slug}'
+      fullPath: '/course-{$slug}'
+      preLoaderRoute: typeof CourseChar123slugChar125RouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/graduates': {
       id: '/graduates'
       path: '/graduates'
       fullPath: '/graduates'
       preLoaderRoute: typeof GraduatesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/guest': {
-      id: '/guest'
-      path: '/guest'
-      fullPath: '/guest'
-      preLoaderRoute: typeof GuestRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/library': {
@@ -358,13 +346,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingCertPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/share/$token': {
-      id: '/share/$token'
-      path: '/share/$token'
-      fullPath: '/share/$token'
-      preLoaderRoute: typeof ShareTokenRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/verify/$id': {
       id: '/verify/$id'
       path: '/verify/$id'
@@ -380,8 +361,8 @@ const rootRouteChildren: RootRouteChildren = {
   AccountRoute: AccountRoute,
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
+  CourseChar123slugChar125Route: CourseChar123slugChar125Route,
   GraduatesRoute: GraduatesRoute,
-  GuestRoute: GuestRoute,
   LibraryRoute: LibraryRoute,
   OnboardingRoute: OnboardingRoute,
   PortalRoute: PortalRoute,
@@ -391,7 +372,6 @@ const rootRouteChildren: RootRouteChildren = {
   TrainingsRoute: TrainingsRoute,
   CSlugRoute: CSlugRoute,
   OnboardingCertPreviewRoute: OnboardingCertPreviewRoute,
-  ShareTokenRoute: ShareTokenRoute,
   VerifyIdRoute: VerifyIdRoute,
 }
 export const routeTree = rootRouteImport

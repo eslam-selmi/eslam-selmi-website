@@ -638,7 +638,7 @@ export function CourseSettings({ course, onSaved }: { course: Course; onSaved: (
   }
 
   const whiteLabelUrl = f.slug
-    ? `${window.location.origin}/c/${f.slug
+    ? `${window.location.origin}/course-${f.slug
         .trim()
         .toLowerCase()
         .replace(/[^a-z0-9-]+/g, "-")}`

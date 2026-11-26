@@ -21,7 +21,7 @@ import { TrainingsPanel } from "@/components/admin/TrainingsPanel";
 import { AdminToolbar } from "@/components/admin/AdminToolbar";
 import { TraineeDrawer } from "@/components/admin/TraineeDrawer";
 import { CourseFeedbackPanel } from "@/components/admin/CourseFeedbackPanel";
-import { ShareLinksAdmin } from "@/components/share/ShareLinksAdmin";
+import { CourseOnlyAdmin } from "@/components/admin/CourseOnlyAdmin";
 import { ActivationsPanel } from "@/components/admin/panels/ActivationsPanel";
 import { LatestAdditionsPanel, SnapshotsPanel, TestimonialsPanel } from "@/components/admin/panels/ContentPanels";
 import { CouponsPanel } from "@/components/admin/panels/Coupons";
@@ -297,7 +297,7 @@ function AdminPage() {
             onEdit={setEditingCourse}
           />
         ) : tab === "share" ? (
-          <ShareLinksAdmin lang={lang} />
+          <CourseOnlyAdmin lang={lang} />
         ) : tab === "coupons" ? (
           <CouponsPanel courses={courses} />
         ) : tab === "additions" ? (
