@@ -41,6 +41,8 @@ export function TraineeSupportButton({
   const isAr = lang === "ar";
   const [open, setOpen] = useState(false);
   const [tickets, setTickets] = useState<Ticket[]>([]);
+  // The button can appear twice on one page (nav and hero); each copy needs its own realtime channel.
+  const instanceId = useRef(Math.random().toString(36).slice(2, 8)).current;
 
   async function load() {
     const { data } = await supabase
@@ -54,7 +56,7 @@ export function TraineeSupportButton({
   useEffect(() => {
     load();
     const ch = supabase
-      .channel(`tickets-user-${userId}`)
+      .channel(`tickets-user-${userId}-${instanceId}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "support_tickets", filter: `user_id=eq.${userId}` }, () => load())
       .subscribe();
     return () => { supabase.removeChannel(ch); };
