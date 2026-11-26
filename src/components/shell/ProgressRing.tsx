@@ -17,7 +17,7 @@ export function ProgressRing({
   const color = tone === "gold" ? "var(--nx-gold)" : "var(--nx-teal)";
   return (
     <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="-rotate-90">
+      <svg width={size} height={size} className="-rotate-90" style={{ overflow: "visible" }}>
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="oklch(1 0 0 / 0.08)" strokeWidth={stroke} />
         <circle
           cx={size / 2}
@@ -29,7 +29,7 @@ export function ProgressRing({
           strokeLinecap="round"
           strokeDasharray={c}
           strokeDashoffset={c - (pct / 100) * c}
-          style={{ transition: "stroke-dashoffset .9s cubic-bezier(.2,.7,.2,1)", filter: `drop-shadow(0 0 6px ${color})` }}
+          style={{ transition: "stroke-dashoffset .9s cubic-bezier(.2,.7,.2,1)", filter: `drop-shadow(0 0 4px color-mix(in oklab, ${color} 60%, transparent))` }}
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">{children}</div>
