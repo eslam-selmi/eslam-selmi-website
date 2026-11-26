@@ -215,3 +215,112 @@ export function EmptyState({ icon: Icon, title, hint, action }: {
     </div>
   );
 }
+
+export type CourseRowVM = { en: Enrollment; progress: number | null; done: number; total: number };
+
+/** Course-first overview: one "continue" card, one progress card, then the trainee's own courses. Real data only. */
+export function PortalOverviewClean({
+  lang, firstName, welcomeLine, continueTarget, hoursEarned, hoursTotal, hoursPct, certs, courseRows,
+  availableCount, onOpenCourse, onBrowse, onGoMyCourses, onGoCertificates, supportNode,
+}: {
+  lang: string; firstName: string; welcomeLine: string;
+  continueTarget: { en: Enrollment; progress: number; done: number; total: number } | null;
+  hoursEarned: number; hoursTotal: number; hoursPct: number; certs: number;
+  courseRows: CourseRowVM[]; availableCount: number;
+  onOpenCourse: (e: Enrollment) => void; onBrowse: () => void; onGoMyCourses: () => void; onGoCertificates: () => void;
+  supportNode?: React.ReactNode;
+}) {
+  const ar = lang === "ar";
+  const pct = hoursPct;
+  return (
+    <div className="space-y-5 sm:space-y-7">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="nx-display text-[26px] sm:text-[34px] leading-tight truncate">{ar ? `أهلاً، ${firstName}` : `Welcome, ${firstName}`}</h1>
+          <p className="text-white/55 text-sm sm:text-[15px] mt-1.5 leading-relaxed">{welcomeLine}</p>
+        </div>
+        {supportNode && <div className="lg:hidden shrink-0">{supportNode}</div>}
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
+        <section className="nx-card p-5 sm:p-7 lg:col-span-2 flex flex-col justify-between gap-5">
+          {continueTarget ? (
+            <>
+              <div>
+                <p className="nx-eyebrow">{ar ? "كمّل من حيث وقفت" : "Continue learning"}</p>
+                <h2 className="text-xl sm:text-2xl font-bold leading-snug mt-2.5">{continueTarget.en.courses?.title}</h2>
+              </div>
+              <div>
+                <div className="flex items-center justify-between text-xs font-semibold text-white/55 mb-2">
+                  <span><bdi dir="ltr">{continueTarget.done} / {continueTarget.total}</bdi> {ar ? "وحدة مكتملة" : "units completed"}</span>
+                  <bdi dir="ltr" className="font-bold text-[var(--nx-teal)]">{continueTarget.progress}%</bdi>
+                </div>
+                <div className="nx-track h-2 rounded-full overflow-hidden"><div className="h-full rounded-full bg-[var(--nx-teal)]" style={{ width: `${continueTarget.progress}%` }} /></div>
+                <button onClick={() => onOpenCourse(continueTarget.en)} className="nx-btn nx-btn-primary mt-5">
+                  <PlayCircle className="w-4 h-4" /> {ar ? "أكمل التعلّم" : "Resume"}
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <div>
+                <p className="nx-eyebrow">{ar ? "ابدأ من هنا" : "Start here"}</p>
+                <h2 className="text-xl sm:text-2xl font-bold leading-snug mt-2.5">{ar ? "لا يوجد كورس جارٍ حاليًا" : "No course in progress"}</h2>
+                <p className="text-sm text-white/55 mt-2">{ar ? "اختر كورسًا من المتاح وقدّم طلب الالتحاق." : "Pick an available course and request to join."}</p>
+              </div>
+              <div><button onClick={onBrowse} className="nx-btn nx-btn-primary"><GraduationCap className="w-4 h-4" /> {ar ? "استكشف الكورسات المتاحة" : "Browse available courses"}</button></div>
+            </>
+          )}
+        </section>
+
+        <section className="nx-card p-5 sm:p-6 flex lg:flex-col items-center lg:justify-center gap-5 lg:gap-4">
+          <ProgressRing value={pct} size={104} stroke={9} tone="gold">
+            <p className="nx-display text-xl leading-none"><bdi dir="ltr">{pct}%</bdi></p>
+          </ProgressRing>
+          <div className="lg:text-center min-w-0">
+            <p className="text-sm font-bold"><bdi dir="ltr">{hoursEarned} / {hoursTotal}</bdi> <span className="text-xs text-white/55 font-semibold">{ar ? "ساعة مكتملة" : "hours completed"}</span></p>
+            <button onClick={onGoCertificates} className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-[var(--nx-teal)] hover:underline">
+              <Award className="w-3.5 h-3.5" /> {ar ? `شهادات صادرة: ${certs}` : `Certificates: ${certs}`}
+            </button>
+          </div>
+        </section>
+      </div>
+
+      {courseRows.length > 0 && (
+        <section>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-base sm:text-lg font-bold">{ar ? "كورساتي" : "My courses"}</h2>
+            <button onClick={onGoMyCourses} className="text-xs font-bold text-[var(--nx-teal)] inline-flex items-center gap-1">{ar ? "عرض الكل" : "View all"} <ArrowRight className="w-3.5 h-3.5 rtl-flip" /></button>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
+            {courseRows.slice(0, 4).map(({ en, progress, done, total }) => {
+              const approved = en.status === "approved";
+              return (
+                <button key={en.id} onClick={() => (approved ? onOpenCourse(en) : onGoMyCourses())} className="nx-card nx-card-hover p-4 sm:p-5 text-start">
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="font-bold text-sm sm:text-[15px] leading-snug">{en.courses?.title}</p>
+                    {!approved && <span className="nx-chip shrink-0">{ar ? "قيد المراجعة" : "Under review"}</span>}
+                  </div>
+                  {approved && progress !== null && (
+                    <div className="mt-3.5">
+                      <div className="nx-track h-1.5 rounded-full overflow-hidden"><div className="h-full rounded-full bg-[var(--nx-teal)]" style={{ width: `${progress}%` }} /></div>
+                      <p className="text-[11px] text-white/50 font-semibold mt-1.5"><bdi dir="ltr">{done} / {total}</bdi> {ar ? "وحدة" : "units"} · <bdi dir="ltr">{progress}%</bdi></p>
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {availableCount > 0 && (
+        <button onClick={onBrowse} className="nx-card nx-card-hover w-full p-4 flex items-center gap-3 text-start">
+          <span className="w-10 h-10 rounded-xl bg-[var(--nx-teal)]/10 border border-[var(--nx-teal)]/25 flex items-center justify-center shrink-0"><GraduationCap className="w-5 h-5 text-[var(--nx-teal)]" /></span>
+          <span className="flex-1 text-sm font-bold">{ar ? `كورسات متاحة للالتحاق (${availableCount})` : `Courses open to join (${availableCount})`}</span>
+          <ArrowRight className="w-4 h-4 text-white/35 rtl-flip" />
+        </button>
+      )}
+    </div>
+  );
+}

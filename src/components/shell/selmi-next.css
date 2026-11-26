@@ -396,3 +396,4 @@
 }
 :root:not(.dark) .nx .nx-side-brand img { background: oklch(0.24 0.07 258); border-radius: 12px; padding: 6px; }
 :root:not(.dark) .nx header a > img { background: oklch(0.24 0.07 258); border-color: transparent; }
+:root:not(.dark) .nx .nx-side .nx-card .grid > div { border: 0; background: #fff; border-radius: 10px; }

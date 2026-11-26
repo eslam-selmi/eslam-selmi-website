@@ -20,7 +20,7 @@ import { EnrollModal } from "@/components/portal/EnrollModal";
 import { timeGreeting, useWelcomeGreeting } from "@/components/portal/PersonalMessage";
 import { PortalAlerts, usePortalAlerts } from "@/components/portal/OverviewExtras";
 import { buildPortalNav, PortalSidebar, PortalTabBar, type PortalTabId } from "@/components/portal-next/PortalNav";
-import { PortalHero, PortalNudge, PortalStatsRow, PortalQuickLinks, SectionHeader, EmptyState } from "@/components/portal-next/PortalHome";
+import { PortalOverviewClean, PortalHero, PortalNudge, PortalStatsRow, PortalQuickLinks, SectionHeader, EmptyState } from "@/components/portal-next/PortalHome";
 
 
 
@@ -351,22 +351,27 @@ function PortalPage() {
       <div className="space-y-6">
         {tab === "overview" && (<>
         <PortalAlerts alerts={alerts} lang={lang} onGo={(t) => setTab(t)} />
-        <PortalHero
+        <PortalOverviewClean
           lang={lang}
-          greeting={greeting}
           firstName={firstName}
-          fullName={profile?.full_name || (isAr ? "متدرب جديد" : "New trainee")}
           welcomeLine={welcomeLine}
-          countryFlag={country?.flag}
-          countryName={isAr ? country?.name_ar : country?.name_en}
-          avatarSrc={avatarSrc}
+          continueTarget={continueTarget}
           hoursEarned={stats.hoursEarned}
           hoursTotal={stats.hoursTotal}
           hoursPct={stats.hoursPct}
-          continueTarget={continueTarget}
+          certs={stats.certs}
+          courseRows={trEnrollments
+            .filter((e) => (e.status === "approved" || e.status === "pending") && e.courses)
+            .map((e) => {
+              const ms = modules.filter((m) => m.course_id === e.course_id);
+              const done = ms.filter((m) => m.completed_by_admin).length;
+              return { en: e, progress: ms.length ? Math.round((done / ms.length) * 100) : null, done, total: ms.length };
+            })}
+          availableCount={availableCourses.length}
           onOpenCourse={(en) => setViewing(en)}
           onBrowse={() => setTab("available")}
-          onAccount={() => setAccountOpen(true)}
+          onGoMyCourses={() => setTab("my-courses")}
+          onGoCertificates={() => setTab("certificates")}
           supportNode={
             <TraineeSupportButton
               userId={user.id}
@@ -383,12 +388,6 @@ function PortalPage() {
           hasPending={nudge.hasPending}
           onOpenCourse={(en) => setViewing(en)}
           onGoMyCourses={() => setTab("my-courses")}
-        />
-        <PortalStatsRow lang={lang} stats={stats} />
-        <PortalQuickLinks
-          items={navItems.filter((it) => it.id !== "overview" && it.id !== "account")}
-          onSelect={(id) => setTab(id)}
-          lang={lang}
         />
         </>)}
 

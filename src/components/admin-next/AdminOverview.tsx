@@ -32,13 +32,13 @@ export function AdminOverview({
   return (
     <section className="space-y-6" aria-label={t("نظرة عامة تنفيذية", "Executive overview")}>
       {/* Executive header */}
-      <header className="nx-card relative overflow-hidden p-6 sm:p-8 nx-rise">
+      <header className="relative nx-rise pb-1">
         <span className="nx-hero-line" />
         <div className="pointer-events-none absolute -top-24 -end-24 w-72 h-72 rounded-full bg-[var(--nx-teal)]/10 blur-3xl" />
         <div className="relative flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="nx-eyebrow">{t("لوحة الإدارة", "Administration")}</p>
-            <h1 className="nx-display text-3xl sm:text-4xl mt-2">{t("نظرة عامة تنفيذية", "Executive overview")}</h1>
+            <h1 className="nx-display text-2xl sm:text-[34px] mt-1.5">{t("نظرة عامة تنفيذية", "Executive overview")}</h1>
             <p className="flex items-center gap-2 text-xs text-white/50 mt-3"><Clock3 className="w-3.5 h-3.5" />{today}</p>
           </div>
           <div className="flex items-center gap-2">

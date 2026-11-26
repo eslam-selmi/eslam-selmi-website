@@ -57,21 +57,6 @@ export function PortalSidebar({
             )}
           </div>
         </div>
-        <hr className="nx-divider my-4" />
-        <div className="grid grid-cols-3 gap-2 text-center">
-          <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] py-2.5">
-            <p className="text-[15px] font-bold nx-display text-[var(--nx-teal)]">{summary.active}</p>
-            <p className="text-[9.5px] text-white/50 font-semibold mt-0.5">{isAr ? "كورسات نشطة" : "Active"}</p>
-          </div>
-          <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] py-2.5">
-            <p className="text-[15px] font-bold nx-display text-[var(--nx-teal)]"><bdi dir="ltr">{summary.hoursEarned}/{summary.hoursTotal}</bdi></p>
-            <p className="text-[9.5px] text-white/50 font-semibold mt-0.5">{isAr ? "ساعة مكتملة" : "Hours done"}</p>
-          </div>
-          <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] py-2.5">
-            <p className="text-[15px] font-bold nx-display text-[var(--nx-gold)]">{summary.certs}</p>
-            <p className="text-[9.5px] text-white/50 font-semibold mt-0.5">{isAr ? "شهادات" : "Certs"}</p>
-          </div>
-        </div>
       </div>
 
       {/* Navigation */}
