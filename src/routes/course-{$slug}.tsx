@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/portal-auth";
 import { useI18n } from "@/lib/i18n";
-import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
+import { BrandMark } from "@/components/home/shared";
 
 type Course = {
   id: string;
@@ -130,7 +130,7 @@ function WhiteLabelCoursePage() {
       style={{ background: "radial-gradient(ellipse 80% 50% at 15% -10%, oklch(0.42 0.14 258 / 0.55), transparent 60%), radial-gradient(ellipse 60% 40% at 90% 0%, oklch(0.6 0.1 195 / 0.25), transparent 60%), #07112a" }}
     >
       <header className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4 sm:px-8">
-        <img src={brandLogoAsset.url} alt={brandName} className="h-9 w-auto" />
+        <BrandMark size={44} />
         <div className="flex items-center gap-2.5">
           <button onClick={() => setLang(lang === "ar" ? "en" : "ar")} className="rounded-lg border border-white/20 px-3 py-1.5 text-xs text-white/80 transition hover:bg-white/10">
             {lang === "ar" ? "EN" : "عربي"}
