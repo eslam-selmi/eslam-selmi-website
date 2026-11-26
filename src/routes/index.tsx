@@ -122,12 +122,12 @@ function Portfolio() {
       <Nav theme={theme as ThemeMode} onThemeToggle={toggle} />
       {isVisible("home.hero") && <Hero />}
       
-      {isVisible("home.pillars") && <DeferredSection id="pillars"><Pillars /></DeferredSection>}
-      {isVisible("home.journey") && <DeferredSection id="journey"><Journey /></DeferredSection>}
       {isVisible("home.brands") && <DeferredSection id="brands"><Brands /></DeferredSection>}
+      {isVisible("home.pillars") && <DeferredSection id="pillars"><Pillars /></DeferredSection>}
       {isVisible("home.services") && <DeferredSection id="services"><Services /></DeferredSection>}
-      <ToolsSection />
       {isVisible("home.programs") && <DeferredSection id="programs"><Programs /></DeferredSection>}
+      {isVisible("home.current_courses") && <DeferredSection id="current-courses"><CurrentCourses /></DeferredSection>}
+      <ToolsSection />
 
       {isVisible("home.latest_additions") && (
         <DeferredSection id="latest-additions"><div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 lg:py-20">
@@ -135,16 +135,15 @@ function Portfolio() {
         </div></DeferredSection>
       )}
 
-      {isVisible("home.videos") && <DeferredSection id="videos"><VideoShowcase /></DeferredSection>}
-      {isVisible("home.current_courses") && <DeferredSection id="current-courses"><CurrentCourses /></DeferredSection>}
-
-      {isVisible("home.podcast") && <DeferredSection id="podcast"><Podcast /></DeferredSection>}
-      {isVisible("home.interviews") && <DeferredSection id="interviews"><Interviews /></DeferredSection>}
-      {/* Trainings moved to dedicated /trainings page */}
+      {isVisible("home.journey") && <DeferredSection id="journey"><Journey /></DeferredSection>}
       {isVisible("home.clients") && <DeferredSection id="clients"><Clients /></DeferredSection>}
       {isVisible("home.snapshots") && <DeferredSection id="snapshots"><Snapshots /></DeferredSection>}
       {isVisible("home.testimonials") && <DeferredSection id="testimonials"><Testimonials /></DeferredSection>}
       {isVisible("home.trainee_reviews", false) && <DeferredSection id="trainee-reviews"><TraineeReviews /></DeferredSection>}
+      {isVisible("home.videos") && <DeferredSection id="videos"><VideoShowcase /></DeferredSection>}
+      {isVisible("home.podcast") && <DeferredSection id="podcast"><Podcast /></DeferredSection>}
+      {isVisible("home.interviews") && <DeferredSection id="interviews"><Interviews /></DeferredSection>}
+      {/* Trainings moved to dedicated /trainings page */}
       {isVisible("home.cta") && <DeferredSection id="book"><BookCTA /></DeferredSection>}
       {isVisible("home.footer") && <DeferredSection id="footer"><Footer /></DeferredSection>}
       
