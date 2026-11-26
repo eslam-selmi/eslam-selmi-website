@@ -146,24 +146,10 @@ export function Testimonials() {
 }
 
 function TestimonialCard({ it }: { it: TestimonialRow }) {
-  const { lang } = useI18n();
-  const isAr = lang === "ar";
-  const qRef = useRef<HTMLQuoteElement>(null);
-  const [open, setOpen] = useState(false);
-  const [clamped, setClamped] = useState(false);
-  useEffect(() => {
-    const el = qRef.current;
-    if (el && !open) setClamped(el.scrollHeight - el.clientHeight > 2);
-  }, [it.quote, open]);
   return (
-    <figure className="tst-card" data-open={open ? "true" : "false"}>
+    <figure className="tst-card">
       <span className="tst-mark" aria-hidden dir="ltr">&rdquo;</span>
-      <blockquote ref={qRef} className="tst-quote" dir="auto">{it.quote}</blockquote>
-      {(clamped || open) && (
-        <button type="button" className="tst-readmore" aria-expanded={open} onClick={() => setOpen((v) => !v)}>
-          {open ? (isAr ? "عرض أقل" : "Show less") : (isAr ? "اقرأ الشهادة كاملة" : "Read full testimonial")}
-        </button>
-      )}
+      <blockquote className="tst-quote" dir="auto">{it.quote}</blockquote>
       <figcaption className="tst-who">
         {it.avatar_url ? (
           <img src={it.avatar_url} alt="" loading="lazy" draggable={false} className="tst-avatar" />
@@ -181,9 +167,14 @@ function TestimonialCard({ it }: { it: TestimonialRow }) {
 
 export function TestimonialsScroller({ items, isAr }: { items: TestimonialRow[]; isAr: boolean }) {
   // Brand cards: compact navy cards in one horizontally scrollable row. Each shows an excerpt only.
+  const dragRef = useRef<{ x: number; left: number; moved: boolean } | null>(null);
   return (
     <div
       className="tst-deck"
+      onPointerDown={(e) => { if (e.pointerType === "mouse") dragRef.current = { x: e.clientX, left: e.currentTarget.scrollLeft, moved: false }; }}
+      onPointerMove={(e) => { const d = dragRef.current; if (d) { e.currentTarget.scrollLeft = d.left - (e.clientX - d.x); } }}
+      onPointerUp={() => { dragRef.current = null; }}
+      onPointerLeave={() => { dragRef.current = null; }}
       role="region"
       tabIndex={0}
       aria-label={isAr ? "آراء المشاركين" : "Participant feedback"}

@@ -1621,3 +1621,11 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 .tst-deck .tst-card[data-open="true"] .tst-quote { -webkit-line-clamp: unset; display: block; overflow: visible; }
 .tst-deck .tst-card[data-open="true"] { align-self: flex-start; }
 .tst-deck:has(.tst-card[data-open="true"]) { align-items: flex-start; }
+
+/* Testimonials v3: no scrollbar, aligned footers, no expand link */
+.tst-deck { scrollbar-width: none; -ms-overflow-style: none; cursor: grab; }
+.tst-deck::-webkit-scrollbar { display: none; height: 0; }
+.tst-deck .tst-card { align-self: stretch !important; justify-content: flex-start; }
+.tst-deck .tst-quote, .tst-deck .tst-card[data-long] .tst-quote { flex: 0 0 auto; height: calc(1.9em * 5); min-height: calc(1.9em * 5); -webkit-line-clamp: 5; }
+.tst-deck .tst-who { margin-top: auto; padding-top: 1.1rem; align-items: center; min-height: 4.5rem; }
+.tst-deck .tst-readmore { display: none; }
