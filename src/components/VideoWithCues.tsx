@@ -7,13 +7,35 @@ import { nextDueCue, parseVideoCues } from "@/lib/video-cues";
  * shows instant right/wrong feedback, then resumes after the trainee continues.
  * Nothing is stored. Works with no cues too (plain video).
  */
+type YTPlayer = { getCurrentTime: () => number; pauseVideo: () => void; playVideo: () => void; getPlayerState: () => number; destroy: () => void };
+type YTApi = { Player: new (el: HTMLElement, opts: Record<string, unknown>) => YTPlayer };
+let ytApiPromise: Promise<YTApi> | null = null;
+function loadYouTubeApi(): Promise<YTApi> {
+  const w = window as unknown as { YT?: YTApi & { loaded?: number }; onYouTubeIframeAPIReady?: () => void };
+  if (w.YT?.Player) return Promise.resolve(w.YT as YTApi);
+  if (!ytApiPromise) {
+    ytApiPromise = new Promise((resolve, reject) => {
+      const prev = w.onYouTubeIframeAPIReady;
+      w.onYouTubeIframeAPIReady = () => { prev?.(); resolve(w.YT as YTApi); };
+      const tag = document.createElement("script");
+      tag.src = "https://www.youtube.com/iframe_api";
+      tag.onerror = () => { ytApiPromise = null; reject(new Error("youtube api")); };
+      document.head.appendChild(tag);
+    });
+  }
+  return ytApiPromise;
+}
+
 export function VideoWithCues({
+  youtubeId,
   src,
   content,
   isAr,
   onError,
   onProgress,
 }: {
+  /** play a YouTube video through the IFrame API (cues pause it the same way) */
+  youtubeId?: string;
   src: string;
   /** module_items.content; cues are parsed from it when present */
   content?: string | null;
@@ -43,6 +65,39 @@ export function VideoWithCues({
     lastSrcBase.current = srcBase;
   }, [srcBase, cues]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const ytHost = useRef<HTMLDivElement>(null);
+  const ytPlayer = useRef<YTPlayer | null>(null);
+  const activeRef = useRef(-1);
+  activeRef.current = active;
+  useEffect(() => {
+    if (!youtubeId || !ytHost.current) return;
+    let off = false;
+    let timer: number | undefined;
+    const mount = document.createElement("div");
+    ytHost.current.appendChild(mount);
+    loadYouTubeApi().then((YT) => {
+      if (off) return;
+      ytPlayer.current = new YT.Player(mount, {
+        videoId: youtubeId,
+        width: "100%",
+        height: "100%",
+        playerVars: { rel: 0, playsinline: 1, modestbranding: 1 },
+        events: { onError: () => onError?.() },
+      });
+      timer = window.setInterval(() => {
+        const pl = ytPlayer.current;
+        if (!pl || activeRef.current !== -1 || typeof pl.getCurrentTime !== "function") return;
+        const i = nextDueCue(cues, answered.current, pl.getCurrentTime());
+        if (i === -1) return;
+        pl.pauseVideo();
+        try { if (document.fullscreenElement) void document.exitFullscreen(); } catch { /* ignore */ }
+        setPicked(null);
+        setActive(i);
+      }, 400);
+    }).catch(() => onError?.());
+    return () => { off = true; if (timer) window.clearInterval(timer); try { ytPlayer.current?.destroy(); } catch { /* ignore */ } ytPlayer.current = null; };
+  }, [youtubeId, cues]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const check = useCallback(() => {
     const v = ref.current;
     if (!v || active !== -1) return;
@@ -68,11 +123,12 @@ export function VideoWithCues({
     setActive(-1);
     setPicked(null);
     void ref.current?.play();
+    ytPlayer.current?.playVideo();
   }
 
   return (
     <div className="relative w-full h-full bg-black">
-      <video
+      {youtubeId ? <div ref={ytHost} className="w-full h-full [&_iframe]:w-full [&_iframe]:h-full" /> : <video
         ref={ref}
         src={src}
         controls={!cue}
@@ -84,7 +140,7 @@ export function VideoWithCues({
         onLoadedMetadata={() => { const v = ref.current; if (v && resumeAt.current > 0 && Math.abs(v.currentTime - resumeAt.current) > 1 && resumeAt.current < v.duration - 0.5) v.currentTime = resumeAt.current; }}
         onError={onError}
         className="w-full h-full bg-black"
-      />
+      />}
       {cue && (
         <div
           role="dialog"

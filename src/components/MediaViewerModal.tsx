@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { safeHref } from "@/lib/safe-url";
 import { mediaSource } from "@/lib/media-url";
+import { hasVideoCues } from "@/lib/video-cues";
 import { Button } from "@/components/ui/button";
 import { VideoWithCues } from "@/components/VideoWithCues";
 
@@ -86,6 +87,7 @@ export function MediaViewerModal({
     (resolvedUrl && /\.pdf(\?|$)/i.test(resolvedUrl));
   const source = mediaSource(resolvedUrl ?? "");
   const isVideoFile = source.kind === "video";
+  const ytId = source.kind === "embed" ? (/^https:\/\/www\.youtube\.com\/embed\/([A-Za-z0-9_-]{11})/.exec(source.url)?.[1] ?? null) : null;
   const originalUrl = safeHref(item.isStoragePath ? resolvedUrl : item.url);
   const isDownloadOnly = !!resolvedUrl && /\.(xlsx?|xlsm|docx?|pptx?|zip|rar|csv)(\?|$)/i.test(resolvedUrl);
   const isImageFile =
@@ -145,6 +147,9 @@ export function MediaViewerModal({
                 isAr={isAr}
                 onError={() => setErr(isAr ? "تعذّر تشغيل الفيديو؛ يمكنك فتحه من المصدر." : "Video playback failed; open the source instead.")}
               />
+            ) : ytId && hasVideoCues(item.content) ? (
+              <VideoWithCues youtubeId={ytId} src="" content={item.content} isAr={isAr}
+                onError={() => setErr(isAr ? "تعذّر تشغيل الفيديو؛ يمكنك فتحه من المصدر." : "Video playback failed; open the source instead.")} />
             ) : isImageFile ? (
               <img src={resolvedUrl} alt="" className="w-full h-full object-contain" />
             ) : isDownloadOnly ? (
