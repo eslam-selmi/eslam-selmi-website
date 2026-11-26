@@ -73,7 +73,10 @@ export function NotificationsBell({ userId, pending = [] }: { userId: string | u
   const { items, unread, markRead, markAllRead, remove } = useNotifications(userId);
   const actions = pending.filter((a) => a.count > 0);
   const pendingTotal = actions.reduce((n, a) => n + a.count, 0);
-  const badge = unread + pendingTotal;
+  // Enrollment/activation notices describe items already counted in the pending list: keep them listed but do not count them twice
+  const represented = (n: Notification) => actions.length > 0 && !n.read && /انضمام|تفعيل|enroll|activation/i.test(n.title);
+  const unreadOther = items.filter((n) => !n.read && !represented(n)).length;
+  const badge = unreadOther + pendingTotal;
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const nav = useNavigate();
@@ -113,7 +116,7 @@ export function NotificationsBell({ userId, pending = [] }: { userId: string | u
               </div>
               <div>
                 <p className="text-sm font-bold leading-tight">الإشعارات</p>
-                <p className="text-[10px] text-white/55">{unread > 0 || pendingTotal > 0 ? [pendingTotal > 0 ? `${pendingTotal} بانتظار إجراء` : "", unread > 0 ? `${unread} غير مقروء` : ""].filter(Boolean).join(" · ") : "كل شيء محدّث"}</p>
+                <p className="text-[10px] text-white/55">{unreadOther > 0 || pendingTotal > 0 ? [pendingTotal > 0 ? `${pendingTotal} بانتظار إجراء` : "", unreadOther > 0 ? `${unreadOther} إشعار غير مقروء` : ""].filter(Boolean).join(" · ") : "كل شيء محدّث"}</p>
               </div>
             </div>
             {unread > 0 && (
