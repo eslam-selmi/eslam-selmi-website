@@ -12,6 +12,11 @@ export type SiteProfile = {
   secondary_phone: string;
   email: string;
   linkedin: string;
+  facebook: string;
+  instagram: string;
+  x: string;
+  youtube: string;
+  tiktok: string;
   footer_ar: string;
   footer_en: string;
 };
@@ -23,6 +28,11 @@ export const siteProfileDefaults: SiteProfile = {
   secondary_phone: "+20 10 9727 9900",
   email: "eslam.m.selmi@gmail.com",
   linkedin: "https://www.linkedin.com/in/eslam-selmi/",
+  facebook: "",
+  instagram: "",
+  x: "",
+  youtube: "",
+  tiktok: "",
   footer_ar: "",
   footer_en: "",
 };
@@ -36,12 +46,15 @@ export function readSiteProfile(content: SiteProfileRow["content"]): SiteProfile
   }
   return result;
 }
+export const optionalSocials = ["facebook", "instagram", "x", "youtube", "tiktok"] as const;
+export function safeSocial(v: string) { return /^https:\/\/[^\s]+$/i.test((v || "").trim()) ? v.trim() : ""; }
 export function profileLinks(profile: SiteProfile) {
   const digits = profile.phone.replace(/\D/g, "");
   return {
     phone: `tel:${profile.phone.replace(/[^+\d]/g, "")}`,
     whatsapp: `https://wa.me/${digits}`,
     email: `mailto:${profile.email}`,
+    socials: optionalSocials.map((k) => ({ key: k, href: safeSocial(profile[k]) })).filter((x) => x.href),
     linkedin: /^https:\/\/(www\.)?linkedin\.com\//i.test(profile.linkedin) ? profile.linkedin : siteProfileDefaults.linkedin,
   };
 }

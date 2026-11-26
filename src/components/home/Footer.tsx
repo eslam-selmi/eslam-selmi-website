@@ -9,7 +9,7 @@ import {
   Layers,
   MessageCircle,
   Mail,
-  Linkedin,
+  Linkedin, Facebook, Instagram, Twitter, Youtube, Music2,
   Phone,
   ArrowRight,
   CheckCircle2,
@@ -127,6 +127,12 @@ export function Footer() {
           >
             <Linkedin className="size-4" />
           </a>
+          {links.socials.map((so) => (
+            <a key={so.key} href={so.href} target="_blank" rel="noopener noreferrer" aria-label={so.key}
+              className="size-9 grid place-items-center rounded-full border border-foreground/15 hover:bg-foreground/5 transition">
+              {(() => { const I = ({ facebook: Facebook, instagram: Instagram, x: Twitter, youtube: Youtube, tiktok: Music2 } as Record<string, typeof Linkedin>)[so.key]; return <I className="size-4" />; })()}
+            </a>
+          ))}
           <a
             href={links.email}
             aria-label="Email"

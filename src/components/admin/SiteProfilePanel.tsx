@@ -39,6 +39,7 @@ export function SiteProfilePanel() {
   async function save(event: React.FormEvent) {
     event.preventDefault();
     if (!/^https:\/\/(www\.)?linkedin\.com\//i.test(draft.linkedin)) return toast.error(t("أدخل رابط LinkedIn صحيحًا يبدأ بـ https://", "Enter a valid https LinkedIn profile URL"));
+    for (const k of ["facebook","instagram","x","youtube","tiktok"] as const) { if (draft[k] && !/^https:\/\/[^\s]+$/i.test(draft[k].trim())) return toast.error(t("الروابط الاجتماعية لازم تبدأ بـ https://", "Social links must start with https://")); }
     setSaving(true);
     try {
       const { error } = query.data?.id
@@ -81,7 +82,12 @@ export function SiteProfilePanel() {
         ["secondary_phone", t("رقم الهاتف الإضافي", "Additional phone"), "tel"],
         ["email", t("البريد الإلكتروني للتواصل", "Contact email"), "email"],
         ["linkedin", t("رابط حساب LinkedIn", "LinkedIn profile URL"), "url"],
-      ] as const).map(([key, label, type]) => <label key={key} className="space-y-2 text-sm text-foreground"><span className="block">{label}</span><input type={type} required={key !== "secondary_phone"} dir="ltr" value={draft[key]} onChange={e => set(key, e.target.value)} className="h-11 w-full border border-input rounded-md bg-card px-3" /></label>)}
+        ["facebook", t("رابط فيسبوك (اختياري)", "Facebook URL (optional)"), "url"],
+        ["instagram", t("رابط إنستجرام (اختياري)", "Instagram URL (optional)"), "url"],
+        ["x", t("رابط X / تويتر (اختياري)", "X / Twitter URL (optional)"), "url"],
+        ["youtube", t("رابط يوتيوب (اختياري)", "YouTube URL (optional)"), "url"],
+        ["tiktok", t("رابط تيك توك (اختياري)", "TikTok URL (optional)"), "url"],
+      ] as const).map(([key, label, type]) => <label key={key} className="space-y-2 text-sm text-foreground"><span className="block">{label}</span><input type={type} required={!["secondary_phone","facebook","instagram","x","youtube","tiktok"].includes(key)} dir="ltr" value={draft[key]} onChange={e => set(key, e.target.value)} className="h-11 w-full border border-input rounded-md bg-card px-3" /></label>)}
     </div>
     <div className="grid gap-5 sm:grid-cols-2 border-t border-border pt-6">
       <label className="space-y-2 text-sm"><span className="block">{t("النص أسفل الموقع — عربي", "Footer text — Arabic")}</span><textarea dir="rtl" rows={3} value={draft.footer_ar} placeholder="© 2026 · جميع الحقوق محفوظة." onChange={e => set("footer_ar", e.target.value)} className="w-full rounded-md border border-input bg-card p-3" /></label>
