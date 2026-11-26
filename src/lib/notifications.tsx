@@ -100,7 +100,7 @@ export function NotificationsBell({ userId }: { userId: string | undefined }) {
         )}
       </button>
       {open && (
-        <div className="absolute end-0 mt-2 w-[360px] max-h-[520px] overflow-hidden rounded-2xl border border-[var(--gold)]/25 bg-gradient-to-b from-[#0d1a3d] to-[#0b1736] backdrop-blur-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] z-50 flex flex-col animate-in fade-in slide-in-from-top-2 duration-150">
+        <div className="absolute end-0 mt-2 w-[min(360px,calc(100vw-24px))] max-h-[520px] overflow-hidden text-white rounded-2xl border border-[var(--gold)]/25 bg-gradient-to-b from-[#0d1a3d] to-[#0b1736] backdrop-blur-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] z-50 flex flex-col animate-in fade-in slide-in-from-top-2 duration-150">
           <div className="px-4 py-3.5 border-b border-white/10 bg-gradient-to-r from-[var(--gold)]/[0.08] to-transparent flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-lg bg-[var(--gold)]/15 border border-[var(--gold)]/30 flex items-center justify-center">
@@ -117,7 +117,7 @@ export function NotificationsBell({ userId }: { userId: string | undefined }) {
               </button>
             )}
           </div>
-          <div className="overflow-y-auto flex-1 py-1">
+          <div className="overflow-y-auto flex-1 py-1 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,.25)_transparent]">
             {items.length === 0 ? (
               <div className="text-center py-10 px-4">
                 <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 mx-auto mb-3 flex items-center justify-center">
@@ -144,7 +144,7 @@ export function NotificationsBell({ userId }: { userId: string | undefined }) {
                       ? <span className="mt-1.5 w-2 h-2 rounded-full bg-[var(--gold)] shrink-0 shadow-[0_0_8px_rgba(212,175,55,0.7)]" />
                       : <span className="mt-1.5 w-2 h-2 rounded-full bg-white/15 shrink-0" />}
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold leading-tight">{n.title}</p>
+                      <p className="text-sm font-semibold leading-tight text-white">{n.title}</p>
                       {n.body && <p className="text-xs text-white/60 mt-1 leading-relaxed line-clamp-2">{n.body}</p>}
                       <p className="text-[10px] text-white/40 mt-1.5">{new Date(n.created_at).toLocaleString("ar-EG")}</p>
                     </div>
