@@ -92,7 +92,7 @@ export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileB
                 <p className="text-[13.5px] font-bold text-[var(--nx-teal)]">{role === "admin" ? L.panelAdmin : L.panelTrainee}</p>
               </div>
             </Link>
-            <div className="flex-1 min-h-0 overflow-y-auto nx-scroll px-3 pb-6">{sidebar}</div>
+            <div className="flex-1 min-h-0 flex flex-col overflow-y-auto nx-scroll px-3 pb-6">{sidebar}</div>
           </aside>
         )}
         <div className="nx-main flex-1 min-w-0 relative">
