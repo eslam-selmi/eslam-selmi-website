@@ -252,7 +252,7 @@ export function PortalOverviewClean({
               </div>
               <div>
                 <div className="flex items-center justify-between text-xs font-semibold text-white/55 mb-2">
-                  <span><bdi dir="ltr">{continueTarget.done} / {continueTarget.total}</bdi> {ar ? "وحدة مكتملة" : "units completed"}</span>
+                  <span><span dir="ltr" className="inline-block">{continueTarget.done} / {continueTarget.total}</span> {ar ? "وحدة مكتملة" : "units completed"}</span>
                   <bdi dir="ltr" className="font-bold text-[var(--nx-teal)]">{continueTarget.progress}%</bdi>
                 </div>
                 <div className="nx-track h-2 rounded-full overflow-hidden"><div className="h-full rounded-full bg-[var(--nx-teal)]" style={{ width: `${continueTarget.progress}%` }} /></div>
@@ -273,12 +273,12 @@ export function PortalOverviewClean({
           )}
         </section>
 
-        <section className="nx-card p-5 sm:p-6 flex lg:flex-col items-center lg:justify-center gap-5 lg:gap-4">
-          <ProgressRing value={pct} size={104} stroke={9} tone="gold">
+        <section className="nx-card p-4 sm:p-6 flex lg:flex-col items-center lg:justify-center gap-5 lg:gap-4">
+          <ProgressRing value={pct} size={88} stroke={8} tone="teal">
             <p className="nx-display text-xl leading-none"><bdi dir="ltr">{pct}%</bdi></p>
           </ProgressRing>
           <div className="lg:text-center min-w-0">
-            <p className="text-sm font-bold"><bdi dir="ltr">{hoursEarned} / {hoursTotal}</bdi> <span className="text-xs text-white/55 font-semibold">{ar ? "ساعة مكتملة" : "hours completed"}</span></p>
+            <p className="text-sm font-bold"><span dir="ltr" className="inline-block">{hoursEarned} / {hoursTotal}</span> <span className="text-xs text-white/55 font-semibold">{ar ? "ساعة مكتملة" : "hours completed"}</span></p>
             <button onClick={onGoCertificates} className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-[var(--nx-teal)] hover:underline">
               <Award className="w-3.5 h-3.5" /> {ar ? `شهادات صادرة: ${certs}` : `Certificates: ${certs}`}
             </button>
@@ -304,7 +304,7 @@ export function PortalOverviewClean({
                   {approved && progress !== null && (
                     <div className="mt-3.5">
                       <div className="nx-track h-1.5 rounded-full overflow-hidden"><div className="h-full rounded-full bg-[var(--nx-teal)]" style={{ width: `${progress}%` }} /></div>
-                      <p className="text-[11px] text-white/50 font-semibold mt-1.5"><bdi dir="ltr">{done} / {total}</bdi> {ar ? "وحدة" : "units"} · <bdi dir="ltr">{progress}%</bdi></p>
+                      <p className="text-[11px] text-white/50 font-semibold mt-1.5"><span dir="ltr" className="inline-block">{done} / {total}</span> {ar ? "وحدة" : "units"} · <bdi dir="ltr">{progress}%</bdi></p>
                     </div>
                   )}
                 </button>
