@@ -1,4 +1,4 @@
-import { isGeneralFilesModule } from "@/lib/general-modules";
+import { isGeneralFilesModule, orderModulesForDisplay } from "@/lib/general-modules";
 import { regroupByUnit, getItemUnit, setItemUnit } from "@/lib/item-unit";
 import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
 import { useEffect, useState, useMemo } from "react";
@@ -168,11 +168,11 @@ export function CourseContent({ courseId }: { courseId: string }) {
         </p>
       ) : (
         <div className="space-y-3">
-          {modules.map((m, i) => (
+          {orderModulesForDisplay(modules).map(({ m, num }) => (
             <ModuleCard
               key={m.id}
               m={m}
-              index={i}
+              index={num}
               items={items[m.id] ?? []}
               allModules={modules}
               onToggle={() => toggleComplete(m)}
@@ -260,7 +260,7 @@ export function ModuleCard({
           onClick={() => setOpen(!open)}
           className="w-8 h-8 rounded-lg bg-white/5 text-[var(--gold)] font-bold text-sm flex items-center justify-center shrink-0"
         >
-          {index + 1}
+          {index ?? "∗"}
         </button>
         <div className="flex-1 min-w-0">
           {isGeneralFilesModule(m) && <p className="text-[11px] text-[var(--gold)]/80">{t("ملفات عامة للكورس (مش تابعة لوحدة)", "Course-wide files (not tied to a unit)")}</p>}
