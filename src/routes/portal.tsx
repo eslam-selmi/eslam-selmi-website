@@ -195,6 +195,7 @@ function PortalPage() {
       pending: enrollments.filter((e) => e.status === "pending").length,
       certs,
       hoursEarned: Math.round(earned),
+      hoursPct: total > 0 ? Math.round((earned / total) * 100) : 0,
       hoursTotal: Math.round(total),
     };
   }, [enrollments, modules]);
@@ -361,6 +362,7 @@ function PortalPage() {
           avatarSrc={avatarSrc}
           hoursEarned={stats.hoursEarned}
           hoursTotal={stats.hoursTotal}
+          hoursPct={stats.hoursPct}
           continueTarget={continueTarget}
           onOpenCourse={(en) => setViewing(en)}
           onBrowse={() => setTab("available")}

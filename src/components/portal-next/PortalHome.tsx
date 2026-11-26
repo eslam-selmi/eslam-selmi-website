@@ -89,7 +89,7 @@ export function SectionHeader({ icon: Icon, title, hint, action }: {
 
 export function PortalHero({
   lang, greeting, firstName, fullName, welcomeLine, countryFlag, countryName, avatarSrc,
-  hoursEarned, hoursTotal, continueTarget, onOpenCourse, onBrowse, onAccount, supportNode,
+  hoursEarned, hoursTotal, hoursPct, continueTarget, onOpenCourse, onBrowse, onAccount, supportNode,
 }: {
   lang: string;
   greeting: string;
@@ -101,6 +101,7 @@ export function PortalHero({
   avatarSrc?: string | null;
   hoursEarned: number;
   hoursTotal: number;
+  hoursPct?: number;
   continueTarget: { en: Enrollment; progress: number; done: number; total: number } | null;
   onOpenCourse: (en: Enrollment) => void;
   onBrowse: () => void;
@@ -108,7 +109,8 @@ export function PortalHero({
   supportNode?: React.ReactNode;
 }) {
   const isAr = lang === "ar";
-  const pct = hoursTotal > 0 ? Math.round((hoursEarned / hoursTotal) * 100) : 0;
+  // Use the unrounded share so the ring matches the per-course percentages (rounded hours would give 30% for 33%).
+  const pct = hoursPct ?? (hoursTotal > 0 ? Math.round((hoursEarned / hoursTotal) * 100) : 0);
   return (
     <section className="nx-card relative overflow-hidden p-6 sm:p-9 nx-rise">
       <span className="nx-hero-line" />
