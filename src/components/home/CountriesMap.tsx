@@ -45,9 +45,13 @@ export function CountriesMap() {
             <path d={o.d} pathLength={1} className="cm-outline" />
           </svg>
           <div className="cm-label" dir={lang === "ar" ? "rtl" : "ltr"}>
-            <img className="cm-flag" src={`https://flagcdn.com/${code}.svg`} alt="" draggable={false} />
+            <div className="cm-flag" aria-hidden>
+              {Array.from({ length: 24 }, (_, k) => (
+                <span key={k} className="cm-strip" style={{ backgroundImage: `url(https://flagcdn.com/${code}.svg)`, backgroundPositionX: `${(k / 23) * 100}%`, animationDelay: `${-k * 0.09}s` }} />
+              ))}
+              <i className="cm-sheen" />
+            </div>
             <span className="cm-name">{nameOf(code)}</span>
-            <span className="cm-count" dir="ltr">{String(i + 1).padStart(2, "0")} / {String(list.length).padStart(2, "0")}</span>
           </div>
         </div>
       </div>
