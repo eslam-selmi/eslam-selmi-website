@@ -1,3 +1,4 @@
+import { WavingFlag } from "./WavingFlag";
 import { useEffect, useRef, useState } from "react";
 import { COUNTRIES } from "@/components/home/data";
 import { useI18n } from "@/lib/i18n";
@@ -15,6 +16,8 @@ export function CountriesMap() {
   const [paused, setPaused] = useState(false);
   const [visible, setVisible] = useState(true);
   const [reduced, setReduced] = useState(false);
+  const [flagW, setFlagW] = useState(160);
+  useEffect(() => { const f = () => setFlagW(window.innerWidth < 640 ? 124 : 168); f(); window.addEventListener("resize", f); return () => window.removeEventListener("resize", f); }, []);
   const nameOf = (code: string) => COUNTRIES.find((c) => c.code === code)?.name[lang] ?? code;
 
   useEffect(() => {
@@ -45,12 +48,7 @@ export function CountriesMap() {
             <path d={o.d} pathLength={1} className="cm-outline" />
           </svg>
           <div className="cm-label" dir={lang === "ar" ? "rtl" : "ltr"}>
-            <div className="cm-flag" aria-hidden>
-              {Array.from({ length: 24 }, (_, k) => (
-                <span key={k} className="cm-strip" style={{ backgroundImage: `url(https://flagcdn.com/${code}.svg)`, backgroundPositionX: `${(k / 23) * 100}%`, animationDelay: `${-k * 0.09}s` }} />
-              ))}
-              <i className="cm-sheen" />
-            </div>
+            <div className="cm-flag" aria-hidden><WavingFlag code={code} width={flagW} /></div>
             <span className="cm-name">{nameOf(code)}</span>
           </div>
         </div>
