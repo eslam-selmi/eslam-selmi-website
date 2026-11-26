@@ -1428,13 +1428,18 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 .world-stage-frame { position: relative; width: min(100%, 900px); margin-inline: auto; padding: 0; border: 0; background: none; box-shadow: none; border-radius: 0; }
 .world-stage-frame .world-globe { width: 100%; }
 
-/* Compact testimonials: smaller footprint, same content */
-#testimonials { padding-block: 2.5rem; }
-@media (min-width: 1024px) { #testimonials { padding-block: 3.5rem; } }
-.tst-card { min-height: 0; width: 280px; padding: 1.15rem 1.1rem 1rem; border-radius: 20px; }
-@media (min-width: 640px) { .tst-card { width: 320px; padding: 1.3rem 1.3rem 1.1rem; } }
-@media (min-width: 1024px) { .tst-card { width: 340px; } }
-.tst-mark { font-size: 6rem; }
-.tst-quote { margin-top: .6rem; font-size: .88rem; line-height: 1.7; -webkit-line-clamp: 7; }
-.tst-who { margin-top: .8rem; padding-top: .7rem; }
-.tst-avatar { width: 38px; height: 38px; }
+/* Testimonials: same card language as the rest of the site (light/dark follow theme), compact */
+.tst-card { min-height: 0; width: 300px; padding: 1.25rem 1.25rem 1.1rem; border-radius: 1rem; border: 1px solid var(--border); background-color: var(--card); background-image: none; color: var(--foreground); box-shadow: 0 1px 2px rgb(0 0 0 / .05); }
+@media (min-width: 640px) { .tst-card { width: 340px; } }
+@media (min-width: 1024px) { .tst-card { width: 360px; } }
+.tst-card::before { display: none; }
+.tst-mark { font-size: 5rem; color: color-mix(in oklab, var(--accent) 20%, transparent); inset-block-start: -.2rem; }
+.tst-num { color: var(--accent); }
+.tst-stars span { color: color-mix(in oklab, var(--foreground) 22%, transparent); }
+.tst-quote { margin-top: .6rem; font-size: .875rem; line-height: 1.75; color: var(--foreground); -webkit-line-clamp: 7; }
+.tst-who { margin-top: .9rem; padding-top: .8rem; border-block-start: 1px solid var(--border); }
+.tst-avatar { width: 38px; height: 38px; box-shadow: none; }
+.tst-avatar-fallback { background: var(--secondary); color: var(--foreground); }
+.tst-name { color: var(--foreground); font-size: .875rem; }
+.tst-role { color: var(--muted-foreground); }
+@media (hover: hover) { .tst-card:hover { box-shadow: 0 10px 24px rgb(0 0 0 / .08); } }
