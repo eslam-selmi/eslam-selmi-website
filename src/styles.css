@@ -1533,3 +1533,15 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 .tst-deck .tst-avatar-fallback { display: grid; place-items: center; background: color-mix(in oklab, var(--accent) 18%, var(--navy)); color: var(--accent); font-weight: 800; font-size: 1.4rem; }
 .tst-deck .tst-name { display: block; white-space: normal; overflow: visible; font-size: .82rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
 .tst-deck .tst-role { display: block; white-space: normal; overflow: visible; text-overflow: clip; -webkit-line-clamp: unset; margin: 0; font-size: .76rem; line-height: 1.5; color: oklch(0.8 0.02 240); }
+
+/* Testimonials: compact height. Long comments show a 4 line excerpt; tapping the card opens the full comment. */
+.tst-deck { align-items: start; }
+.tst-deck .tst-card, .tst-deck .tst-card:hover { padding: 1.4rem 1.3rem 1.25rem; }
+.tst-deck .tst-mark { height: 1.9rem; font-size: 3.8rem; }
+.tst-deck .tst-quote { margin-top: .6rem; font-size: .93rem; line-height: 1.75; flex: 0 1 auto; }
+.tst-deck .tst-card[data-long="true"] { cursor: pointer; }
+.tst-deck .tst-card[data-long="true"][data-open="false"] .tst-quote { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; overflow: hidden; }
+.tst-deck .tst-card[data-long="true"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.tst-deck .tst-more { margin-top: .55rem; font-size: .74rem; font-weight: 700; color: var(--accent); }
+.tst-deck .tst-who { margin-top: 1rem; gap: .2rem; }
+.tst-deck .tst-avatar { width: 52px; height: 52px; margin-bottom: .3rem; }
