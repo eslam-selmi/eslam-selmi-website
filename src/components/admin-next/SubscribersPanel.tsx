@@ -89,9 +89,7 @@ export function SubscribersPanel() {
   return (
     <section className="space-y-4" aria-label={t("المشتركون", "Subscribers")}>
       <div className="nx-card p-5 sm:p-6">
-        <p className="nx-eyebrow">{t("المتدربون", "Trainees")}</p>
-        <h1 className="nx-display text-2xl sm:text-[30px] mt-1">{t("المشتركون", "Subscribers")}</h1>
-        <p className="text-sm opacity-70 mt-1">
+        <p className="text-sm font-semibold">
           {loading ? "…" : t(`${rows.length} من ${profiles.length} مشترك`, `${rows.length} of ${profiles.length} subscribers`)}
         </p>
         <div className="mt-4 flex flex-col sm:flex-row gap-3">
