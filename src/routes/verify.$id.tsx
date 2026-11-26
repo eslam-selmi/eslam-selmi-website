@@ -4,7 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { CheckCircle2, ShieldCheck, XCircle, Loader2, Award, Clock, Calendar, ArrowLeft } from "lucide-react";
 import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
 import { useSiteProfile } from "@/lib/site-profile";
-import { useI18n } from "@/lib/i18n";
 const brandLogo = brandLogoAsset.url;
 export const Route = createFileRoute("/verify/$id")({
   component: VerifyPage,
@@ -26,9 +25,6 @@ type VerifyResult =
 
 function VerifyPage() {
   const { profile } = useSiteProfile();
-  const { lang, setLang } = useI18n();
-  const isAr = lang === "ar";
-  const tt = (ar: string, en: string) => (isAr ? ar : en);
   const { id } = Route.useParams();
   const [state, setState] = useState<{ loading: boolean; data: VerifyResult | null; err: string | null }>({ loading: true, data: null, err: null });
 
@@ -42,90 +38,84 @@ function VerifyPage() {
 
   const valid = state.data && (state.data as any).ok === true;
   const d = valid ? (state.data as Extract<VerifyResult, { ok: true }>) : null;
-  const name = d ? (isAr ? d.trainee_name_ar || d.trainee_name_en : d.trainee_name_en || d.trainee_name_ar) : null;
+  const issued = d ? new Date(d.issued_at) : null;
 
   return (
-    <div className="min-h-screen bg-[#0b1736] text-white relative overflow-hidden" dir={isAr ? "rtl" : "ltr"}>
-      <header className="relative z-10 max-w-2xl mx-auto px-6 py-6 flex items-center justify-between">
+    <div className="min-h-screen bg-[#070f24] text-white relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(60% 45% at 50% 18%, rgba(45,212,200,0.16), transparent 70%), radial-gradient(50% 40% at 50% 100%, rgba(212,175,55,0.10), transparent 70%)" }} />
+      <header className="relative z-10 max-w-2xl mx-auto px-6 py-5 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3">
-          <img src={profile.logoDark} alt="" className="h-10 w-auto" />
+          <img src={profile.logoDark} alt="" className="h-9 w-auto opacity-90" />
         </Link>
-        <div className="flex items-center gap-4">
-          <button onClick={() => setLang(isAr ? "en" : "ar")} className="text-xs text-white/70 hover:text-white">{isAr ? "English" : "العربية"}</button>
-          <Link to="/" className="text-xs text-white/60 hover:text-white flex items-center gap-1">
-            <ArrowLeft className="w-3.5 h-3.5 rtl-flip" /> {tt("الرئيسية", "Home")}
-          </Link>
-        </div>
+        <Link to="/" className="text-xs text-white/60 hover:text-white flex items-center gap-1">
+          <ArrowLeft className="w-3.5 h-3.5" /> الرئيسية · Home
+        </Link>
       </header>
 
-      <main className="relative z-10 max-w-md mx-auto px-6 pb-16">
-        <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-7 sm:p-8">
-          {state.loading ? (
-            <div className="flex flex-col items-center gap-3 py-10 text-white/70">
-              <Loader2 className="w-8 h-8 animate-spin text-[var(--gold)]" />
-              <p className="text-sm">{tt("جارٍ التحقق…", "Verifying…")}</p>
-            </div>
-          ) : !valid ? (
-            <div className="text-center space-y-3 py-4">
-              <div className="w-14 h-14 mx-auto rounded-full bg-rose-500/15 border border-rose-500/40 flex items-center justify-center">
-                <XCircle className="w-7 h-7 text-rose-300" />
-              </div>
-              <h1 className="text-xl font-bold">{tt("الشهادة غير موجودة", "Certificate not found")}</h1>
-              <p className="text-sm text-white/60">
-                {tt("الرقم غير صحيح أو لم تُصدر الشهادة بعد أو تم إلغاؤها.", "The ID is invalid, or the certificate has not been issued or was revoked.")}
-              </p>
-              <p className="text-[11px] text-white/40 font-mono break-all" dir="ltr">{id}</p>
-            </div>
-          ) : (
-            <div className="space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-full bg-emerald-500/15 border border-emerald-400/40 flex items-center justify-center shrink-0">
-                  <ShieldCheck className="w-5 h-5 text-emerald-300" />
-                </div>
-                <h1 className="text-lg font-bold text-emerald-200">{tt("شهادة موثّقة", "Verified certificate")}</h1>
-              </div>
+      <main className="relative z-10 max-w-xl mx-auto px-5 pb-16">
+        <div className="relative overflow-hidden rounded-[2rem] border border-white/12 bg-gradient-to-b from-white/[0.06] to-white/[0.02] shadow-[0_40px_90px_-40px_rgba(0,0,0,0.9)]">
+          {/* large, cropped, translucent brand mark */}
+          <img src={profile.logoDark} alt="" aria-hidden className="pointer-events-none absolute -bottom-16 -end-24 w-[78%] max-w-[420px] opacity-[0.07] select-none" />
+          <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/70 to-transparent" />
 
-              <div className="space-y-4 border-t border-white/10 pt-5">
-                {name && (
-                  <Field label={tt("المتدرب", "Trainee")}>
-                    <p className="text-lg font-bold"><bdi>{name}</bdi></p>
-                  </Field>
-                )}
-                <Field label={tt("الدورة", "Course")} icon={Award}>
-                  <p className="font-semibold"><bdi dir="auto">{d!.course_title}</bdi></p>
-                </Field>
-                <div className="grid grid-cols-2 gap-4">
-                  <Field label={tt("تاريخ الإصدار", "Issue date")} icon={Calendar}>
-                    <p className="font-semibold">
-                      <bdi dir={isAr ? "rtl" : "ltr"}>{new Date(d!.issued_at).toLocaleDateString(isAr ? "ar-EG-u-nu-latn" : "en-GB", { year: "numeric", month: "long", day: "numeric" })}</bdi>
-                    </p>
-                  </Field>
-                  {Number(d!.total_hours) > 0 && (
-                    <Field label={tt("الساعات", "Hours")} icon={Clock}>
-                      <p className="font-semibold"><bdi dir="ltr">{d!.total_hours}</bdi></p>
-                    </Field>
-                  )}
-                </div>
-                <Field label={tt("رقم الشهادة", "Certificate ID")}>
-                  <p className="text-xs font-mono text-white/70 break-all" dir="ltr">{d!.certificate_id}</p>
-                </Field>
+          <div className="relative px-6 sm:px-10 py-10 sm:py-12">
+            {state.loading ? (
+              <div className="flex flex-col items-center gap-3 py-16 text-white/70">
+                <Loader2 className="w-8 h-8 animate-spin text-[var(--gold)]" />
+                <p className="text-sm">جارٍ التحقق · Verifying…</p>
               </div>
-            </div>
-          )}
+            ) : !valid ? (
+              <div className="text-center space-y-3 py-8">
+                <div className="w-16 h-16 mx-auto rounded-full bg-rose-500/15 border border-rose-500/40 flex items-center justify-center">
+                  <XCircle className="w-8 h-8 text-rose-300" />
+                </div>
+                <h1 className="text-xl font-bold">الشهادة غير موجودة</h1>
+                <p className="text-lg font-semibold text-white/80" dir="ltr">Certificate not found</p>
+                <p className="text-sm text-white/55">الرقم غير صحيح أو لم تُصدر الشهادة بعد أو تم إلغاؤها.</p>
+                <p className="text-sm text-white/55" dir="ltr">The ID is invalid, or the certificate has not been issued or was revoked.</p>
+                <p className="text-[11px] text-white/35 font-mono break-all pt-2" dir="ltr">{id}</p>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center text-center">
+                {/* glowing shield */}
+                <div className="relative w-28 h-28 flex items-center justify-center">
+                  <div className="absolute inset-0 rounded-full bg-[rgba(45,212,200,0.30)] blur-2xl" />
+                  <div className="absolute inset-3 rounded-full bg-[rgba(212,175,55,0.18)] blur-xl" />
+                  <svg viewBox="0 0 64 72" className="relative w-20 h-[90px] drop-shadow-[0_0_18px_rgba(45,212,200,0.55)]" aria-hidden>
+                    <defs>
+                      <linearGradient id="vs" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0" stopColor="#5eead4" />
+                        <stop offset="1" stopColor="#d4af37" />
+                      </linearGradient>
+                    </defs>
+                    <path d="M32 3 58 13v22c0 17-11 28-26 34C17 63 6 52 6 35V13L32 3Z" fill="rgba(7,15,36,0.85)" stroke="url(#vs)" strokeWidth="2.5" />
+                    <path d="m20 36 8 8 17-18" fill="none" stroke="url(#vs)" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+
+                <h1 className="mt-5 text-xl sm:text-2xl font-extrabold text-emerald-200">الشهادة موثّقة وصادرة من إسلام سلمي</h1>
+                <p className="mt-1 text-sm sm:text-base font-semibold text-white/75" dir="ltr">This certificate is verified and issued by Eslam Selmi</p>
+
+                <div className="my-8 h-px w-40 bg-gradient-to-r from-transparent via-[var(--gold)]/60 to-transparent" />
+
+                {d!.trainee_name_ar && <p className="text-2xl sm:text-3xl font-extrabold leading-tight" dir="rtl">{d!.trainee_name_ar}</p>}
+                {d!.trainee_name_en && <p className="mt-1.5 text-lg sm:text-xl font-semibold text-white/85" dir="ltr">{d!.trainee_name_en}</p>}
+
+                <div className="mt-6 flex flex-col sm:flex-row items-center gap-1 sm:gap-4 text-sm text-[var(--gold)]">
+                  <span className="inline-flex items-center gap-1.5" dir="rtl"><Calendar className="w-3.5 h-3.5" />تاريخ الإصدار: <bdi dir="rtl">{issued!.toLocaleDateString("ar-EG-u-nu-latn", { year: "numeric", month: "long", day: "numeric" })}</bdi></span>
+                  <span className="hidden sm:inline text-white/25">|</span>
+                  <span className="inline-flex items-center gap-1.5" dir="ltr">Issued: <bdi dir="ltr">{issued!.toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" })}</bdi></span>
+                </div>
+
+                <div className="mt-8 w-full border-t border-white/10 pt-5 space-y-1.5 text-xs text-white/55">
+                  <p className="inline-flex items-center justify-center gap-1.5"><Award className="w-3.5 h-3.5" /><bdi dir="auto">{d!.course_title}</bdi>{Number(d!.total_hours) > 0 && <span> · <bdi dir="ltr">{d!.total_hours} h</bdi></span>}</p>
+                  <p className="font-mono text-[11px] text-white/40 break-all" dir="ltr">{d!.certificate_id}</p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </main>
-    </div>
-  );
-}
-
-function Field({ label, icon: Icon, children }: { label: string; icon?: any; children: React.ReactNode }) {
-  return (
-    <div>
-      <p className="text-[11px] text-[var(--gold)]/80 mb-1 flex items-center gap-1.5">
-        {Icon && <Icon className="w-3 h-3" />}
-        {label}
-      </p>
-      {children}
     </div>
   );
 }
