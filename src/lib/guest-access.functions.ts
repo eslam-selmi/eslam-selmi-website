@@ -3,7 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { getCookie, setCookie, deleteCookie } from "@tanstack/react-start/server";
 import { createHmac } from "node:crypto";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { createGuest, resetGuestPassword, setGuestEnabled, guestSummary, guestLogin, guestCourses, guestOpenCourse, sessionValid, SESSION_TTL_MS } from "./guest-access-service";
+import { createGuest, resetGuestPassword, setGuestEnabled, setGuestCourses, removeGuest, guestSummary, guestLogin, guestCourses, guestOpenCourse, sessionValid, SESSION_TTL_MS } from "./guest-access-service";
 import { supabaseGuestStore as store } from "./guest-access-store.server";
 
 const COOKIE = "guest_session";
@@ -21,14 +21,23 @@ async function needAdmin(context: { supabase: any; userId: string }) {
 
 export const getGuestAccount = createServerFn({ method: "GET" }).middleware([requireSupabaseAuth])
   .handler(async ({ context }) => { await needAdmin(context); return guestSummary(store); });
+const uuid = (v: unknown) => { const x = String(v ?? ""); if (!/^[0-9a-f-]{36}$/i.test(x)) throw new Error("bad id"); return x; };
+const uuids = (v: unknown) => (Array.isArray(v) ? v.slice(0, 200).map(uuid) : []);
 export const createGuestAccount = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
-  .inputValidator((d: { email: string }) => ({ email: String(d.email ?? "") }))
-  .handler(async ({ data, context }) => { await needAdmin(context); return createGuest(store, context.userId, data.email); });
+  .inputValidator((d: { email: string; name?: string; courseIds?: string[] }) => ({ email: String(d.email ?? ""), name: String(d.name ?? "").slice(0, 80), courseIds: uuids(d.courseIds) }))
+  .handler(async ({ data, context }) => { await needAdmin(context); return createGuest(store, context.userId, data.email, data.name, data.courseIds); });
 export const resetGuestAccountPassword = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => { await needAdmin(context); return resetGuestPassword(store); });
+  .inputValidator((d: { id: string }) => ({ id: uuid(d.id) }))
+  .handler(async ({ data, context }) => { await needAdmin(context); return resetGuestPassword(store, data.id); });
 export const setGuestAccountEnabled = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
-  .inputValidator((d: { enabled: boolean }) => ({ enabled: !!d.enabled }))
-  .handler(async ({ data, context }) => { await needAdmin(context); return setGuestEnabled(store, data.enabled); });
+  .inputValidator((d: { id: string; enabled: boolean }) => ({ id: uuid(d.id), enabled: !!d.enabled }))
+  .handler(async ({ data, context }) => { await needAdmin(context); return setGuestEnabled(store, data.id, data.enabled); });
+export const setGuestAccountCourses = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
+  .inputValidator((d: { id: string; courseIds: string[] }) => ({ id: uuid(d.id), courseIds: uuids(d.courseIds) }))
+  .handler(async ({ data, context }) => { await needAdmin(context); return setGuestCourses(store, data.id, data.courseIds); });
+export const removeGuestAccount = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
+  .inputValidator((d: { id: string }) => ({ id: uuid(d.id) }))
+  .handler(async ({ data, context }) => { await needAdmin(context); return removeGuest(store, data.id); });
 
 export const guestSignIn = createServerFn({ method: "POST" })
   .inputValidator((d: { email: string; password: string }) => ({ email: String(d.email ?? "").slice(0, 254), password: String(d.password ?? "").slice(0, 200) }))
