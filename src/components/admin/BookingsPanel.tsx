@@ -1,4 +1,5 @@
 import { csvSafeCell } from "@/lib/csv-safe";
+import { fetchBookingQuestions, saveBookingQuestions, splitDetails, MAX_QUESTIONS, type BookingQuestion } from "@/lib/booking-questions";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
@@ -45,6 +46,7 @@ export function BookingsPanel() {
   const [filter, setFilter] = useState<"all" | "open" | "booked" | "cancelled">("all");
   const [active, setActive] = useState<Slot | null>(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [showQuestions, setShowQuestions] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
 
   const labels: Record<string, string> = {
@@ -136,6 +138,7 @@ export function BookingsPanel() {
           <h2 className="font-display font-extrabold text-lg text-white">{t("حجوزات الاستشارات", "Consultation bookings")}</h2>
           <div className="flex flex-wrap gap-2">
             <button onClick={() => setShowSettings(true)} className="px-3 h-10 rounded-xl text-sm font-semibold inline-flex items-center gap-2 bg-white/5 text-white border border-white/10"><Settings2 className="size-4" />{t("ساعات العمل والتوليد", "Hours & generate")}</button>
+            <button onClick={() => setShowQuestions(true)} className="px-3 h-10 rounded-xl text-sm font-semibold inline-flex items-center gap-2 bg-white/5 text-white border border-white/10"><MessageSquare className="size-4" />{t("أسئلة الحجز", "Booking questions")}</button>
             <button onClick={exportCsv} className="px-3 h-10 rounded-xl text-sm font-semibold inline-flex items-center gap-2 border border-[var(--gold)]/40 text-[var(--gold)]"><Download className="size-4" />CSV</button>
             <button onClick={() => setShowAdd(true)} className={`px-4 h-10 rounded-xl text-sm font-bold inline-flex items-center gap-2 ${goldBtn}`}><Plus className="size-4" />{t("موعد يدوي", "Manual slots")}</button>
           </div>
@@ -208,6 +211,7 @@ export function BookingsPanel() {
       </div>
 
       {active && <SlotModal slot={active} labels={labels} onClose={() => setActive(null)} onSaved={() => { setActive(null); refresh(); }} />}
+      {showQuestions && <QuestionsModal onClose={() => setShowQuestions(false)} />}
       {showSettings && <SettingsModal onClose={() => setShowSettings(false)} onGenerated={refresh} />}
       {showAdd && <AddModal onClose={() => setShowAdd(false)} onSaved={() => { setShowAdd(false); refresh(); }} />}
     </div>
@@ -278,7 +282,16 @@ function SlotModal({ slot, labels, onClose, onSaved }: { slot: Slot; labels: Rec
           <div className="flex items-center gap-2"><User className="size-3.5 text-white/50" />{slot.booker_name}</div>
           <div className="flex items-center gap-2" dir="ltr"><Phone className="size-3.5 text-white/50" />{slot.booker_phone} {slot.booker_email ? `· ${slot.booker_email}` : ""}</div>
           {slot.topic && <div className="flex items-start gap-2"><MessageSquare className="size-3.5 text-white/50 mt-1" /><b>{slot.topic}</b></div>}
-          {slot.details && <p className="text-xs text-white/60 whitespace-pre-wrap">{slot.details}</p>}
+          {slot.details && (() => { const d = splitDetails(slot.details); return (<>
+            {d.text && <p className="text-xs text-white/60 whitespace-pre-wrap">{d.text}</p>}
+            {d.qa.length > 0 && (
+              <div className="rounded-lg border border-white/10 bg-white/[0.03] p-2.5 space-y-1.5" data-testid="booking-qa">
+                <div className="text-[11px] font-bold text-[var(--gold)]">{t("إجابات أسئلة الحجز", "Booking question answers")}</div>
+                {d.qa.map((x, i) => <div key={i} className="text-xs"><span className="text-white/50">{x.q}</span><div className="font-semibold text-white/90 whitespace-pre-wrap">{x.a}</div></div>)}
+              </div>
+            )}
+            {d.tail && <p className="text-xs text-white/50 whitespace-pre-wrap">{d.tail}</p>}
+          </>); })()}
           {slot.cancel_reason && <p className="text-xs text-rose-300">{t("سبب الإلغاء:", "Cancel reason:")} {slot.cancel_reason}</p>}
           {link && <a href={link} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-xs text-[var(--gold)] underline"><Video className="size-3.5" />{t("فتح الاجتماع", "Open meeting")}</a>}
         </div>
@@ -417,6 +430,51 @@ function AddModal({ onClose, onSaved }: { onClose: () => void; onSaved: () => vo
       <Lbl l={t("الأوقات (مفصولة بفواصل)", "Times (comma separated)")}><textarea dir="ltr" rows={3} value={times} onChange={(e) => setTimes(e.target.value)} placeholder="10:00, 10:40, 11:20" className={inputCls + " resize-none"} /></Lbl>
       <Lbl l={t("المدة (دقيقة)", "Duration (min)")}><input type="number" min={10} max={240} value={duration} onChange={(e) => setDuration(Number(e.target.value))} className={inputCls} /></Lbl>
       <div className="flex justify-end"><button onClick={submit} disabled={busy} className={`px-5 h-10 rounded-xl text-sm font-bold disabled:opacity-50 ${goldBtn}`}>{busy ? <Loader2 className="size-4 animate-spin" /> : t("إضافة", "Add")}</button></div>
+    </Modal>
+  );
+}
+
+function QuestionsModal({ onClose }: { onClose: () => void }) {
+  const { lang } = useI18n();
+  const t = (a: string, b: string) => (lang === "ar" ? a : b);
+  const [qs, setQs] = useState<BookingQuestion[] | null>(null);
+  const [busy, setBusy] = useState(false);
+  useEffect(() => { fetchBookingQuestions().then(setQs).catch(() => setQs([])); }, []);
+  if (!qs) return <Modal title={t("أسئلة الحجز", "Booking questions")} onClose={onClose}><Loader2 className="size-5 animate-spin text-white mx-auto" /></Modal>;
+  const patch = (i: number, v: Partial<BookingQuestion>) => setQs(qs.map((q, k) => (k === i ? { ...q, ...v } : q)));
+  async function save() {
+    if (!qs) return;
+    if (qs.some((q) => !q.label_ar.trim() && !q.label_en.trim())) return toast.error(t("اكتب نص كل سؤال", "Write the text of every question"));
+    setBusy(true);
+    try { await saveBookingQuestions(qs); toast.success(t("تم حفظ الأسئلة", "Questions saved")); onClose(); }
+    catch (e) { toast.error(e instanceof Error ? e.message : t("تعذر الحفظ", "Save failed")); }
+    finally { setBusy(false); }
+  }
+  return (
+    <Modal title={t("أسئلة الحجز", "Booking questions")} onClose={onClose}>
+      <p className="text-xs text-white/55">{t("تظهر للشخص وهو بيحجز. الإجابات بتتسجل مع الحجز بنص السؤال وقت الحجز، فتعديل السؤال بعدها ما يغيّر الحجوزات القديمة.", "Shown while booking. Answers are stored with the booking using the question text at that moment, so later edits do not change past bookings.")}</p>
+      {qs.length === 0 && <div className="text-center text-sm text-white/50 rounded-xl border border-dashed border-white/15 p-5">{t("لا توجد أسئلة. أضف أول سؤال.", "No questions yet. Add the first one.")}</div>}
+      {qs.map((q, i) => (
+        <div key={q.id} className="rounded-xl border border-white/10 bg-white/[0.03] p-3 space-y-2" data-testid="q-row">
+          <div className="grid sm:grid-cols-2 gap-2">
+            <input value={q.label_ar} maxLength={200} onChange={(e) => patch(i, { label_ar: e.target.value })} placeholder={t("نص السؤال بالعربي", "Question (Arabic)")} className={inputCls} />
+            <input dir="ltr" value={q.label_en} maxLength={200} onChange={(e) => patch(i, { label_en: e.target.value })} placeholder={t("نص السؤال بالإنجليزي", "Question (English)")} className={inputCls} />
+          </div>
+          <input value={q.options.join("، ")} onChange={(e) => patch(i, { options: e.target.value.split(/[،,]/).map((x) => x.trim()).filter(Boolean).slice(0, 10) })} placeholder={t("اختيارات (اختياري) مفصولة بفاصلة، لو فاضية يبقى الرد نص حر", "Choices (optional), comma separated. Empty means free text")} className={inputCls} />
+          <div className="flex items-center justify-between gap-2">
+            <label className="flex items-center gap-2 text-xs"><input type="checkbox" checked={q.required} onChange={(e) => patch(i, { required: e.target.checked })} className="size-4 accent-[var(--gold)]" />{t("إجباري", "Required")}</label>
+            <div className="flex gap-1.5">
+              <button disabled={i === 0} onClick={() => setQs(qs.map((x, k) => (k === i - 1 ? qs[i] : k === i ? qs[i - 1] : x)))} className="px-2.5 h-8 rounded-lg bg-white/10 text-xs disabled:opacity-30" aria-label="up">↑</button>
+              <button disabled={i === qs.length - 1} onClick={() => setQs(qs.map((x, k) => (k === i + 1 ? qs[i] : k === i ? qs[i + 1] : x)))} className="px-2.5 h-8 rounded-lg bg-white/10 text-xs disabled:opacity-30" aria-label="down">↓</button>
+              <button onClick={() => setQs(qs.filter((_, k) => k !== i))} className="px-2.5 h-8 rounded-lg bg-red-500/15 text-red-300"><Trash2 className="size-3.5" /></button>
+            </div>
+          </div>
+        </div>
+      ))}
+      <div className="flex flex-wrap justify-between gap-2">
+        <button disabled={qs.length >= MAX_QUESTIONS} onClick={() => setQs([...qs, { id: crypto.randomUUID().slice(0, 8), label_ar: "", label_en: "", required: false, options: [] }])} className="px-4 h-10 rounded-xl text-sm font-semibold inline-flex items-center gap-2 bg-white/5 text-white border border-white/10 disabled:opacity-40"><Plus className="size-4" />{t("إضافة سؤال", "Add question")}</button>
+        <button onClick={save} disabled={busy} className={`px-4 h-10 rounded-xl text-sm font-bold ${goldBtn} disabled:opacity-50`}>{busy ? <Loader2 className="size-4 animate-spin" /> : t("حفظ الأسئلة", "Save questions")}</button>
+      </div>
     </Modal>
   );
 }

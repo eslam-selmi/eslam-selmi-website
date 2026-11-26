@@ -8,6 +8,7 @@ import {
   X, Calendar, Clock, Video, Sparkles, Check, Loader2, LogIn, ChevronLeft, ChevronRight,
   Sun, Moon, User as UserIcon, Phone, Mail, MessageSquare, CalendarPlus, Download, RefreshCw, Ban, ListChecks,
 } from "lucide-react";
+import { fetchBookingQuestions, firstMissingAnswer, encodeAnswers, type BookingQuestion } from "@/lib/booking-questions";
 import { googleCalUrl, outlookCalUrl, downloadIcs, type CalEvent } from "./calendar-links";
 
 type Slot = { id: string; starts_at: string; duration_minutes: number };
@@ -45,6 +46,9 @@ export function BookingDialog({ initiallyOpen = false }: { initiallyOpen?: boole
   const [day, setDay] = useState<string | null>(null);
   const [selected, setSelected] = useState<Slot | null>(null);
   const [form, setForm] = useState({ name: "", phone: "", email: "", topic: "", details: "" });
+  const [questions, setQuestions] = useState<BookingQuestion[]>([]);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  useEffect(() => { fetchBookingQuestions().then(setQuestions).catch(() => {}); }, []);
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState<MyBooking | null>(null);
   const [rescheduling, setRescheduling] = useState<MyBooking | null>(null);
@@ -148,10 +152,13 @@ export function BookingDialog({ initiallyOpen = false }: { initiallyOpen?: boole
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return toast.error(tx("بريد إلكتروني صحيح مطلوب", "Valid email is required"));
     if (!form.topic) return toast.error(tx("اختر موضوع الاستشارة", "Choose a topic"));
     if (form.details.trim().length < 10) return toast.error(tx("اكتب تفاصيل أكثر (١٠ أحرف على الأقل)", "Add more details (min 10 chars)"));
+    const bad = firstMissingAnswer(questions, answers);
+    if (bad) return toast.error(tx(`أجب عن: ${bad.label_ar}`, `Please answer: ${bad.label_en}`));
+    const qa = encodeAnswers(questions, answers, isAr ? "ar" : "en");
     setBusy(true);
     const { data, error } = await supabase.from("consultation_slots").update({
       booked_by: user.id, booker_name: name.slice(0, 120), booker_phone: phone.slice(0, 30),
-      topic: form.topic.slice(0, 200), details: `${form.details.trim().slice(0, 1500)}\n— ${email}`,
+      topic: form.topic.slice(0, 200), details: `${form.details.trim().slice(0, 1500)}${qa}\n— ${email}`,
     }).eq("id", selected.id).is("booked_by", null).select("id,starts_at,duration_minutes,status,meeting_url,topic,details").maybeSingle();
     setBusy(false);
     if (error || !data) {
@@ -161,7 +168,7 @@ export function BookingDialog({ initiallyOpen = false }: { initiallyOpen?: boole
         : tx("تعذّر الحجز — قد يكون الموعد حُجز للتو", "Could not book — the slot may have just been taken"), { duration: 6000 });
       setStep(1); refresh(); return;
     }
-    setDone(data); setForm((f) => ({ ...f, details: "", topic: "" })); refresh();
+    setDone(data); setForm((f) => ({ ...f, details: "", topic: "" })); setAnswers({}); refresh();
   }
 
   async function cancel(b: MyBooking) {
@@ -412,6 +419,21 @@ export function BookingDialog({ initiallyOpen = false }: { initiallyOpen?: boole
                         className="w-full rounded-xl ps-9 pe-3 py-2.5 text-sm outline-none resize-none focus:ring-2 focus:ring-[var(--gold)]/40" style={field} />
                     </div>
                   </label>
+                  {questions.map((q) => (
+                    <div key={q.id} data-testid="booking-question">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5 block">{isAr ? q.label_ar : q.label_en}{q.required ? " *" : ""}</span>
+                      {q.options.length > 0 ? (
+                        <div className="flex flex-wrap gap-2">
+                          {q.options.map((o) => (
+                            <button key={o} type="button" onClick={() => setAnswers({ ...answers, [q.id]: answers[q.id] === o && !q.required ? "" : o })} className="px-3 h-9 rounded-xl text-xs font-bold"
+                              style={answers[q.id] === o ? { background: gold, color: "var(--accent-foreground)" } : field}>{o}</button>
+                          ))}
+                        </div>
+                      ) : (
+                        <input maxLength={300} value={answers[q.id] ?? ""} onChange={(e) => setAnswers({ ...answers, [q.id]: e.target.value })} className="w-full rounded-xl px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[var(--gold)]/40" style={field} />
+                      )}
+                    </div>
+                  ))}
                   <button onClick={confirm} disabled={busy || !user} className="w-full h-12 rounded-xl font-bold text-sm inline-flex items-center justify-center gap-2 disabled:opacity-50" style={{ background: gold, color: "var(--accent-foreground)" }}>
                     {busy ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" strokeWidth={3} />}{tx("تأكيد الحجز", "Confirm booking")}
                   </button>
