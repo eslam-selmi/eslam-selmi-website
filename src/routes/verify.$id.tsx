@@ -85,36 +85,37 @@ function VerifyPage() {
                   </div>
                 </div>
                 <p className="text-[11px] uppercase tracking-[0.3em] text-emerald-300 font-semibold">شهادة موثّقة · Verified Credential</p>
-                <h1 className="text-2xl sm:text-3xl font-bold">هذه الشهادة أصلية · This certificate is authentic</h1>
-                <p className="text-sm text-white/60 max-w-md">
-                  صادرة ومعتمدة رقميًا من إسلام سلمي. · Issued and digitally verified by Eslam Selmi. The data below was retrieved live from our records.
-                </p>
+                <h1 className="text-2xl sm:text-3xl font-bold space-y-1"><span className="block" dir="rtl">هذه الشهادة أصلية</span><span className="block" dir="ltr">This certificate is authentic</span></h1>
+                <div className="text-sm text-white/60 max-w-md space-y-1">
+                  <p dir="rtl">صادرة ومعتمدة رقميًا من إسلام سلمي. البيانات أدناه مسترجعة مباشرة من سجلاتنا.</p>
+                  <p dir="ltr">Issued and digitally verified by Eslam Selmi. The data below was retrieved live from our records.</p>
+                </div>
               </div>
 
               <div className="border-t border-white/10 pt-6 space-y-4">
                 {(d!.trainee_name_en || d!.trainee_name_ar) && (
                   <Field label="مُنحت إلى · Awarded to">
                     <div className="space-y-0.5">
-                      {d!.trainee_name_en && <p className="text-lg font-bold" dir="ltr">{d!.trainee_name_en}</p>}
+                      {d!.trainee_name_en && <p className="text-lg font-bold"><bdi dir="ltr">{d!.trainee_name_en}</bdi></p>}
                       {d!.trainee_name_ar && <p className="text-base font-semibold text-white/85" dir="rtl">{d!.trainee_name_ar}</p>}
                     </div>
                   </Field>
                 )}
 
                 <Field label="الدورة · Course" icon={Award}>
-                  <p className="font-semibold">{d!.course_title}</p>
+                  <p className="font-semibold"><bdi dir="auto">{d!.course_title}</bdi></p>
                   {d!.course_description && <p className="text-xs text-white/55 mt-1">{d!.course_description.slice(0, 200)}</p>}
                 </Field>
 
                 <div className="grid sm:grid-cols-2 gap-4">
                   {Number(d!.total_hours) > 0 && (
                     <Field label="ساعات التدريب · Training hours" icon={Clock}>
-                      <p className="font-semibold">{d!.total_hours} hours</p>
+                      <p className="font-semibold"><bdi dir="ltr">{d!.total_hours} hours</bdi></p>
                     </Field>
                   )}
                   <Field label="تاريخ الإصدار · Date of issue" icon={Calendar}>
                     <p className="font-semibold">
-                      {new Date(d!.issued_at).toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" })}
+                      <bdi dir="ltr">{new Date(d!.issued_at).toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" })}</bdi>
                     </p>
                   </Field>
                 </div>
