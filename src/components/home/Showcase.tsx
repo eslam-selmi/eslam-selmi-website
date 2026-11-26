@@ -12,24 +12,13 @@ import { snapshotThumbnail } from "@/lib/optimized-images";
 
 export function Clients() {
   const { t, lang } = useI18n();
-  const region =
-    lang === "ar"
-      ? "مصر · السعودية · الإمارات · الشام · شمال أفريقيا"
-      : "Egypt · KSA · UAE · Levant · North Africa";
   return (
     <Section id="clients" eyebrow={t("clients_eyebrow")} title={t("clients_title")}>
       <motion.div {...fadeUp} className="world-panel">
-        <div className="world-hero">
-          <div className="world-copy">
-            <span className="world-pill">
-              <Globe2 className="size-3.5" aria-hidden="true" />
-              {lang === "ar" ? "تدريب عن بُعد" : "Online delivery"}
-            </span>
-            <p className="world-lead">{t("clients_sub").replace(/\s*[\u2014\u2013]\s*/g, lang === "ar" ? "، " : ", ")}</p>
-            <p className="world-region">{region}</p>
-          </div>
+        <div className="world-stage-frame">
+          <span className="world-stage-ring" aria-hidden="true" />
+          <CountriesMap />
         </div>
-        <CountriesMap />
       </motion.div>
     </Section>
   );

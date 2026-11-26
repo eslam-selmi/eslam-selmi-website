@@ -1422,3 +1422,30 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 .auth-logo-dark { display: none; }
 :root.dark .auth-logo-light, .dark .auth-logo-light { display: none; }
 :root.dark .auth-logo-dark, .dark .auth-logo-dark { display: block; }
+
+/* Clients map: centred in the section on its own lit stage */
+.world-panel { grid-template-columns: minmax(0, 1fr) !important; justify-items: center; padding: 0 !important; }
+.world-stage-frame {
+  position: relative; isolation: isolate; width: min(100%, 900px); margin-inline: auto;
+  padding: clamp(1rem, 3vw, 2.25rem); border-radius: 36px;
+  border: 1px solid color-mix(in oklab, var(--booking-cyan) 26%, transparent);
+  background:
+    radial-gradient(ellipse 60% 55% at 50% 50%, color-mix(in oklab, var(--booking-cyan) 14%, transparent), transparent 72%),
+    linear-gradient(180deg, color-mix(in oklab, var(--booking-surface) 88%, transparent), color-mix(in oklab, var(--booking-surface) 70%, transparent));
+  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--booking-foreground) 14%, transparent);
+  overflow: hidden;
+}
+.world-stage-frame::before, .world-stage-frame::after {
+  content: ""; position: absolute; inset-inline: 12%; height: 1px; z-index: 1; pointer-events: none;
+  background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--booking-cyan) 70%, transparent), transparent);
+}
+.world-stage-frame::before { top: 0; }
+.world-stage-frame::after { bottom: 0; }
+.world-stage-ring {
+  position: absolute; z-index: -1; left: 50%; top: 50%; width: 120%; aspect-ratio: 1; translate: -50% -50%;
+  background: conic-gradient(from 0deg, transparent 0 70%, color-mix(in oklab, var(--booking-cyan) 22%, transparent) 85%, transparent 100%);
+  border-radius: 50%; animation: world-ring-spin 18s linear infinite; opacity: .55;
+}
+@keyframes world-ring-spin { to { rotate: 360deg; } }
+@media (prefers-reduced-motion: reduce) { .world-stage-ring { animation: none; } }
+.world-stage-frame .world-globe { width: 100%; }
