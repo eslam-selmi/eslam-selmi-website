@@ -146,21 +146,26 @@ export function Testimonials() {
 }
 
 function TestimonialCard({ it }: { it: TestimonialRow }) {
+  const stars = typeof it.rating === "number" && it.rating >= 1 && it.rating <= 5 ? Math.round(it.rating) : 0;
   return (
-    <figure className="tst-card">
-      <span className="tst-mark" aria-hidden dir="ltr">&rdquo;</span>
-      <blockquote className="tst-quote" dir="auto">{it.quote}</blockquote>
-      <figcaption className="tst-who">
+    <figure className="tg-card">
+      <figcaption className="tg-head">
         {it.avatar_url ? (
-          <img src={it.avatar_url} alt="" loading="lazy" draggable={false} className="tst-avatar" />
+          <img src={it.avatar_url} alt="" loading="lazy" draggable={false} className="tg-avatar" />
         ) : (
-          <span className="tst-avatar tst-avatar-fallback" aria-hidden>{it.name.charAt(0)}</span>
+          <span className="tg-avatar tg-avatar-fallback" aria-hidden>{it.name.charAt(0)}</span>
         )}
-        <span className="tst-id">
-          <span className="tst-name">{it.name}</span>
-          <span className="tst-role">{[it.role, it.company].filter(Boolean).join(" · ")}</span>
+        <span className="tg-id">
+          <span className="tg-name">{it.name}</span>
+          <span className="tg-role">{[it.role, it.company].filter(Boolean).join(" · ")}</span>
         </span>
       </figcaption>
+      <blockquote className="tg-quote" dir="auto">{it.quote}</blockquote>
+      {stars > 0 && (
+        <div className="tg-stars" role="img" aria-label={`${stars}/5`}>
+          {Array.from({ length: 5 }, (_, k) => <span key={k} data-on={k < stars ? "true" : "false"}>★</span>)}
+        </div>
+      )}
     </figure>
   );
 }
@@ -170,7 +175,7 @@ export function TestimonialsScroller({ items, isAr }: { items: TestimonialRow[];
   const dragRef = useRef<{ x: number; left: number; moved: boolean } | null>(null);
   return (
     <div
-      className="tst-deck"
+      className="tg-deck"
       onPointerDown={(e) => { if (e.pointerType === "mouse") dragRef.current = { x: e.clientX, left: e.currentTarget.scrollLeft, moved: false }; }}
       onPointerMove={(e) => { const d = dragRef.current; if (d) { e.currentTarget.scrollLeft = d.left - (e.clientX - d.x); } }}
       onPointerUp={() => { dragRef.current = null; }}
