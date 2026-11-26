@@ -31,6 +31,25 @@ export function ToolsAccessPanel() {
   const [q, setQ] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
+  const [reqs, setReqs] = useState<{ id: string; user_id: string; tool: ToolId; created_at: string }[]>([]);
+  async function loadReqs() {
+    const { data } = await (supabase as any).from("tool_access_requests").select("id,user_id,tool,created_at").eq("status", "pending").order("created_at", { ascending: true });
+    const rows = ((data as any[]) || []).filter((r) => TOOL_IDS.includes(r.tool));
+    setReqs(rows);
+    const ids = Array.from(new Set(rows.map((r) => r.user_id)));
+    if (ids.length) {
+      const { data: pr } = await supabase.from("profiles").select("id,full_name,email,activation_status").in("id", ids);
+      setPeople((prev) => { const m = new Map(prev.map((p) => [p.id, p])); ((pr as Person[]) || []).forEach((p) => m.set(p.id, p)); return [...m.values()]; });
+    }
+  }
+  async function review(id: string, approve: boolean) {
+    setBusy(`req:${id}`);
+    const { error } = await (supabase as any).rpc("review_tool_request", { p_id: id, p_approve: approve });
+    setBusy(null);
+    if (error) return toast.error(error.message);
+    toast.success(approve ? t("تمت الموافقة", "Approved") : t("تم الرفض", "Rejected"));
+    await Promise.all([loadReqs(), loadGrants()]);
+  }
 
   async function loadFlags() {
     const keys = TOOL_IDS.flatMap((id) => [TOOLS[id].siteKeys.home, TOOLS[id].siteKeys.nav]);
@@ -46,7 +65,7 @@ export function ToolsAccessPanel() {
       setPeople((prev) => { const m = new Map(prev.map((p) => [p.id, p])); ((data as Person[]) || []).forEach((p) => m.set(p.id, p)); return [...m.values()]; });
     }
   }
-  useEffect(() => { Promise.all([loadFlags(), loadGrants()]).catch(() => toast.error(t("تعذّر تحميل البيانات", "Could not load data"))).finally(() => setReady(true)); /* eslint-disable-next-line */ }, []);
+  useEffect(() => { Promise.all([loadFlags(), loadGrants(), loadReqs()]).catch(() => toast.error(t("تعذّر تحميل البيانات", "Could not load data"))).finally(() => setReady(true)); /* eslint-disable-next-line */ }, []);
 
   useEffect(() => {
     const term = q.trim();
@@ -92,6 +111,25 @@ export function ToolsAccessPanel() {
             "Visibility controls whether the link appears in the top menu and on the home page. Access controls who may open the tool. Hiding a link never revokes access, and without access the tool cannot be opened even by direct link.")}
         </p>
         <p className="text-xs text-white/50">{t("الصلاحيات تُمنح فقط للحسابات المفعّلة. الإدارة لا تقرأ بيانات المستخدمين داخل الأدوات.", "Access only works for activated accounts. Administrators cannot read users' data inside the tools.")}</p>
+      </div>
+
+      <div className="dash-card p-5 space-y-3">
+        <h4 className="font-bold">{t("طلبات الوصول للأدوات", "Tool access requests")}{reqs.length > 0 && <span className="ms-2 text-xs rounded-full bg-amber-400/20 text-amber-200 px-2 py-0.5">{reqs.length}</span>}</h4>
+        {reqs.length === 0 && <p className="text-sm text-white/55">{t("لا توجد طلبات معلّقة.", "No pending requests.")}</p>}
+        {reqs.map((r) => {
+          const p = people.find((x) => x.id === r.user_id);
+          return (
+            <div key={r.id} className="rounded-xl border border-white/10 p-3 flex flex-wrap items-center gap-x-6 gap-y-2">
+              <div className="flex-1 min-w-[200px]">
+                <div className="font-semibold text-sm">{p?.full_name || "-"}</div>
+                <div className="text-xs text-white/55" dir="ltr">{p?.email}</div>
+                <div className="text-xs mt-1">{lang === "ar" ? TOOLS[r.tool].ar : TOOLS[r.tool].en} · {new Date(r.created_at).toLocaleString(lang === "ar" ? "ar-EG" : "en-GB")}</div>
+              </div>
+              <button type="button" disabled={busy === `req:${r.id}`} onClick={() => review(r.id, true)} className="h-10 px-4 rounded-xl bg-emerald-500/80 text-black font-bold text-sm disabled:opacity-50">{t("موافقة", "Approve")}</button>
+              <button type="button" disabled={busy === `req:${r.id}`} onClick={() => review(r.id, false)} className="h-10 px-4 rounded-xl border border-white/25 text-sm font-semibold disabled:opacity-50">{t("رفض", "Reject")}</button>
+            </div>
+          );
+        })}
       </div>
 
       <div className="dash-card p-5 space-y-3">

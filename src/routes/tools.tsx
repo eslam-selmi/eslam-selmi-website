@@ -60,7 +60,7 @@ function ToolsPage() {
             ? <LockGate key={active} pageKey={`page.${active}_tool`} ar={ar}>
                 {active === "exam" ? <ExamPage ar={ar} /> : <ToolWorkspace tool={active} userId={user.id} ar={ar} />}
               </LockGate>
-            : <Denied ar={ar} />
+            : <Denied ar={ar} tool={active} />
         ) : (
           <Chooser allowed={allowed} ar={ar} failed={err} />
         )}
@@ -116,13 +116,41 @@ function LockGate({ pageKey, ar, children }: { pageKey: string; ar: boolean; chi
   );
 }
 
-function Denied({ ar }: { ar: boolean }) {
+function Denied({ ar, tool }: { ar: boolean; tool?: ToolId }) {
+  const [status, setStatus] = useState<"loading" | "none" | "pending" | "rejected" | "error">("loading");
+  const [busy, setBusy] = useState(false);
+  const db = supabase as any;
+  useEffect(() => {
+    if (!tool) { setStatus("none"); return; }
+    db.rpc("my_tool_request_status", { p_tool: tool }).then(({ data, error }: any) => setStatus(error ? "error" : data === "pending" ? "pending" : data === "rejected" ? "rejected" : "none"));
+  }, [tool]); // eslint-disable-line react-hooks/exhaustive-deps
+  async function ask() {
+    if (!tool) return;
+    setBusy(true);
+    const { data, error } = await db.rpc("request_tool_access", { p_tool: tool });
+    setBusy(false);
+    if (error) { setStatus("error"); return; }
+    setStatus(data === "pending" ? "pending" : "none");
+    if (data === "has_access") window.location.reload();
+  }
   return (
     <div className="dash-card p-8 text-center space-y-3">
       <Lock className="w-8 h-8 mx-auto opacity-60" />
       <h2 className="text-xl font-bold">{ar ? "هذه الأداة غير متاحة لحسابك" : "This tool is not available for your account"}</h2>
-      <p className="text-sm opacity-70">{ar ? "تواصل مع الإدارة لتفعيلها لك." : "Contact the administrator to enable it."}</p>
-      <Link to="/tools" className="inline-flex h-10 px-4 items-center rounded-xl border border-white/15 text-sm font-semibold">{ar ? "رجوع" : "Back"}</Link>
+      {status === "pending" ? (
+        <p className="text-sm text-[var(--accent,#5eead4)] font-semibold" role="status">{ar ? "تم إرسال طلبك وهو بانتظار موافقة الإدارة." : "Your request was sent and is waiting for the administrator."}</p>
+      ) : (
+        <>
+          <p className="text-sm opacity-70">{status === "rejected" ? (ar ? "لم تتم الموافقة على طلبك السابق. يمكنك إرسال طلب جديد." : "Your earlier request was not approved. You can send a new one.") : (ar ? "يمكنك طلب الوصول، وستراجعه الإدارة." : "You can request access and the administrator will review it.")}</p>
+          {tool && status !== "loading" && (
+            <button type="button" onClick={ask} disabled={busy} className="inline-flex h-11 px-5 items-center gap-2 rounded-xl bg-[var(--gold)] text-black font-bold disabled:opacity-50">
+              {busy && <Loader2 className="w-4 h-4 animate-spin" />}{ar ? "طلب الوصول للأداة" : "Request access to this tool"}
+            </button>
+          )}
+          {status === "error" && <p className="text-sm text-red-300" role="alert">{ar ? "تعذّر إرسال الطلب. حاول مرة ثانية." : "Could not send the request. Try again."}</p>}
+        </>
+      )}
+      <div><Link to="/tools" className="inline-flex h-10 px-4 items-center rounded-xl border border-white/15 text-sm font-semibold">{ar ? "رجوع" : "Back"}</Link></div>
     </div>
   );
 }
