@@ -445,3 +445,9 @@
 /* Menu popover must be opaque so UI behind it never shows through */
 :root.dark .nx .nx-menu { background: oklch(0.17 0.04 253) !important; backdrop-filter: none; z-index: 60; }
 :root:not(.dark) .nx .nx-menu { background: #fff !important; backdrop-filter: none; z-index: 60; }
+
+/* Notification panel is always a dark surface: keep its text light in both themes */
+.nx [data-bell-panel] .text-white { color: #fff !important; }
+.nx [data-bell-panel] .text-white\/60, .nx [data-bell-panel] .text-white\/55 { color: rgb(255 255 255 / 0.78) !important; }
+.nx [data-bell-panel] .text-white\/45, .nx [data-bell-panel] .text-white\/40, .nx [data-bell-panel] .text-white\/30 { color: rgb(255 255 255 / 0.62) !important; }
+.nx [data-bell-panel] .text-\[var\(--gold\)\] { color: #e8c766 !important; }
