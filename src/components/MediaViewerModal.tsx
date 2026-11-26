@@ -111,7 +111,7 @@ export function MediaViewerModal({
             )}
           </div>
           {originalUrl && (
-            <Button asChild variant="outline" size="sm">
+            <Button asChild variant="outline" size="sm" className="bg-white/10 border-white/25 text-white hover:bg-white/20 hover:text-white">
               <a href={originalUrl} target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="size-4" />{isAr ? "فتح المصدر" : "Open source"}
               </a>
