@@ -70,17 +70,12 @@ export function TraineeSupportButton({
     <>
       <button
         onClick={() => setOpen(true)}
-        className={`relative flex items-center gap-2 px-5 h-12 rounded-xl font-semibold transition-all hover:scale-[1.02] ${
-          glowing
-            ? "ring-2 ring-[var(--gold)] shadow-[0_0_25px_rgba(212,175,55,0.55)] animate-[pulse_1.6s_ease-in-out_infinite]"
-            : ""
-        }`}
-        style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}
+        className={`nx-nav-item relative ${glowing ? "!border-[var(--gold)]/60" : ""}`}
       >
-        <Headset className="w-4 h-4" strokeWidth={1.75} />
-        {isAr ? "مركز الدعم" : "Support Center"}
+        <Headset className="w-[18px] h-[18px] shrink-0" strokeWidth={1.75} />
+        <span className="flex-1 text-start">{isAr ? "مركز الدعم" : "Support Center"}</span>
         {unreadCount > 0 && (
-          <span className="absolute -top-1.5 -end-1.5 min-w-[20px] h-5 px-1.5 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center border-2 border-[#0b1736]">
+          <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center">
             {unreadCount}
           </span>
         )}

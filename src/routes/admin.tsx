@@ -236,6 +236,12 @@ function AdminPage() {
   return (
     <AppChrome
       role="admin"
+      pendingActions={[
+        { key: "activations", title: t("تفعيل حسابات", "Account activations"), detail: t("حسابات جديدة بانتظار التفعيل", "New accounts awaiting activation"), count: pendingActivations, onOpen: () => setTab("activations") },
+        { key: "enrollments", title: t("طلبات الانضمام", "Enrollment requests"), detail: t("بانتظار المراجعة والقبول", "Awaiting review"), count: pending, onOpen: () => setTab("enrollments") },
+        { key: "tools", title: t("طلبات الوصول للأدوات", "Tool access requests"), detail: t("بانتظار قرارك", "Awaiting your decision"), count: overviewCounts.data?.toolRequests ?? 0, onOpen: () => setTab("tools") },
+        { key: "tickets", title: t("تذاكر الدعم", "Support tickets"), detail: t("مفتوحة أو بانتظار ردك", "Open or awaiting your reply"), count: overviewCounts.data?.tickets ?? 0, onOpen: () => setTab("support" as any) },
+      ]}
       userId={user.id}
       userLabel={user.email}
       sidebar={

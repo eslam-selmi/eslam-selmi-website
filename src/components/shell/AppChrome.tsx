@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import { ForcePasswordResetGate } from "@/components/ForcePasswordResetGate";
 import { useAuth, signOut } from "@/lib/portal-auth";
-import { NotificationsBell } from "@/lib/notifications";
+import { NotificationsBell, type PendingAction } from "@/lib/notifications";
 import { useI18n } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
 import { useSiteProfile } from "@/lib/site-profile";
@@ -20,11 +20,12 @@ type Props = {
   sidebar?: React.ReactNode;
   mobileBar?: React.ReactNode;
   onAccountSettings?: () => void;
+  pendingActions?: PendingAction[];
   demo?: boolean; // preview harness: no auth side effects, static bell
   children: React.ReactNode;
 };
 
-export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileBar, onAccountSettings, demo, children }: Props) {
+export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileBar, onAccountSettings, demo, pendingActions, children }: Props) {
   const { profile } = useSiteProfile();
   const nav = useNavigate();
   const { lang, setLang, dir } = useI18n();
@@ -147,7 +148,7 @@ export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileB
                 <span className="absolute top-2 end-2 nx-live-dot" />
               </button>
             ) : (
-              <NotificationsBell userId={userId} />
+              <NotificationsBell userId={userId} pending={pendingActions} />
             )}
 
             <div className="relative" ref={menuRef}>

@@ -67,8 +67,13 @@ export function useNotifications(userId: string | undefined) {
   return { items, loading, unread, markRead, markAllRead, remove, refresh };
 }
 
-export function NotificationsBell({ userId }: { userId: string | undefined }) {
+export type PendingAction = { key: string; title: string; detail?: string; count: number; onOpen: () => void };
+
+export function NotificationsBell({ userId, pending = [] }: { userId: string | undefined; pending?: PendingAction[] }) {
   const { items, unread, markRead, markAllRead, remove } = useNotifications(userId);
+  const actions = pending.filter((a) => a.count > 0);
+  const pendingTotal = actions.reduce((n, a) => n + a.count, 0);
+  const badge = unread + pendingTotal;
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const nav = useNavigate();
@@ -86,16 +91,16 @@ export function NotificationsBell({ userId }: { userId: string | undefined }) {
       <button
         onClick={() => setOpen((v) => !v)}
         className={`relative w-10 h-10 rounded-xl border flex items-center justify-center transition ${
-          unread > 0
+          badge > 0
             ? "border-[var(--gold)]/55 bg-[var(--gold)]/10 hover:bg-[var(--gold)]/15 shadow-[0_0_18px_rgba(212,175,55,0.35)]"
             : "border-white/15 bg-white/5 hover:bg-white/10"
         }`}
         aria-label="notifications"
       >
-        <Bell className={`w-4 h-4 ${unread > 0 ? "text-[var(--gold)]" : ""}`} />
-        {unread > 0 && (
+        <Bell className={`w-4 h-4 ${badge > 0 ? "text-[var(--gold)]" : ""}`} />
+        {badge > 0 && (
           <span className="absolute -top-1 -end-1 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center border-2 border-[#0b1736]">
-            {unread > 9 ? "9+" : unread}
+            {badge > 9 ? "9+" : badge}
           </span>
         )}
       </button>
@@ -108,7 +113,7 @@ export function NotificationsBell({ userId }: { userId: string | undefined }) {
               </div>
               <div>
                 <p className="text-sm font-bold leading-tight">الإشعارات</p>
-                <p className="text-[10px] text-white/55">{unread > 0 ? `${unread} غير مقروء` : "كل شيء محدّث"}</p>
+                <p className="text-[10px] text-white/55">{unread > 0 || pendingTotal > 0 ? [pendingTotal > 0 ? `${pendingTotal} بانتظار إجراء` : "", unread > 0 ? `${unread} غير مقروء` : ""].filter(Boolean).join(" · ") : "كل شيء محدّث"}</p>
               </div>
             </div>
             {unread > 0 && (
@@ -118,7 +123,25 @@ export function NotificationsBell({ userId }: { userId: string | undefined }) {
             )}
           </div>
           <div className="overflow-y-auto flex-1 py-1 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,.25)_transparent]">
-            {items.length === 0 ? (
+            {actions.length > 0 && (
+              <div className="mx-2 mt-1 mb-2">
+                <p className="px-2 pt-1 pb-1.5 text-[10px] font-bold tracking-wide text-[var(--gold)]">بانتظار إجراء منك</p>
+                {actions.map((a) => (
+                  <button
+                    key={a.key}
+                    onClick={() => { a.onOpen(); setOpen(false); }}
+                    className="w-full text-start flex items-center gap-2.5 px-3 py-2.5 rounded-xl border border-[var(--gold)]/30 bg-[var(--gold)]/[0.06] hover:bg-[var(--gold)]/10 mb-1 transition"
+                  >
+                    <span className="min-w-6 h-6 px-1.5 rounded-full bg-rose-500 text-white text-[11px] font-bold flex items-center justify-center">{a.count}</span>
+                    <span className="flex-1 min-w-0">
+                      <span className="block text-sm font-semibold text-white leading-tight">{a.title}</span>
+                      {a.detail && <span className="block text-[11px] text-white/60 mt-0.5">{a.detail}</span>}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+            {items.length === 0 && actions.length === 0 ? (
               <div className="text-center py-10 px-4">
                 <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 mx-auto mb-3 flex items-center justify-center">
                   <Bell className="w-5 h-5 text-white/30" />
