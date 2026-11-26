@@ -1502,6 +1502,44 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 .cm-dot[data-on="true"] span { background: var(--accent); transform: scale(1.5); }
 .tst-role { display: block; -webkit-line-clamp: unset; }
 
+/* Testimonials: quiet cards on the page surface. Hairline border, no shadow or glow, full quote and role always visible. */
+.tst-wall { column-count: 1; column-gap: 1.25rem; max-width: 1120px; margin-inline: auto; }
+@media (min-width: 720px) { .tst-wall { column-count: 2; } }
+@media (min-width: 1100px) { .tst-wall { column-count: 3; } }
+.tst-wall .tst-card, .tst-wall .tst-card:hover { display: block; width: auto; break-inside: avoid; margin: 0 0 1.25rem; padding: 1.5rem 1.4rem 1.3rem; border: 1px solid color-mix(in oklab, var(--foreground) 12%, transparent); border-radius: 1.1rem; background: color-mix(in oklab, var(--foreground) 3.5%, var(--background)); box-shadow: none; transform: none; overflow: visible; }
+.tst-wall .tst-mark { position: static; display: block; height: 1.9rem; font-family: Georgia, "Times New Roman", serif; font-size: 3.4rem; line-height: 1; font-weight: 700; color: var(--accent); opacity: .95; }
+.tst-wall .tst-quote { display: block; -webkit-line-clamp: unset; overflow: visible; margin: .7rem 0 0; font-size: .97rem; line-height: 1.85; font-weight: 500; text-align: start; white-space: pre-line; color: var(--foreground); }
+.tst-wall .tst-who { display: flex; align-items: center; gap: .75rem; margin-top: 1.2rem; padding-top: 1rem; border: 0; border-top: 1px solid color-mix(in oklab, var(--foreground) 10%, transparent); }
+.tst-wall .tst-avatar { width: 40px; height: 40px; box-shadow: none; }
+.tst-wall .tst-name, .tst-wall .tst-role { display: block; white-space: normal; overflow: visible; text-overflow: clip; -webkit-line-clamp: unset; }
+.tst-wall .tst-name { font-size: .93rem; font-weight: 800; }
+.tst-wall .tst-role { margin-top: .15rem; font-size: .76rem; line-height: 1.5; color: var(--muted-foreground); }
+
+/* Clients map: one country at a time, real outline plus its flag */
+.world-stage-frame { width: min(100%, 760px); }
+.cm-stage { display: grid; place-items: center; height: clamp(230px, 34vw, 300px); }
+.cm-scene { display: flex; align-items: center; justify-content: center; gap: clamp(1.25rem, 4vw, 2.75rem); width: 100%; animation: cm-life var(--cm-dur) ease-in-out both; }
+.cm-shape { height: clamp(170px, 26vw, 250px); width: clamp(150px, 26vw, 250px); overflow: visible; }
+.cm-outline { fill: color-mix(in oklab, var(--accent) 22%, transparent); fill-opacity: 0; stroke: var(--accent); stroke-width: 1.6; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; vector-effect: non-scaling-stroke; animation: cm-draw 1.5s cubic-bezier(.5,0,.2,1) .15s forwards, cm-fill .8s ease 1.2s forwards; }
+.cm-label { display: grid; justify-items: start; gap: .7rem; min-width: 7.5rem; opacity: 0; animation: cm-in .7s ease .95s forwards; }
+.cm-flag { width: clamp(84px, 14vw, 128px); aspect-ratio: 3 / 2; object-fit: cover; border-radius: 6px; border: 1px solid color-mix(in oklab, var(--foreground) 22%, transparent); }
+.cm-name { font-family: var(--font-heading, inherit); font-weight: 800; font-size: clamp(1.15rem, 2.4vw, 1.6rem); color: var(--foreground); }
+.cm-stage[data-live="false"] .cm-scene, .cm-stage[data-live="false"] .cm-outline, .cm-stage[data-live="false"] .cm-label { animation: none; }
+.cm-stage[data-live="false"] .cm-outline { stroke-dashoffset: 0; fill-opacity: 1; }
+.cm-stage[data-live="false"] .cm-label { opacity: 1; }
+@keyframes cm-draw { to { stroke-dashoffset: 0; } }
+@keyframes cm-fill { to { fill-opacity: 1; } }
+@keyframes cm-in { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
+@keyframes cm-life { 0%, 86% { opacity: 1; } 100% { opacity: 0; } }
+@media (max-width: 480px) { .cm-scene { gap: 1rem; } .cm-label { min-width: 0; } }
+.cm-ctrl { display: flex; align-items: center; justify-content: center; gap: .6rem; margin-top: .75rem; }
+.cm-btn { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; border: 1px solid color-mix(in oklab, var(--foreground) 25%, transparent); color: var(--foreground); }
+.cm-dots { display: flex; flex-wrap: wrap; justify-content: center; }
+.cm-dot { display: grid; place-items: center; width: 24px; height: 24px; }
+.cm-dot span { width: 7px; height: 7px; border-radius: 50%; background: color-mix(in oklab, var(--foreground) 28%, transparent); transition: background .3s, transform .3s; }
+.cm-dot[data-on="true"] span { background: var(--accent); transform: scale(1.5); }
+.tst-role { display: block; -webkit-line-clamp: unset; }
+
 /* Testimonials wall (final): masonry columns, plain quotes, hairline rules, nothing clipped */
 .tst-wall { column-count: 1; column-gap: 3.5rem; max-width: 1040px; margin-inline: auto; }
 @media (min-width: 768px) { .tst-wall { column-count: 2; } }
