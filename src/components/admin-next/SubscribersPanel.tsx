@@ -114,41 +114,48 @@ export function SubscribersPanel() {
       ) : rows.length === 0 ? (
         <div className="nx-card p-8 text-center text-sm opacity-70">{t("لا يوجد مشتركون مطابقون", "No matching subscribers")}</div>
       ) : (
-        <ul className="space-y-3">
-          {rows.map((p) => {
-            const es = byUser.get(p.id) ?? [];
-            return (
-              <li key={p.id}>
-                <button onClick={() => setOpenId(p.id)} className="nx-card nx-card-hover w-full p-4 sm:p-5 text-start flex items-start gap-4">
-                  <Avatar p={p} />
-                  <span className="flex-1 min-w-0 grid gap-2 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)_auto] lg:items-center">
-                    <span className="min-w-0">
-                      <span className="flex items-center gap-2">
-                        <span className="font-bold truncate">{p.full_name || t("بدون اسم", "No name")}</span>
-                        {p.account_blocked && <span className="text-[10px] px-2 py-0.5 rounded-md bg-rose-500/15 text-rose-700 dark:text-rose-300">{t("موقوف", "Blocked")}</span>}
+        <div className="nx-card overflow-hidden p-0">
+          <div className="hidden lg:grid sub-cols px-5 py-3 text-[11px] font-bold uppercase tracking-wide opacity-60 border-b border-current/10">
+            <span>{t("المشترك", "Subscriber")}</span>
+            <span>{t("التواصل", "Contact")}</span>
+            <span>{t("الكورسات", "Courses")}</span>
+            <span>{t("الحالة", "Status")}</span>
+            <span>{t("تاريخ الانضمام", "Joined")}</span>
+            <span />
+          </div>
+          <ul className="divide-y divide-current/10">
+            {rows.map((p) => {
+              const es = (byUser.get(p.id) ?? []).slice(0, 3);
+              const more = (byUser.get(p.id) ?? []).length - es.length;
+              return (
+                <li key={p.id}>
+                  <button onClick={() => setOpenId(p.id)} className="w-full px-4 sm:px-5 py-3.5 text-start grid sub-cols items-center gap-x-4 gap-y-2 hover:bg-black/[.03] dark:hover:bg-white/[.04] transition">
+                    <span className="flex items-center gap-3 min-w-0">
+                      <Avatar p={p} />
+                      <span className="min-w-0">
+                        <span className="block font-bold truncate">{p.full_name || t("بدون اسم", "No name")}</span>
+                        {p.account_blocked && <span className="inline-block mt-0.5 text-[10px] px-2 py-0.5 rounded-md bg-rose-500/15 text-rose-700 dark:text-rose-300">{t("موقوف", "Blocked")}</span>}
                       </span>
-                      <span className="block text-xs opacity-70 truncate" dir="ltr" style={{ textAlign: "start" }}>{p.email || "—"}</span>
-                      <span className="block text-xs opacity-70 truncate" dir="ltr" style={{ textAlign: "start" }}>{[p.phone, p.country].filter(Boolean).join(" · ") || "—"}</span>
                     </span>
-                    <span className="min-w-0 space-y-1.5">
-                      {es.length === 0 ? <span className="text-xs opacity-60">{t("لا توجد اشتراكات", "No enrollments")}</span> : es.slice(0, 3).map((e) => {
-                        return (
-                          <span key={e.id} className="flex items-center gap-2 text-xs min-w-0">
-                            <span className="truncate flex-1">{e.courses?.title}</span>
-                            <span className={`px-2 py-0.5 rounded-md text-[10px] shrink-0 ${sc(e.status)}`}>{statusLabel(e.status)}</span>
-                          </span>
-                        );
-                      })}
-                      {es.length > 3 && <span className="text-[11px] opacity-60">+{es.length - 3}</span>}
+                    <span className="min-w-0 text-xs leading-5">
+                      <span className="block truncate opacity-90" dir="ltr" style={{ textAlign: "start" }}>{p.email || "—"}</span>
+                      <span className="block truncate opacity-60" dir="ltr" style={{ textAlign: "start" }}>{[p.phone, p.country].filter(Boolean).join(" · ") || "—"}</span>
                     </span>
-                    <span className="text-[11px] opacity-60 lg:text-end">{t("انضم", "Joined")} {fmt(p.created_at)}</span>
-                  </span>
-                  <ChevronLeft className="w-4 h-4 opacity-40 mt-2 shrink-0 rtl:rotate-0 ltr:rotate-180" />
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+                    <span className="min-w-0 text-xs">
+                      {es.length === 0 ? <span className="opacity-50">—</span> : es.map((e) => <span key={e.id} className="block h-6 leading-6 truncate">{e.courses?.title}</span>)}
+                      {more > 0 && <span className="block text-[11px] opacity-60">+{more}</span>}
+                    </span>
+                    <span className="text-xs">
+                      {es.length === 0 ? <span className="opacity-60">{t("بدون اشتراك", "No enrollment")}</span> : es.map((e) => <span key={e.id} className="flex h-6 items-center"><span className={`px-2 py-0.5 rounded-md text-[10px] ${sc(e.status)}`}>{statusLabel(e.status)}</span></span>)}
+                    </span>
+                    <span className="text-xs opacity-70 whitespace-nowrap">{fmt(p.created_at)}</span>
+                    <ChevronLeft className="hidden lg:block w-4 h-4 opacity-40 rtl:rotate-0 ltr:rotate-180" />
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       )}
     </section>
   );
