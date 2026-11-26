@@ -407,7 +407,7 @@ function PortalPage() {
 
         {tab === "my-access" && (
         <section id="my-access" className="scroll-mt-24">
-          <SectionHeader icon={BookOpen} hint={isAr ? "كل ما تملكه وطلباتك" : "Everything you own and have requested"} title={isAr ? "مقتنياتي" : "My access"} />
+          <SectionHeader icon={BookOpen} hint={isAr ? "كورساتك وشهاداتك وجلساتك وأدواتك وطلبات الوصول" : "Your courses, certificates, sessions, tools and access requests"} title={isAr ? "أدواتي" : "My tools"} />
           {user?.id && <MyAccessSection userId={user.id} enrollments={trEnrollments as any} onGo={(t) => setTab(t)} />}
         </section>
         )}

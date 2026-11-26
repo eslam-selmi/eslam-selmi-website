@@ -14,7 +14,7 @@ export function buildPortalNav(lang: string, badges: { paymentCount?: number; ce
   const isAr = lang === "ar";
   return [
     { id: "overview", label: isAr ? "نظرة عامة" : "Overview", icon: Sparkles },
-    { id: "my-access", label: isAr ? "مقتنياتي" : "My access", icon: FolderKanban },
+    { id: "my-access", label: isAr ? "أدواتي" : "My tools", icon: FolderKanban },
     { id: "my-courses", label: isAr ? "كورساتي" : "My courses", icon: BookOpen, badge: badges.paymentCount || undefined, alert: true },
     { id: "certificates", label: isAr ? "شهاداتي" : "My certificates", icon: Award, badge: badges.certCount || undefined, alert: true },
     { id: "packages", label: isAr ? "باقات الاستشارات" : "Consulting packages", icon: PhoneOutgoing },
