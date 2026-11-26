@@ -119,24 +119,11 @@ export function PortalHero({
 
       <div className="relative flex flex-col md:flex-row md:items-center gap-6 md:gap-10">
         <div className="flex-1 min-w-0">
-          <div className="flex items-start gap-4">
-            <button type="button" onClick={onAccount} title={isAr ? "إعدادات الحساب" : "Account settings"} className="nx-avatar-ring shrink-0 hover:brightness-110 transition">
-              <div className="w-16 h-16 sm:w-[72px] sm:h-[72px] flex items-center justify-center text-2xl font-bold text-[var(--nx-teal)]">
-                {avatarSrc
-                  ? <img src={avatarSrc} alt={fullName} className="w-full h-full object-cover" />
-                  : (fullName || "?").trim().charAt(0).toUpperCase()}
-              </div>
-            </button>
-            <div className="min-w-0">
-              <p className="nx-eyebrow">{greeting}</p>
-              <h1 className="nx-display text-3xl sm:text-[38px] leading-[1.15] mt-1.5 truncate">{firstName}</h1>
-              <div className="flex flex-wrap items-center gap-2 mt-2.5">
-                {countryName && <span className="nx-chip">{countryFlag} {countryName}</span>}
-                <span className="nx-chip nx-chip-teal"><span className="nx-live-dot" /> {isAr ? "حساب مفعّل" : "Active account"}</span>
-              </div>
-            </div>
+          <div className="min-w-0">
+            <p className="nx-eyebrow">{greeting}</p>
+            <h1 className="nx-display text-3xl sm:text-[40px] leading-[1.15] mt-2 truncate">{firstName}</h1>
           </div>
-          <p className="text-white/60 text-sm leading-relaxed mt-4 max-w-lg">{welcomeLine}</p>
+          <p className="text-white/60 text-[15px] leading-relaxed mt-3 max-w-lg">{welcomeLine}</p>
           <div className="flex flex-wrap items-center gap-2.5 mt-5">
             {continueTarget ? (
               <button onClick={() => onOpenCourse(continueTarget.en)} className="nx-btn nx-btn-primary">

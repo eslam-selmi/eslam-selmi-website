@@ -77,11 +77,30 @@ export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileB
     <div dir={dir} className={`nx nx-bg relative min-h-screen text-white ${role === "admin" ? "nx-is-admin admin-shell" : ""}`}>
       <div className="absolute inset-0 nx-grid-overlay pointer-events-none" />
 
+
+      {!demo && forcePasswordReset && <ForcePasswordResetGate onDone={() => {}} />}
+      {!demo && <ChangePasswordModal open={showChangePassword} onClose={() => setShowChangePassword(false)} />}
+      {demo && showChangePassword ? null : null}
+
+      <div className="nx-frame relative">
+        {sidebar && (
+          <aside className="nx-side hidden lg:flex flex-col w-[272px] shrink-0">
+            <Link to="/" reloadDocument aria-label={isAr ? "العودة إلى الموقع" : "Back to website"} className="nx-side-brand flex items-center gap-3 shrink-0">
+              <img src={profile.logoDark} alt="Eslam Selmi" className="h-10 w-10 rounded-xl object-contain p-1" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+              <div className="leading-tight">
+                <p className="text-[9px] text-white/40 font-bold" style={{ letterSpacing: dir === "ltr" ? "0.2em" : 0 }}>ESLAM SELMI</p>
+                <p className="text-[13.5px] font-bold text-[var(--nx-teal)]">{role === "admin" ? L.panelAdmin : L.panelTrainee}</p>
+              </div>
+            </Link>
+            <div className="flex-1 overflow-y-auto nx-scroll px-3 pb-6">{sidebar}</div>
+          </aside>
+        )}
+        <div className="nx-main flex-1 min-w-0 relative">
       <header className="sticky top-0 z-40 border-b border-white/[0.07] bg-[oklch(0.13_0.035_258/0.78)] backdrop-blur-2xl">
         <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[var(--nx-teal)]/35 to-transparent" />
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
-            <Link to="/" reloadDocument aria-label={isAr ? "العودة إلى الموقع" : "Back to website"} className="flex items-center gap-3 group shrink-0">
+            <Link to="/" reloadDocument aria-label={isAr ? "العودة إلى الموقع" : "Back to website"} className={`flex items-center gap-3 group shrink-0 ${sidebar ? "lg:hidden" : ""}`}>
               <img
                 src={profile.logoDark}
                 alt="Eslam Selmi"
@@ -102,7 +121,7 @@ export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileB
                 </p>
               </div>
             </Link>
-            <nav className="hidden md:flex items-center gap-1 ms-2 ps-3 border-s border-white/10">
+            <nav className={`hidden md:flex items-center gap-1 ${sidebar ? "lg:ms-0 lg:ps-0 lg:border-s-0" : "ms-2 ps-3 border-s border-white/10"}`}>
               <Link to="/" reloadDocument className="flex items-center gap-1.5 text-xs text-white/65 hover:text-white px-3 h-9 rounded-lg hover:bg-white/5 transition">
                 <Home className="w-3.5 h-3.5" /> {L.site}
               </Link>
@@ -162,19 +181,7 @@ export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileB
           </div>
         </div>
       </header>
-
-      {!demo && forcePasswordReset && <ForcePasswordResetGate onDone={() => {}} />}
-      {!demo && <ChangePasswordModal open={showChangePassword} onClose={() => setShowChangePassword(false)} />}
-      {demo && showChangePassword ? null : null}
-
-      <div className="relative max-w-[1400px] mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-[calc(7rem+env(safe-area-inset-bottom))] lg:pb-10">
-        <div className="flex flex-col lg:flex-row gap-6">
-          {sidebar && (
-            <aside className="hidden lg:block w-[270px] shrink-0">
-              <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto nx-scroll pe-1">{sidebar}</div>
-            </aside>
-          )}
-          <main className="flex-1 min-w-0">{children}</main>
+          <main className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-[calc(7rem+env(safe-area-inset-bottom))] lg:pb-12 max-w-[1240px] mx-auto">{children}</main>
         </div>
       </div>
 

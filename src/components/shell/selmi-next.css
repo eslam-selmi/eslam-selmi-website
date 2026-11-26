@@ -351,3 +351,46 @@
 :root:not(.dark) .nx .nx-nav-item:hover { background: oklch(0.20 0.05 252 / 0.05); }
 :root:not(.dark) .nx .nx-menu-item:hover { background: oklch(0.20 0.05 252 / 0.06); }
 :root:not(.dark) .nx .nx-is-admin tbody tr:hover { background: oklch(0.20 0.05 252 / 0.03); }
+
+/* ============================================================
+   Clean layout (light panels): flat side column, calm canvas,
+   white cards with soft shadow, generous spacing.
+   ============================================================ */
+.nx-frame { display: flex; align-items: flex-start; min-height: 100vh; }
+.nx-side { position: sticky; top: 0; height: 100vh; border-inline-end: 1px solid var(--nx-line); background: oklch(0.14 0.035 258 / 0.6); }
+.nx-side-brand { padding: 22px 22px 18px; }
+.nx-main > header { margin: 0; }
+:root:not(.dark) .nx-bg { background: oklch(0.966 0.008 255); }
+:root:not(.dark) .nx-grid-overlay { display: none; }
+:root:not(.dark) .nx-side { background: #fff; border-inline-end: 1px solid oklch(0.20 0.05 255 / 0.07); }
+:root:not(.dark) .nx header { border: 0 !important; background: #fff !important; backdrop-filter: none; box-shadow: 0 2px 8px oklch(0.25 0.06 260 / 0.06); border-radius: 16px; }
+:root:not(.dark) .nx header > div:first-child { display: none; }
+:root:not(.dark) .nx .nx-card {
+  background: #fff; border: 0; border-radius: 16px; backdrop-filter: none;
+  box-shadow: 0 1px 3px oklch(0.25 0.06 260 / 0.05), 0 10px 28px -14px oklch(0.25 0.06 260 / 0.14);
+}
+:root:not(.dark) .nx .nx-card.border-dashed { border: 1.5px dashed oklch(0.25 0.06 260 / 0.16); box-shadow: none; background: transparent; }
+:root:not(.dark) .nx .nx-hero-line,
+:root:not(.dark) .nx .nx-stat-glow,
+:root:not(.dark) .nx .blur-3xl,
+:root:not(.dark) .nx .nx-eyebrow::before { display: none; }
+:root:not(.dark) .nx .nx-card-hover:hover { transform: translateY(-1px); box-shadow: 0 2px 6px oklch(0.25 0.06 260 / 0.07), 0 16px 34px -16px oklch(0.25 0.06 260 / 0.20); }
+:root:not(.dark) .nx .nx-eyebrow { color: oklch(0.50 0.11 205); }
+:root:not(.dark) .nx .nx-side .nx-card { background: transparent; box-shadow: none; padding-inline: 0; }
+:root:not(.dark) .nx .nx-side nav.nx-card { padding: 0; }
+:root:not(.dark) .nx .nx-side .nx-card.p-4, :root:not(.dark) .nx .nx-side .nx-card.p-5 { background: oklch(0.965 0.012 215); border-radius: 14px; padding: 16px; }
+:root:not(.dark) .nx .nx-nav-item { height: 44px; border-radius: 10px; color: oklch(0.28 0.05 255 / 0.72); }
+:root:not(.dark) .nx .nx-nav-item[data-active="true"] {
+  background: oklch(0.94 0.035 205); border-color: transparent; color: oklch(0.28 0.08 255);
+  box-shadow: inset -3px 0 0 oklch(0.68 0.13 205);
+}
+:root:not(.dark) .nx[dir="rtl"] .nx-nav-item[data-active="true"] { box-shadow: inset 3px 0 0 oklch(0.68 0.13 205); }
+:root:not(.dark) .nx .nx-nav-item[data-active="true"] svg { color: oklch(0.50 0.12 205); }
+:root:not(.dark) .nx .nx-group-label::after { display: none; }
+@media (min-width: 1024px) {
+  .nx-main > header { position: sticky; top: 14px; margin: 14px 32px 0; z-index: 40; }
+}
+@media (max-width: 1023px) {
+  :root:not(.dark) .nx header { border-radius: 0 0 16px 16px; }
+  .nx-frame { display: block; }
+}
