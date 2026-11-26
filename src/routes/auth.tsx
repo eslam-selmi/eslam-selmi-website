@@ -225,7 +225,7 @@ function AuthPage() {
                     <span aria-hidden className="mt-glass-logo__sheen" />
                   </div>
                 </div></div>
-                <p className="nx-eyebrow justify-center">{isAdminView ? "لوحة التحكم" : mode === "login" ? "أهلاً بعودتك" : "حساب جديد"}</p>
+                {(isAdminView || mode !== "login") && <p className="nx-eyebrow justify-center">{isAdminView ? "لوحة التحكم" : "حساب جديد"}</p>}
                 <h2 className="nx-display text-xl sm:text-[24px] mt-1.5">
                   {isAdminView ? "دخول الإدارة" : mode === "login" ? "تسجيل الدخول" : "إنشاء حساب"}
                 </h2>

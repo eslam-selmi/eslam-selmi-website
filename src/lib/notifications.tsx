@@ -73,10 +73,9 @@ export function NotificationsBell({ userId, pending = [] }: { userId: string | u
   const { items, unread, markRead, markAllRead, remove } = useNotifications(userId);
   const actions = pending.filter((a) => a.count > 0);
   const pendingTotal = actions.reduce((n, a) => n + a.count, 0);
-  // Enrollment/activation notices describe items already counted in the pending list: keep them listed but do not count them twice
-  const represented = (n: Notification) => actions.length > 0 && !n.read && /انضمام|تفعيل|enroll|activation/i.test(n.title);
-  const unreadOther = items.filter((n) => !n.read && !represented(n)).length;
-  const badge = unreadOther + pendingTotal;
+  // Pending actions and unread notices are different things: shown separately, never summed
+  const unreadOther = unread;
+  const badge = pendingTotal + unread;
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const nav = useNavigate();
@@ -101,9 +100,14 @@ export function NotificationsBell({ userId, pending = [] }: { userId: string | u
         aria-label="notifications"
       >
         <Bell className={`w-4 h-4 ${badge > 0 ? "text-[var(--gold)]" : ""}`} />
-        {badge > 0 && (
-          <span className="absolute -top-1 -end-1 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center border-2 border-[#0b1736]">
-            {badge > 9 ? "9+" : badge}
+        {pendingTotal > 0 && (
+          <span aria-label="pending actions" className="absolute -top-1 -end-1 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center border-2 border-[#0b1736]">
+            {pendingTotal > 9 ? "9+" : pendingTotal}
+          </span>
+        )}
+        {unread > 0 && (
+          <span aria-label="unread notifications" className="absolute -bottom-1 -end-1 min-w-[16px] h-[16px] px-1 rounded-full bg-[var(--gold)] text-[#0b1736] text-[9px] font-bold flex items-center justify-center border-2 border-[#0b1736]">
+            {unread > 9 ? "9+" : unread}
           </span>
         )}
       </button>
