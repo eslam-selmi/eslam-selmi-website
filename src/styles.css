@@ -1616,3 +1616,7 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 
 /* Testimonials v2: clean line clamp (no half-cut lines) */
 .tst-deck .tst-quote, .tst-deck .tst-card[data-long] .tst-quote { line-height: 1.9; height: auto; max-height: none; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; overflow: hidden; -webkit-mask-image: none; mask-image: none; text-overflow: ellipsis; }
+.tst-deck .tst-readmore { align-self: flex-start; margin: .35rem 0 .2rem; padding: 0; background: none; border: 0; cursor: pointer; font-size: .78rem; font-weight: 700; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.dark .tst-deck .tst-readmore { color: oklch(0.82 0.12 195); }
+.tst-deck .tst-card[data-open="true"] .tst-quote { -webkit-line-clamp: unset; display: block; overflow: visible; }
+.tst-deck .tst-card[data-open="true"] { align-self: flex-start; }

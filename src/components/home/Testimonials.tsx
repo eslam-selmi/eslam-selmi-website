@@ -146,10 +146,24 @@ export function Testimonials() {
 }
 
 function TestimonialCard({ it }: { it: TestimonialRow }) {
+  const { lang } = useI18n();
+  const isAr = lang === "ar";
+  const qRef = useRef<HTMLQuoteElement>(null);
+  const [open, setOpen] = useState(false);
+  const [clamped, setClamped] = useState(false);
+  useEffect(() => {
+    const el = qRef.current;
+    if (el && !open) setClamped(el.scrollHeight - el.clientHeight > 2);
+  }, [it.quote, open]);
   return (
-    <figure className="tst-card">
+    <figure className="tst-card" data-open={open ? "true" : "false"}>
       <span className="tst-mark" aria-hidden dir="ltr">&rdquo;</span>
-      <blockquote className="tst-quote" dir="auto">{it.quote}</blockquote>
+      <blockquote ref={qRef} className="tst-quote" dir="auto">{it.quote}</blockquote>
+      {(clamped || open) && (
+        <button type="button" className="tst-readmore" aria-expanded={open} onClick={() => setOpen((v) => !v)}>
+          {open ? (isAr ? "عرض أقل" : "Show less") : (isAr ? "اقرأ الشهادة كاملة" : "Read full testimonial")}
+        </button>
+      )}
       <figcaption className="tst-who">
         {it.avatar_url ? (
           <img src={it.avatar_url} alt="" loading="lazy" draggable={false} className="tst-avatar" />
