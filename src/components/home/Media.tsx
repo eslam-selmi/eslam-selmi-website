@@ -241,9 +241,6 @@ export function Podcast() {
                     <div className="font-display text-sm lg:text-base leading-tight truncate">
                       {t(ep.titleKey)}
                     </div>
-                    <div className="text-xs text-muted-foreground line-clamp-1 mt-0.5">
-                      {t(ep.descKey)}
-                    </div>
                   </div>
                   <div
                     className={`shrink-0 size-9 rounded-full flex items-center justify-center transition-colors ${isActive ? "bg-accent text-[var(--navy)]" : "bg-foreground/5 text-foreground group-hover:bg-foreground/10"}`}
