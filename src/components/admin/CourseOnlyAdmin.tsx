@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { createCourseOnlyAccount, listCourseOnlyAccounts, convertCourseOnlyToFull } from "@/lib/course-only.functions";
+import { createCourseOnlyAccount, listCourseOnlyAccounts, convertCourseOnlyToFull, setCourseOnlyCourses } from "@/lib/course-only.functions";
 
 type Row = { user_id: string; email: string; full_name: string; courses: { id: string; title: string; status: string }[] };
 
@@ -10,7 +10,7 @@ export function CourseOnlyAdmin({ lang }: { lang: "ar" | "en" }) {
   const t = (a: string, b: string) => (lang === "ar" ? a : b);
   const [courses, setCourses] = useState<{ id: string; title: string; slug: string | null }[]>([]);
   const [rows, setRows] = useState<Row[]>([]);
-  const [f, setF] = useState({ email: "", full_name: "", password: "", course_id: "" });
+  const [f, setF] = useState({ email: "", full_name: "", password: "", course_ids: [] as string[] });
   const [busy, setBusy] = useState(false);
   const refresh = useCallback(async () => {
     try { setRows((await listCourseOnlyAccounts()) as Row[]); } catch { toast.error(t("تعذر تحميل الحسابات", "Could not load accounts")); }
@@ -22,12 +22,12 @@ export function CourseOnlyAdmin({ lang }: { lang: "ar" | "en" }) {
   const input = "w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-sm";
   async function create(e: React.FormEvent) {
     e.preventDefault();
-    if (!f.course_id) return toast.error(t("اختر كورس", "Pick a course"));
+    if (f.course_ids.length === 0) return toast.error(t("اختر كورس واحد على الأقل", "Pick at least one course"));
     setBusy(true);
     try {
-      await createCourseOnlyAccount({ data: f });
+      await createCourseOnlyAccount({ data: { email: f.email, full_name: f.full_name, password: f.password, course_ids: f.course_ids } });
       toast.success(t("تم إنشاء الحساب. أرسل كلمة السر المؤقتة للشخص بنفسك.", "Account created. Send the temporary password to the person yourself."));
-      setF({ email: "", full_name: "", password: "", course_id: "" });
+      setF({ email: "", full_name: "", password: "", course_ids: [] as string[] });
       await refresh();
     } catch (err: any) { toast.error(err?.message || t("تعذر الإنشاء", "Could not create")); }
     setBusy(false);
@@ -40,10 +40,15 @@ export function CourseOnlyAdmin({ lang }: { lang: "ar" | "en" }) {
         <input className={input} type="email" required placeholder={t("الإيميل", "Email")} value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} />
         <input className={input} required minLength={2} placeholder={t("الاسم", "Name")} value={f.full_name} onChange={(e) => setF({ ...f, full_name: e.target.value })} />
         <input className={input} type="password" required minLength={8} autoComplete="new-password" placeholder={t("كلمة سر مؤقتة (8 أحرف على الأقل)", "Temporary password (8+ chars)")} value={f.password} onChange={(e) => setF({ ...f, password: e.target.value })} />
-        <select className={input} value={f.course_id} onChange={(e) => setF({ ...f, course_id: e.target.value })}>
-          <option value="">{t("اختر الكورس", "Pick a course")}</option>
-          {courses.map((c) => <option key={c.id} value={c.id}>{c.title}</option>)}
-        </select>
+        <fieldset className="space-y-1.5">
+          <legend className="mb-1 text-xs opacity-70">{t("الكورسات المسموحة (واحد أو أكثر)", "Allowed courses (one or more)")}</legend>
+          {courses.map((c) => (
+            <label key={c.id} className="flex items-center gap-2 text-sm">
+              <input type="checkbox" checked={f.course_ids.includes(c.id)} onChange={(e) => setF({ ...f, course_ids: e.target.checked ? [...f.course_ids, c.id] : f.course_ids.filter((x) => x !== c.id) })} />
+              {c.title}
+            </label>
+          ))}
+        </fieldset>
         <button disabled={busy} className="rounded-lg bg-cyan-500/90 px-4 py-2 text-sm font-semibold text-slate-950 disabled:opacity-50">{t("إنشاء الحساب", "Create account")}</button>
       </form>
       <div className="space-y-2">
@@ -51,7 +56,21 @@ export function CourseOnlyAdmin({ lang }: { lang: "ar" | "en" }) {
         {rows.map((r) => (
           <div key={r.user_id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 p-3 text-sm">
             <div><div className="font-medium">{r.full_name || r.email}</div><div className="opacity-60" dir="ltr">{r.email}</div>
-              <div className="text-xs opacity-70">{r.courses.map((c) => c.title).join("، ")}</div></div>
+              <div className="mt-1 space-y-1">
+                {courses.map((c) => {
+                  const on = r.courses.some((x) => x.id === c.id);
+                  return (
+                    <label key={c.id} className="flex items-center gap-2 text-xs">
+                      <input type="checkbox" checked={on} onChange={async (e) => {
+                        const next = e.target.checked ? [...r.courses.map((x) => x.id), c.id] : r.courses.map((x) => x.id).filter((x) => x !== c.id);
+                        if (next.length === 0) return toast.error(t("لازم كورس واحد على الأقل. للإلغاء الكامل حوّل الحساب أو احذفه.", "At least one course is required."));
+                        try { await setCourseOnlyCourses({ data: { user_id: r.user_id, course_ids: next } }); await refresh(); } catch (err: any) { toast.error(err?.message || "Error"); }
+                      }} />
+                      {c.title}
+                    </label>
+                  );
+                })}
+              </div></div>
             <button className="rounded-lg border border-white/20 px-3 py-1.5" onClick={async () => {
               if (!confirm(t("تحويل الحساب لمتدرب عادي؟ نفس الحساب والتقدم يفضلوا.", "Convert to a regular trainee? Same account and progress are kept."))) return;
               await convertCourseOnlyToFull({ data: { user_id: r.user_id } }); toast.success(t("تم التحويل", "Converted")); await refresh();
