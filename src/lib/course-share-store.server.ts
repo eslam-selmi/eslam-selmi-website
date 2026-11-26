@@ -12,6 +12,9 @@ type Loose = { from: (t: string) => any };
 const db = () => supabaseAdmin as unknown as Loose;
 const COLS = "id,course_id,token_hash,expires_at,revoked_at,auto_close,bind_first,claim_hash,closed_at";
 
+/** Short on purpose: the page re-opens the course every few minutes (re-checking revoke/close) and swaps in fresh URLs, so a revoked link stops getting new ones. */
+export const SIGNED_URL_TTL_S = 600;
+
 export const supabaseShareStore: ShareStore = {
   async findByTokenHash(hash) {
     const { data, error } = await db().from("course_share_links").select(COLS).eq("token_hash", hash).maybeSingle();
@@ -66,7 +69,7 @@ export const supabaseShareStore: ShareStore = {
     const items = await Promise.all(((rows as any[]) ?? []).map(async (it) => {
       let url: string | null = it.url ?? null;
       if (url && ["file", "video", "pdf"].includes(it.kind) && !/^https?:\/\//i.test(url)) {
-        const { data } = await storage.from("course-files").createSignedUrl(url, 1800);
+        const { data } = await storage.from("course-files").createSignedUrl(url, SIGNED_URL_TTL_S);
         url = data?.signedUrl ?? null;
       }
       // content only where it is learner-facing: video question data, notes and text. Anything else is not sent.

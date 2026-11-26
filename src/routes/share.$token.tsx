@@ -44,6 +44,20 @@ function SharePage() {
       .catch(() => setState({ kind: "denied", reason: "not_found" }));
   }, [token, open]);
 
+  // Fresh signed URLs every 3 minutes while the page is open. A revoked or closed link stops getting them; the page itself stays as is.
+  useEffect(() => {
+    if (!course) return;
+    let stop = false;
+    const id = window.setInterval(async () => {
+      if (stop || [...document.querySelectorAll("video")].some((v) => !v.paused && !v.ended)) return;
+      try {
+        const r: any = await openCourseShare({ data: { token, claim: localStorage.getItem(ck(token)) } });
+        if (r.ok) setCourse(r.course); else { stop = true; window.clearInterval(id); }
+      } catch { /* keep the current page */ }
+    }, 180_000);
+    return () => { stop = true; window.clearInterval(id); };
+  }, [!!course, token]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const onStart = async () => {
     const r: any = await startCourseShare({ data: { token, claim: localStorage.getItem(ck(token)) } });
     if (!r.ok) return setState({ kind: "denied", reason: r.reason });

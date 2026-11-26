@@ -31,11 +31,17 @@ export function VideoWithCues({
   const ended = useRef(false);
   const emit = () => onProgress?.({ ended: ended.current, maxRatio: maxRatio.current, cuesAnswered: answered.current.size });
 
+  // A refreshed signed URL differs only in its query: keep answers and position then, reset only for another file or other questions.
+  const srcBase = src.split("?")[0];
+  const resumeAt = useRef(0);
+  const lastSrcBase = useRef(srcBase);
   useEffect(() => {
     answered.current = new Set();
     setActive(-1);
     setPicked(null);
-  }, [src, cues]);
+    resumeAt.current = 0;
+    lastSrcBase.current = srcBase;
+  }, [srcBase, cues]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const check = useCallback(() => {
     const v = ref.current;
@@ -72,9 +78,10 @@ export function VideoWithCues({
         controls={!cue}
         controlsList="nodownload"
         playsInline
-        onTimeUpdate={() => { const v = ref.current; if (v && v.duration > 0) maxRatio.current = Math.max(maxRatio.current, v.currentTime / v.duration); check(); }}
+        onTimeUpdate={() => { const v = ref.current; if (v) resumeAt.current = v.currentTime; if (v && v.duration > 0) maxRatio.current = Math.max(maxRatio.current, v.currentTime / v.duration); check(); }}
         onEnded={() => { ended.current = true; emit(); }}
         onSeeked={check}
+        onLoadedMetadata={() => { const v = ref.current; if (v && resumeAt.current > 0 && Math.abs(v.currentTime - resumeAt.current) > 1 && resumeAt.current < v.duration - 0.5) v.currentTime = resumeAt.current; }}
         onError={onError}
         className="w-full h-full bg-black"
       />
