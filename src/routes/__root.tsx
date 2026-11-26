@@ -123,7 +123,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 // Runs BEFORE React hydrates. Reads persisted lang from localStorage and
 // applies <html lang>/<html dir> + a synchronous background-color so the
 // page never flashes white during navigation or first paint.
-const NO_FLASH_SCRIPT = `(function(){try{var l=localStorage.getItem('lang');if(l!=='en'&&l!=='ar')l='ar';var t=localStorage.getItem('theme');if(t!=='light')t='dark';var e=document.documentElement;e.setAttribute('lang',l);e.setAttribute('dir',l==='ar'?'rtl':'ltr');if(t==='dark')e.classList.add('dark');else e.classList.remove('dark');e.style.colorScheme=t;e.style.backgroundColor=t==='dark'?'#0b1736':'#f5f7fb';}catch(_){}}())`;
+const NO_FLASH_SCRIPT = `(function(){try{var l=localStorage.getItem('lang');if(l!=='en'&&l!=='ar')l='ar';var pp=location.pathname;var pn=pp==='/portal'||pp.indexOf('/portal/')===0||pp==='/admin'||pp.indexOf('/admin/')===0;var t=localStorage.getItem(pn?'panelTheme':'theme');if(pn){if(t!=='dark')t='light';}else if(t!=='light')t='dark';var e=document.documentElement;e.setAttribute('lang',l);e.setAttribute('dir',l==='ar'?'rtl':'ltr');if(t==='dark')e.classList.add('dark');else e.classList.remove('dark');e.style.colorScheme=t;e.style.backgroundColor=t==='dark'?'#0b1736':'#f5f7fb';}catch(_){}}())`;
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (

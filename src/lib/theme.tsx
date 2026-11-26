@@ -1,14 +1,18 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { useRouterState } from "@tanstack/react-router";
 import { Moon, Sun } from "lucide-react";
 
 type Theme = "light" | "dark";
 
 const ThemeCtx = createContext<{ theme: Theme; toggle: () => void } | null>(null);
 
-function readInitial(): Theme {
-  if (typeof window === "undefined") return "dark";
-  const v = localStorage.getItem("theme");
-  return v === "light" ? "light" : "dark";
+// Trainee and admin panels have their own theme (default light, easier on the eyes). The public site keeps its own (default dark).
+const isPanelPath = (p: string) => p === "/portal" || p.startsWith("/portal/") || p === "/admin" || p.startsWith("/admin/");
+
+function readKey(key: string, fallback: Theme): Theme {
+  if (typeof window === "undefined") return fallback;
+  const v = localStorage.getItem(key);
+  return v === "light" || v === "dark" ? v : fallback;
 }
 
 function applyTheme(t: Theme) {
@@ -19,14 +23,22 @@ function applyTheme(t: Theme) {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(readInitial);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const panel = isPanelPath(pathname);
+  const [siteTheme, setSiteTheme] = useState<Theme>(() => readKey("theme", "dark"));
+  const [panelTheme, setPanelTheme] = useState<Theme>(() => readKey("panelTheme", "light"));
+  const theme = panel ? panelTheme : siteTheme;
 
   useEffect(() => {
     applyTheme(theme);
-    try { localStorage.setItem("theme", theme); } catch {}
   }, [theme]);
+  useEffect(() => { try { localStorage.setItem("theme", siteTheme); } catch {} }, [siteTheme]);
+  // The panel choice is saved only after the user picks one, so the default stays light until then.
 
-  const toggle = useCallback(() => setTheme((t) => (t === "dark" ? "light" : "dark")), []);
+  const toggle = useCallback(() => {
+    if (panel) setPanelTheme((t) => { const n = t === "dark" ? "light" : "dark"; try { localStorage.setItem("panelTheme", n); } catch {} return n; });
+    else setSiteTheme((t) => (t === "dark" ? "light" : "dark"));
+  }, [panel]);
 
   return <ThemeCtx.Provider value={{ theme, toggle }}>{children}</ThemeCtx.Provider>;
 }
