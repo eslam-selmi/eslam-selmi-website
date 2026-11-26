@@ -71,7 +71,7 @@ export function TraineeDrawer({
     s === "approved" ? "bg-emerald-400/15 text-emerald-300" : s === "rejected" ? "bg-rose-400/15 text-rose-300" : "bg-amber-300/15 text-amber-200";
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end" role="dialog" aria-modal="true">
+    <div className="fixed inset-0 z-[80] flex justify-end" role="dialog" aria-modal="true">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <aside className="relative w-full max-w-lg h-full bg-[#0b1736] border-s border-white/10 shadow-2xl overflow-y-auto animate-in slide-in-from-left duration-300 rtl:slide-in-from-left ltr:slide-in-from-right">
         <header className="sticky top-0 z-10 flex items-center justify-between gap-3 p-5 border-b border-white/10 bg-[#0b1736]/95 backdrop-blur">

@@ -377,7 +377,7 @@ export function EnrollmentDrawer({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex" dir="rtl">
+    <div className="fixed inset-0 z-[80] flex" dir="rtl">
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
       <aside className="relative ms-auto w-full max-w-2xl h-full bg-[#0b1736] border-s border-white/10 overflow-y-auto">
         <div className="sticky top-0 z-10 bg-[rgba(11,23,54,0.95)] backdrop-blur-xl border-b border-white/10 px-6 py-4 flex items-center justify-between">
