@@ -10,8 +10,8 @@ type Config = {
   until: string | null;
 };
 
-// "/guest" (login and assigned-course browsing for guest accounts) is the only addition; the rest of the site stays closed.
-const ALLOWED_PREFIXES = ["/admin", "/auth", "/portal", "/onboarding", "/verify", "/guest"];
+// "/guest" (guest login) and "/share/<token>" (a valid course-share link, approved by the owner Nov 26 14:39) are the only additions; the rest of the site stays closed.
+const ALLOWED_PREFIXES = ["/admin", "/auth", "/portal", "/onboarding", "/verify", "/guest", "/share"];
 
 export function MaintenanceGate({ children }: { children: React.ReactNode }) {
   const [config, setConfig] = useState<Config | null>(null);
