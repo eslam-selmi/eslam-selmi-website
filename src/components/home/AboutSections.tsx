@@ -351,7 +351,7 @@ export function Programs() {
             }} className="prog-tab" data-active={i === idx}>
               <span className="prog-tab-num">{String(i + 1).padStart(2, "0")}</span>
               <span className="prog-tab-title">{ar ? tr.titleAr : tr.titleEn}</span>
-              <span className="prog-tab-count">{tr.modules.length} {ar ? "محاور" : "modules"}</span>
+              <span className="prog-tab-count">{ar ? (tr.modules.length === 1 ? "محور واحد" : tr.modules.length === 2 ? "محوران" : tr.modules.length <= 10 ? `${tr.modules.length} محاور` : `${tr.modules.length} محورًا`) : `${tr.modules.length} ${tr.modules.length === 1 ? "module" : "modules"}`}</span>
               <ArrowRight className="prog-tab-arrow rtl-flip" aria-hidden="true" />
             </Button>
           ))}
