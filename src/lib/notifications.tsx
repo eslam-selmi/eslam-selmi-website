@@ -105,7 +105,7 @@ export function NotificationsBell({ userId, pending = [] }: { userId: string | u
         )}
       </button>
       {open && (
-        <div className="absolute end-0 mt-2 w-[min(360px,calc(100vw-24px))] max-h-[520px] overflow-hidden text-white rounded-2xl border border-[var(--gold)]/25 bg-gradient-to-b from-[#0d1a3d] to-[#0b1736] backdrop-blur-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] z-50 flex flex-col animate-in fade-in slide-in-from-top-2 duration-150">
+        <div className="absolute end-0 mt-2 w-[min(360px,calc(100vw-24px))] max-h-[520px] overflow-hidden text-white rounded-2xl border border-[var(--gold)]/25 bg-[#0b1736] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] z-50 flex flex-col animate-in fade-in slide-in-from-top-2 duration-150">
           <div className="px-4 py-3.5 border-b border-white/10 bg-gradient-to-r from-[var(--gold)]/[0.08] to-transparent flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-lg bg-[var(--gold)]/15 border border-[var(--gold)]/30 flex items-center justify-center">
