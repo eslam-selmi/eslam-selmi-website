@@ -1673,3 +1673,7 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 .tg-stars span[data-on="true"] { color: #f6c945; }
 .tg-more { align-self: center; margin-top: .6rem; padding: .15rem 0; background: none; border: 0; cursor: pointer; font-size: .8rem; font-weight: 700; color: #4fd8ff; text-decoration: underline; text-underline-offset: 4px; }
 .tg-card { padding-bottom: 5.5rem; }
+.tg-glass { margin-top: 3.4rem; }
+.tg-tab { height: 3.4rem; padding-bottom: .5rem; }
+.tg-role { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; font-size: .68rem; }
+.tg-avatar { top: 1.5rem; }
