@@ -442,3 +442,6 @@
 .nx .nx-menu .nx-menu-item { min-height: 44px; padding: 10px 14px; gap: 12px; background: transparent; }
 .nx .nx-menu .nx-menu-item > svg { flex: none; width: 18px; height: 18px; }
 .nx .nx-menu .nx-divider { margin: 2px 6px !important; }
+/* Menu popover must be opaque so UI behind it never shows through */
+:root.dark .nx .nx-menu { background: oklch(0.17 0.04 253) !important; backdrop-filter: none; z-index: 60; }
+:root:not(.dark) .nx .nx-menu { background: #fff !important; backdrop-filter: none; z-index: 60; }
