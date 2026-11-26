@@ -222,7 +222,6 @@ function SubscriberDetail({ p, enrs, units, onBack, t, fmt, statusLabel }: {
                 <p className="text-[11px] opacity-60">{fmt(e.created_at)}{e.certificate_issued ? ` · ${t("شهادة صادرة", "Certificate issued")}` : ""}</p>
                 {e.status === "approved" && u && u.total > 0 && (
                   <p className="text-[11px] opacity-70">{t("محتوى الكورس (ليس تقدّم هذا المتدرب):", "Course content (not this trainee's progress):")} <span dir="ltr">{u.done}/{u.total}</span> {t("وحدة أنهاها المدرّب", "units marked complete by the trainer")}</p>
-                )}</p></div>
                 )}
               </div>
             );
