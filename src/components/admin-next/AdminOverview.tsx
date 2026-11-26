@@ -1,16 +1,17 @@
-import { ArrowLeft, CalendarDays, Clock3, ShieldCheck, TicketCheck, Users, BookOpen, GraduationCap, Wallet, CircleAlert } from "lucide-react";
+import { ArrowLeft, CalendarDays, Clock3, ShieldCheck, TicketCheck, Users, BookOpen, GraduationCap, Wallet, CircleAlert, Wrench } from "lucide-react";
 import { StatCardNext } from "@/components/portal-next/PortalHome";
 
-export type AdminOverviewDestination = "enrollments" | "bookings" | "tickets" | "activations" | "courses" | "coupons" | "packages" | "methods";
+export type AdminOverviewDestination = "enrollments" | "bookings" | "tickets" | "activations" | "courses" | "coupons" | "packages" | "methods" | "tools";
 
 export type RecentEnrollment = { id: string; name: string; course: string; status: string; date: string };
 
 export function AdminOverview({
-  lang, pendingEnrollments, pendingActivations, attention, approved, courses, bookings, tickets, onNavigate, recentEnrollments,
+  lang, pendingEnrollments, pendingActivations, toolRequests, attention, approved, courses, bookings, tickets, onNavigate, recentEnrollments,
 }: {
   lang: string;
   pendingEnrollments: number;
   pendingActivations: number;
+  toolRequests: number;
   attention: { label: string; value: number; tone: "gold" | "teal" }[];
   approved: number;
   courses: number;
@@ -26,6 +27,7 @@ export function AdminOverview({
   const queue = [
     { key: "enrollments" as const, icon: Users, label: t("طلبات الانضمام", "Enrollment requests"), detail: t("بانتظار المراجعة والقبول", "Awaiting review"), count: pendingEnrollments, tone: "gold" as const },
     { key: "activations" as const, icon: ShieldCheck, label: t("تفعيل الحسابات", "Account activations"), detail: t("حسابات جديدة بانتظار التفعيل", "New accounts awaiting activation"), count: pendingActivations, tone: "gold" as const },
+    { key: "tools" as const, icon: Wrench, label: t("طلبات الوصول للأدوات", "Tool access requests"), detail: t("بانتظار موافقتك أو رفضك", "Awaiting your decision"), count: toolRequests, tone: "gold" as const },
     { key: "bookings" as const, icon: CalendarDays, label: t("الحجوزات القادمة", "Upcoming bookings"), detail: t("جلسات استشارية محجوزة", "Scheduled sessions"), count: bookings, tone: "teal" as const },
     { key: "tickets" as const, icon: TicketCheck, label: t("تذاكر الدعم", "Support tickets"), detail: t("تحتاج إلى رد من الإدارة", "Need a reply"), count: tickets, tone: "teal" as const },
   ];
@@ -46,9 +48,9 @@ export function AdminOverview({
             <span className="nx-chip nx-chip-emerald self-start sm:self-end"><span className="nx-live-dot" /> {t("البيانات مباشرة", "Live data")}</span>
             <div className="rounded-2xl border border-white/[0.1] bg-white/[0.04] p-3">
               <p className="text-[11px] font-bold opacity-70 mb-2 flex items-center gap-2"><span className="nx-live-dot" /> {t("يحتاج انتباهك الآن", "Needs attention now")}</p>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-4 gap-2">
                 {attention.map((a) => (
-                  <div key={a.label} className="rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-center sm:min-w-[84px]">
+                  <div key={a.label} className="rounded-xl border border-white/[0.08] bg-white/[0.04] px-2 py-2 text-center sm:min-w-[72px]">
                     <p className="text-lg font-bold nx-display" style={{ color: a.tone === "gold" ? "var(--nx-gold)" : "var(--nx-teal)" }}>{a.value}</p>
                     <p className="text-[10px] opacity-60 font-semibold leading-tight mt-0.5">{a.label}</p>
                   </div>

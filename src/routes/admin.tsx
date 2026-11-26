@@ -191,11 +191,12 @@ function AdminPage() {
     staleTime: 30_000,
     enabled: role === "admin",
     queryFn: async () => {
-      const [b, s] = await Promise.all([
+      const [b, s, tr] = await Promise.all([
         supabase.from("consultation_slots").select("id", { count: "exact", head: true }).eq("status", "booked").gte("starts_at", new Date().toISOString()),
         supabase.from("support_tickets").select("id", { count: "exact", head: true }).in("status", ["open", "pending_admin"]),
+        (supabase as any).from("tool_access_requests").select("id", { count: "exact", head: true }).eq("status", "pending"),
       ]);
-      return { bookings: b.error ? null : b.count ?? 0, tickets: s.error ? null : s.count ?? 0 };
+      return { bookings: b.error ? null : b.count ?? 0, tickets: s.error ? null : s.count ?? 0, toolRequests: tr.error ? 0 : tr.count ?? 0 };
     },
   });
   useEffect(() => {
@@ -204,6 +205,7 @@ function AdminPage() {
     const channel = supabase.channel("admin-overview-live")
       .on("postgres_changes", { event: "*", schema: "public", table: "consultation_slots" }, invalidate)
       .on("postgres_changes", { event: "*", schema: "public", table: "support_tickets" }, invalidate)
+      .on("postgres_changes", { event: "*", schema: "public", table: "tool_access_requests" }, invalidate)
       .subscribe();
     return () => { void supabase.removeChannel(channel); };
   }, [role, queryClient]);
@@ -220,7 +222,7 @@ function AdminPage() {
   const approved = enrollments.filter((e) => e.status === "approved").length;
   const blockedCount = enrollments.filter((e) => e.profiles?.account_blocked).length;
 
-  const groups = buildAdminNav(lang, { pendingActivations, pendingEnrollments: pending, blockedCount });
+  const groups = buildAdminNav(lang, { pendingActivations, pendingEnrollments: pending, blockedCount, toolRequests: overviewCounts.data?.toolRequests ?? 0 });
   const currentSection = groups.flatMap((g) => g.items.map((i) => ({ ...i, group: g.label }))).find((i) => i.id === tab);
 
   const recentEnrollments: RecentEnrollment[] = enrollments.slice(0, 5).map((e) => ({
@@ -270,7 +272,9 @@ function AdminPage() {
               { label: t("تفعيلات", "Activations"), value: pendingActivations, tone: "gold" },
               { label: t("طلبات", "Requests"), value: pending, tone: "gold" },
               { label: t("تذاكر", "Tickets"), value: overviewCounts.data?.tickets ?? 0, tone: "teal" },
+              { label: t("أدوات", "Tools"), value: overviewCounts.data?.toolRequests ?? 0, tone: "gold" },
             ]}
+            toolRequests={overviewCounts.data?.toolRequests ?? 0}
             approved={approved}
             courses={courses.length}
             bookings={overviewCounts.data?.bookings ?? null}

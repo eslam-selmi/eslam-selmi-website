@@ -18,7 +18,7 @@ export type AdminNavGroup = { id: string; label: string; items: AdminNavItem[] }
 
 export function buildAdminNav(
   lang: string,
-  badges: { pendingActivations?: number; pendingEnrollments?: number; blockedCount?: number },
+  badges: { pendingActivations?: number; pendingEnrollments?: number; blockedCount?: number; toolRequests?: number },
 ): AdminNavGroup[] {
   const t = (a: string, b: string) => (lang === "ar" ? a : b);
   return [
@@ -72,9 +72,9 @@ export function buildAdminNav(
       label: t("الإعدادات والدعم", "Settings & Support"),
       items: [
         { id: "site", label: t("هوية الموقع والتواصل", "Site identity & contact"), icon: Settings2 },
-        { id: "visibility", label: t("ظهور الأقسام ومحتوى الموقع", "Section visibility & content"), icon: ToggleRight },
-        { id: "tools", label: t("الأدوات: الظهور والصلاحيات", "Tools: visibility & access"), icon: ToggleRight },
-        { id: "pages", label: t("التابات: الظهور والقفل", "Tabs: visibility & lock"), icon: ToggleRight },
+        { id: "visibility", label: t("ظهور الأقسام ومحتوى الموقع", "Section visibility & content"), icon: ToggleRight, badge: badges.toolRequests || undefined },
+        { id: "tools", label: t("الأدوات: الظهور والصلاحيات", "Tools: visibility & access"), icon: ToggleRight, badge: badges.toolRequests || undefined },
+        { id: "pages", label: t("التابات: الظهور والقفل", "Tabs: visibility & lock"), icon: ToggleRight, badge: badges.toolRequests || undefined },
         { id: "popups", label: t("الإعلانات المنبثقة", "Popup announcements"), icon: Sparkles },
         { id: "maintenance", label: t("وضع الصيانة", "Maintenance"), icon: Settings2 },
         { id: "tickets", label: t("تذاكر الدعم", "Support tickets"), icon: LifeBuoy },
