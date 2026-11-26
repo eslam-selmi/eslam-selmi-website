@@ -173,7 +173,24 @@ function TestimonialCard({ it }: { it: TestimonialRow }) {
 export function TestimonialsScroller({ items, isAr }: { items: TestimonialRow[]; isAr: boolean }) {
   // Brand cards: compact navy cards in one horizontally scrollable row. Each shows an excerpt only.
   const dragRef = useRef<{ x: number; left: number; id: number } | null>(null);
-  const endDrag = (el: HTMLDivElement) => { if (dragRef.current) { try { el.releasePointerCapture(dragRef.current.id); } catch { /* ignore */ } } dragRef.current = null; el.removeAttribute("data-drag"); };
+  const endDrag = (el: HTMLDivElement) => {
+    const was = el.hasAttribute("data-drag");
+    if (dragRef.current) { try { el.releasePointerCapture(dragRef.current.id); } catch { /* ignore */ } }
+    dragRef.current = null;
+    el.removeAttribute("data-drag");
+    if (!was) return;
+    // settle on one whole card after a mouse drag (touch settles through CSS scroll-snap)
+    const dr = el.getBoundingClientRect();
+    const mobile = window.matchMedia("(max-width: 767px)").matches;
+    const rtl = getComputedStyle(el).direction === "rtl";
+    let best = 0, bestAbs = Infinity;
+    el.querySelectorAll<HTMLElement>(".tg-card").forEach((c) => {
+      const r = c.getBoundingClientRect();
+      const delta = mobile ? (r.left + r.right) / 2 - (dr.left + dr.right) / 2 : rtl ? r.right - (dr.right - 12) : r.left - (dr.left + 12);
+      if (Math.abs(delta) < bestAbs) { bestAbs = Math.abs(delta); best = delta; }
+    });
+    el.scrollBy({ left: best, behavior: "smooth" });
+  };
   return (
     <div
       className="tg-deck"
