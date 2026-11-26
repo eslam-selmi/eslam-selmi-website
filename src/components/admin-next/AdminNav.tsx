@@ -72,9 +72,9 @@ export function buildAdminNav(
       label: t("الإعدادات والدعم", "Settings & Support"),
       items: [
         { id: "site", label: t("هوية الموقع والتواصل", "Site identity & contact"), icon: Settings2 },
-        { id: "visibility", label: t("ظهور الأقسام ومحتوى الموقع", "Section visibility & content"), icon: ToggleRight, badge: badges.toolRequests || undefined },
+        { id: "visibility", label: t("ظهور الأقسام ومحتوى الموقع", "Section visibility & content"), icon: ToggleRight },
         { id: "tools", label: t("الأدوات: الظهور والصلاحيات", "Tools: visibility & access"), icon: ToggleRight, badge: badges.toolRequests || undefined },
-        { id: "pages", label: t("التابات: الظهور والقفل", "Tabs: visibility & lock"), icon: ToggleRight, badge: badges.toolRequests || undefined },
+        { id: "pages", label: t("التابات: الظهور والقفل", "Tabs: visibility & lock"), icon: ToggleRight },
         { id: "popups", label: t("الإعلانات المنبثقة", "Popup announcements"), icon: Sparkles },
         { id: "maintenance", label: t("وضع الصيانة", "Maintenance"), icon: Settings2 },
         { id: "tickets", label: t("تذاكر الدعم", "Support tickets"), icon: LifeBuoy },
