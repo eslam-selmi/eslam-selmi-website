@@ -4,7 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { CheckCircle2, ShieldCheck, XCircle, Loader2, Award, Clock, Calendar, ArrowLeft } from "lucide-react";
 import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
 import { useSiteProfile } from "@/lib/site-profile";
-import { useI18n } from "@/lib/i18n";
 const brandLogo = brandLogoAsset.url;
 export const Route = createFileRoute("/verify/$id")({
   component: VerifyPage,
@@ -26,8 +25,6 @@ type VerifyResult =
 
 function VerifyPage() {
   const { profile } = useSiteProfile();
-  const { lang } = useI18n();
-  const ar = lang !== "en";
   const { id } = Route.useParams();
   const [state, setState] = useState<{ loading: boolean; data: VerifyResult | null; err: string | null }>({ loading: true, data: null, err: null });
 
@@ -51,7 +48,7 @@ function VerifyPage() {
           <img src={profile.logoDark} alt="" className="h-9 w-auto opacity-90" />
         </Link>
         <Link to="/" className="text-xs text-white/60 hover:text-white flex items-center gap-1">
-          <ArrowLeft className="w-3.5 h-3.5" /> {ar ? "الرئيسية" : "Home"}
+          <ArrowLeft className="w-3.5 h-3.5" /> الرئيسية · Home
         </Link>
       </header>
 
@@ -65,22 +62,26 @@ function VerifyPage() {
             {state.loading ? (
               <div className="flex flex-col items-center gap-3 py-16 text-white/70">
                 <Loader2 className="w-8 h-8 animate-spin text-[var(--gold)]" />
-                <p className="text-sm">{ar ? "جارٍ التحقق…" : "Verifying…"}</p>
+                <p className="text-sm">جارٍ التحقق · Verifying…</p>
               </div>
             ) : !valid ? (
-              <div className="text-center space-y-3 py-8" dir={ar ? "rtl" : "ltr"}>
+              <div className="text-center space-y-3 py-8">
                 <div className="w-16 h-16 mx-auto rounded-full bg-rose-500/15 border border-rose-500/40 flex items-center justify-center">
                   <XCircle className="w-8 h-8 text-rose-300" />
                 </div>
-                <h1 className="text-xl font-bold">{ar ? "الشهادة غير موجودة" : "Certificate not found"}</h1>
-                <p className="text-sm text-white/55">{ar ? "الرقم غير صحيح أو لم تُصدر الشهادة بعد أو تم إلغاؤها." : "The ID is invalid, or the certificate has not been issued or was revoked."}</p>
+                <h1 className="text-xl font-bold">الشهادة غير موجودة</h1>
+                <p className="text-lg font-semibold text-white/80" dir="ltr">Certificate not found</p>
+                <p className="text-sm text-white/55">الرقم غير صحيح أو لم تُصدر الشهادة بعد أو تم إلغاؤها.</p>
+                <p className="text-sm text-white/55" dir="ltr">The ID is invalid, or the certificate has not been issued or was revoked.</p>
                 <p className="text-[11px] text-white/35 font-mono break-all pt-2" dir="ltr">{id}</p>
               </div>
             ) : (
-              <div className="flex flex-col items-center text-center" dir={ar ? "rtl" : "ltr"}>
-                <div className="relative w-24 h-24 flex items-center justify-center">
-                  <div className="absolute inset-0 rounded-full bg-[rgba(45,212,200,0.28)] blur-2xl" />
-                  <svg viewBox="0 0 64 72" className="relative w-16 h-[72px] drop-shadow-[0_0_18px_rgba(45,212,200,0.55)]" aria-hidden>
+              <div className="flex flex-col items-center text-center">
+                {/* glowing shield */}
+                <div className="relative w-28 h-28 flex items-center justify-center">
+                  <div className="absolute inset-0 rounded-full bg-[rgba(45,212,200,0.30)] blur-2xl" />
+                  <div className="absolute inset-3 rounded-full bg-[rgba(212,175,55,0.18)] blur-xl" />
+                  <svg viewBox="0 0 64 72" className="relative w-20 h-[90px] drop-shadow-[0_0_18px_rgba(45,212,200,0.55)]" aria-hidden>
                     <defs>
                       <linearGradient id="vs" x1="0" y1="0" x2="1" y2="1">
                         <stop offset="0" stopColor="#5eead4" />
@@ -92,18 +93,24 @@ function VerifyPage() {
                   </svg>
                 </div>
 
-                <h1 className="mt-4 text-xl sm:text-2xl font-extrabold text-emerald-200">{ar ? "شهادة موثّقة" : "Verified certificate"}</h1>
+                <h1 className="mt-5 text-[17px] sm:text-2xl font-extrabold text-emerald-200 text-balance">الشهادة موثّقة وصادرة من إسلام سلمي</h1>
+                <p className="mt-1 text-[13px] sm:text-base font-semibold text-white/75 text-balance" dir="ltr">This certificate is verified and issued by Eslam Selmi</p>
 
-                <p className="mt-6 text-2xl sm:text-3xl font-extrabold leading-tight" dir={ar ? "rtl" : "ltr"}>
-                  {(ar ? d!.trainee_name_ar || d!.trainee_name_en : d!.trainee_name_en || d!.trainee_name_ar) ?? ""}
-                </p>
+                <div className="my-8 h-px w-40 bg-gradient-to-r from-transparent via-[var(--gold)]/60 to-transparent" />
 
-                <dl className="mt-7 w-full border-t border-white/10 pt-5 space-y-3 text-sm text-start">
-                  <div className="flex items-baseline justify-between gap-4"><dt className="text-white/50 shrink-0">{ar ? "الدورة" : "Course"}</dt><dd className="font-semibold text-white/90 text-end"><bdi dir="auto">{d!.course_title}</bdi></dd></div>
-                  <div className="flex items-baseline justify-between gap-4"><dt className="text-white/50 shrink-0">{ar ? "تاريخ الإصدار" : "Issued"}</dt><dd className="font-semibold text-[var(--gold)]"><bdi>{issued!.toLocaleDateString(ar ? "ar-EG-u-nu-latn" : "en-GB", { year: "numeric", month: "long", day: "numeric" })}</bdi></dd></div>
-                  {Number(d!.total_hours) > 0 && <div className="flex items-baseline justify-between gap-4"><dt className="text-white/50 shrink-0">{ar ? "الساعات" : "Hours"}</dt><dd className="font-semibold text-white/90"><bdi dir="ltr">{d!.total_hours}</bdi></dd></div>}
-                  <div className="flex items-baseline justify-between gap-4"><dt className="text-white/50 shrink-0">{ar ? "رقم الشهادة" : "Certificate ID"}</dt><dd className="font-mono text-[11px] text-white/60 break-all" dir="ltr">{d!.certificate_id}</dd></div>
-                </dl>
+                {d!.trainee_name_ar && <p className="text-2xl sm:text-3xl font-extrabold leading-tight" dir="rtl">{d!.trainee_name_ar}</p>}
+                {d!.trainee_name_en && <p className="mt-1.5 text-lg sm:text-xl font-semibold text-white/85" dir="ltr">{d!.trainee_name_en}</p>}
+
+                <div className="mt-6 flex flex-col sm:flex-row items-center gap-1 sm:gap-4 text-sm text-[var(--gold)]">
+                  <span className="inline-flex items-center gap-1.5" dir="rtl"><Calendar className="w-3.5 h-3.5" />تاريخ الإصدار: <bdi dir="rtl">{issued!.toLocaleDateString("ar-EG-u-nu-latn", { year: "numeric", month: "long", day: "numeric" })}</bdi></span>
+                  <span className="hidden sm:inline text-white/25">|</span>
+                  <span className="inline-flex items-center gap-1.5" dir="ltr">Issued: <bdi dir="ltr">{issued!.toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" })}</bdi></span>
+                </div>
+
+                <div className="mt-8 w-full border-t border-white/10 pt-5 space-y-1.5 text-xs text-white/55">
+                  <p className="inline-flex items-center justify-center gap-1.5"><Award className="w-3.5 h-3.5" /><bdi dir="auto">{d!.course_title}</bdi>{Number(d!.total_hours) > 0 && <span> · <bdi dir="ltr">{d!.total_hours} h</bdi></span>}</p>
+                  <p className="font-mono text-[11px] text-white/40 break-all" dir="ltr">{d!.certificate_id}</p>
+                </div>
               </div>
             )}
           </div>
