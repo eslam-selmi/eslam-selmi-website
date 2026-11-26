@@ -43,12 +43,12 @@ export function CountriesMap() {
     const cellOf = reveal.map((c) => String.fromCharCode(97 + MAP_CODES.indexOf(c)));
     let W = 0, H = 0, mapH = 0, dpr = 1, raf = 0, visible = true, last = performance.now();
     let t = reduced ? tOut - 1 : 0;
-    let ROOM = 110, FW = 60, FH = 40, NS = 13, ROWS = 2, RO = 22;
+    let ROOM = 110, FW = 60, FH = 40, NS = 13, ROWS = 2, RO = 22, EX = 0;
 
     const resize = () => {
       W = Math.max(260, Math.round(box.getBoundingClientRect().width));
       const narrow = W < 520; FW = Math.round(Math.max(40, Math.min(74, (W / n) * 2 * (narrow ? 0.88 : 0.56)))); FH = Math.round(FW * 0.68); NS = Math.round(Math.max(11, Math.min(15, W * 0.024)));
-      RO = narrow ? FH + NS + 12 : Math.round(FH * 0.55); ROOM = Math.round(FH + RO + NS + 34);
+      RO = narrow ? FH + NS + 12 : Math.round(FH * 0.55); EX = narrow ? 0 : FH + 4; ROOM = Math.round(FH + RO + NS + 34 + EX);
       mapH = W * ((lat1 - lat0) / ((lon1 - lon0) * KX));
       H = Math.round(mapH + ROOM);
       dpr = Math.min(2.5, window.devicePixelRatio || 1);
@@ -85,9 +85,9 @@ export function CountriesMap() {
         const [lo, la] = POS[code]; const m = px(lo, la);
         const j = slotOf[code];
         const cx = (W * (j + 0.5)) / n;
-        const row = code === "eg" || code === "sa" ? 0 : j % ROWS; // Egypt and Saudi Arabia sit in the upper row; others keep their alternation
+        const top = code === "eg" || code === "sa"; const row = top ? 0 : j % ROWS; // Egypt and Saudi Arabia sit in the upper row; others keep their alternation
         const bob = reduced ? 0 : Math.sin(t * 1.15 + j * 1.7) * 2.2;
-        const fy = 4 + row * RO + bob + (1 - a) * 8;
+        const fy = 4 + (top ? 0 : EX + row * RO) + bob + (1 - a) * 8;
         const fx = Math.max(2, Math.min(W - FW - 2, cx - FW / 2));
         const ncx = fx + FW / 2, ny = fy + FH + 5;
         ctx.save(); ctx.globalAlpha = a;
