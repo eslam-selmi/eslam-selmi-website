@@ -350,7 +350,7 @@ function PackageForm({
   const perSession = sessions >= 1 ? Math.round((price / sessions) * 100) / 100 : 0;
   const cur = String(form.currency || "").trim().toUpperCase() || "USD";
   return createPortal(
-    <div className="fixed inset-0 z-50 grid place-items-center p-4 bg-black/60 backdrop-blur-sm" onClick={onCancel}>
+    <div className="fixed inset-0 z-[90] grid place-items-center p-4 bg-black/60 backdrop-blur-sm" onClick={onCancel}>
       <form onSubmit={(e) => { e.preventDefault(); if (errors.length) { setShowErr(true); return; } onSave(form); }} noValidate onClick={(e) => e.stopPropagation()}
         className="w-full max-w-lg rounded-3xl bg-[#0b1736] border border-white/10 p-6 space-y-3 shadow-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between">

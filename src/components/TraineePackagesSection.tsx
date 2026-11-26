@@ -179,7 +179,7 @@ export function TraineePackagesSection({ userId }: { userId: string }) {
       )}
 
       {buying && createPortal(
-        <div className="fixed inset-0 z-50 grid place-items-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setBuying(null)}>
+        <div className="fixed inset-0 z-[90] grid place-items-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setBuying(null)}>
           <form onSubmit={submitPurchase} onClick={(e) => e.stopPropagation()}
             className="w-full max-w-md rounded-3xl bg-[#0b1736] border border-white/10 p-6 space-y-4 shadow-2xl">
             <div className="flex items-center justify-between">

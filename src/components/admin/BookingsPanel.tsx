@@ -221,7 +221,7 @@ export function BookingsPanel() {
 
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return createPortal(
-    <div className="fixed inset-0 z-50 grid place-items-center p-4 bg-black/60 backdrop-blur-sm" onClick={onClose}>
+    <div className="fixed inset-0 z-[90] grid place-items-center p-4 bg-black/60 backdrop-blur-sm" onClick={onClose}>
       <div onClick={(e) => e.stopPropagation()} className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl bg-[#0b1736] border border-white/10 p-6 space-y-4 shadow-2xl">
         <div className="flex items-center justify-between">
           <h3 className="font-display font-extrabold text-base text-white">{title}</h3>
