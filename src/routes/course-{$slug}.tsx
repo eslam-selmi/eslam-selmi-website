@@ -1,4 +1,5 @@
-import { createFileRoute, Link, type ErrorComponentProps } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, type ErrorComponentProps } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/portal-auth";
@@ -69,6 +70,20 @@ function WhiteLabelCoursePage() {
       return data as Course | null;
     },
   });
+
+  // Stable course URL: a signed-in trainee who is approved in this course goes straight into it. The URL itself grants nothing.
+  const nav = useNavigate();
+  const { data: enrolled } = useQuery({
+    queryKey: ["wl-enrolled", course?.id, user?.id],
+    enabled: !!course?.id && !!user?.id,
+    queryFn: async () => {
+      const { data } = await supabase.from("enrollments").select("id").eq("user_id", user!.id).eq("course_id", course!.id).eq("status", "approved").maybeSingle();
+      return !!data;
+    },
+  });
+  useEffect(() => {
+    if (enrolled && course?.id) nav({ to: "/portal", search: { view: course.id } as never, replace: true });
+  }, [enrolled, course?.id, nav]);
 
   const t = (ar: string, en: string) => (lang === "ar" ? ar : en);
   const accent = course?.brand_primary_color || "#0b1736";
