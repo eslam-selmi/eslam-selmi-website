@@ -1367,7 +1367,7 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
   --sx-gold: color-mix(in oklab, var(--gold, oklch(0.78 0.14 90)) 70%, transparent);
 }
 /* Testimonials */
-.tst-card { position: relative; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; width: 300px; flex-shrink: 0; min-height: 320px; border-radius: 24px; border: 1px solid var(--sx-line); background-color: var(--booking-surface); background-image: radial-gradient(ellipse 70% 45% at 100% 0%, color-mix(in oklab, var(--booking-cyan) 14%, transparent), transparent 70%); box-shadow: var(--booking-shadow); color: var(--booking-foreground); padding: 1.75rem 1.5rem 1.4rem; transition: transform .35s, border-color .35s; }
+.tst-card { position: relative; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; width: 300px; flex-shrink: 0; min-height: 320px; border-radius: 24px; border: 1px solid var(--sx-line); background-color: var(--booking-surface); background-image: radial-gradient(ellipse 70% 45% at 100% 0%, color-mix(in oklab, var(--booking-cyan) 14%, transparent), transparent 70%); box-shadow: none; color: var(--booking-foreground); padding: 1.75rem 1.5rem 1.4rem; transition: transform .35s, border-color .35s; }
 @media (min-width: 640px) { .tst-card { width: 360px; padding: 2rem 1.9rem 1.6rem; } }
 @media (min-width: 1024px) { .tst-card { width: 400px; } }
 .tst-card::before { content: ""; position: absolute; inset-inline: 10%; top: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--sx-gold), transparent); }
