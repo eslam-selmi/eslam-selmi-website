@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { Pause, Play } from "lucide-react";
 import { COUNTRIES } from "@/components/home/data";
 import { useI18n } from "@/lib/i18n";
 import { OUTLINES } from "@/components/home/country-outlines";
@@ -53,9 +52,6 @@ export function CountriesMap() {
         </div>
       </div>
       <div className="cm-ctrl" dir="ltr">
-        <button type="button" className="cm-btn" onClick={() => setPaused((p) => !p)} aria-label={paused ? (lang === "ar" ? "تشغيل" : "Play") : (lang === "ar" ? "إيقاف مؤقت" : "Pause")}>
-          {paused ? <Play className="size-3.5" /> : <Pause className="size-3.5" />}
-        </button>
         <div className="cm-dots">
           {list.map((c, n) => (
             <button key={c} type="button" className="cm-dot" data-on={n === i ? "true" : undefined} onClick={() => setI(n)} aria-label={nameOf(c)} aria-current={n === i ? "true" : undefined}><span /></button>
