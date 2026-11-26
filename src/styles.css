@@ -1613,3 +1613,6 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 .tst-deck .tst-role { color: inherit; opacity: .72; }
 .tst-id { display: flex; flex-direction: column; gap: .15rem; min-width: 0; text-align: start; }
 .tst-deck .tst-who > .tst-id .tst-name, .tst-deck .tst-who > .tst-id .tst-role { display: block; }
+
+/* Testimonials v2: clean line clamp (no half-cut lines) */
+.tst-deck .tst-quote, .tst-deck .tst-card[data-long] .tst-quote { line-height: 1.9; height: auto; max-height: none; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; overflow: hidden; -webkit-mask-image: none; mask-image: none; text-overflow: ellipsis; }
