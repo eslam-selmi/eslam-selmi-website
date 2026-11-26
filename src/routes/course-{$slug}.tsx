@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/portal-auth";
 import { useI18n } from "@/lib/i18n";
+import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
 
 type Course = {
   id: string;
@@ -86,7 +87,6 @@ function WhiteLabelCoursePage() {
   }, [enrolled, course?.id, nav]);
 
   const t = (ar: string, en: string) => (lang === "ar" ? ar : en);
-  const accent = course?.brand_primary_color || "#0b1736";
 
   if (isLoading) {
     return (
@@ -107,153 +107,83 @@ function WhiteLabelCoursePage() {
   const tagline = lang === "ar" ? course.brand_tagline_ar : course.brand_tagline_en;
   const brandName = course.brand_name || course.title;
 
+  const lines = (txt: string | null) => (txt ?? "").split(/\r?\n/).map((x) => x.replace(/^[\s•\-–*]+/, "").trim()).filter(Boolean);
+  const goals = lines(course.course_goals);
+  const audience = lines(course.target_audience);
+  const hours = Number(course.total_hours) > 0 ? Number(course.total_hours) : 0;
+  const price = Number(course.price) > 0 ? `${course.price} ${course.currency}` : null;
+  const TURQ = "oklch(0.78 0.12 195)";
+  const cta = user ? (
+    <Link to="/portal" className="inline-flex items-center justify-center rounded-xl px-7 py-3.5 text-base font-bold transition hover:brightness-110" style={{ background: TURQ, color: "#06122b" }}>
+      {t("افتح بوابتك", "Open your portal")}
+    </Link>
+  ) : (
+    <Link to="/auth" className="inline-flex items-center justify-center rounded-xl px-7 py-3.5 text-base font-bold transition hover:brightness-110" style={{ background: TURQ, color: "#06122b" }}>
+      {t("تسجيل الدخول للكورس", "Sign in to the course")}
+    </Link>
+  );
+
   return (
     <div
-      className="min-h-screen w-full"
-      style={{
-        background: `radial-gradient(circle at top, ${accent}15, transparent 60%), hsl(var(--background))`,
-      }}
+      dir={lang === "ar" ? "rtl" : "ltr"}
+      className="min-h-screen w-full text-white"
+      style={{ background: "radial-gradient(ellipse 80% 50% at 15% -10%, oklch(0.42 0.14 258 / 0.55), transparent 60%), radial-gradient(ellipse 60% 40% at 90% 0%, oklch(0.6 0.1 195 / 0.25), transparent 60%), #07112a" }}
     >
-      {/* Minimal branded header (no global navbar) */}
-      <header className="w-full px-6 py-5 flex items-center justify-between border-b border-border/30">
-        <div className="flex items-center gap-3">
-          {course.logo_url ? (
-            <img
-              src={course.logo_url}
-              alt={brandName}
-              className="h-12 w-12 object-contain rounded"
-            />
-          ) : (
-            <div className="text-3xl">{course.cover_emoji || "🎓"}</div>
-          )}
-          <div className="leading-tight">
-            <div className="font-bold text-foreground" style={{ color: accent }}>
-              {brandName}
-            </div>
-            {tagline && <div className="text-xs text-muted-foreground">{tagline}</div>}
-          </div>
+      <header className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4 sm:px-8">
+        <img src={brandLogoAsset.url} alt={brandName} className="h-9 w-auto" />
+        <div className="flex items-center gap-2.5">
+          <button onClick={() => setLang(lang === "ar" ? "en" : "ar")} className="rounded-lg border border-white/20 px-3 py-1.5 text-xs text-white/80 transition hover:bg-white/10">
+            {lang === "ar" ? "EN" : "عربي"}
+          </button>
+          <Link to={user ? "/portal" : "/auth"} className="rounded-lg px-4 py-1.5 text-sm font-semibold" style={{ background: TURQ, color: "#06122b" }}>
+            {user ? t("بوابتي", "My portal") : t("دخول", "Sign in")}
+          </Link>
         </div>
-        <button
-          onClick={() => setLang(lang === "ar" ? "en" : "ar")}
-          className="text-xs px-3 py-1.5 rounded-md border border-border hover:bg-muted transition"
-        >
-          {lang === "ar" ? "EN" : "عربي"}
-        </button>
       </header>
 
-      {/* Hero */}
-      <main className="max-w-4xl mx-auto px-6 py-16 text-center">
-        <div
-          className="inline-block px-4 py-1.5 rounded-full text-xs font-semibold mb-6"
-          style={{ background: `${accent}20`, color: accent }}
-        >
-          {t("برنامج تدريبي معتمد", "Certified Training Program")}
-        </div>
-        <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">{course.title}</h1>
-        {course.description && (
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-            {course.description}
-          </p>
-        )}
-
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto mb-10">
-          <Stat
-            label={t("الساعات التدريبية", "Training Hours")}
-            value={`${course.total_hours}`}
-            accent={accent}
-          />
-          <Stat
-            label={t("السعر", "Price")}
-            value={course.price ? `${course.price} ${course.currency}` : t("مجاني", "Free")}
-            accent={accent}
-          />
-          {course.starts_at && (
-            <Stat
-              label={t("البداية", "Starts")}
-              value={new Date(course.starts_at).toLocaleDateString(
-                lang === "ar" ? "ar-EG" : "en-US",
-              )}
-              accent={accent}
-            />
+      <main className="mx-auto max-w-5xl px-5 pb-16 pt-8 sm:px-8 sm:pt-14">
+        <div className="max-w-3xl">
+          <div className="mb-4 inline-flex items-center gap-2 text-sm font-semibold" style={{ color: TURQ }}>
+            <span className="h-px w-8" style={{ background: TURQ }} />
+            {t("كورس تدريبي", "Training course")}
+          </div>
+          <h1 className="text-3xl font-extrabold leading-tight sm:text-5xl" style={{ lineHeight: 1.25, fontFamily: '"Thmanyah Serif Display", "IBM Plex Sans Arabic", serif' }}>{course.title}</h1>
+          {course.description && <p className="mt-5 text-base leading-8 text-white/80 sm:text-lg">{course.description}</p>}
+          {(hours > 0 || price) && (
+            <div className="mt-6 flex flex-wrap gap-2.5">
+              {hours > 0 && <span className="rounded-full border border-white/20 bg-white/5 px-4 py-1.5 text-sm text-white/90">{t(`${hours} ساعة تدريبية`, `${hours} training hours`)}</span>}
+              {price && <span className="rounded-full border border-white/20 bg-white/5 px-4 py-1.5 text-sm text-white/90">{price}</span>}
+            </div>
           )}
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">{cta}</div>
+          {!user && <p className="mt-3 text-sm text-white/60">{t("الدخول بالإيميل وكلمة السر المسجلين لك. الرابط للتوجيه فقط ولا يمنح صلاحية.", "Sign in with your assigned email and password. This link only points to the course; it does not grant access.")}</p>}
         </div>
 
-        {(course.course_goals || course.target_audience) && (
-          <div className="grid gap-4 md:grid-cols-2 max-w-3xl mx-auto mb-10 text-start">
-            {course.course_goals && (
-              <InfoBox
-                title={t("مخرجات الكورس", "Course outcomes")}
-                body={course.course_goals}
-                accent={accent}
-              />
-            )}
-            {course.target_audience && (
-              <InfoBox
-                title={t("هذا الكورس مناسب لـ", "Best for")}
-                body={course.target_audience}
-                accent={accent}
-              />
-            )}
+        {(goals.length > 0 || audience.length > 0) && (
+          <div className="mt-12 grid gap-5 md:grid-cols-2">
+            {goals.length > 0 && <Panel title={t("هتخرج من الكورس بإيه", "What you will be able to do")} items={goals} />}
+            {audience.length > 0 && <Panel title={t("الكورس مناسب لـ", "Who it is for")} items={audience} />}
           </div>
         )}
-
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          {user ? (
-            <Link
-              to="/portal"
-              className="px-8 py-3 rounded-lg font-semibold text-white transition hover:opacity-90"
-              style={{ background: accent }}
-            >
-              {t("اذهب إلى البوابة", "Go to Portal")}
-            </Link>
-          ) : (
-            <>
-              <Link
-                to="/auth"
-                className="px-8 py-3 rounded-lg font-semibold text-white transition hover:opacity-90"
-                style={{ background: accent }}
-              >
-                {t("سجّل الآن", "Enroll Now")}
-              </Link>
-              <Link
-                to="/auth"
-                className="px-8 py-3 rounded-lg font-semibold border border-border hover:bg-muted transition"
-              >
-                {t("تسجيل الدخول", "Sign In")}
-              </Link>
-            </>
-          )}
-        </div>
       </main>
 
-      {/* Minimal footer */}
-      <footer className="py-6 text-center text-xs text-muted-foreground border-t border-border/30">
-        © {new Date().getFullYear()} {brandName}
-      </footer>
+      <footer className="border-t border-white/10 py-6 text-center text-xs text-white/50">© 2027 {t("إسلام سلمي", "Eslam Selmi")}</footer>
     </div>
   );
 }
 
-function Stat({ label, value, accent }: { label: string; value: string; accent: string }) {
+function Panel({ title, items }: { title: string; items: string[] }) {
   return (
-    <div className="p-4 rounded-xl border border-border bg-card/50">
-      <div className="text-2xl font-bold" style={{ color: accent }}>
-        {value}
-      </div>
-      <div className="text-xs text-muted-foreground mt-1">{label}</div>
-    </div>
-  );
-}
-
-function InfoBox({ title, body, accent }: { title: string; body: string; accent: string }) {
-  return (
-    <div className="p-5 rounded-xl border border-border bg-card/50">
-      <div className="text-sm font-bold" style={{ color: accent }}>
-        {title}
-      </div>
-      <p className="mt-2 text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
-        {body}
-      </p>
-    </div>
+    <section className="rounded-2xl border border-white/12 bg-white/[0.045] p-6">
+      <h2 className="mb-4 text-xl font-bold text-white" style={{ fontFamily: '"Thmanyah Serif Display", "IBM Plex Sans Arabic", serif' }}>{title}</h2>
+      <ul className="space-y-3">
+        {items.map((x, i) => (
+          <li key={i} className="flex gap-3 text-[15px] leading-7 text-white/85">
+            <span className="mt-2 inline-block size-2 shrink-0 rounded-full" style={{ background: "oklch(0.78 0.12 195)" }} />
+            <span>{x}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
