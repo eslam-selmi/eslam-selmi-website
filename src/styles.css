@@ -1447,3 +1447,9 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 /* Snapshots are display-only: no selection, no touch callout, images ignore pointer */
 .snap-card { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
 .snap-card img { pointer-events: none; -webkit-user-drag: none; }
+
+/* Map: soften the hard rectangular edge of the dot field (no oval, no frame) */
+.world-map-stage canvas {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent), linear-gradient(to bottom, #000 0, #000 78%, transparent);
+  -webkit-mask-composite: source-in; mask-image: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent), linear-gradient(to bottom, #000 0, #000 78%, transparent); mask-composite: intersect;
+}
