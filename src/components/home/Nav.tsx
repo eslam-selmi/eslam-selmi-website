@@ -300,7 +300,7 @@ export function Nav({
           </div>
         </div>
         {open && (
-          <div className="xl:hidden mt-2 glass-strong rounded-2xl p-3 grid gap-1">
+          <div className="xl:hidden mt-2 glass-strong rounded-2xl p-3 grid gap-1 max-h-[calc(100dvh-6rem)] overflow-y-auto" style={{ background: "var(--popover, var(--card))" }}>
             {NAV_FULL.filter((n) => !n.flag || isVisible(n.flag)).map((n) => {
               if (n.action === "book") {
                 return (
