@@ -184,7 +184,7 @@ function AuthPage() {
   const isAdminView = authRole === "admin";
 
   return (
-    <div dir="rtl" className="nx nx-bg min-h-screen relative overflow-hidden font-[var(--font-body-ar)]">
+    <div dir="rtl" className="nx nx-bg min-h-screen relative overflow-hidden font-[var(--font-body-ar)]" style={{ "--nx-font-display": "var(--font-heading-ar)" } as React.CSSProperties}>
       <div className="absolute inset-0 nx-grid-overlay pointer-events-none" />
 
       <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6 py-6 sm:py-10 min-h-screen flex flex-col">
@@ -205,8 +205,14 @@ function AuthPage() {
               <div className="pointer-events-none absolute -top-28 -start-28 w-80 h-80 rounded-full bg-[var(--nx-teal)]/10 blur-3xl" />
               <div className="pointer-events-none absolute -bottom-32 -end-24 w-80 h-80 rounded-full bg-[var(--nx-gold)]/[0.08] blur-3xl" />
               <div className="relative">
-                <img src={siteProfile.logo} alt="" className="h-12 w-auto" onError={(e) => { const el = e.currentTarget; el.onerror = null; el.style.display = "none"; const s = el.nextElementSibling as HTMLElement | null; if (s) s.style.display = "flex"; }} />
-                <span style={{ display: "none" }} className="h-12 w-12 rounded-2xl bg-gradient-to-br from-[var(--nx-teal)]/30 to-[var(--nx-gold)]/20 border border-white/15 items-center justify-center text-[15px] font-bold text-white">ES</span>
+                <div className="mt-glass-logo" style={{ "--logo": `url(${siteProfile.logoDark})` } as React.CSSProperties}>
+                  <span aria-hidden className="mt-glass-logo__glow" />
+                  <div className="mt-glass-logo__tile">
+                    <img src={siteProfile.logoDark} alt="Eslam Selmi" width={96} height={96} className="mt-glass-logo__img" />
+                    <span aria-hidden className="mt-glass-logo__shine" />
+                    <span aria-hidden className="mt-glass-logo__sheen" />
+                  </div>
+                </div>
                 <p className="nx-eyebrow mt-8">{isAdminView ? "منطقة الإدارة" : "منصة إسلام سلمي التدريبية"}</p>
                 <h1 className="nx-display text-[34px] xl:text-[42px] leading-[1.2] mt-3">
                   {isAdminView ? "كل إدارة موقعك في مكان واحد." : "رحلتك التدريبية تبدأ من هنا."}
@@ -244,9 +250,14 @@ function AuthPage() {
             <div className="nx-card relative p-6 sm:p-9 nx-rise">
               <span className="nx-hero-line" />
               <div className="flex flex-col items-center text-center mb-7">
-                <div className="lg:hidden h-14 w-14 rounded-2xl border border-white/12 bg-white/[0.05] flex items-center justify-center mb-4">
-                  <img src={siteProfile.logo} alt="" className="h-9 w-auto" />
-                </div>
+                <div className="lg:hidden mb-3"><div className="mt-glass-logo" style={{ "--logo": `url(${siteProfile.logoDark})` } as React.CSSProperties}>
+                  <span aria-hidden className="mt-glass-logo__glow" />
+                  <div className="mt-glass-logo__tile">
+                    <img src={siteProfile.logoDark} alt="Eslam Selmi" width={96} height={96} className="mt-glass-logo__img" />
+                    <span aria-hidden className="mt-glass-logo__shine" />
+                    <span aria-hidden className="mt-glass-logo__sheen" />
+                  </div>
+                </div></div>
                 <p className="nx-eyebrow justify-center">{isAdminView ? "لوحة التحكم" : mode === "login" ? "أهلاً بعودتك" : "حساب جديد"}</p>
                 <h2 className="nx-display text-2xl sm:text-[27px] mt-2">
                   {isAdminView ? "دخول الإدارة" : mode === "login" ? "تسجيل الدخول" : "إنشاء حساب"}
