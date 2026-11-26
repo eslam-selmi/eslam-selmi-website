@@ -21,7 +21,8 @@ function SharePage() {
   const [course, setCourse] = useState<VisitorCourse | null>(null);
   const [progress, setProgress] = useState<Progress>({});
   const [finished, setFinished] = useState(false);
-  const lang = typeof navigator !== "undefined" && navigator.language?.startsWith("en") ? "en" : "ar";
+  const [lang, setLang] = useState<"ar" | "en">("ar");
+  useEffect(() => { try { if (window.localStorage.getItem("lang") === "en") setLang("en"); } catch { /* keep Arabic */ } }, []);
   const progressRef = useRef<Progress>({});
 
   const open = useCallback(async (claim: string | null) => {

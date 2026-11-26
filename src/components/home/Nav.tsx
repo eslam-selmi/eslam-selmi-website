@@ -53,7 +53,7 @@ export function Nav({
           <Link to="/" className="flex items-center gap-2.5 group shrink-0 ms-2">
             <BrandMark />
           </Link>
-          <nav className="hidden xl:flex items-center gap-0.5">
+          <nav className="hidden min-[1380px]:flex items-center gap-0.5">
             {NAV.filter((n) => !n.flag || isVisible(n.flag)).map((n) => {
               const baseCls =
                 "nav-link group px-2.5 py-1.5 text-[13px] font-bold text-foreground/85 hover:text-foreground transition-colors rounded-full hover:bg-foreground/5";
@@ -265,13 +265,13 @@ export function Nav({
                 )}
               </AnimatePresence>
             </div>
-            <button className="xl:hidden p-2" onClick={() => setOpen((v) => !v)} aria-label="Menu">
+            <button className="min-[1380px]:hidden p-2" onClick={() => setOpen((v) => !v)} aria-label="Menu">
               {open ? <X className="size-5" /> : <Menu className="size-5" />}
             </button>
           </div>
         </div>
         {open && (
-          <div className="xl:hidden mt-2 glass-strong rounded-2xl p-3 grid gap-1">
+          <div className="min-[1380px]:hidden mt-2 glass-strong rounded-2xl p-3 grid gap-1">
             {NAV_FULL.filter((n) => !n.flag || isVisible(n.flag)).map((n) => {
               if (n.action === "book") {
                 return (

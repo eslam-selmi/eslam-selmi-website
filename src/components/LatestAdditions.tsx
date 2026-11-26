@@ -150,7 +150,7 @@ export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
         {items.length > 0 && (
           <div className="additions-count">
             <span className="additions-count-num">{items.length}</span>
-            <span className="additions-count-label">{isAr ? "إضافة" : items.length === 1 ? "item" : "items"}</span>
+            <span className="additions-count-label">{isAr ? (items.length === 1 ? "إضافة" : items.length === 2 ? "إضافتان" : items.length <= 10 ? "إضافات" : "إضافة") : items.length === 1 ? "item" : "items"}</span>
           </div>
         )}
       </header>

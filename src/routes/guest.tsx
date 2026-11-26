@@ -14,7 +14,8 @@ export const Route = createFileRoute("/guest")({
 });
 
 function GuestPage() {
-  const lang = typeof navigator !== "undefined" && navigator.language?.startsWith("en") ? "en" : "ar";
+  const [lang, setLang] = useState<"ar" | "en">("ar");
+  useEffect(() => { try { if (window.localStorage.getItem("lang") === "en") setLang("en"); } catch { /* keep Arabic */ } }, []);
   const [state, setState] = useState<"loading" | "login" | "list">("loading");
   const [courses, setCourses] = useState<{ id: string; title: string; description: string }[] | null>(null);
   const [course, setCourse] = useState<VisitorCourse | null>(null);
