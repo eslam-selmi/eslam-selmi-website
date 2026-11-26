@@ -1449,3 +1449,14 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 @keyframes world-ring-spin { to { rotate: 360deg; } }
 @media (prefers-reduced-motion: reduce) { .world-stage-ring { animation: none; } }
 .world-stage-frame .world-globe { width: 100%; }
+
+/* Compact testimonials: smaller footprint, same content */
+#testimonials { padding-block: 2.5rem; }
+@media (min-width: 1024px) { #testimonials { padding-block: 3.5rem; } }
+.tst-card { min-height: 0; width: 280px; padding: 1.15rem 1.1rem 1rem; border-radius: 20px; }
+@media (min-width: 640px) { .tst-card { width: 320px; padding: 1.3rem 1.3rem 1.1rem; } }
+@media (min-width: 1024px) { .tst-card { width: 340px; } }
+.tst-mark { font-size: 6rem; }
+.tst-quote { margin-top: .6rem; font-size: .88rem; line-height: 1.7; -webkit-line-clamp: 5; }
+.tst-who { margin-top: .8rem; padding-top: .7rem; }
+.tst-avatar { width: 38px; height: 38px; }
