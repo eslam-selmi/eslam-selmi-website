@@ -156,8 +156,10 @@ function TestimonialCard({ it }: { it: TestimonialRow }) {
         ) : (
           <span className="tst-avatar tst-avatar-fallback" aria-hidden>{it.name.charAt(0)}</span>
         )}
-        <span className="tst-name">{it.name}</span>
-        <span className="tst-role">{[it.role, it.company].filter(Boolean).join(" · ")}</span>
+        <span className="tst-id">
+          <span className="tst-name">{it.name}</span>
+          <span className="tst-role">{[it.role, it.company].filter(Boolean).join(" · ")}</span>
+        </span>
       </figcaption>
     </figure>
   );

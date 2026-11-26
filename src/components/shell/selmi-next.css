@@ -417,3 +417,4 @@
   :root.dark .nx header { border-radius: 18px; }
   :root:not(.dark) .nx header { border-radius: 18px; }
 }
+:root:not(.dark) .nx header a > img { background-color: oklch(0.24 0.07 258) !important; border-color: transparent !important; }

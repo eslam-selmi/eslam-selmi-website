@@ -1576,3 +1576,40 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 .tst-deck .tst-name { color: color-mix(in oklab, var(--accent) 70%, var(--foreground)); }
 .dark .tst-deck .tst-name { color: var(--accent); }
 .tst-deck .tst-card::before { background: var(--accent); }
+
+/* Testimonials v2: frosted-glass cards over soft blurred navy/turquoise color. Text keeps its real content; no extra marks. */
+.tst-deck { gap: 1.4rem; }
+.tst-deck .tst-card, .tst-deck .tst-card:hover {
+  align-items: flex-start; text-align: start; min-height: 21rem; padding: 2.1rem 2rem 1.8rem; border-radius: 1.75rem; overflow: hidden; isolation: isolate;
+  border: 1px solid oklch(1 0 0 / .55); color: oklch(0.25 0.08 258);
+  background:
+    linear-gradient(135deg, oklch(1 0 0 / .62), oklch(1 0 0 / .34)),
+    radial-gradient(60% 55% at 92% 78%, oklch(0.62 0.17 255 / .75), transparent 70%),
+    radial-gradient(55% 50% at 100% 35%, oklch(0.90 0.15 110 / .55), transparent 70%),
+    radial-gradient(70% 60% at 0% 20%, oklch(0.80 0.14 175 / .55), transparent 70%),
+    oklch(0.92 0.06 180);
+  box-shadow: 0 24px 50px -28px oklch(0.30 0.10 255 / .45), inset 0 1px 0 oklch(1 0 0 / .7);
+  backdrop-filter: blur(14px);
+}
+.dark .tst-deck .tst-card, .dark .tst-deck .tst-card:hover {
+  border-color: oklch(1 0 0 / .16); color: oklch(0.97 0.008 230);
+  background:
+    linear-gradient(135deg, oklch(1 0 0 / .10), oklch(1 0 0 / .03)),
+    radial-gradient(60% 55% at 92% 80%, oklch(0.55 0.18 255 / .70), transparent 70%),
+    radial-gradient(55% 50% at 100% 30%, oklch(0.78 0.12 190 / .38), transparent 70%),
+    radial-gradient(70% 60% at 0% 15%, oklch(0.60 0.12 200 / .35), transparent 70%),
+    oklch(0.20 0.05 256);
+  box-shadow: 0 24px 50px -28px oklch(0 0 0 / .7), inset 0 1px 0 oklch(1 0 0 / .14);
+}
+.tst-deck .tst-card::before { display: none; }
+.tst-deck .tst-mark { height: 2.4rem; color: oklch(0.30 0.09 258); opacity: .9; }
+.dark .tst-deck .tst-mark { color: var(--accent); }
+.tst-deck .tst-quote { text-align: start; margin-top: 1rem; font-size: 1.02rem; line-height: 2; color: inherit; }
+.tst-deck .tst-who { flex-direction: row; align-items: center; gap: .85rem; margin-top: 1.8rem; width: 100%; }
+.tst-deck .tst-avatar { width: 52px; height: 52px; margin: 0; border: 2px solid oklch(0.30 0.09 258); }
+.dark .tst-deck .tst-avatar { border-color: var(--accent); }
+.tst-deck .tst-who > .tst-name, .tst-deck .tst-who > .tst-role { display: block; }
+.tst-deck .tst-name { font-family: var(--font-heading, inherit); font-weight: 800; font-size: 1.02rem; color: inherit; }
+.tst-deck .tst-role { color: inherit; opacity: .72; }
+.tst-id { display: flex; flex-direction: column; gap: .15rem; min-width: 0; text-align: start; }
+.tst-deck .tst-who > .tst-id .tst-name, .tst-deck .tst-who > .tst-id .tst-role { display: block; }

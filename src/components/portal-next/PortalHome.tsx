@@ -231,7 +231,11 @@ export function PortalOverviewClean({
   supportNode?: React.ReactNode;
 }) {
   const ar = lang === "ar";
-  const pct = hoursPct;
+  // Prefer hours when the course durations are set; otherwise show real completed units instead of a meaningless 0/0 hours.
+  const unitsDone = courseRows.filter((r) => r.en.status === "approved").reduce((a, r) => a + r.done, 0);
+  const unitsTotal = courseRows.filter((r) => r.en.status === "approved").reduce((a, r) => a + r.total, 0);
+  const useHours = hoursTotal > 0;
+  const pct = useHours ? hoursPct : unitsTotal > 0 ? Math.round((unitsDone / unitsTotal) * 100) : 0;
   return (
     <div className="space-y-5 sm:space-y-7">
       <div className="flex items-start justify-between gap-3">
@@ -278,7 +282,9 @@ export function PortalOverviewClean({
             <p className="nx-display text-xl leading-none"><bdi dir="ltr">{pct}%</bdi></p>
           </ProgressRing>
           <div className="lg:text-center min-w-0">
-            <p className="text-sm font-bold"><span dir="ltr" className="inline-block">{hoursEarned} / {hoursTotal}</span> <span className="text-xs text-white/55 font-semibold">{ar ? "ساعة مكتملة" : "hours completed"}</span></p>
+            <p className="text-sm font-bold">{useHours
+              ? <><span dir="ltr" className="inline-block">{hoursEarned} / {hoursTotal}</span> <span className="text-xs text-white/55 font-semibold">{ar ? "ساعة مكتملة" : "hours completed"}</span></>
+              : <><span dir="ltr" className="inline-block">{unitsDone} / {unitsTotal}</span> <span className="text-xs text-white/55 font-semibold">{ar ? "وحدة مكتملة" : "units completed"}</span></>}</p>
             <button onClick={onGoCertificates} className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-[var(--nx-teal)] hover:underline">
               <Award className="w-3.5 h-3.5" /> {ar ? `شهادات صادرة: ${certs}` : `Certificates: ${certs}`}
             </button>
