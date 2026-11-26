@@ -353,10 +353,11 @@ export function ModuleCard({
                             if (error) return toast.error(error.message);
                             window.open(data.signedUrl, "_blank", "noopener");
                           }}
-                          className="text-xs text-[var(--gold)] truncate block mt-0.5 hover:underline"
+                          className="text-xs text-[var(--gold)] truncate block max-w-full text-start mt-0.5 hover:underline"
                           dir="ltr"
+                          title={it.url}
                         >
-                          {it.url}
+                          {String(it.url).split("/").pop()}
                         </button>
                       ) : (
                         safeHref(it.url) && (
