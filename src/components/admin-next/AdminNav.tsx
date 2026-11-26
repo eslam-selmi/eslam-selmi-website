@@ -111,9 +111,9 @@ export function AdminSidebar({ groups, tab, onSelect, attention, lang }: {
     return init;
   });
   return (
-    <div className="space-y-4">
-      {/* Attention summary */}
-      <div className="nx-card p-4 nx-rise">
+    <div className="flex flex-col gap-4 h-full min-h-0">
+      {/* Attention summary: pinned, only the section list below scrolls */}
+      <div className="nx-card p-4 nx-rise shrink-0">
         <span className="nx-hero-line" />
         <p className="text-[11px] font-bold text-white/50 mb-3 flex items-center gap-2">
           <span className="nx-live-dot" /> {isAr ? "يحتاج انتباهك الآن" : "Needs attention now"}
@@ -128,7 +128,7 @@ export function AdminSidebar({ groups, tab, onSelect, attention, lang }: {
         </div>
       </div>
 
-      <nav className="nx-card p-2.5 nx-rise nx-rise-1" aria-label={isAr ? "أقسام الإدارة" : "Administration sections"}>
+      <nav className="nx-card p-2.5 nx-rise nx-rise-1 flex-1 min-h-0 overflow-y-auto nx-scroll" aria-label={isAr ? "أقسام الإدارة" : "Administration sections"}>
         {groups.map((g, gi) => {
           const isOpen = open[g.id] !== false;
           const hasActive = g.items.some((i) => i.id === tab);
