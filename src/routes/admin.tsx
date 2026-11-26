@@ -243,11 +243,6 @@ function AdminPage() {
           tab={tab}
           onSelect={setTab}
           lang={lang}
-          attention={[
-            { label: t("تفعيلات", "Activations"), value: pendingActivations, tone: "gold" },
-            { label: t("طلبات", "Requests"), value: pending, tone: "gold" },
-            { label: t("تذاكر", "Tickets"), value: overviewCounts.data?.tickets ?? 0, tone: "teal" },
-          ]}
         />
       }
     >
@@ -272,6 +267,11 @@ function AdminPage() {
             lang={lang}
             pendingEnrollments={pending}
             pendingActivations={pendingActivations}
+            attention={[
+              { label: t("تفعيلات", "Activations"), value: pendingActivations, tone: "gold" },
+              { label: t("طلبات", "Requests"), value: pending, tone: "gold" },
+              { label: t("تذاكر", "Tickets"), value: overviewCounts.data?.tickets ?? 0, tone: "teal" },
+            ]}
             approved={approved}
             courses={courses.length}
             bookings={overviewCounts.data?.bookings ?? null}

@@ -95,11 +95,10 @@ function NavItemButton({ item, active, onSelect }: { item: AdminNavItem; active:
   );
 }
 
-export function AdminSidebar({ groups, tab, onSelect, attention, lang }: {
+export function AdminSidebar({ groups, tab, onSelect, lang }: {
   groups: AdminNavGroup[];
   tab: AdminTabId;
   onSelect: (id: AdminTabId) => void;
-  attention: { label: string; value: number; tone: "gold" | "teal" }[];
   lang: string;
 }) {
   const isAr = lang === "ar";
@@ -111,24 +110,8 @@ export function AdminSidebar({ groups, tab, onSelect, attention, lang }: {
     return init;
   });
   return (
-    <div className="flex flex-col gap-4 flex-1 min-h-0">
-      {/* Attention summary: pinned, only the section list below scrolls */}
-      <div className="nx-card p-4 nx-rise shrink-0">
-        <span className="nx-hero-line" />
-        <p className="text-[11px] font-bold text-white/50 mb-3 flex items-center gap-2">
-          <span className="nx-live-dot" /> {isAr ? "يحتاج انتباهك الآن" : "Needs attention now"}
-        </p>
-        <div className="grid grid-cols-3 gap-2">
-          {attention.map((a) => (
-            <div key={a.label} className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-2 py-2.5 text-center">
-              <p className="text-lg font-bold nx-display" style={{ color: a.tone === "gold" ? "var(--nx-gold)" : "var(--nx-teal)" }}>{a.value}</p>
-              <p className="text-[9.5px] text-white/50 font-semibold leading-tight mt-0.5">{a.label}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <nav className="nx-card p-2.5 nx-rise nx-rise-1 flex-1 min-h-0 overflow-y-auto nx-scroll" aria-label={isAr ? "أقسام الإدارة" : "Administration sections"}>
+    <div className="space-y-4">
+      <nav className="nx-card p-2.5 nx-rise nx-rise-1" aria-label={isAr ? "أقسام الإدارة" : "Administration sections"}>
         {groups.map((g, gi) => {
           const isOpen = open[g.id] !== false;
           const hasActive = g.items.some((i) => i.id === tab);

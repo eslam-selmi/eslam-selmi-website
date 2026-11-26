@@ -6,11 +6,12 @@ export type AdminOverviewDestination = "enrollments" | "bookings" | "tickets" | 
 export type RecentEnrollment = { id: string; name: string; course: string; status: string; date: string };
 
 export function AdminOverview({
-  lang, pendingEnrollments, pendingActivations, approved, courses, bookings, tickets, onNavigate, recentEnrollments,
+  lang, pendingEnrollments, pendingActivations, attention, approved, courses, bookings, tickets, onNavigate, recentEnrollments,
 }: {
   lang: string;
   pendingEnrollments: number;
   pendingActivations: number;
+  attention: { label: string; value: number; tone: "gold" | "teal" }[];
   approved: number;
   courses: number;
   bookings: number | null;
@@ -41,8 +42,19 @@ export function AdminOverview({
             <h1 className="nx-display text-2xl sm:text-[34px] mt-1.5">{t("نظرة عامة تنفيذية", "Executive overview")}</h1>
             <p className="flex items-center gap-2 text-xs text-white/50 mt-3"><Clock3 className="w-3.5 h-3.5" />{today}</p>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="nx-chip nx-chip-emerald"><span className="nx-live-dot" /> {t("البيانات مباشرة", "Live data")}</span>
+          <div className="flex flex-col items-stretch sm:items-end gap-3 w-full sm:w-auto">
+            <span className="nx-chip nx-chip-emerald self-start sm:self-end"><span className="nx-live-dot" /> {t("البيانات مباشرة", "Live data")}</span>
+            <div className="rounded-2xl border border-white/[0.1] bg-white/[0.04] p-3">
+              <p className="text-[11px] font-bold opacity-70 mb-2 flex items-center gap-2"><span className="nx-live-dot" /> {t("يحتاج انتباهك الآن", "Needs attention now")}</p>
+              <div className="grid grid-cols-3 gap-2">
+                {attention.map((a) => (
+                  <div key={a.label} className="rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-center sm:min-w-[84px]">
+                    <p className="text-lg font-bold nx-display" style={{ color: a.tone === "gold" ? "var(--nx-gold)" : "var(--nx-teal)" }}>{a.value}</p>
+                    <p className="text-[10px] opacity-60 font-semibold leading-tight mt-0.5">{a.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </header>
