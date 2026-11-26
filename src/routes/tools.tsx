@@ -166,6 +166,7 @@ type Msg = { type?: string; tool?: string; data?: unknown; rev?: number; h?: num
 function ToolWorkspace({ tool, userId, ar }: { tool: ToolId; userId: string; ar: boolean }) {
   const m = TOOLS[tool];
   const files = FILES[tool] || {};
+  const { lang } = useI18n();
   const frame = useRef<HTMLIFrameElement>(null);
   const rev = useRef(0);
   const chain = useRef<Promise<unknown>>(Promise.resolve());
@@ -176,6 +177,10 @@ function ToolWorkspace({ tool, userId, ar }: { tool: ToolId; userId: string; ar:
   const [appErr, setAppErr] = useState(false);
   const origin = useMemo(() => (typeof window === "undefined" ? "" : window.location.origin), []);
   const introKey = `tool-intro-${tool}`;
+  const langRef = useRef(lang);
+  langRef.current = lang;
+  // Keep the embedded tool in the same language as the site.
+  useEffect(() => { frame.current?.contentWindow?.postMessage({ type: "tool-lang", lang }, origin); }, [lang, origin]);
 
   // The tool page is not a public file. It is read from the private bucket under the user's own session.
   useEffect(() => {
@@ -186,7 +191,7 @@ function ToolWorkspace({ tool, userId, ar }: { tool: ToolId; userId: string; ar:
         if (dead) return;
         if (error || !data) { setAppErr(true); return; }
         url = URL.createObjectURL(new Blob([data], { type: "text/html" }));
-        setAppUrl(`${url}#embed=${tool}`);
+        setAppUrl(`${url}#embed=${tool}${langRef.current === "en" ? "&lang=en" : ""}`);
       })
       .catch(() => !dead && setAppErr(true));
     return () => { dead = true; if (url) URL.revokeObjectURL(url); };
@@ -214,7 +219,7 @@ function ToolWorkspace({ tool, userId, ar }: { tool: ToolId; userId: string; ar:
       if (msg.tool && msg.tool !== tool) return;
       if (msg.type === "tool-ready") {
         loadWorkspace(tool)
-          .then((w) => { rev.current = w.revision; post({ type: "tool-init", tool, data: w.data }); })
+          .then((w) => { rev.current = w.revision; post({ type: "tool-init", tool, data: w.data }); post({ type: "tool-lang", lang: langRef.current }); })
           .catch(() => setLoadErr(true));
       } else if (msg.type === "tool-save") {
         // Saves run one at a time, in order, so an older save never lands after a newer one.
