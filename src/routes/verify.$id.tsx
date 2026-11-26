@@ -93,8 +93,8 @@ function VerifyPage() {
                   </svg>
                 </div>
 
-                <h1 className="mt-5 text-xl sm:text-2xl font-extrabold text-emerald-200">الشهادة موثّقة وصادرة من إسلام سلمي</h1>
-                <p className="mt-1 text-sm sm:text-base font-semibold text-white/75" dir="ltr">This certificate is verified and issued by Eslam Selmi</p>
+                <h1 className="mt-5 text-[17px] sm:text-2xl font-extrabold text-emerald-200 text-balance">الشهادة موثّقة وصادرة من إسلام سلمي</h1>
+                <p className="mt-1 text-[13px] sm:text-base font-semibold text-white/75 text-balance" dir="ltr">This certificate is verified and issued by Eslam Selmi</p>
 
                 <div className="my-8 h-px w-40 bg-gradient-to-r from-transparent via-[var(--gold)]/60 to-transparent" />
 
