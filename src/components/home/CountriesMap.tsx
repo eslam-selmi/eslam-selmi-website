@@ -48,6 +48,7 @@ export function CountriesMap() {
           <div className="cm-label" dir={lang === "ar" ? "rtl" : "ltr"}>
             <img className="cm-flag" src={`https://flagcdn.com/${code}.svg`} alt="" draggable={false} />
             <span className="cm-name">{nameOf(code)}</span>
+            <span className="cm-count" dir="ltr">{String(i + 1).padStart(2, "0")} / {String(list.length).padStart(2, "0")}</span>
           </div>
         </div>
       </div>
