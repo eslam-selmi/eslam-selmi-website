@@ -212,7 +212,7 @@ export function PackagesPanel() {
                 </div>
                 <div className="mt-3 flex items-center gap-3 text-xs flex-wrap">
                   <span className="px-2 h-6 grid place-items-center rounded bg-[var(--gold)]/15 text-[var(--gold)] font-bold">
-                    {p.sessions_count} {t("جلسة", "sessions")}
+                    {p.sessions_count} {t("جلسة", p.sessions_count === 1 ? "session" : "sessions")}
                   </span>
                   <span className="text-white/80 font-bold">{p.price} {p.currency}</span>
                   <button onClick={() => togglePackage(p)}
@@ -410,7 +410,7 @@ function PackageForm({
                 <div className="font-bold text-white text-sm">{(l === "ar" ? form.name_ar : form.name_en) || "—"}</div>
                 <div className="mt-1.5 flex items-center gap-2 text-xs">
                   <span className="px-2 h-6 grid place-items-center rounded bg-[var(--gold)]/15 text-[var(--gold)] font-bold">
-                    {sessions || 0} {l === "ar" ? "جلسة" : "sessions"}
+                    {sessions || 0} {l === "ar" ? "جلسة" : sessions === 1 ? "session" : "sessions"}
                   </span>
                   <span className="text-white/80 font-bold">{price} {cur}</span>
                 </div>

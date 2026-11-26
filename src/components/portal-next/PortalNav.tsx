@@ -1,6 +1,6 @@
-import { Sparkles, BookOpen, Award, PhoneOutgoing, GraduationCap, UserCog } from "lucide-react";
+import { Sparkles, BookOpen, Award, PhoneOutgoing, GraduationCap, UserCog, FolderKanban } from "lucide-react";
 
-export type PortalTabId = "overview" | "my-courses" | "certificates" | "packages" | "available";
+export type PortalTabId = "overview" | "my-courses" | "certificates" | "packages" | "available" | "my-access";
 
 export type PortalNavItem = {
   id: PortalTabId | "account";
@@ -14,6 +14,7 @@ export function buildPortalNav(lang: string, badges: { paymentCount?: number; ce
   const isAr = lang === "ar";
   return [
     { id: "overview", label: isAr ? "نظرة عامة" : "Overview", icon: Sparkles },
+    { id: "my-access", label: isAr ? "مقتنياتي" : "My access", icon: FolderKanban },
     { id: "my-courses", label: isAr ? "كورساتي" : "My courses", icon: BookOpen, badge: badges.paymentCount || undefined, alert: true },
     { id: "certificates", label: isAr ? "شهاداتي" : "My certificates", icon: Award, badge: badges.certCount || undefined, alert: true },
     { id: "packages", label: isAr ? "باقات الاستشارات" : "Consulting packages", icon: PhoneOutgoing },

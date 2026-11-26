@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { findCountry } from "@/lib/countries";
 import { Calendar, Clock, Layers, Loader2, Sparkles, BookOpen, GraduationCap } from "lucide-react";
 import { TraineeSupportButton } from "@/components/SupportTickets";
+import { MyAccessSection } from "@/components/portal/MyAccessSection";
 import { TraineePackagesSection } from "@/components/TraineePackagesSection";
 import { AccountSettingsModal } from "@/components/AccountSettingsModal";
 import type { Course, Enrollment, Profile, ModuleRow } from "@/components/portal/types";
@@ -401,6 +402,13 @@ function PortalPage() {
             onDownload={downloadCert}
             lang={lang}
           />
+        </section>
+        )}
+
+        {tab === "my-access" && (
+        <section id="my-access" className="scroll-mt-24">
+          <SectionHeader icon={BookOpen} hint={isAr ? "كل ما تملكه وطلباتك" : "Everything you own and have requested"} title={isAr ? "مقتنياتي" : "My access"} />
+          {user?.id && <MyAccessSection userId={user.id} enrollments={trEnrollments as any} onGo={(t) => setTab(t)} />}
         </section>
         )}
 
