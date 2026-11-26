@@ -1,3 +1,4 @@
+import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowRight, X, Sparkles, Target, Wrench, Trophy, AlertTriangle } from "lucide-react";
@@ -181,6 +182,12 @@ function SuccessCaseModal({
   const sol = isAr ? item.solutions_ar : item.solutions_en;
   const res = isAr ? item.results_ar : item.results_en;
 
+  React.useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-sm"
@@ -190,7 +197,19 @@ function SuccessCaseModal({
       <div
         className="relative w-full max-w-3xl max-h-[92vh] overflow-auto rounded-3xl bg-card shadow-2xl border border-foreground/10"
         onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label={name}
       >
+        <div className="pointer-events-none sticky top-3 z-20 flex h-0 justify-end px-4">
+          <button
+            onClick={onClose}
+            aria-label={tt("إغلاق", "Close")}
+            className="pointer-events-auto size-9 grid place-items-center rounded-full bg-[#0b1736]/80 border border-white/20 hover:bg-[#0b1736] text-white backdrop-blur transition"
+          >
+            <X className="size-4" />
+          </button>
+        </div>
         <div
           className="relative p-7 sm:p-10 text-white"
           style={{
@@ -198,13 +217,6 @@ function SuccessCaseModal({
               "linear-gradient(135deg, #0b1736 0%, #14224d 50%, #1f2a5a 100%)",
           }}
         >
-          <button
-            onClick={onClose}
-            aria-label="Close"
-            className="absolute top-4 end-4 size-9 grid place-items-center rounded-full bg-white/15 hover:bg-white/25 text-white transition"
-          >
-            <X className="size-4" />
-          </button>
           <span className="inline-flex items-center gap-2 rounded-full bg-white/12 border border-white/20 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.25em]">
             <Sparkles className="size-3" /> {tt("حالة نجاح", "Success Case")}
           </span>

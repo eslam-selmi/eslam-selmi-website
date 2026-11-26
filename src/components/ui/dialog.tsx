@@ -53,10 +53,12 @@ const DialogContent = React.forwardRef<
       {/* Top gold seam */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--gold)]/60 to-transparent" />
       {children}
-      <DialogPrimitive.Close className="absolute end-4 top-4 w-9 h-9 rounded-lg border border-white/15 bg-white/5 hover:bg-white/10 hover:border-[var(--gold)]/40 flex items-center justify-center transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/40 disabled:pointer-events-none">
+      <div className="pointer-events-none sticky top-4 z-20 order-first -mb-4 flex h-0 justify-end">
+        <DialogPrimitive.Close className="pointer-events-auto relative -top-2 -me-2 w-9 h-9 rounded-lg border border-white/15 bg-white/5 hover:bg-white/10 hover:border-[var(--gold)]/40 flex items-center justify-center transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--gold)]/40 disabled:pointer-events-none">
         <X className="h-4 w-4 text-white/80" />
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
+      </div>
     </DialogPrimitive.Content>
   </DialogPortal>
 ));
