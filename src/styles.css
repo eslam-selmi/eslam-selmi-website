@@ -1664,3 +1664,10 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 .tg-stars span { color: rgba(255, 255, 255, .22); }
 .tg-stars span[data-on="true"] { color: #f6c945; }
 @media (hover: hover) { .tg-card:hover { transform: translateY(-3px); transition: transform .3s ease; } }
+.tg-more { align-self: flex-start; margin-top: .7rem; padding: .15rem 0; background: none; border: 0; cursor: pointer; font-size: .82rem; font-weight: 700; color: #6ee7f0; text-decoration: underline; text-underline-offset: 4px; }
+.tg-more:focus-visible { outline: 2px solid #6ee7f0; outline-offset: 3px; border-radius: 4px; }
+.tg-card { min-height: 0; }
+.tg-dialog { max-width: min(92vw, 560px); max-height: 85vh; overflow-y: auto; border-radius: 1.5rem; border: 1px solid rgba(110, 231, 240, .35); background: linear-gradient(165deg, #142a5c, #060e26 75%); color: #eaf4ff; padding: 1.8rem 1.6rem; }
+.tg-dialog-title { color: #6ee7f0; font-weight: 800; font-size: 1.15rem; }
+.tg-dialog-role { margin-top: .2rem; font-size: .8rem; color: rgba(234, 244, 255, .8); }
+.tg-dialog-quote { margin: 1.1rem 0 0; font-size: 1rem; line-height: 1.95; white-space: pre-line; text-align: start; color: #eaf4ff; }

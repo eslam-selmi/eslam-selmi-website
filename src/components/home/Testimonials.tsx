@@ -66,7 +66,7 @@ import { LatestAdditionsSection } from "@/components/LatestAdditions";
 import { useSiteContent } from "@/lib/site-content";
 import { SitePopup } from "@/components/SitePopup";
 import { UniversalEmbedModal } from "@/components/UniversalEmbedModal";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import {
   COUNTRIES as PHONE_COUNTRIES,
   findCountry as findDialCountry,
@@ -146,6 +146,10 @@ export function Testimonials() {
 }
 
 function TestimonialCard({ it }: { it: TestimonialRow }) {
+  const { lang } = useI18n();
+  const isAr = lang === "ar";
+  const [open, setOpen] = useState(false);
+  const long = (it.quote || "").length > 190 || (it.quote || "").split("\n").length > 4;
   const stars = typeof it.rating === "number" && it.rating >= 1 && it.rating <= 5 ? Math.round(it.rating) : 0;
   return (
     <figure className="tg-card">
@@ -161,6 +165,18 @@ function TestimonialCard({ it }: { it: TestimonialRow }) {
         </span>
       </figcaption>
       <blockquote className="tg-quote" dir="auto">{it.quote}</blockquote>
+      {long && (
+        <button type="button" className="tg-more" onClick={() => setOpen(true)} aria-haspopup="dialog">
+          {isAr ? "اقرأ الرأي كاملًا" : "Read full feedback"}
+        </button>
+      )}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="tg-dialog" aria-describedby={undefined}>
+          <DialogTitle className="tg-dialog-title">{it.name}</DialogTitle>
+          <p className="tg-dialog-role">{[it.role, it.company].filter(Boolean).join(" · ")}</p>
+          <blockquote className="tg-dialog-quote" dir="auto">{it.quote}</blockquote>
+        </DialogContent>
+      </Dialog>
       {stars > 0 && (
         <div className="tg-stars" role="img" aria-label={`${stars}/5`}>
           {Array.from({ length: 5 }, (_, k) => <span key={k} data-on={k < stars ? "true" : "false"}>★</span>)}
