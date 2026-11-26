@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { CheckCircle2, ShieldCheck, XCircle, Loader2, Award, Clock, Calendar, ArrowLeft } from "lucide-react";
 import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
 import { useSiteProfile } from "@/lib/site-profile";
+import { useI18n } from "@/lib/i18n";
 const brandLogo = brandLogoAsset.url;
 export const Route = createFileRoute("/verify/$id")({
   component: VerifyPage,
@@ -20,11 +21,14 @@ export const Route = createFileRoute("/verify/$id")({
 });
 
 type VerifyResult =
-  | { ok: true; trainee_name_ar: string | null; trainee_name_en: string | null; course_title: string; course_description: string | null; total_hours: number; issued_at: string; certificate_id: string }
+  | { ok: true; trainee_name_ar: string | null; trainee_name_en: string | null; course_title: string; total_hours: number; issued_at: string; certificate_id: string }
   | { ok: false; error: string };
 
 function VerifyPage() {
   const { profile } = useSiteProfile();
+  const { lang, setLang } = useI18n();
+  const isAr = lang === "ar";
+  const tt = (ar: string, en: string) => (isAr ? ar : en);
   const { id } = Route.useParams();
   const [state, setState] = useState<{ loading: boolean; data: VerifyResult | null; err: string | null }>({ loading: true, data: null, err: null });
 
@@ -38,104 +42,77 @@ function VerifyPage() {
 
   const valid = state.data && (state.data as any).ok === true;
   const d = valid ? (state.data as Extract<VerifyResult, { ok: true }>) : null;
+  const name = d ? (isAr ? d.trainee_name_ar || d.trainee_name_en : d.trainee_name_en || d.trainee_name_ar) : null;
 
   return (
-    <div className="min-h-screen bg-[#0b1736] text-white relative overflow-hidden">
-      <div className="absolute inset-0 opacity-30 pointer-events-none"
-        style={{ background: "radial-gradient(circle at 20% 0%, rgba(212,175,55,0.25), transparent 50%), radial-gradient(circle at 80% 100%, rgba(212,175,55,0.18), transparent 50%)" }} />
-
-      <header className="relative z-10 max-w-3xl mx-auto px-6 py-6 flex items-center justify-between">
+    <div className="min-h-screen bg-[#0b1736] text-white relative overflow-hidden" dir={isAr ? "rtl" : "ltr"}>
+      <header className="relative z-10 max-w-2xl mx-auto px-6 py-6 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3">
           <img src={profile.logoDark} alt="" className="h-10 w-auto" />
-          <span className="text-sm text-white/70">إسلام سلمي · Eslam Selmi</span>
         </Link>
-        <Link to="/" className="text-xs text-white/60 hover:text-white flex items-center gap-1">
-          <ArrowLeft className="w-3.5 h-3.5" /> الرئيسية · Home
-        </Link>
+        <div className="flex items-center gap-4">
+          <button onClick={() => setLang(isAr ? "en" : "ar")} className="text-xs text-white/70 hover:text-white">{isAr ? "English" : "العربية"}</button>
+          <Link to="/" className="text-xs text-white/60 hover:text-white flex items-center gap-1">
+            <ArrowLeft className="w-3.5 h-3.5 rtl-flip" /> {tt("الرئيسية", "Home")}
+          </Link>
+        </div>
       </header>
 
-      <main className="relative z-10 max-w-2xl mx-auto px-6 pb-20">
-        <div className="rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-8 sm:p-10">
+      <main className="relative z-10 max-w-md mx-auto px-6 pb-16">
+        <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-7 sm:p-8">
           {state.loading ? (
             <div className="flex flex-col items-center gap-3 py-10 text-white/70">
               <Loader2 className="w-8 h-8 animate-spin text-[var(--gold)]" />
-              <p className="text-sm">جارٍ التحقق من الشهادة… · Verifying certificate…</p>
+              <p className="text-sm">{tt("جارٍ التحقق…", "Verifying…")}</p>
             </div>
           ) : !valid ? (
-            <div className="text-center space-y-3 py-6">
-              <div className="w-16 h-16 mx-auto rounded-full bg-rose-500/15 border border-rose-500/40 flex items-center justify-center">
-                <XCircle className="w-8 h-8 text-rose-300" />
+            <div className="text-center space-y-3 py-4">
+              <div className="w-14 h-14 mx-auto rounded-full bg-rose-500/15 border border-rose-500/40 flex items-center justify-center">
+                <XCircle className="w-7 h-7 text-rose-300" />
               </div>
-              <h1 className="text-xl font-bold">الشهادة غير موجودة · Certificate not found</h1>
+              <h1 className="text-xl font-bold">{tt("الشهادة غير موجودة", "Certificate not found")}</h1>
               <p className="text-sm text-white/60">
-                رقم الشهادة غير صحيح أو لم يُصدر بعد أو تم إلغاؤه. تأكد من رمز QR أو الرابط.
-                <br />This certificate ID is invalid, has not been issued yet, or has been revoked. Please double-check the QR code or the URL.
+                {tt("الرقم غير صحيح أو لم تُصدر الشهادة بعد أو تم إلغاؤها.", "The ID is invalid, or the certificate has not been issued or was revoked.")}
               </p>
               <p className="text-[11px] text-white/40 font-mono break-all" dir="ltr">{id}</p>
             </div>
           ) : (
             <div className="space-y-6">
-              <div className="flex flex-col items-center gap-3 text-center">
-                <div className="relative">
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-[0_0_40px_rgba(16,185,129,0.4)]">
-                    <ShieldCheck className="w-10 h-10 text-white" />
-                  </div>
-                  <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-[var(--gold)] flex items-center justify-center border-2 border-[#0b1736]">
-                    <CheckCircle2 className="w-4 h-4 text-[#0b1736]" />
-                  </div>
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-full bg-emerald-500/15 border border-emerald-400/40 flex items-center justify-center shrink-0">
+                  <ShieldCheck className="w-5 h-5 text-emerald-300" />
                 </div>
-                <p className="text-[11px] uppercase tracking-[0.3em] text-emerald-300 font-semibold">شهادة موثّقة · Verified Credential</p>
-                <h1 className="text-2xl sm:text-3xl font-bold space-y-1"><span className="block" dir="rtl">هذه الشهادة أصلية</span><span className="block" dir="ltr">This certificate is authentic</span></h1>
-                <div className="text-sm text-white/60 max-w-md space-y-1">
-                  <p dir="rtl">صادرة ومعتمدة رقميًا من إسلام سلمي. البيانات أدناه مسترجعة مباشرة من سجلاتنا.</p>
-                  <p dir="ltr">Issued and digitally verified by Eslam Selmi. The data below was retrieved live from our records.</p>
-                </div>
+                <h1 className="text-lg font-bold text-emerald-200">{tt("شهادة موثّقة", "Verified certificate")}</h1>
               </div>
 
-              <div className="border-t border-white/10 pt-6 space-y-4">
-                {(d!.trainee_name_en || d!.trainee_name_ar) && (
-                  <Field label="مُنحت إلى · Awarded to">
-                    <div className="space-y-0.5">
-                      {d!.trainee_name_en && <p className="text-lg font-bold"><bdi dir="ltr">{d!.trainee_name_en}</bdi></p>}
-                      {d!.trainee_name_ar && <p className="text-base font-semibold text-white/85" dir="rtl">{d!.trainee_name_ar}</p>}
-                    </div>
+              <div className="space-y-4 border-t border-white/10 pt-5">
+                {name && (
+                  <Field label={tt("المتدرب", "Trainee")}>
+                    <p className="text-lg font-bold"><bdi>{name}</bdi></p>
                   </Field>
                 )}
-
-                <Field label="الدورة · Course" icon={Award}>
+                <Field label={tt("الدورة", "Course")} icon={Award}>
                   <p className="font-semibold"><bdi dir="auto">{d!.course_title}</bdi></p>
-                  {d!.course_description && <p className="text-xs text-white/55 mt-1">{d!.course_description.slice(0, 200)}</p>}
                 </Field>
-
-                <div className="grid sm:grid-cols-2 gap-4">
-                  {Number(d!.total_hours) > 0 && (
-                    <Field label="ساعات التدريب · Training hours" icon={Clock}>
-                      <p className="font-semibold"><bdi dir="ltr">{d!.total_hours} hours</bdi></p>
-                    </Field>
-                  )}
-                  <Field label="تاريخ الإصدار · Date of issue" icon={Calendar}>
+                <div className="grid grid-cols-2 gap-4">
+                  <Field label={tt("تاريخ الإصدار", "Issue date")} icon={Calendar}>
                     <p className="font-semibold">
-                      <bdi dir="ltr">{new Date(d!.issued_at).toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" })}</bdi>
+                      <bdi dir="ltr">{new Date(d!.issued_at).toLocaleDateString(isAr ? "ar-EG-u-nu-latn" : "en-GB", { year: "numeric", month: "long", day: "numeric" })}</bdi>
                     </p>
                   </Field>
+                  {Number(d!.total_hours) > 0 && (
+                    <Field label={tt("الساعات", "Hours")} icon={Clock}>
+                      <p className="font-semibold"><bdi dir="ltr">{d!.total_hours}</bdi></p>
+                    </Field>
+                  )}
                 </div>
-
-                <Field label="رقم الشهادة · Certificate ID">
+                <Field label={tt("رقم الشهادة", "Certificate ID")}>
                   <p className="text-xs font-mono text-white/70 break-all" dir="ltr">{d!.certificate_id}</p>
                 </Field>
-              </div>
-
-              <div className="rounded-xl bg-emerald-500/5 border border-emerald-500/20 p-3 text-xs text-emerald-200/80 flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0" />
-                <p>This verification page is generated on-demand from our database. Any future revocation will be reflected here instantly.</p>
               </div>
             </div>
           )}
         </div>
-
-        <p className="text-center text-[11px] text-white/40 mt-6">
-          © {new Date().getFullYear()} Eslam Selmi · إسلام سلمي
-        </p>
       </main>
     </div>
   );
@@ -144,7 +121,7 @@ function VerifyPage() {
 function Field({ label, icon: Icon, children }: { label: string; icon?: any; children: React.ReactNode }) {
   return (
     <div>
-      <p className="text-[11px] uppercase tracking-widest text-[var(--gold)]/80 mb-1 flex items-center gap-1.5">
+      <p className="text-[11px] text-[var(--gold)]/80 mb-1 flex items-center gap-1.5">
         {Icon && <Icon className="w-3 h-3" />}
         {label}
       </p>
