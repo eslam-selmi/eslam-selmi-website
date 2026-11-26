@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Send } from "lucide-react";
+import { PaymentLogo } from "./PaymentLogo";
 
 
 export const PROOF_ALLOWED_EXT = ["jpg", "jpeg", "png", "pdf"];
@@ -78,7 +79,7 @@ export function ProofUploader({ enrollmentId, userId, currency, remaining, onUpl
                 return (
                   <button key={m.id} type="button" onClick={() => setSelected(m)}
                     className={`text-xs px-3 py-2 rounded-lg border text-start transition ${active ? "bg-[var(--gold)]/25 border-[var(--gold)] text-white" : "bg-white/5 border-white/15 text-white/80 hover:bg-white/10"}`}>
-                    <span className="font-semibold block">{isAr ? m.name_ar : m.name_en}</span>
+                    <span className="flex items-center gap-2"><PaymentLogo name={`${m.name_en || ""} ${m.name_ar || ""}`} /><span className="font-semibold block">{isAr ? m.name_ar : m.name_en}</span></span>
                   </button>
                 );
               })}
