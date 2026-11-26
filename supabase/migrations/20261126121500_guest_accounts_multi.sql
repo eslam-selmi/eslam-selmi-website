@@ -52,3 +52,15 @@ RETURNS void LANGUAGE sql SECURITY DEFINER SET search_path = public AS $$
 $$;
 REVOKE ALL ON FUNCTION public.guest_record_failure(uuid, int, int) FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.guest_record_failure(uuid, int, int) TO service_role;
+
+-- Compatibility: the previously published single-guest build still calls the
+-- 2-argument counter. Keep it (additive) so wrong passwords keep being counted
+-- until the new build is published.
+CREATE OR REPLACE FUNCTION public.guest_record_failure(_max int, _lock_seconds int)
+RETURNS void LANGUAGE sql SECURITY DEFINER SET search_path = public AS $$
+  UPDATE public.guest_access SET
+    failed_count = CASE WHEN failed_count + 1 >= _max THEN 0 ELSE failed_count + 1 END,
+    locked_until = CASE WHEN failed_count + 1 >= _max THEN now() + make_interval(secs => _lock_seconds) ELSE locked_until END;
+$$;
+REVOKE ALL ON FUNCTION public.guest_record_failure(int, int) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.guest_record_failure(int, int) TO service_role;

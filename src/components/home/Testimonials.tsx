@@ -145,22 +145,11 @@ export function Testimonials() {
   );
 }
 
-const LONG_QUOTE = 150;
-
-function TestimonialCard({ it, isAr }: { it: TestimonialRow; isAr: boolean }) {
-  const [open, setOpen] = useState(false);
-  const long = it.quote.length > LONG_QUOTE;
-  const toggle = () => { if (long) setOpen((v) => !v); };
+function TestimonialCard({ it }: { it: TestimonialRow }) {
   return (
-    <figure
-      className="tst-card"
-      data-long={long ? "true" : undefined}
-      data-open={open ? "true" : "false"}
-      {...(long ? { role: "button", tabIndex: 0, "aria-expanded": open, onClick: toggle, onKeyDown: (e: React.KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } } } : {})}
-    >
+    <figure className="tst-card">
       <span className="tst-mark" aria-hidden dir="ltr">&rdquo;</span>
       <blockquote className="tst-quote" dir="auto">{it.quote}</blockquote>
-      {long && <span className="tst-more">{open ? (isAr ? "إخفاء" : "Show less") : (isAr ? "اقرأ التعليق كاملًا" : "Read full comment")}</span>}
       <figcaption className="tst-who">
         {it.avatar_url ? (
           <img src={it.avatar_url} alt="" loading="lazy" draggable={false} className="tst-avatar" />
@@ -175,10 +164,15 @@ function TestimonialCard({ it, isAr }: { it: TestimonialRow; isAr: boolean }) {
 }
 
 export function TestimonialsScroller({ items, isAr }: { items: TestimonialRow[]; isAr: boolean }) {
-  // Brand cards: compact navy cards side by side (one column on phones). A long comment shows an excerpt; tap the card to read it all.
+  // Brand cards: compact navy cards in one horizontally scrollable row. Each shows an excerpt only.
   return (
-    <div className="tst-deck">
-      {items.map((it) => <TestimonialCard key={it.id} it={it} isAr={isAr} />)}
+    <div
+      className="tst-deck"
+      role="region"
+      tabIndex={0}
+      aria-label={isAr ? "آراء المشاركين" : "Participant feedback"}
+    >
+      {items.map((it) => <TestimonialCard key={it.id} it={it} />)}
     </div>
   );
 }
