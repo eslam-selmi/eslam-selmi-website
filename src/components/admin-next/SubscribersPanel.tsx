@@ -194,7 +194,7 @@ export function SubscribersPanel() {
             <input type="date" value={fTo} onChange={(e) => setFTo(e.target.value)} className="nx-input h-10 rounded-xl px-3 text-sm w-full" /></label>
         </div>
         <div className="mt-3 flex items-center justify-between gap-3 text-xs">
-          <span className="font-semibold">{rows.length} {t("من", "of")} {profiles.length} {t("مشترك", "subscribers")}</span>
+          <span />
           {anyFilter && <button type="button" onClick={resetFilters} className="underline opacity-80 hover:opacity-100">{t("مسح الفلاتر", "Clear filters")}</button>}
         </div>
         <p className="mt-2 text-[11px] opacity-60">{t("المستحقات تعتمد على جدول الأقساط المسجّل فقط. غياب الدفع أو غياب الأقساط لا يعني مديونية.", "Dues use recorded installments only. A missing payment or missing installments is not treated as debt.")}</p>
