@@ -11,7 +11,7 @@ export type AdminTabId =
   | "testimonials" | "success_cases" | "bookings" | "packages" | "interviews"
   | "snapshots" | "trainings" | "partners" | "contracts" | "programs" | "services"
   | "pillars" | "videos" | "graduate_tools" | "media" | "effects" | "visibility"
-  | "popups" | "maintenance" | "tools" | "pages";
+  | "popups" | "maintenance" | "tools" | "pages" | "subscribers";
 
 export type AdminNavItem = { id: AdminTabId; label: string; icon: any; badge?: number | string };
 export type AdminNavGroup = { id: string; label: string; items: AdminNavItem[] };
@@ -28,6 +28,7 @@ export function buildAdminNav(
       items: [
         { id: "overview", label: t("نظرة عامة", "Overview"), icon: LayoutDashboard },
         { id: "activations", label: t("تفعيل الحسابات", "Activations"), icon: ShieldCheck, badge: badges.pendingActivations || undefined },
+        { id: "subscribers", label: t("المشتركون", "Subscribers"), icon: Users },
         { id: "enrollments", label: t("طلبات وانضمامات", "Enrollments"), icon: Users, badge: badges.pendingEnrollments || undefined },
         { id: "courses", label: t("الكورسات", "Courses"), icon: BookOpen },
         { id: "leads", label: t("اهتمامات الكورسات", "Course leads"), icon: StickyNote },

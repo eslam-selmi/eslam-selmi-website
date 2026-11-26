@@ -19,6 +19,7 @@ import { PackagesPanel } from "@/components/admin/PackagesPanel";
 import { InterviewsPanel } from "@/components/admin/InterviewsPanel";
 import { TrainingsPanel } from "@/components/admin/TrainingsPanel";
 import { AdminToolbar } from "@/components/admin/AdminToolbar";
+import { SubscribersPanel } from "@/components/admin-next/SubscribersPanel";
 import { TraineeDrawer } from "@/components/admin/TraineeDrawer";
 import { CourseFeedbackPanel } from "@/components/admin/CourseFeedbackPanel";
 import { ActivationsPanel } from "@/components/admin/panels/ActivationsPanel";
@@ -280,6 +281,8 @@ function AdminPage() {
           />
         ) : tab === "activations" ? (
           <ActivationsPanel />
+        ) : tab === "subscribers" ? (
+          <SubscribersPanel />
         ) : tab === "enrollments" ? (
           <EnrollmentsTable
             enrollments={enrollments}
