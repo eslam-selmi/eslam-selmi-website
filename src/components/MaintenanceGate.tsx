@@ -10,7 +10,8 @@ type Config = {
   until: string | null;
 };
 
-const ALLOWED_PREFIXES = ["/admin", "/auth", "/portal", "/onboarding", "/verify"];
+// "/guest" (login and assigned-course browsing for guest accounts) is the only addition; the rest of the site stays closed.
+const ALLOWED_PREFIXES = ["/admin", "/auth", "/portal", "/onboarding", "/verify", "/guest"];
 
 export function MaintenanceGate({ children }: { children: React.ReactNode }) {
   const [config, setConfig] = useState<Config | null>(null);
