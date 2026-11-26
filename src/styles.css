@@ -1457,6 +1457,6 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 @media (min-width: 640px) { .tst-card { width: 320px; padding: 1.3rem 1.3rem 1.1rem; } }
 @media (min-width: 1024px) { .tst-card { width: 340px; } }
 .tst-mark { font-size: 6rem; }
-.tst-quote { margin-top: .6rem; font-size: .88rem; line-height: 1.7; -webkit-line-clamp: 5; }
+.tst-quote { margin-top: .6rem; font-size: .88rem; line-height: 1.7; -webkit-line-clamp: 7; }
 .tst-who { margin-top: .8rem; padding-top: .7rem; }
 .tst-avatar { width: 38px; height: 38px; }
