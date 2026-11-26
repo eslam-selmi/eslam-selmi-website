@@ -48,7 +48,7 @@ export function CountriesMap() {
     const resize = () => {
       W = Math.max(260, Math.round(box.getBoundingClientRect().width));
       const narrow = W < 520; FW = Math.round(Math.max(40, Math.min(74, (W / n) * 2 * (narrow ? 0.88 : 0.56)))); FH = Math.round(FW * 0.68); NS = Math.round(Math.max(11, Math.min(15, W * 0.024)));
-      RO = narrow ? FH + NS + 12 : Math.round(FH * 0.55); EX = narrow ? 0 : FH + 4; ROOM = Math.round(FH + RO + NS + 34 + EX);
+      RO = narrow ? FH + NS + 12 : Math.round(FH * 0.55); EX = narrow ? 0 : FH + 4; ROOM = 0;
       mapH = W * ((lat1 - lat0) / ((lon1 - lon0) * KX));
       H = Math.round(mapH + ROOM);
       dpr = Math.min(2.5, window.devicePixelRatio || 1);
@@ -61,9 +61,7 @@ export function CountriesMap() {
     const draw = () => {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, W, H);
-      const tm = ((t % total) + total) % total;
-      const out = 1 - sm((tm - tOut) / OUT);
-      const rv = reveal.map((_, i) => (reduced ? 1 : sm((tm - i * STEP) / IN)) * out);
+            const rv = reveal.map(() => 1);
       const cw = W / ((lon1 - lon0) / step), ch = mapH / ((lat1 - lat0) / step);
       const r0 = Math.max(0.8, Math.min(cw, ch) * 0.34);
       MAP_ROWS.forEach((row, r) => {
@@ -78,51 +76,6 @@ export function CountriesMap() {
           ctx.beginPath(); ctx.arc(x, y, r0 * (1.05 + 0.45 * g), 0, 7); ctx.fill();
         }
       });
-      const fam = getComputedStyle(box).fontFamily;
-      const rtl = lang === "ar";
-      reveal.forEach((code, i) => {
-        const a = rv[i]; if (a < 0.01) return;
-        const [lo, la] = POS[code]; const m = px(lo, la);
-        const j = slotOf[code];
-        const cx = (W * (j + 0.5)) / n;
-        const top = code === "eg" || code === "sa"; const row = top ? 0 : j % ROWS; // Egypt and Saudi Arabia sit in the upper row; others keep their alternation
-        const bob = reduced ? 0 : Math.sin(t * 1.15 + j * 1.7) * 2.2;
-        const fy = 4 + (top ? 0 : EX + row * RO) + bob + (1 - a) * 8;
-        const fx = Math.max(2, Math.min(W - FW - 2, cx - FW / 2));
-        const ncx = fx + FW / 2, ny = fy + FH + 5;
-        ctx.save(); ctx.globalAlpha = a;
-        // tether: a soft curve from the name down to the country
-        const sy = ny + NS + 6;
-        const grow = reduced ? 1 : sm((tm - i * STEP - 0.15) / 1.0);
-        const ex = ncx + (m.x - ncx) * grow, ey = sy + (m.y - sy) * grow;
-        const lg = ctx.createLinearGradient(0, sy, 0, m.y);
-        lg.addColorStop(0, "rgba(180, 245, 242, 0.05)"); lg.addColorStop(1, "rgba(120, 238, 230, 0.75)");
-        ctx.strokeStyle = lg; ctx.lineWidth = 1.1;
-        ctx.beginPath(); ctx.moveTo(ncx, sy); ctx.quadraticCurveTo(ncx, (sy + ey) / 2 + 6, ex, ey); ctx.stroke();
-        ctx.fillStyle = "rgba(170, 250, 244, 0.95)"; ctx.beginPath(); ctx.arc(m.x, m.y, 2.1, 0, 7); ctx.fill();
-        const pulse = reduced ? 0 : 1 - sm((tm - i * STEP - IN) / 1.3);
-        if (pulse > 0.02) { ctx.strokeStyle = `rgba(94, 234, 225, ${0.6 * pulse})`; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(m.x, m.y, 4 + 10 * (1 - pulse), 0, 7); ctx.stroke(); }
-        // free flag: wave travels across the cloth, held a little at the left edge
-        const im = imgs[i];
-        if (im.complete && im.naturalWidth > 0) {
-          const N = 26, sw = FW / N, iw = im.naturalWidth / N;
-          const amp = reduced ? 0 : FH * 0.1;
-          for (let k = 0; k < N; k++) {
-            const f = k / (N - 1), am = amp * (0.3 + 0.7 * f);
-            const ph = f * 5.4 - t * 3.1 + j * 0.9;
-            const dy = Math.sin(ph) * am, slope = Math.cos(ph) * 0.5;
-            const x = fx + k * sw;
-            ctx.drawImage(im, k * iw, 0, iw + 0.6, im.naturalHeight, x, fy + dy, sw + 0.7, FH);
-            ctx.fillStyle = slope > 0 ? `rgba(0,0,0,${0.24 * slope})` : `rgba(255,255,255,${-0.2 * slope})`;
-            ctx.fillRect(x, fy + dy, sw + 0.7, FH);
-          }
-        }
-        ctx.font = `800 ${NS}px ${fam}`;
-        ctx.textAlign = "center"; ctx.textBaseline = "top"; ctx.direction = rtl ? "rtl" : "ltr";
-        ctx.shadowColor = "rgba(0, 8, 24, 0.9)"; ctx.shadowBlur = 6; ctx.fillStyle = "#fff";
-        ctx.fillText(nameOf(code), ncx, ny);
-        ctx.restore();
-      });
     };
 
     const tick = (now: number) => {
@@ -134,17 +87,26 @@ export function CountriesMap() {
     const ro = new ResizeObserver(() => { resize(); draw(); }); ro.observe(box);
     const io = new IntersectionObserver((e) => { visible = e[0]?.isIntersecting ?? true; }, { rootMargin: "100px" }); io.observe(box);
     imgs.forEach((im) => im.addEventListener("load", draw));
-    if (!reduced) raf = requestAnimationFrame(tick);
     return () => { cancelAnimationFrame(raf); ro.disconnect(); io.disconnect(); };
   }, [reveal, slotOf, reduced, lang]);
 
+  const order = ["eg", "sa", ...COUNTRIES.map((c) => c.code).filter((c) => c !== "eg" && c !== "sa")];
   return (
     <div className="world-globe">
       <div ref={wrap} className="world-map-stage" aria-hidden="true">
         <canvas ref={cv} />
       </div>
-      <ul className="sr-only">
-        {COUNTRIES.map((c) => <li key={c.code}>{c.name[lang]}</li>)}
+      <ul className="world-chips">
+        {order.map((code) => {
+          const c = COUNTRIES.find((x) => x.code === code);
+          if (!c) return null;
+          return (
+            <li key={code} className="world-chip" data-lead={code === "eg" || code === "sa" ? "true" : undefined}>
+              <img src={`https://flagcdn.com/${code}.svg`} alt="" width={22} height={22} loading="lazy" draggable={false} />
+              <span>{c.name[lang]}</span>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

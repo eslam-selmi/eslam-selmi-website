@@ -1461,3 +1461,27 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 :root:not(.dark) .bg-navy .text-accent,
 :root:not(.dark) .bg-navy-deep .text-accent,
 :root:not(.dark) [data-surface="dark"] .text-accent { color: var(--accent); }
+
+/* Testimonials: editorial quotes. No card boxes, one hairline between voices, full quote and full role always visible. */
+.tst-rail { gap: 0 !important; align-items: stretch; }
+.tst-card, .tst-card:hover { position: relative; display: flex; flex-direction: column; flex-shrink: 0; width: min(84vw, 340px); min-height: 0; padding: 0.25rem 1.6rem 0.25rem; border: 0; border-radius: 0; background: none; box-shadow: none; transform: none; overflow: visible; color: var(--foreground); }
+@media (min-width: 1024px) { .tst-card, .tst-card:hover { width: 380px; padding-inline: 2.2rem; } }
+.tst-card + .tst-card { border-inline-start: 1px solid color-mix(in oklab, var(--foreground) 12%, transparent); }
+.tst-card::before { content: none; }
+.tst-num { display: none; }
+.tst-mark { position: static; display: block; z-index: auto; height: 3.2rem; font-family: Georgia, "Times New Roman", serif; font-size: 5rem; line-height: 1; font-weight: 700; color: var(--accent); opacity: .9; }
+.tst-stars { order: -1; margin: 0 0 .5rem; }
+.tst-quote { display: block; -webkit-line-clamp: unset; overflow: visible; margin-top: .6rem; flex: 1; font-size: 1.02rem; line-height: 1.9; font-weight: 500; color: var(--foreground); }
+.tst-who { margin-top: 1.5rem; padding-top: 0; border: 0; align-items: center; gap: .75rem; }
+.tst-avatar { width: 40px; height: 40px; box-shadow: none; }
+.tst-name { font-size: .95rem; white-space: normal; overflow: visible; }
+.tst-role { white-space: normal; overflow: visible; text-overflow: clip; margin-top: .2rem; font-size: .78rem; line-height: 1.5; color: var(--muted-foreground); }
+
+/* Clients map: calm dot map with the countries listed as a clean row of chips (no floating flags, no connectors) */
+.world-stage-frame { width: min(100%, 760px); }
+.world-map-stage { width: min(100%, 560px); margin-inline: auto; }
+.world-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: .55rem .6rem; margin: 1.1rem auto 0; padding: 0; list-style: none; max-width: 640px; }
+.world-chip { display: inline-flex; align-items: center; gap: .5rem; padding: .3rem .9rem; padding-inline-start: .35rem; border-radius: 999px; border: 1px solid color-mix(in oklab, var(--booking-foreground) 14%, transparent); font-size: .85rem; font-weight: 600; color: var(--booking-foreground); }
+.world-chip img { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; }
+.world-chip[data-lead="true"] { border-color: color-mix(in oklab, var(--booking-cyan) 55%, transparent); }
+.tst-role { display: block; -webkit-line-clamp: unset; }
