@@ -1620,3 +1620,4 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 .dark .tst-deck .tst-readmore { color: oklch(0.82 0.12 195); }
 .tst-deck .tst-card[data-open="true"] .tst-quote { -webkit-line-clamp: unset; display: block; overflow: visible; }
 .tst-deck .tst-card[data-open="true"] { align-self: flex-start; }
+.tst-deck:has(.tst-card[data-open="true"]) { align-items: flex-start; }
