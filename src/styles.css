@@ -1455,3 +1455,9 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 }
 
 .tst-role { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Light theme: teal used as text needs a darker ink to reach 4.5:1 on white (WCAG 2.2 SC 1.4.3). Dark theme and dark panels keep the bright teal. */
+:root:not(.dark) .text-accent { color: oklch(0.47 0.095 195); }
+:root:not(.dark) .bg-navy .text-accent,
+:root:not(.dark) .bg-navy-deep .text-accent,
+:root:not(.dark) [data-surface="dark"] .text-accent { color: var(--accent); }

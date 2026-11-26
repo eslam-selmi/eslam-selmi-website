@@ -67,7 +67,7 @@ export function Brands() {
       <p className="mt-2 text-center text-[12px] font-semibold tracking-wide text-foreground/85">
         {lang === "ar" ? b.nameAr : b.name}
       </p>
-      <p className="text-center text-[10px] tracking-widest uppercase text-muted-foreground/70 mt-0.5">
+      <p className="text-center text-[11px] tracking-widest uppercase text-muted-foreground mt-0.5">
         {lang === "ar" ? b.specAr : b.specEn}
       </p>
     </div>
