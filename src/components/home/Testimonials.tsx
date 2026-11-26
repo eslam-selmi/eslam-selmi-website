@@ -172,14 +172,15 @@ function TestimonialCard({ it }: { it: TestimonialRow }) {
 
 export function TestimonialsScroller({ items, isAr }: { items: TestimonialRow[]; isAr: boolean }) {
   // Brand cards: compact navy cards in one horizontally scrollable row. Each shows an excerpt only.
-  const dragRef = useRef<{ x: number; left: number; moved: boolean } | null>(null);
+  const dragRef = useRef<{ x: number; left: number; id: number } | null>(null);
+  const endDrag = (el: HTMLDivElement) => { if (dragRef.current) { try { el.releasePointerCapture(dragRef.current.id); } catch { /* ignore */ } } dragRef.current = null; el.removeAttribute("data-drag"); };
   return (
     <div
       className="tg-deck"
-      onPointerDown={(e) => { if (e.pointerType === "mouse") dragRef.current = { x: e.clientX, left: e.currentTarget.scrollLeft, moved: false }; }}
-      onPointerMove={(e) => { const d = dragRef.current; if (d) { e.currentTarget.scrollLeft = d.left - (e.clientX - d.x); } }}
-      onPointerUp={() => { dragRef.current = null; }}
-      onPointerLeave={() => { dragRef.current = null; }}
+      onPointerDown={(e) => { if (e.pointerType === "mouse" && e.button === 0) { dragRef.current = { x: e.clientX, left: e.currentTarget.scrollLeft, id: e.pointerId }; } }}
+      onPointerMove={(e) => { const d = dragRef.current; if (!d) return; const dx = e.clientX - d.x; if (Math.abs(dx) > 4 && !e.currentTarget.hasAttribute("data-drag")) { e.currentTarget.setAttribute("data-drag", "1"); try { e.currentTarget.setPointerCapture(d.id); } catch { /* ignore */ } } if (e.currentTarget.hasAttribute("data-drag")) e.currentTarget.scrollLeft = d.left - dx; }}
+      onPointerUp={(e) => endDrag(e.currentTarget)}
+      onPointerCancel={(e) => endDrag(e.currentTarget)}
       role="region"
       tabIndex={0}
       aria-label={isAr ? "آراء المشاركين" : "Participant feedback"}
