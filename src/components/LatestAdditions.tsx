@@ -122,6 +122,11 @@ export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
   }, [data, onView]);
 
   function openItem(item: Addition) {
+    // Pages on this site open in place, never in an external viewer.
+    if (/^\/(?!\/)/.test(item.url)) {
+      window.location.assign(item.url);
+      return;
+    }
     setViewing({
       title: isAr ? item.title_ar : item.title_en,
       subtitle: isAr ? item.subtitle_ar : item.subtitle_en,
