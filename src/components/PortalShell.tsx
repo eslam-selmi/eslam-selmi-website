@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { ForcePasswordResetGate } from "@/components/ForcePasswordResetGate";
 import { useAuth, signOut } from "@/lib/portal-auth";
-import { LogOut, Home, ShieldCheck, GraduationCap, Languages, KeyRound, Sun, Moon } from "lucide-react";
+import { LogOut, Home, ShieldCheck, Languages, KeyRound, Sun, Moon } from "lucide-react";
 import { NotificationsBell } from "@/lib/notifications";
 import { useI18n } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
@@ -15,7 +15,7 @@ import { toast } from "sonner";
 
 type Props = {
   userId: string | undefined;
-  role: "admin" | "trainee" | "trainer" | null;
+  role: "admin" | "trainee" | null;
   userLabel?: string | null;
   children: React.ReactNode;
 };
@@ -115,11 +115,9 @@ export function PortalShell({ userId, role, userLabel, children }: Props) {
 
   const L = {
     panelAdmin: isAr ? "لوحة الإدارة" : "Admin Panel",
-    panelTrainer: isAr ? "لوحة المدرب" : "Trainer Panel",
     panelTrainee: isAr ? "بوابة المتدرب" : "Trainee Portal",
     site: isAr ? "الموقع" : "Website",
     admin: isAr ? "الإدارة" : "Admin",
-    trainer: isAr ? "كورساتي" : "My Courses",
     courses: isAr ? "كورساتي" : "My Courses",
     logout: isAr ? "خروج" : "Logout",
     switchLang: isAr ? "English" : "العربية",
@@ -142,7 +140,7 @@ export function PortalShell({ userId, role, userLabel, children }: Props) {
               <div className="hidden sm:block leading-tight">
                 <p className="text-[10px] text-white/45 tracking-[0.18em] font-semibold">ESLAM SELMI</p>
                 <p className="text-xs font-bold text-[var(--gold)] tracking-wide">
-                  {role === "admin" ? L.panelAdmin : role === "trainer" ? L.panelTrainer : L.panelTrainee}
+                  {role === "admin" ? L.panelAdmin : L.panelTrainee}
                 </p>
               </div>
             </Link>
@@ -153,10 +151,6 @@ export function PortalShell({ userId, role, userLabel, children }: Props) {
               {role === "admin" ? (
                 <Link to="/admin" className="flex items-center gap-1.5 text-xs text-white/70 hover:text-white px-3 h-9 rounded-lg hover:bg-white/5 transition">
                   <ShieldCheck className="w-3.5 h-3.5" /> {L.admin}
-                </Link>
-              ) : role === "trainer" ? (
-                <Link to="/trainer" className="flex items-center gap-1.5 text-xs text-white/70 hover:text-white px-3 h-9 rounded-lg hover:bg-white/5 transition">
-                  <GraduationCap className="w-3.5 h-3.5" /> {L.trainer}
                 </Link>
               ) : null}
             </nav>

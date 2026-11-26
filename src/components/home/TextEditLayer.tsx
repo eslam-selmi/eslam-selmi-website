@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { useRouterState } from "@tanstack/react-router";
 import { translateTexts } from "@/lib/translate.functions";
 
-const PRIVATE = ["/admin", "/portal", "/trainer", "/account", "/auth", "/onboarding", "/verify"];
+const PRIVATE = ["/admin", "/portal", "/account", "/auth", "/onboarding", "/verify"];
 
 /** Path of child indexes from root to a text node, so the same spot can be found after a language switch. */
 function nodePath(root: Node, n: Node): number[] | null {

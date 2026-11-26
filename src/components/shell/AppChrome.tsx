@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import {
-  LogOut, Home, ShieldCheck, GraduationCap, Languages, KeyRound, Sun, Moon,
+  LogOut, Home, ShieldCheck, Languages, KeyRound, Sun, Moon,
   UserCog, Bell, ChevronDown,
 } from "lucide-react";
 import { ForcePasswordResetGate } from "@/components/ForcePasswordResetGate";
@@ -13,7 +13,7 @@ import { useSiteProfile } from "@/lib/site-profile";
 import { ChangePasswordModal } from "./ChangePasswordModal";
 
 type Props = {
-  role: "admin" | "trainee" | "trainer" | null;
+  role: "admin" | "trainee" | null;
   userId?: string;
   userLabel?: string | null;
   avatarSrc?: string | null;
@@ -62,11 +62,9 @@ export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileB
 
   const L = {
     panelAdmin: isAr ? "لوحة الإدارة" : "Admin Panel",
-    panelTrainer: isAr ? "لوحة المدرب" : "Trainer Panel",
     panelTrainee: isAr ? "بوابة المتدرب" : "Trainee Portal",
     site: isAr ? "الموقع" : "Website",
     admin: isAr ? "الإدارة" : "Admin",
-    trainer: isAr ? "كورساتي" : "My Courses",
     logout: isAr ? "تسجيل الخروج" : "Sign out",
     switchLang: isAr ? "English" : "العربية",
     account: isAr ? "إعدادات الحساب" : "Account settings",
@@ -100,7 +98,7 @@ export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileB
               <div className="hidden sm:block leading-tight">
                 <p className="text-[9px] text-white/40 font-bold" style={{ letterSpacing: dir === "ltr" ? "0.2em" : 0 }}>ESLAM SELMI</p>
                 <p className="text-[12.5px] font-bold text-[var(--nx-teal)]">
-                  {role === "admin" ? L.panelAdmin : role === "trainer" ? L.panelTrainer : L.panelTrainee}
+                  {role === "admin" ? L.panelAdmin : L.panelTrainee}
                 </p>
               </div>
             </Link>
@@ -111,10 +109,6 @@ export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileB
               {role === "admin" ? (
                 <Link to="/admin" className="flex items-center gap-1.5 text-xs text-white/65 hover:text-white px-3 h-9 rounded-lg hover:bg-white/5 transition">
                   <ShieldCheck className="w-3.5 h-3.5" /> {L.admin}
-                </Link>
-              ) : role === "trainer" ? (
-                <Link to="/trainer" className="flex items-center gap-1.5 text-xs text-white/65 hover:text-white px-3 h-9 rounded-lg hover:bg-white/5 transition">
-                  <GraduationCap className="w-3.5 h-3.5" /> {L.trainer}
                 </Link>
               ) : null}
             </nav>

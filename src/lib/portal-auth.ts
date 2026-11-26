@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
-export type Role = "admin" | "trainee" | "trainer" | null;
+export type Role = "admin" | "trainee" | null;
 export type ActivationStatus = "pending" | "active" | "rejected" | null;
 
 export function useAuth() {
@@ -43,7 +43,8 @@ export function useAuth() {
       supabase.from("user_roles").select("role").eq("user_id", uid).maybeSingle(),
       supabase.from("profiles").select("force_password_reset,activation_status").eq("id", uid).maybeSingle(),
     ]);
-    setRole((roleRes.data?.role as Role) ?? "trainee");
+    // Only admin and trainee exist. Any other stored role value behaves as trainee.
+    setRole(roleRes.data?.role === "admin" ? "admin" : "trainee");
     setForcePasswordReset(Boolean(profRes.data?.force_password_reset));
     setActivationStatus((profRes.data?.activation_status as ActivationStatus) ?? "active");
     setLoading(false);

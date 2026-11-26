@@ -10,7 +10,7 @@ type Config = {
   until: string | null;
 };
 
-const ALLOWED_PREFIXES = ["/admin", "/auth", "/portal", "/trainer", "/onboarding", "/verify"];
+const ALLOWED_PREFIXES = ["/admin", "/auth", "/portal", "/onboarding", "/verify"];
 
 export function MaintenanceGate({ children }: { children: React.ReactNode }) {
   const [config, setConfig] = useState<Config | null>(null);

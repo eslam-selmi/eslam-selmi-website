@@ -75,7 +75,7 @@ function AuthPage() {
         nav({ to: "/onboarding" });
         return;
       }
-      nav({ to: role === "admin" ? "/admin" : role === "trainer" ? "/trainer" : "/portal" });
+      nav({ to: role === "admin" ? "/admin" : "/portal" });
     }
   }, [user, role, loading, activationStatus, nav]);
 
