@@ -1,3 +1,4 @@
+import { isGeneralFilesModule } from "@/lib/general-modules";
 import { regroupByUnit, getItemUnit, setItemUnit } from "@/lib/item-unit";
 import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
 import { useEffect, useState, useMemo } from "react";
@@ -262,6 +263,7 @@ export function ModuleCard({
           {index + 1}
         </button>
         <div className="flex-1 min-w-0">
+          {isGeneralFilesModule(m) && <p className="text-[11px] text-[var(--gold)]/80">{t("ملفات عامة للكورس (مش تابعة لوحدة)", "Course-wide files (not tied to a unit)")}</p>}
           <h5 className="font-bold">{m.title}</h5>
           {m.online_url && (
             <p className="text-[11px] text-[var(--gold)]/80 mt-0.5 truncate" dir="ltr">

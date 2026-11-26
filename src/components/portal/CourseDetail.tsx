@@ -1,3 +1,4 @@
+import { orderModulesForDisplay } from "@/lib/general-modules";
 import { regroupByUnit } from "@/lib/item-unit";
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -152,13 +153,14 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
           <p className="text-sm text-white/50 rounded-xl border border-dashed border-white/15 p-6 text-center">{isAr ? "المحتوى قيد التحضير." : "Content is being prepared."}</p>
         ) : (
           <div className="space-y-3">
-            {modules.map((m: any, i: number) => (
+            {orderModulesForDisplay(modules as any[]).map(({ m, i, num }: any) => (
               <div key={m.id} className={`rounded-2xl border p-5 ${m.completed_by_admin ? "border-emerald-400/40 bg-emerald-400/5" : "border-white/10 bg-white/[0.03]"}`}>
                 <div className="flex items-center gap-3">
                   <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 ${m.completed_by_admin ? "bg-emerald-500/20 text-emerald-300" : "bg-white/5 text-[var(--gold)]"}`}>
-                    {m.completed_by_admin ? <Check className="w-4 h-4" /> : i + 1}
+                    {m.completed_by_admin ? <Check className="w-4 h-4" /> : num ?? <Paperclip className="w-4 h-4" />}
                   </div>
                   <div className="flex-1 min-w-0">
+                    {num === null && <p className="text-[11px] text-[var(--gold)]/80 mb-0.5">{isAr ? "ملفات عامة للكورس" : "Course-wide files"}</p>}
                     <h4 className="font-bold">{trModuleTitles[i] || m.title}</h4>
                     {m.completed_by_admin && <p className="text-[11px] text-emerald-300/80 mt-0.5">✓ {isAr ? "تم إكمال هذا الجزء" : "This module is complete"}</p>}
                   </div>
