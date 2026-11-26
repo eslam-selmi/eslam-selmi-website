@@ -103,6 +103,7 @@ import snap13Asset from "@/assets/snapshots/snap-13.jpg.asset.json";
 import snap15Asset from "@/assets/snapshots/snap-15.jpg.asset.json";
 import snap16Asset from "@/assets/snapshots/snap-16.jpg.asset.json";
 import { Footer } from "@/components/home/Footer";
+import { fetchContractLogos } from "@/lib/contract-logos";
 import { JOURNEY, JourneyItem, PILLARS, PROGRAMS, SERVICES, fadeUp, waServiceLink } from "@/components/home/data";
 import { Section } from "@/components/home/shared";
 import { useSiteProfile } from "@/lib/site-profile";
@@ -153,13 +154,15 @@ export function Journey() {
   const { t, lang } = useI18n();
   const [items, setItems] = useState<JourneyItem[]>([]);
   useEffect(() => {
+    const logosReq = fetchContractLogos().catch(() => ({} as Record<string, string>));
     supabase
       .from("contracts" as any)
       .select("*")
       .eq("is_active", true)
       .order("display_order", { ascending: true })
-      .then(({ data, error }) => {
+      .then(async ({ data, error }) => {
         if (error || !data) return;
+        const logos = await logosReq;
         setItems(
           (data as any[]).map((r) => ({
             year: { en: r.year || "", ar: r.year || "" },
@@ -167,7 +170,7 @@ export function Journey() {
             company: { en: r.org_en || r.org_ar, ar: r.org_ar },
             industry: { en: r.industry_en || r.industry_ar || "", ar: r.industry_ar || "" },
             country: r.country_code,
-            logo: "",
+            logo: logos[r.id] || "",
             current: r.is_current,
             countryName: r.country_ar || r.country_en ? { en: r.country_en || r.country_ar, ar: r.country_ar || r.country_en } : undefined,
           })),
@@ -212,8 +215,9 @@ export function Journey() {
                 </span>
               </div>
               <div className="min-w-0">
-                <div className="font-display font-bold text-xl leading-tight">
-                  {j.company[lang]}
+                <div className="flex items-center gap-3">
+                  {j.logo && <img src={j.logo} alt="" loading="lazy" decoding="async" className="size-11 shrink-0 rounded-xl bg-white object-contain p-1.5 border border-foreground/10" />}
+                  <div className="font-display font-bold text-xl leading-tight min-w-0">{j.company[lang]}</div>
                 </div>
                 <div
                   className="text-[11px] uppercase tracking-[0.18em] font-bold mt-1.5"

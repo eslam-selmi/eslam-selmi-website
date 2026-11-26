@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { toast } from "sonner";
-import { Plus, Trash2, X, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Plus, Trash2, X, Eye, EyeOff, Loader2, Camera } from "lucide-react";
+import { fetchContractLogos, setContractLogo } from "@/lib/contract-logos";
 
 export type ContractRow = {
   id: string;
@@ -62,12 +63,34 @@ export function ContractsPanel() {
     setItems(((data as unknown) as ContractRow[]) ?? []);
     setLoading(false);
   }
+  const [logos, setLogos] = useState<Record<string, string>>({});
+  const [logoDraft, setLogoDraft] = useState<string | null>(null);
+  const [logoUploading, setLogoUploading] = useState(false);
   useEffect(() => {
     load();
+    fetchContractLogos().then(setLogos).catch(() => {});
   }, []);
+
+  async function uploadLogo(file: File | undefined) {
+    if (!file) return;
+    if (!(["image/jpeg", "image/png", "image/webp"]).includes(file.type)) return toast.error(t("اختر صورة JPG أو PNG أو WebP", "Choose a JPG, PNG or WebP image"));
+    if (file.size > 3 * 1024 * 1024) return toast.error(t("الصورة أكبر من 3 ميجا", "Image is larger than 3 MB"));
+    setLogoUploading(true);
+    try {
+      const ext = file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
+      const path = `contract-logos/${crypto.randomUUID()}.${ext}`;
+      const up = await supabase.storage.from("public-uploads").upload(path, file, { contentType: file.type, upsert: false });
+      if (up.error) throw up.error;
+      const { data, error } = await supabase.storage.from("public-uploads").createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
+      if (error || !data?.signedUrl) throw error || new Error("Image URL unavailable");
+      setLogoDraft(data.signedUrl);
+    } catch (e) { toast.error(e instanceof Error ? e.message : t("تعذر رفع الصورة", "Image upload failed")); }
+    finally { setLogoUploading(false); }
+  }
 
   function openCreate() {
     setEditing(null);
+    setLogoDraft(null);
     setForm({
       ...empty,
       display_order: (items.reduce((m, i) => Math.max(m, i.display_order), 0) || 0) + 1,
@@ -77,6 +100,7 @@ export function ContractsPanel() {
 
   function openEdit(it: ContractRow) {
     setEditing(it);
+    setLogoDraft(logos[it.id] ?? null);
     setForm({
       year: it.year || "",
       is_current: it.is_current,
@@ -122,11 +146,23 @@ export function ContractsPanel() {
       display_order: Number(form.display_order) || 0,
       is_active: form.is_active,
     };
-    const { error } = editing
-      ? await supabase.from("contracts" as any).update(payload).eq("id", editing.id)
-      : await supabase.from("contracts" as any).insert(payload);
+    let savedId = editing?.id ?? "";
+    let error: { message: string } | null = null;
+    if (editing) {
+      error = (await supabase.from("contracts" as any).update(payload).eq("id", editing.id)).error;
+    } else {
+      const res = await supabase.from("contracts" as any).insert(payload).select("id").single();
+      error = res.error;
+      savedId = (res.data as any)?.id ?? "";
+    }
+    if (error) { setBusy(false); return toast.error(error.message); }
+    if (savedId && (logoDraft ?? null) !== (logos[savedId] ?? null)) {
+      try {
+        await setContractLogo(savedId, logoDraft);
+        setLogos((prev) => { const n = { ...prev }; if (logoDraft) n[savedId] = logoDraft; else delete n[savedId]; return n; });
+      } catch (e) { toast.error(t("تم حفظ العقد لكن تعذر حفظ اللوجو", "Contract saved but the logo could not be saved")); }
+    }
     setBusy(false);
-    if (error) return toast.error(error.message);
     toast.success(editing ? t("تم التحديث", "Updated") : t("تمت الإضافة", "Added"));
     setOpen(false);
     load();
@@ -175,7 +211,7 @@ export function ContractsPanel() {
                   <div className="font-display text-xl font-extrabold text-[var(--gold)]">
                     {it.is_current ? t("حالياً", "Present") : it.year}
                   </div>
-                  <div className="font-bold text-sm truncate mt-1">{it.org_ar}</div>
+                  <div className="flex items-center gap-2 mt-1 min-w-0">{logos[it.id] && <img src={logos[it.id]} alt="" className="size-7 rounded-md object-contain bg-white p-0.5 shrink-0" />}<div className="font-bold text-sm truncate">{it.org_ar}</div></div>
                   <div className="text-[11px] text-white/50 truncate">{it.industry_ar}</div>
                   <div className="text-[11px] text-white/60 truncate">{it.role_ar}</div>
                   <div className="text-[10px] text-white/40 mt-1">
@@ -227,6 +263,15 @@ export function ContractsPanel() {
               <Field label={t("الترتيب", "Display order")} v={String(form.display_order)} on={(v) => setForm({ ...form, display_order: Number(v) || 0 })} />
               <TextArea label={t("وصف مختصر (عربي)", "Short description (AR)")} v={form.description_ar} on={set("description_ar")} />
               <TextArea label={t("وصف مختصر (إنجليزي)", "Short description (EN)")} v={form.description_en} on={set("description_en")} />
+              <div className="sm:col-span-2 flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-3">
+                {logoDraft ? <img src={logoDraft} alt={t("معاينة لوجو الشركة", "Company logo preview")} className="size-16 rounded-lg object-contain bg-white p-1.5" /> : <div className="size-16 rounded-lg border border-dashed border-white/20 grid place-items-center text-[10px] text-white/40">{t("بدون لوجو", "No logo")}</div>}
+                <label className="cursor-pointer inline-flex items-center gap-1.5 text-xs px-3 py-2 rounded-lg bg-white/10 hover:bg-white/15 font-semibold">
+                  <Camera className="size-3.5" />{logoUploading ? t("جارٍ الرفع…", "Uploading…") : logoDraft ? t("تغيير لوجو الشركة", "Change company logo") : t("إضافة لوجو الشركة", "Add company logo")}
+                  <input type="file" accept="image/png,image/jpeg,image/webp" className="sr-only" disabled={logoUploading} onChange={(e) => { void uploadLogo(e.target.files?.[0]); e.target.value = ""; }} />
+                </label>
+                {logoDraft && <button type="button" onClick={() => setLogoDraft(null)} className="text-xs px-3 py-2 rounded-lg bg-red-500/15 text-red-300 hover:bg-red-500/25">{t("إزالة اللوجو", "Remove logo")}</button>}
+                <span className="text-[10px] text-white/40">{t("JPG أو PNG أو WebP، حتى 3 ميجا. يظهر على كارت العقد في الصفحة الرئيسية.", "JPG, PNG or WebP, up to 3 MB. Shown on the contract card on the homepage.")}</span>
+              </div>
               <label className="flex items-center gap-2 text-xs sm:col-span-2">
                 <input type="checkbox" checked={form.is_active} onChange={(e) => setForm({ ...form, is_active: e.target.checked })} className="size-4 accent-[var(--gold)]" />
                 {t("مفعّل (يظهر في الصفحة الرئيسية)", "Active (shown on homepage)")}
@@ -234,7 +279,7 @@ export function ContractsPanel() {
             </div>
             <div className="mt-5 flex gap-2 justify-end">
               <button onClick={() => setOpen(false)} className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-sm font-semibold">{t("إلغاء", "Cancel")}</button>
-              <button onClick={save} disabled={busy} className="px-4 py-2 rounded-xl bg-[var(--gold)] text-[#0b1736] text-sm font-bold disabled:opacity-50">
+              <button onClick={save} disabled={busy || logoUploading} className="px-4 py-2 rounded-xl bg-[var(--gold)] text-[#0b1736] text-sm font-bold disabled:opacity-50">
                 {busy ? t("جارٍ الحفظ…", "Saving…") : t("حفظ", "Save")}
               </button>
             </div>
