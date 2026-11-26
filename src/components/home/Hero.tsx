@@ -90,12 +90,12 @@ export function Hero() {
             <Button
               variant="ghost"
               onClick={() => setLicenseOpen(true)}
-              className="credential-badge group inline-flex h-auto w-auto max-w-full items-center gap-2.5 rounded-full border border-foreground/10 bg-card/70 px-2.5 py-2 text-start shadow-none transition-colors hover:border-accent/40 hover:bg-secondary/70 hover:text-foreground"
+              className="credential-badge group inline-flex h-auto w-auto max-w-full whitespace-normal items-center gap-2.5 rounded-full border border-foreground/10 bg-card/70 px-2.5 py-2 text-start shadow-none transition-colors hover:border-accent/40 hover:bg-secondary/70 hover:text-foreground"
             >
               <span className="grid size-9 shrink-0 place-items-center rounded-full bg-accent/10 text-accent">
                 <BadgeCheck className="!size-5" />
               </span>
-              <span className="min-w-0 text-sm leading-snug">
+              <span className="min-w-0 flex-1 whitespace-normal text-sm leading-snug">
                 <span className="font-bold text-foreground">
                   {lang === "ar" ? "مدرب معتمد" : "Certified Trainer"}
                 </span>
