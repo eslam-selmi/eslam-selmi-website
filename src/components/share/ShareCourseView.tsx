@@ -1,6 +1,7 @@
 import { VideoWithCues } from "@/components/VideoWithCues";
 import { visibleItemText } from "@/lib/video-cues";
 import { safeHref } from "@/lib/safe-url";
+import { mediaSource } from "@/lib/media-url";
 import type { Progress } from "@/lib/course-share-core";
 import type { VisitorCourse, VisitorItem } from "@/lib/course-share-service";
 
@@ -14,23 +15,26 @@ function Item({ it, lang, p, onProgress }: { it: VisitorItem; lang: "ar" | "en";
   const t = T[lang];
   const text = visibleItemText(it.content);
   const href = it.kind === "link" ? safeHref(it.url) : it.url;
+  // Lectures stored as a plain link or file (the TNA unit videos) must still play inside the page, with their questions, like in the trainee view.
+  const media = it.url && (it.kind === "link" || it.kind === "file") ? mediaSource(it.url) : null;
+  const playInline = media?.kind === "video" ? "video" : media?.kind === "embed" ? "embed" : null;
   return (
     <li className="rounded-xl border border-white/10 bg-white/5 p-3 space-y-2">
       <p className="font-medium text-sm">{it.title}</p>
       {text && <p className="text-xs text-white/65 whitespace-pre-wrap">{text}</p>}
-      {it.kind === "video" && it.url && (
+      {(it.kind === "video" || playInline === "video") && it.url && (
         <div className="aspect-video overflow-hidden rounded-lg">
           <VideoWithCues src={it.url} content={it.content} isAr={lang === "ar"} onProgress={(v) => onProgress(v)} />
         </div>
       )}
-      {it.kind === "embed" && it.url && /^https:\/\//i.test(it.url) && <iframe referrerPolicy="no-referrer" src={it.url} title={it.title} className="w-full aspect-video rounded-lg border-0" allowFullScreen onLoad={() => onProgress({ opened: true })} />}
-      {["pdf", "file", "link"].includes(it.kind) && href && (
+      {(it.kind === "embed" || playInline === "embed") && it.url && /^https:\/\//i.test(media?.url || it.url) && <iframe referrerPolicy="no-referrer" src={media?.url || it.url} title={it.title} className="w-full aspect-video rounded-lg border-0" allowFullScreen onLoad={() => onProgress({ opened: true })} />}
+      {["pdf", "file", "link"].includes(it.kind) && !playInline && href && (
         <a href={href} target="_blank" rel="noopener noreferrer" onClick={() => onProgress({ opened: true })} className="inline-block text-xs text-[#2dd4bf] underline">{p?.opened ? t.marked : t.open}</a>
       )}
       {(it.kind === "note" || it.kind === "text") && (
         <button onClick={() => onProgress({ markedDone: true })} className="text-xs rounded-lg border border-[#2dd4bf]/40 px-3 h-8 text-[#2dd4bf]">{p?.markedDone ? t.marked : t.done}</button>
       )}
-      {it.kind === "video" && p?.ended && <p className="text-xs text-[#2dd4bf]">{t.watched}</p>}
+      {(it.kind === "video" || playInline === "video") && p?.ended && <p className="text-xs text-[#2dd4bf]">{t.watched}</p>}
     </li>
   );
 }
