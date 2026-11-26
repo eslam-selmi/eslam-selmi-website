@@ -1,51 +1,11 @@
 import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
 import { useEffect, useState, useMemo, useRef } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/portal-auth";
-import { PortalShell } from "@/components/PortalShell";
-import { toast } from "sonner";
-import { generateCertificatePdf } from "@/lib/certificate";
+import { AppChrome } from "@/components/shell/AppChrome";
+import { Loader2 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-import {
-  Plus,
-  Trash2,
-  CheckCircle2,
-  Upload,
-  Wallet,
-  Loader2,
-  Users,
-  BookOpen,
-  Award,
-  FileText,
-  X,
-  ToggleLeft,
-  ToggleRight,
-  Calendar,
-  Layers,
-  Link as LinkIcon,
-  StickyNote,
-  Paperclip,
-  Pencil,
-  Check,
-  Clock,
-  Settings2,
-  Sparkles,
-  Ticket,
-  Percent,
-  Archive,
-  Camera,
-  LifeBuoy,
-  Star,
-  CreditCard,
-  Trophy,
-  Video,
-  ShieldCheck,
-  LayoutDashboard,
-  MoreHorizontal,
-  Link2,
-} from "lucide-react";
-import { findCountry } from "@/lib/countries";
-import { safeHref } from "@/lib/safe-url";
 import { AdminSupportPanel } from "@/components/SupportTickets";
 import { assertAdmin } from "@/lib/admin-guard.functions";
 import { SiteManagementPanel } from "@/components/admin/SiteManagementPanel";
@@ -60,11 +20,8 @@ import { InterviewsPanel } from "@/components/admin/InterviewsPanel";
 import { TrainingsPanel } from "@/components/admin/TrainingsPanel";
 import { AdminToolbar } from "@/components/admin/AdminToolbar";
 import { TraineeDrawer } from "@/components/admin/TraineeDrawer";
-import { ExecutiveOverview } from "@/components/admin/ExecutiveOverview";
 import { CourseFeedbackPanel } from "@/components/admin/CourseFeedbackPanel";
 import { ShareLinksAdmin } from "@/components/share/ShareLinksAdmin";
-import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ActivationsPanel } from "@/components/admin/panels/ActivationsPanel";
 import { LatestAdditionsPanel, SnapshotsPanel, TestimonialsPanel } from "@/components/admin/panels/ContentPanels";
 import { CouponsPanel } from "@/components/admin/panels/Coupons";
@@ -82,34 +39,13 @@ import { VideosPanel } from "@/components/admin/panels/VideosPanel";
 import { PillarsPanel } from "@/components/admin/panels/PillarsPanel";
 import { AdminTranslationReview } from "@/components/admin/AdminTranslationReview";
 import { Course, EnrollmentRow } from "@/components/admin/panels/types";
+import { buildAdminNav, AdminSidebar, AdminMobileNav, type AdminTabId } from "@/components/admin-next/AdminNav";
+import { AdminOverview, type RecentEnrollment } from "@/components/admin-next/AdminOverview";
+import { SectionHeader } from "@/components/portal-next/PortalHome";
+import { LayoutDashboard } from "lucide-react";
 
 type AdminSearch = {
-  tab?:
-    | "overview"
-    | "enrollments"
-    | "courses"
-    | "coupons"
-    | "share"
-    | "banned"
-    | "additions"
-    | "activations"
-    | "finance"
-    | "methods"
-    | "feedback"
-    | "tickets"
-    | "site"
-    | "leads"
-    | "testimonials"
-    | "success_cases"
-    | "bookings"
-    | "packages"
-    | "interviews"
-    | "snapshots"
-    | "trainings"
-    | "partners"
-    | "contracts"
-    | "programs" | "services" | "pillars" | "videos" | "graduate_tools" | "media" | "effects" | "visibility" | "popups" | "maintenance" | "tools" | "pages";
-
+  tab?: AdminTabId;
   drawer?: string;
   editCourse?: string;
 };
@@ -143,41 +79,14 @@ export const Route = createFileRoute("/admin")({
 function AdminPage() {
   const { lang } = useI18n();
   const t = (a: string, b: string) => (lang === "ar" ? a : b);
+  const isAr = lang === "ar";
 
   const { user, role, loading } = useAuth();
   const nav = useNavigate();
   const navigation = useRef(nav);
   navigation.current = nav;
   const search = Route.useSearch();
-  const [tabState, setTabState] = useState<
-    | "overview"
-    | "enrollments"
-    | "courses"
-    | "coupons"
-    | "share"
-    | "banned"
-    | "additions"
-    | "activations"
-    | "finance"
-    | "methods"
-    | "feedback"
-    | "tickets"
-    | "site"
-    | "leads"
-    | "testimonials"
-    | "success_cases"
-    | "bookings"
-    | "packages"
-    | "interviews"
-    | "trainings"
-    | "snapshots"
-    | "partners"
-    | "contracts"
-    | "programs" | "services" | "pillars" | "videos" | "graduate_tools" | "media" | "effects" | "visibility" | "popups" | "maintenance" | "tools" | "pages"
-  >(search.tab || "overview");
-
-  const tab = tabState;
-  const setTab = setTabState;
+  const [tab, setTab] = useState<AdminTabId>(search.tab || "overview");
 
   const [pendingActivations, setPendingActivations] = useState<number>(0);
   const [courses, setCourses] = useState<Course[]>([]);
@@ -202,13 +111,13 @@ function AdminPage() {
     navigation.current({
       to: "/admin",
       search: {
-        tab: tabState,
+        tab,
         drawer: drawerId || undefined,
         editCourse: editingCourseId || undefined,
       },
       replace: true,
     });
-  }, [tabState, drawerId, editingCourseId]);
+  }, [tab, drawerId, editingCourseId]);
 
   useEffect(() => {
     if (!loading && !user) nav({ to: "/auth" });
@@ -274,7 +183,29 @@ function AdminPage() {
     };
   }, [role]);
 
-  // (Notifications are surfaced through the PortalShell bell — no duplicate subscription here.)
+  // Overview counts (bookings + open tickets) — same query key and realtime tables as the legacy ExecutiveOverview
+  const queryClient = useQueryClient();
+  const overviewCounts = useQuery({
+    queryKey: ["admin", "overview-counts"],
+    staleTime: 30_000,
+    enabled: role === "admin",
+    queryFn: async () => {
+      const [b, s] = await Promise.all([
+        supabase.from("consultation_slots").select("id", { count: "exact", head: true }).eq("status", "booked").gte("starts_at", new Date().toISOString()),
+        supabase.from("support_tickets").select("id", { count: "exact", head: true }).in("status", ["open", "pending_admin"]),
+      ]);
+      return { bookings: b.error ? null : b.count ?? 0, tickets: s.error ? null : s.count ?? 0 };
+    },
+  });
+  useEffect(() => {
+    if (role !== "admin") return;
+    const invalidate = () => { void queryClient.invalidateQueries({ queryKey: ["admin", "overview-counts"] }); };
+    const channel = supabase.channel("admin-overview-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "consultation_slots" }, invalidate)
+      .on("postgres_changes", { event: "*", schema: "public", table: "support_tickets" }, invalidate)
+      .subscribe();
+    return () => { void supabase.removeChannel(channel); };
+  }, [role, queryClient]);
 
   if (loading || !user || role !== "admin") {
     return (
@@ -286,221 +217,143 @@ function AdminPage() {
 
   const pending = enrollments.filter((e) => e.status === "pending").length;
   const approved = enrollments.filter((e) => e.status === "approved").length;
+  const blockedCount = enrollments.filter((e) => e.profiles?.account_blocked).length;
+
+  const groups = buildAdminNav(lang, { pendingActivations, pendingEnrollments: pending, blockedCount });
+  const currentSection = groups.flatMap((g) => g.items.map((i) => ({ ...i, group: g.label }))).find((i) => i.id === tab);
+
+  const recentEnrollments: RecentEnrollment[] = enrollments.slice(0, 5).map((e) => ({
+    id: e.id,
+    name: e.profiles?.full_name || e.profiles?.email || t("بدون اسم", "No name"),
+    course: (e as any).courses?.title || "",
+    status: e.status || "pending",
+    date: (e as any).created_at ? new Date((e as any).created_at).toLocaleDateString(isAr ? "ar-EG" : "en-GB") : "",
+  }));
 
   return (
-    <PortalShell userId={user.id} role="admin" userLabel={user.email}>
-      <div className="admin-workspace">
-        {(() => {
-          const groups: {
-            id: string;
-            label: string;
-            items: { id: NonNullable<AdminSearch["tab"]>; label: string; icon: typeof Users; badge?: number | string }[];
-          }[] = [
-            {
-              id: "students",
-              label: t("العمليات التعليمية والطلاب", "Learning & Students"),
-              items: [
-                { id: "overview", label: t("نظرة عامة", "Overview"), icon: LayoutDashboard },
-                { id: "activations", label: t("تفعيل الحسابات", "Activations"), icon: ShieldCheck, badge: pendingActivations || undefined },
-                { id: "enrollments", label: t("طلبات وانضمامات", "Enrollments"), icon: Users, badge: pending || undefined },
-                { id: "courses", label: t("الكورسات", "Courses"), icon: BookOpen },
-                { id: "leads", label: t("اهتمامات الكورسات", "Course leads"), icon: StickyNote },
-                { id: "feedback", label: t("تقييمات الكورسات", "Course feedback"), icon: Star },
-                { id: "banned", label: t("الموقوفون", "Banned"), icon: Archive, badge: enrollments.filter((e) => e.profiles?.account_blocked).length || undefined },
-              ],
-            },
-            {
-              id: "finance",
-              label: t("الحجوزات والمالية", "Bookings & Finance"),
-              items: [
-                { id: "bookings", label: t("حجوزات الاستشارات", "Bookings"), icon: Calendar },
-                { id: "finance", label: t("المعاملات المالية", "Transactions"), icon: Wallet },
-                { id: "methods", label: t("طرق الدفع", "Payment methods"), icon: CreditCard },
-                { id: "coupons", label: t("كوبونات الخصم", "Coupons"), icon: Ticket },
-                { id: "share", label: t("روابط مشاركة الكورسات", "Course share links"), icon: Link2 },
-                { id: "packages", label: t("باقات الاستشارات", "Packages"), icon: Layers },
-              ],
-            },
-            {
-              id: "site",
-              label: t("إدارة محتوى الموقع", "Site Content · CMS"),
-              items: [
-                { id: "services", label: t("الخدمات", "Services"), icon: Layers },
-                { id: "pillars", label: t("ثلاث ركائز", "Three pillars"), icon: Layers },
-                { id: "videos", label: t("قسم الفيديوهات", "Videos section"), icon: Layers },
-                { id: "programs", label: t("البرامج والمسارات", "Programs & tracks"), icon: BookOpen },
-                { id: "graduate_tools", label: t("أدوات الخريجين", "Graduate tools"), icon: Award },
-                { id: "trainings", label: t("التدريبات", "Trainings"), icon: Layers },
-                { id: "media", label: t("صور البرامج والكورسات", "Program & course images"), icon: Camera },
-                { id: "additions", label: t("أحدث الإضافات", "Latest additions"), icon: Sparkles },
-                { id: "snapshots", label: t("لحظات المسيرة", "Career moments"), icon: Camera },
-                { id: "testimonials", label: t("شهادات العملاء", "Testimonials"), icon: Star },
-                { id: "success_cases", label: t("حالات النجاح", "Success cases"), icon: Trophy },
-                { id: "partners", label: t("الشركاء", "Partners"), icon: Star },
-                { id: "contracts", label: t("عقود التميز", "Contracts"), icon: Trophy },
-                { id: "interviews", label: t("المقابلات", "Interviews"), icon: Video },
-              ],
-            },
-            {
-              id: "settings",
-              label: t("الإعدادات والدعم", "Settings & Support"),
-              items: [
-                { id: "site", label: t("هوية الموقع والتواصل", "Site identity & contact"), icon: Settings2 },
-                { id: "visibility", label: t("ظهور الأقسام ومحتوى الموقع", "Section visibility & content"), icon: ToggleRight },
-                { id: "tools", label: t("الأدوات: الظهور والصلاحيات", "Tools: visibility & access"), icon: ToggleRight },
-                { id: "pages", label: t("التابات: الظهور والقفل", "Tabs: visibility & lock"), icon: ToggleRight },
-                { id: "popups", label: t("الإعلانات المنبثقة", "Popup announcements"), icon: Sparkles },
-                { id: "effects", label: t("مؤثرات الزوار", "Visitor effects"), icon: Sparkles },
-                { id: "maintenance", label: t("وضع الصيانة", "Maintenance"), icon: Settings2 },
-                { id: "tickets", label: t("تذاكر الدعم", "Support tickets"), icon: LifeBuoy },
-              ],
-            },
-          ];
+    <AppChrome
+      role="admin"
+      userId={user.id}
+      userLabel={user.email}
+      sidebar={
+        <AdminSidebar
+          groups={groups}
+          tab={tab}
+          onSelect={setTab}
+          lang={lang}
+          attention={[
+            { label: t("تفعيلات", "Activations"), value: pendingActivations, tone: "gold" },
+            { label: t("طلبات", "Requests"), value: pending, tone: "gold" },
+            { label: t("تذاكر", "Tickets"), value: overviewCounts.data?.tickets ?? 0, tone: "teal" },
+          ]}
+        />
+      }
+    >
+      <div className="lg:hidden"><AdminMobileNav groups={groups} tab={tab} onSelect={setTab} lang={lang} /></div>
 
-          return (
-            <div className="flex flex-col lg:flex-row gap-6">
-              {/* Grouped mobile menu avoids an unbounded horizontal strip. */}
-              <div className="lg:hidden sticky top-16 z-30 py-2 dash-header">
-                <Select value={tab} onValueChange={value => { const item = groups.flatMap(g => g.items).find(i => i.id === value); if (item) setTab(item.id); }}>
-                  <SelectTrigger aria-label={t("أقسام الإدارة", "Administration sections")}><SelectValue /></SelectTrigger>
-                  <SelectContent>{groups.map(group => <div key={group.id}><p className="px-2 py-2 text-xs font-bold text-muted-foreground">{group.label}</p>{group.items.map(item => { const Icon = item.icon; return <SelectItem key={item.id} value={item.id}><span className="flex items-center gap-2"><Icon className="size-4" />{item.label}</span></SelectItem>; })}</div>)}</SelectContent>
-                </Select>
-              </div>
-
-              {/* Desktop sidebar */}
-              <aside className="hidden lg:block w-64 shrink-0">
-                <nav aria-label={t("أقسام الإدارة", "Administration sections")} className="admin-side-nav dash-card p-3 sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto space-y-4 [scrollbar-width:thin]">
-
-                  {groups.map((g) => (
-                    <div key={g.id} className="space-y-1.5">
-                      <p className="px-2 text-[11px] text-muted-foreground font-bold">
-                        {g.label}
-                      </p>
-                      <ul className="space-y-1">
-                        {g.items.map((it) => {
-                          const Icon = it.icon;
-                          const active = tab === it.id;
-                          return (
-                            <li key={it.id}>
-                              <Button
-                                type="button" variant="ghost"
-                                onClick={() => setTab(it.id)}
-                                aria-current={active ? "page" : undefined}
-                                className="dashboard-nav-item w-full group flex items-center justify-start gap-2.5 px-3 h-10 text-[13px] font-semibold transition text-start"
-                              >
-                                <Icon
-                                  className={`w-4 h-4 shrink-0 ${active ? "text-gold" : "text-muted-foreground group-hover:text-gold"}`}
-                                />
-                                <span className="flex-1 truncate">{it.label}</span>
-                                {it.badge ? (
-                                  <span
-                                    className="dashboard-nav-badge min-w-[22px] text-center text-[10px] font-bold px-1.5 h-5 leading-5 rounded-md"
-                                  >
-                                    {it.badge}
-                                  </span>
-                                ) : null}
-                              </Button>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  ))}
-                </nav>
-              </aside>
-
-              {/* Main content */}
-              <div className="flex-1 min-w-0 space-y-6">
-                {tab !== "overview" && <div className="border-b border-border pb-4"><h1 className="text-xl font-bold text-foreground">{groups.flatMap((g) => g.items).find((item) => item.id === tab)?.label}</h1></div>}
-                <AdminToolbar
-                  enrollments={enrollments}
-                  courses={courses}
-                  onTrainee={setTraineeId}
-                  onCourse={(id) => { setTab("courses"); setEditingCourseId(id); }}
-                />
-                {tab === "overview" ? (
-                  <ExecutiveOverview pendingEnrollments={pending} pendingActivations={pendingActivations} approved={approved} courses={courses.length} onNavigate={setTab} />
-                ) : tab === "activations" ? (
-                  <ActivationsPanel />
-                ) : tab === "enrollments" ? (
-                  <EnrollmentsTable
-                    enrollments={enrollments}
-                    courses={courses}
-                    onOpen={setDrawer}
-                    refresh={refresh}
-                  />
-                ) : tab === "courses" ? (
-                  <CoursesPanel
-                    courses={courses}
-                    enrollments={enrollments}
-                    refresh={refresh}
-                    onEdit={setEditingCourse}
-                  />
-                ) : tab === "share" ? (
-                  <ShareLinksAdmin lang={lang} />
-                ) : tab === "coupons" ? (
-                  <CouponsPanel courses={courses} />
-                ) : tab === "additions" ? (
-                  <LatestAdditionsPanel />
-                ) : tab === "testimonials" ? (
-                  <TestimonialsPanel />
-                ) : tab === "success_cases" ? (
-                  <SuccessCasesPanel />
-                ) : tab === "partners" ? (
-                  <PartnersPanel />
-                ) : tab === "contracts" ? (
-                  <ContractsPanel />
-                ) : tab === "bookings" ? (
-                  <BookingsPanel />
-                ) : tab === "packages" ? (
-                  <PackagesPanel />
-                ) : tab === "interviews" ? (
-                  <InterviewsPanel />
-                ) : tab === "trainings" ? (
-                  <TrainingsPanel />
-                ) : tab === "snapshots" ? (
-                  <SnapshotsPanel />
-                ) : tab === "programs" ? (
-                  <ProgramsPanel />
-                ) : tab === "services" ? (
-                  <ServicesPanel />
-                ) : tab === "videos" ? (
-                  <VideosPanel />
-                ) : tab === "pillars" ? (
-                  <PillarsPanel />
-                ) : tab === "graduate_tools" ? (
-                  <GraduateToolsPanel />
-                ) : tab === "media" ? (
-                  <SiteMediaPanel />
-                ) : tab === "tools" ? (
-                  <ToolsAccessPanel />
-                ) : tab === "pages" ? (
-                  <PageAccessPanel />
-                ) : tab === "effects" ? (
-                  <BuildEffectsPanel />
-                ) : tab === "visibility" || tab === "popups" || tab === "maintenance" || tab === "site" ? (
-                  <SiteManagementPanel section={tab === "site" ? "profile" : tab === "visibility" ? "content" : tab} />
-                ) : tab === "leads" ? (
-                  <CourseLeadsPanel />
-                ) : tab === "feedback" ? (
-                  <CourseFeedbackPanel courses={courses} />
-                ) : tab === "tickets" ? (
-                  user ? (
-                    <AdminSupportPanel adminUserId={user.id} />
-                  ) : null
-                ) : tab === "finance" ? (
-                  <FinancePanel courses={courses} enrollments={enrollments} />
-                ) : tab === "methods" ? (
-                  <PaymentMethodsPanel />
-                ) : (
-                  <BannedPanel enrollments={enrollments} refresh={refresh} />
-                )}
-              </div>
-            </div>
-          );
-        })()}
-
+      <div className="space-y-6">
+        {tab !== "overview" && (
+          <SectionHeader
+            icon={currentSection?.icon ?? LayoutDashboard}
+            hint={currentSection?.group}
+            title={currentSection?.label || ""}
+          />
+        )}
+        <AdminToolbar
+          enrollments={enrollments}
+          courses={courses}
+          onTrainee={setTraineeId}
+          onCourse={(id) => { setTab("courses"); setEditingCourseId(id); }}
+        />
+        {tab === "overview" ? (
+          <AdminOverview
+            lang={lang}
+            pendingEnrollments={pending}
+            pendingActivations={pendingActivations}
+            approved={approved}
+            courses={courses.length}
+            bookings={overviewCounts.data?.bookings ?? null}
+            tickets={overviewCounts.data?.tickets ?? null}
+            onNavigate={(d) => setTab(d)}
+            recentEnrollments={recentEnrollments}
+          />
+        ) : tab === "activations" ? (
+          <ActivationsPanel />
+        ) : tab === "enrollments" ? (
+          <EnrollmentsTable
+            enrollments={enrollments}
+            courses={courses}
+            onOpen={setDrawer}
+            refresh={refresh}
+          />
+        ) : tab === "courses" ? (
+          <CoursesPanel
+            courses={courses}
+            enrollments={enrollments}
+            refresh={refresh}
+            onEdit={setEditingCourse}
+          />
+        ) : tab === "share" ? (
+          <ShareLinksAdmin lang={lang} />
+        ) : tab === "coupons" ? (
+          <CouponsPanel courses={courses} />
+        ) : tab === "additions" ? (
+          <LatestAdditionsPanel />
+        ) : tab === "testimonials" ? (
+          <TestimonialsPanel />
+        ) : tab === "success_cases" ? (
+          <SuccessCasesPanel />
+        ) : tab === "partners" ? (
+          <PartnersPanel />
+        ) : tab === "contracts" ? (
+          <ContractsPanel />
+        ) : tab === "bookings" ? (
+          <BookingsPanel />
+        ) : tab === "packages" ? (
+          <PackagesPanel />
+        ) : tab === "interviews" ? (
+          <InterviewsPanel />
+        ) : tab === "trainings" ? (
+          <TrainingsPanel />
+        ) : tab === "snapshots" ? (
+          <SnapshotsPanel />
+        ) : tab === "programs" ? (
+          <ProgramsPanel />
+        ) : tab === "services" ? (
+          <ServicesPanel />
+        ) : tab === "videos" ? (
+          <VideosPanel />
+        ) : tab === "pillars" ? (
+          <PillarsPanel />
+        ) : tab === "graduate_tools" ? (
+          <GraduateToolsPanel />
+        ) : tab === "media" ? (
+          <SiteMediaPanel />
+        ) : tab === "tools" ? (
+          <ToolsAccessPanel />
+        ) : tab === "pages" ? (
+          <PageAccessPanel />
+        ) : tab === "effects" ? (
+          <BuildEffectsPanel />
+        ) : tab === "visibility" || tab === "popups" || tab === "maintenance" || tab === "site" ? (
+          <SiteManagementPanel section={tab === "site" ? "profile" : tab === "visibility" ? "content" : tab} />
+        ) : tab === "leads" ? (
+          <CourseLeadsPanel />
+        ) : tab === "feedback" ? (
+          <CourseFeedbackPanel courses={courses} />
+        ) : tab === "tickets" ? (
+          user ? (
+            <AdminSupportPanel adminUserId={user.id} />
+          ) : null
+        ) : tab === "finance" ? (
+          <FinancePanel courses={courses} enrollments={enrollments} />
+        ) : tab === "methods" ? (
+          <PaymentMethodsPanel />
+        ) : (
+          <BannedPanel enrollments={enrollments} refresh={refresh} />
+        )}
       </div>
+
       <AdminTranslationReview />
 
       {drawer && (
@@ -522,6 +375,6 @@ function AdminPage() {
           refresh={refresh}
         />
       )}
-    </PortalShell>
+    </AppChrome>
   );
 }

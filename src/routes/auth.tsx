@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { useAuth } from "@/lib/portal-auth";
 import { toast } from "sonner";
-import { Loader2, ArrowLeft, ShieldCheck } from "lucide-react";
+import { Loader2, ArrowLeft, ShieldCheck, GraduationCap, Award, Clock3 } from "lucide-react";
 import {
   COUNTRIES,
   findCountry,
@@ -184,224 +184,205 @@ function AuthPage() {
   const isAdminView = authRole === "admin";
 
   return (
-    <div
-      dir="rtl"
-      className="min-h-screen relative overflow-hidden px-4 py-10 sm:py-16 font-[var(--font-body-ar)] text-white bg-[#070b14]"
-    >
-      <div
-        aria-hidden
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(700px 420px at 85% -5%, rgba(56,189,248,0.14), transparent 62%), radial-gradient(600px 400px at 10% 100%, rgba(148,163,184,0.10), transparent 60%), linear-gradient(180deg, #070b14 0%, #05080f 100%)",
-        }}
-      />
-      <div
-        aria-hidden
-        className="absolute inset-0 pointer-events-none opacity-[0.16]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(148,163,184,0.14) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,0.14) 1px, transparent 1px)",
-          backgroundSize: "54px 54px",
-          maskImage: "radial-gradient(60% 60% at 50% 40%, #000 20%, transparent 100%)",
-        }}
-      />
-      <div aria-hidden className="absolute inset-0 pointer-events-none opacity-[0.05] grain" />
+    <div dir="rtl" className="nx nx-bg min-h-screen relative overflow-hidden font-[var(--font-body-ar)]">
+      <div className="absolute inset-0 nx-grid-overlay pointer-events-none" />
 
-      <div className="relative mx-auto flex min-h-[calc(100vh-5rem)] w-full flex-col max-w-sm">
-        <Link
-          to="/"
-          className="self-start inline-flex items-center gap-1.5 text-[12px] text-white/55 hover:text-white/90 transition"
-        >
-          <ArrowLeft className="h-3.5 w-3.5 rtl-flip" />
-          العودة للموقع
-        </Link>
+      <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6 py-6 sm:py-10 min-h-screen flex flex-col">
+        <div className="flex items-center justify-between">
+          <Link to="/" className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-white/55 hover:text-white transition">
+            <ArrowLeft className="h-3.5 w-3.5 rtl-flip" />
+            العودة للموقع
+          </Link>
+          <span className="nx-chip"><ShieldCheck className="w-3 h-3 text-[var(--nx-teal)]" /> اتصال مشفّر</span>
+        </div>
 
-        <div className="flex-1 flex items-center justify-center py-8">
-          <div className="w-full rounded-2xl border border-sky-300/15 bg-white/[0.025] p-6 sm:p-7 backdrop-blur-xl shadow-[0_30px_80px_-40px_rgba(56,189,248,0.45)]">
-            {/* Brand */}
-            <div className="flex flex-col items-center text-center mb-8">
-              <div className="h-14 w-14 rounded-xl border border-white/12 bg-white/[0.04] flex items-center justify-center mb-4">
-                <img src={siteProfile.logo} alt="" className="h-9 w-auto opacity-90" />
+        <div className="flex-1 flex items-center py-8">
+          <div className="w-full grid lg:grid-cols-[1.05fr_1fr] gap-6 lg:gap-10 items-stretch">
+
+            {/* Brand panel */}
+            <aside className="nx-card relative overflow-hidden p-7 sm:p-10 hidden lg:flex flex-col justify-between">
+              <span className="nx-hero-line" />
+              <div className="pointer-events-none absolute -top-28 -start-28 w-80 h-80 rounded-full bg-[var(--nx-teal)]/10 blur-3xl" />
+              <div className="pointer-events-none absolute -bottom-32 -end-24 w-80 h-80 rounded-full bg-[var(--nx-gold)]/[0.08] blur-3xl" />
+              <div className="relative">
+                <img src={siteProfile.logo} alt="" className="h-12 w-auto" onError={(e) => { const el = e.currentTarget; el.onerror = null; el.style.display = "none"; const s = el.nextElementSibling as HTMLElement | null; if (s) s.style.display = "flex"; }} />
+                <span style={{ display: "none" }} className="h-12 w-12 rounded-2xl bg-gradient-to-br from-[var(--nx-teal)]/30 to-[var(--nx-gold)]/20 border border-white/15 items-center justify-center text-[15px] font-bold text-white">ES</span>
+                <p className="nx-eyebrow mt-8">{isAdminView ? "منطقة الإدارة" : "منصة إسلام سلمي التدريبية"}</p>
+                <h1 className="nx-display text-[34px] xl:text-[42px] leading-[1.2] mt-3">
+                  {isAdminView ? "كل إدارة موقعك في مكان واحد." : "رحلتك التدريبية تبدأ من هنا."}
+                </h1>
+                <p className="text-white/55 text-sm leading-relaxed mt-4 max-w-md">
+                  {isAdminView
+                    ? "الكورسات، الطلبات، الحجوزات، المحتوى والدعم — لوحة واحدة مصممة لتنجز عملك اليومي بوضوح."
+                    : "تابع كورساتك وساعاتك التدريبية، حمّل شهاداتك، واحجز استشاراتك — كل ذلك من بوابة واحدة ذكية."}
+                </p>
               </div>
-              <h1 className="font-semibold tracking-tight text-white text-[21px] sm:text-[23px]">
-                {isAdminView ? "لوحة التحكم" : mode === "login" ? "تسجيل الدخول" : "إنشاء حساب"}
-              </h1>
-              <p className="mt-1.5 text-[13px] text-white/50">
-                {isAdminView
-                  ? "سجّل الدخول للمتابعة إلى لوحة التحكم."
-                  : mode === "login"
-                    ? "ادخل إلى حسابك للمتابعة."
-                    : "أنشئ حساباً جديداً للتقديم على الكورسات."}
-              </p>
-            </div>
-
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-3.5">
-              {!isAdminView && mode === "signup" && (
-                <>
-                  <Field
-                    label="الاسم الكامل"
-                    value={fullName}
-                    onChange={setFullName}
-                    placeholder="الاسم الثلاثي"
-                    required
-                  />
-                  <label className="block">
-                    <span className="block text-[12px] text-white/60 mb-1.5">الدولة</span>
-                    <select
-                      value={countryCode}
-                      onChange={(e) => setCountryCode(e.target.value)}
-                      required
-                      className="w-full h-11 px-3.5 rounded-lg bg-white/[0.04] border border-white/10 text-white text-sm focus:outline-none focus:border-white/30 focus:bg-white/[0.06] transition"
-                    >
-                      {COUNTRIES.map((c) => (
-                        <option key={c.code} value={c.code} className="bg-[#0a1224]">
-                          {c.flag} {c.name_ar} ({c.dial})
-                        </option>
-                      ))}
-                      {customCountries.length > 0 && (
-                        <optgroup label="— مضافة —" className="bg-[#0a1224]">
-                          {customCountries.map((c) => (
-                            <option key={c.id} value={`CUST:${c.id}`} className="bg-[#0a1224]">
-                              {c.flag ? c.flag + " " : ""}{c.name_ar}{c.dial ? ` (${c.dial})` : ""}
-                            </option>
-                          ))}
-                        </optgroup>
-                      )}
-                      <option value="OTHER" className="bg-[#0a1224]">
-                        🌍 دولة أخرى (اكتب اسمها)…
-                      </option>
-                    </select>
-                  </label>
-                  {countryCode === "OTHER" && (
-                    <label className="block">
-                      <span className="block text-[12px] text-white/60 mb-1.5">اسم الدولة</span>
-                      <input
-                        value={otherCountryName}
-                        onChange={(e) => setOtherCountryName(e.target.value)}
-                        placeholder="مثال: قبرص"
-                        maxLength={80}
-                        required
-                        className="w-full h-11 px-3.5 rounded-lg bg-white/[0.04] border border-white/10 text-white text-sm placeholder:text-white/25 focus:outline-none focus:border-white/30 focus:bg-white/[0.06] transition"
-                      />
-                    </label>
-                  )}
-                  <label className="block">
-                    <span className="block text-[12px] text-white/60 mb-1.5">رقم الهاتف</span>
-                    <div className="flex gap-2" dir="ltr">
-                      {countryCode !== "OTHER" && countryCode.startsWith("CUST:") === false && (
-                        <span className="h-11 px-3 rounded-lg bg-white/[0.04] border border-white/10 text-white/70 inline-flex items-center text-sm font-mono">
-                          {findCountry(countryCode)?.dial}
-                        </span>
-                      )}
-                      <input
-                        type="tel"
-                        inputMode="tel"
-                        value={phone}
-                        onChange={(e) => {
-                          const c = findCountry(countryCode);
-                          const cleaned = c
-                            ? sanitizeNationalNumber(e.target.value, c)
-                            : e.target.value.replace(/[^\d+]/g, "");
-                          setPhone(cleaned);
-                          setPhoneError(null);
-                        }}
-                        placeholder={
-                          countryCode === "OTHER" || countryCode.startsWith("CUST:")
-                            ? "+357xxxxxxxx"
-                            : findCountry(countryCode)?.nsnLengths[0]
-                              ? "5".padEnd(findCountry(countryCode)!.nsnLengths[0], "x")
-                              : "1xxxxxxxxx"
-                        }
-                        required
-                        dir="ltr"
-                        className={`flex-1 h-11 px-3.5 rounded-lg bg-white/[0.04] border text-white text-sm placeholder:text-white/25 focus:outline-none focus:bg-white/[0.06] transition ${phoneError ? "border-rose-400/60 focus:border-rose-400" : "border-white/10 focus:border-white/30"}`}
-                      />
+              {!isAdminView && (
+                <div className="relative grid grid-cols-3 gap-3 mt-10">
+                  {[
+                    { icon: GraduationCap, t: "كورسات عملية", d: "محتوى تطبيقي مباشر" },
+                    { icon: Award, t: "شهادات موثقة", d: "تحميل فوري وتحقق" },
+                    { icon: Clock3, t: "تقدم واضح", d: "ساعاتك أولاً بأول" },
+                  ].map((f) => (
+                    <div key={f.t} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-3.5">
+                      <f.icon className="w-5 h-5 text-[var(--nx-teal)]" />
+                      <p className="text-[12.5px] font-bold mt-2.5">{f.t}</p>
+                      <p className="text-[10.5px] text-white/45 mt-1 leading-relaxed">{f.d}</p>
                     </div>
-                    {(countryCode === "OTHER" || countryCode.startsWith("CUST:")) && (
-                      <p className="text-[11px] text-white/40 mt-1.5">اكتب الرقم كاملاً مع كود الدولة (مثال: +357…)</p>
-                    )}
-                    {phoneError && (
-                      <p className="text-[11px] text-rose-300/90 mt-1.5 leading-relaxed">
-                        {phoneError}
-                      </p>
-                    )}
-                  </label>
-                </>
+                  ))}
+                </div>
               )}
-              <Field
-                type="email"
-                label="البريد الإلكتروني"
-                value={email}
-                onChange={setEmail}
-                placeholder="name@example.com"
-                required
-              />
-              <Field
-                type="password"
-                label="كلمة المرور"
-                value={password}
-                onChange={setPassword}
-                placeholder="••••••••"
-                required
-              />
+              {isAdminView && (
+                <div className="relative mt-10 rounded-2xl border border-[var(--nx-gold)]/25 bg-[var(--nx-gold)]/[0.06] p-4 flex items-center gap-3">
+                  <ShieldCheck className="w-5 h-5 text-[var(--nx-gold)] shrink-0" />
+                  <p className="text-[12px] text-white/65 leading-relaxed">هذه المنطقة مخصصة لإدارة الموقع فقط. صلاحيات الدخول تُراجع من الخادم في كل زيارة.</p>
+                </div>
+              )}
+            </aside>
 
-              <button
-                type="submit"
-                disabled={busy}
-                className="w-full mt-2 h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-60 transition bg-gradient-to-l from-sky-400 to-cyan-300 text-[#04121f] hover:brightness-110 shadow-[0_14px_36px_-16px_rgba(56,189,248,0.8)]"
-              >
-                {busy ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <>{isAdminView ? "دخول" : mode === "login" ? "دخول" : "إنشاء الحساب"}</>
-                )}
-              </button>
-            </form>
-
-            {!isAdminView && (
-              <div className="mt-5 text-center text-[13px] text-white/55">
-                {mode === "login" ? "ليس لديك حساب؟ " : "لديك حساب بالفعل؟ "}
-                <button
-                  type="button"
-                  onClick={() => setMode(mode === "login" ? "signup" : "login")}
-                  className="text-white hover:underline font-medium"
-                >
-                  {mode === "login" ? "إنشاء حساب" : "تسجيل الدخول"}
-                </button>
+            {/* Form card */}
+            <div className="nx-card relative p-6 sm:p-9 nx-rise">
+              <span className="nx-hero-line" />
+              <div className="flex flex-col items-center text-center mb-7">
+                <div className="lg:hidden h-14 w-14 rounded-2xl border border-white/12 bg-white/[0.05] flex items-center justify-center mb-4">
+                  <img src={siteProfile.logo} alt="" className="h-9 w-auto" />
+                </div>
+                <p className="nx-eyebrow justify-center">{isAdminView ? "لوحة التحكم" : mode === "login" ? "أهلاً بعودتك" : "حساب جديد"}</p>
+                <h2 className="nx-display text-2xl sm:text-[27px] mt-2">
+                  {isAdminView ? "دخول الإدارة" : mode === "login" ? "تسجيل الدخول" : "إنشاء حساب"}
+                </h2>
+                <p className="mt-2 text-[13px] text-white/50">
+                  {isAdminView
+                    ? "سجّل الدخول للمتابعة إلى لوحة التحكم."
+                    : mode === "login"
+                      ? "ادخل إلى حسابك للمتابعة."
+                      : "أنشئ حساباً جديداً للتقديم على الكورسات."}
+                </p>
               </div>
-            )}
 
-            <div className="flex justify-center mt-6 border-t border-white/[0.06] pt-5">
-              {isAdminView ? (
-                <button
-                  type="button"
-                  onClick={() => setAuthRole("trainee")}
-                  className="text-[12px] text-white/45 hover:text-white/80 transition"
-                >
-                  دخول المتدربين
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {!isAdminView && mode === "signup" && (
+                  <>
+                    <Field label="الاسم الكامل" value={fullName} onChange={setFullName} placeholder="الاسم الثلاثي" required />
+                    <label className="block">
+                      <span className="block text-[12px] font-semibold text-white/60 mb-1.5">الدولة</span>
+                      <select
+                        value={countryCode}
+                        onChange={(e) => setCountryCode(e.target.value)}
+                        required
+                        className="nx-input"
+                      >
+                        {COUNTRIES.map((c) => (
+                          <option key={c.code} value={c.code} className="bg-[#0a1224]">
+                            {c.flag} {c.name_ar} ({c.dial})
+                          </option>
+                        ))}
+                        {customCountries.length > 0 && (
+                          <optgroup label="— مضافة —" className="bg-[#0a1224]">
+                            {customCountries.map((c) => (
+                              <option key={c.id} value={`CUST:${c.id}`} className="bg-[#0a1224]">
+                                {c.flag ? c.flag + " " : ""}{c.name_ar}{c.dial ? ` (${c.dial})` : ""}
+                              </option>
+                            ))}
+                          </optgroup>
+                        )}
+                        <option value="OTHER" className="bg-[#0a1224]">
+                          🌍 دولة أخرى (اكتب اسمها)…
+                        </option>
+                      </select>
+                    </label>
+                    {countryCode === "OTHER" && (
+                      <label className="block">
+                        <span className="block text-[12px] font-semibold text-white/60 mb-1.5">اسم الدولة</span>
+                        <input
+                          value={otherCountryName}
+                          onChange={(e) => setOtherCountryName(e.target.value)}
+                          placeholder="مثال: قبرص"
+                          maxLength={80}
+                          required
+                          className="nx-input"
+                        />
+                      </label>
+                    )}
+                    <label className="block">
+                      <span className="block text-[12px] font-semibold text-white/60 mb-1.5">رقم الهاتف</span>
+                      <div className="flex gap-2" dir="ltr">
+                        {countryCode !== "OTHER" && countryCode.startsWith("CUST:") === false && (
+                          <span className="h-[46px] px-3 rounded-[13px] bg-white/[0.045] border border-white/10 text-white/70 inline-flex items-center text-sm font-mono">
+                            {findCountry(countryCode)?.dial}
+                          </span>
+                        )}
+                        <input
+                          type="tel"
+                          inputMode="tel"
+                          value={phone}
+                          onChange={(e) => {
+                            const c = findCountry(countryCode);
+                            const cleaned = c
+                              ? sanitizeNationalNumber(e.target.value, c)
+                              : e.target.value.replace(/[^\d+]/g, "");
+                            setPhone(cleaned);
+                            setPhoneError(null);
+                          }}
+                          placeholder={
+                            countryCode === "OTHER" || countryCode.startsWith("CUST:")
+                              ? "+357xxxxxxxx"
+                              : findCountry(countryCode)?.nsnLengths[0]
+                                ? "5".padEnd(findCountry(countryCode)!.nsnLengths[0], "x")
+                                : "1xxxxxxxxx"
+                          }
+                          required
+                          dir="ltr"
+                          className={`nx-input flex-1 ${phoneError ? "!border-rose-400/60" : ""}`}
+                        />
+                      </div>
+                      {(countryCode === "OTHER" || countryCode.startsWith("CUST:")) && (
+                        <p className="text-[11px] text-white/40 mt-1.5">اكتب الرقم كاملاً مع كود الدولة (مثال: +357…)</p>
+                      )}
+                      {phoneError && (
+                        <p className="text-[11px] text-rose-300/90 mt-1.5 leading-relaxed">{phoneError}</p>
+                      )}
+                    </label>
+                  </>
+                )}
+                <Field type="email" label="البريد الإلكتروني" value={email} onChange={setEmail} placeholder="name@example.com" required />
+                <Field type="password" label="كلمة المرور" value={password} onChange={setPassword} placeholder="••••••••" required />
+
+                <button type="submit" disabled={busy} className="nx-btn nx-btn-primary w-full !h-12 !text-[14px] mt-1 disabled:opacity-60">
+                  {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{isAdminView ? "دخول" : mode === "login" ? "دخول" : "إنشاء الحساب"}</>}
                 </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setAuthRole("admin");
-                    setMode("login");
-                  }}
-                  className="text-[12px] text-white/45 hover:text-white/80 transition"
-                >
-                  دخول الإدارة
-                </button>
+              </form>
+
+              {!isAdminView && (
+                <div className="mt-5 text-center text-[13px] text-white/55">
+                  {mode === "login" ? "ليس لديك حساب؟ " : "لديك حساب بالفعل؟ "}
+                  <button
+                    type="button"
+                    onClick={() => setMode(mode === "login" ? "signup" : "login")}
+                    className="text-[var(--nx-teal)] hover:underline font-bold"
+                  >
+                    {mode === "login" ? "إنشاء حساب" : "تسجيل الدخول"}
+                  </button>
+                </div>
               )}
+
+              <hr className="nx-divider my-6" />
+              <div className="flex justify-center">
+                {isAdminView ? (
+                  <button type="button" onClick={() => setAuthRole("trainee")} className="text-[12px] font-semibold text-white/45 hover:text-white/80 transition">
+                    دخول المتدربين
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => { setAuthRole("admin"); setMode("login"); }}
+                    className="text-[12px] font-semibold text-white/45 hover:text-white/80 transition"
+                  >
+                    دخول الإدارة
+                  </button>
+                )}
+              </div>
             </div>
-
-            <div className="flex items-center justify-center gap-1.5 text-[11px] mt-6 text-white/35">
-              <ShieldCheck className="h-3.5 w-3.5" />
-              <span>اتصال مشفّر</span>
-            </div>
-
-
           </div>
         </div>
       </div>
@@ -426,7 +407,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="block text-xs text-white/70 mb-1.5 font-medium">{label}</span>
+      <span className="block text-[12px] font-semibold text-white/60 mb-1.5">{label}</span>
       <input
         type={type}
         value={value}
@@ -434,7 +415,7 @@ function Field({
         placeholder={placeholder}
         required={required}
         dir={type === "email" || type === "password" ? "ltr" : "rtl"}
-        className="w-full h-11 px-4 rounded-xl bg-white/5 border border-white/15 text-white placeholder:text-white/30 focus:outline-none focus:border-[var(--gold)]/60 focus:bg-white/10 transition"
+        className="nx-input"
       />
     </label>
   );

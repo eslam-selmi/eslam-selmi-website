@@ -25,7 +25,6 @@ const ICONS = { tna: BarChart3, perf: Target, exam: GraduationCap } as const;
 const BUCKET = "tool-assets";
 const FILES: Partial<Record<ToolId, { handout?: string; excel?: string }>> = {
   tna: { handout: "tna/handbook.pdf", excel: "tna/original-workbook.xlsx" },
-  perf: { handout: "perf/handbook.pdf", excel: "perf/practice-start.xlsx" },
 };
 async function signedUrl(path: string): Promise<string | null> {
   const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(path, 120);

@@ -1,0 +1,353 @@
+/* ============================================================
+   Selmi Next — unified premium shell for portal / admin / auth
+   Scoped under .nx so legacy dashboard styles stay untouched.
+   ============================================================ */
+
+.nx {
+  --nx-bg-0: oklch(0.11 0.03 258);
+  --nx-bg-1: oklch(0.15 0.04 255);
+  --nx-teal: oklch(0.82 0.12 190);
+  --nx-teal-deep: oklch(0.68 0.13 205);
+  --nx-gold: oklch(0.84 0.13 82);
+  --nx-gold-deep: oklch(0.72 0.13 75);
+  --nx-ink: oklch(0.97 0.008 230);
+  --nx-ink-60: oklch(0.97 0.008 230 / 0.6);
+  --nx-ink-40: oklch(0.97 0.008 230 / 0.4);
+  --nx-line: oklch(1 0 0 / 0.09);
+  --nx-line-strong: oklch(1 0 0 / 0.16);
+  --nx-card: linear-gradient(165deg, oklch(1 0 0 / 0.055), oklch(1 0 0 / 0.02) 55%);
+  --nx-card-solid: oklch(0.17 0.04 253);
+  --nx-radius: 20px;
+  --nx-font-display: "Thmanyah Serif Display", "IBM Plex Sans Arabic", serif;
+  --nx-shadow: 0 24px 60px -28px oklch(0 0 0 / 0.55);
+  color: var(--nx-ink);
+}
+
+.nx-bg {
+  background:
+    radial-gradient(1100px 520px at 88% -8%, oklch(0.82 0.12 190 / 0.13), transparent 60%),
+    radial-gradient(900px 480px at 4% 110%, oklch(0.84 0.13 82 / 0.07), transparent 55%),
+    radial-gradient(700px 500px at 12% -12%, oklch(0.55 0.14 250 / 0.35), transparent 65%),
+    linear-gradient(180deg, var(--nx-bg-1) 0%, var(--nx-bg-0) 60%);
+}
+.nx-grid-overlay {
+  background-image:
+    linear-gradient(oklch(1 0 0 / 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(1 0 0 / 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(75% 60% at 50% 0%, #000 25%, transparent 100%);
+}
+
+.nx-card {
+  position: relative;
+  background: var(--nx-card);
+  border: 1px solid var(--nx-line);
+  border-radius: var(--nx-radius);
+  box-shadow: var(--nx-shadow), inset 0 1px 0 oklch(1 0 0 / 0.06);
+  backdrop-filter: blur(18px);
+}
+.nx-card-hover { transition: transform .28s cubic-bezier(.2,.7,.2,1), border-color .28s, box-shadow .28s; }
+.nx-card-hover:hover {
+  transform: translateY(-3px);
+  border-color: oklch(0.82 0.12 190 / 0.35);
+  box-shadow: 0 32px 70px -30px oklch(0 0 0 / 0.65), 0 0 0 1px oklch(0.82 0.12 190 / 0.12), inset 0 1px 0 oklch(1 0 0 / 0.08);
+}
+
+.nx-display { font-family: var(--nx-font-display); font-weight: 700; letter-spacing: 0; }
+
+.nx-eyebrow {
+  font-size: 11px; font-weight: 700; color: var(--nx-teal);
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.nx-eyebrow::before { content: ""; width: 22px; height: 1.5px; background: linear-gradient(90deg, var(--nx-teal), transparent); border-radius: 2px; }
+
+.nx-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 42px; padding: 0 18px; border-radius: 13px;
+  font-size: 13px; font-weight: 700; border: 1px solid transparent;
+  transition: transform .2s, filter .2s, background .2s, border-color .2s, color .2s;
+  cursor: pointer; white-space: nowrap;
+}
+.nx-btn:active { transform: scale(.97); }
+.nx-btn-primary {
+  background: linear-gradient(120deg, var(--nx-teal) 0%, var(--nx-teal-deep) 100%);
+  color: oklch(0.13 0.04 255);
+  box-shadow: 0 12px 30px -12px oklch(0.82 0.12 190 / 0.55);
+}
+.nx-btn-primary:hover { filter: brightness(1.08); }
+.nx-btn-gold {
+  background: linear-gradient(120deg, var(--nx-gold) 0%, var(--nx-gold-deep) 100%);
+  color: oklch(0.16 0.05 255);
+  box-shadow: 0 12px 30px -12px oklch(0.84 0.13 82 / 0.5);
+}
+.nx-btn-gold:hover { filter: brightness(1.07); }
+.nx-btn-ghost {
+  background: oklch(1 0 0 / 0.04); border-color: var(--nx-line); color: var(--nx-ink);
+}
+.nx-btn-ghost:hover { background: oklch(1 0 0 / 0.08); border-color: var(--nx-line-strong); }
+
+.nx-icon-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; border-radius: 13px;
+  background: oklch(1 0 0 / 0.04); border: 1px solid var(--nx-line);
+  color: var(--nx-ink-60); transition: all .2s; cursor: pointer;
+}
+.nx-icon-btn:hover { background: oklch(1 0 0 / 0.09); color: var(--nx-ink); border-color: oklch(0.82 0.12 190 / 0.4); }
+
+.nx-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 26px; padding: 0 11px; border-radius: 999px;
+  font-size: 11px; font-weight: 700;
+  background: oklch(1 0 0 / 0.05); border: 1px solid var(--nx-line); color: var(--nx-ink-60);
+}
+.nx-chip-teal { background: oklch(0.82 0.12 190 / 0.12); border-color: oklch(0.82 0.12 190 / 0.3); color: var(--nx-teal); }
+.nx-chip-gold { background: oklch(0.84 0.13 82 / 0.12); border-color: oklch(0.84 0.13 82 / 0.32); color: var(--nx-gold); }
+.nx-chip-rose { background: oklch(0.65 0.2 20 / 0.14); border-color: oklch(0.65 0.2 20 / 0.35); color: oklch(0.82 0.13 20); }
+.nx-chip-emerald { background: oklch(0.75 0.15 165 / 0.12); border-color: oklch(0.75 0.15 165 / 0.3); color: oklch(0.85 0.13 165); }
+
+/* Sidebar navigation */
+.nx-nav-item {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  height: 42px; padding: 0 12px; border-radius: 13px;
+  font-size: 13px; font-weight: 600; color: var(--nx-ink-60);
+  border: 1px solid transparent; transition: all .18s; cursor: pointer; text-align: start;
+}
+.nx-nav-item:hover { background: oklch(1 0 0 / 0.05); color: var(--nx-ink); }
+.nx-nav-item[data-active="true"] {
+  background: linear-gradient(120deg, oklch(0.82 0.12 190 / 0.16), oklch(0.82 0.12 190 / 0.06));
+  border-color: oklch(0.82 0.12 190 / 0.32);
+  color: var(--nx-teal);
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.06);
+}
+.nx-nav-badge {
+  min-width: 22px; height: 20px; padding: 0 6px; border-radius: 7px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 800;
+  background: oklch(1 0 0 / 0.09); color: var(--nx-ink);
+}
+.nx-nav-badge[data-tone="alert"] { background: var(--nx-gold); color: oklch(0.16 0.05 255); }
+
+.nx-group-label {
+  font-size: 10.5px; font-weight: 800; color: var(--nx-ink-40);
+  padding: 0 10px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;
+}
+.nx-group-label::after { content: ""; flex: 1; height: 1px; background: var(--nx-line); }
+
+/* Stat card */
+.nx-stat-glow { position: absolute; inset: 0; overflow: hidden; border-radius: inherit; pointer-events: none; }
+.nx-stat-glow::before {
+  content: ""; position: absolute; top: -46px; inset-inline-end: -46px;
+  width: 130px; height: 130px; border-radius: 50%;
+  background: radial-gradient(circle, var(--nx-stat-tone, oklch(0.82 0.12 190)) 0%, transparent 70%);
+  opacity: .16; filter: blur(6px);
+}
+.nx-stat-icon {
+  width: 44px; height: 44px; border-radius: 14px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: color-mix(in oklab, var(--nx-stat-tone, oklch(0.82 0.12 190)) 12%, transparent);
+  border: 1px solid color-mix(in oklab, var(--nx-stat-tone, oklch(0.82 0.12 190)) 30%, transparent);
+  color: var(--nx-stat-tone, oklch(0.82 0.12 190));
+}
+
+/* Inputs */
+.nx-input {
+  width: 100%; height: 46px; padding: 0 15px; border-radius: 13px;
+  background: oklch(1 0 0 / 0.045); border: 1px solid var(--nx-line);
+  color: var(--nx-ink); font-size: 14px; transition: all .2s;
+}
+.nx-input::placeholder { color: var(--nx-ink-40); }
+.nx-input:focus { outline: none; border-color: oklch(0.82 0.12 190 / 0.55); background: oklch(1 0 0 / 0.07); box-shadow: 0 0 0 3px oklch(0.82 0.12 190 / 0.14); }
+
+/* Progress track */
+.nx-track { height: 8px; border-radius: 999px; background: oklch(1 0 0 / 0.08); overflow: hidden; }
+.nx-track > div {
+  height: 100%; border-radius: inherit;
+  background: linear-gradient(90deg, var(--nx-teal-deep), var(--nx-teal));
+  box-shadow: 0 0 12px oklch(0.82 0.12 190 / 0.5);
+  transition: width .8s cubic-bezier(.2,.7,.2,1);
+}
+
+/* Scrollbar */
+.nx-scroll { scrollbar-width: thin; scrollbar-color: oklch(1 0 0 / 0.16) transparent; }
+.nx-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+.nx-scroll::-webkit-scrollbar-thumb { background: oklch(1 0 0 / 0.14); border-radius: 6px; }
+
+/* Divider */
+.nx-divider { height: 1px; background: linear-gradient(90deg, transparent, var(--nx-line-strong), transparent); border: 0; }
+
+/* Mobile bottom tab bar */
+.nx-tabbar {
+  background: color-mix(in oklab, var(--nx-bg-0) 82%, transparent);
+  backdrop-filter: blur(22px);
+  border-top: 1px solid var(--nx-line);
+  box-shadow: 0 -12px 40px -18px oklch(0 0 0 / 0.6);
+}
+.nx-tabbar-item {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 8px 0 6px; font-size: 10px; font-weight: 700; color: var(--nx-ink-40);
+  position: relative; transition: color .2s; flex: 1;
+}
+.nx-tabbar-item[data-active="true"] { color: var(--nx-teal); }
+.nx-tabbar-item[data-active="true"]::before {
+  content: ""; position: absolute; top: -1px; inset-inline: 22%;
+  height: 2.5px; border-radius: 0 0 4px 4px;
+  background: linear-gradient(90deg, var(--nx-teal-deep), var(--nx-teal));
+  box-shadow: 0 2px 10px oklch(0.82 0.12 190 / 0.6);
+}
+
+/* Avatar ring */
+.nx-avatar-ring {
+  padding: 2.5px; border-radius: 18px;
+  background: conic-gradient(from 210deg, var(--nx-teal), var(--nx-gold), var(--nx-teal));
+}
+.nx-avatar-ring > div { border-radius: 15px; overflow: hidden; background: var(--nx-bg-1); }
+
+/* Hero shimmer line */
+.nx-hero-line {
+  position: absolute; inset-inline: 0; top: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, oklch(0.82 0.12 190 / 0.55), transparent);
+}
+
+/* Menu popover */
+.nx-menu {
+  background: color-mix(in oklab, var(--nx-bg-1) 88%, transparent);
+  backdrop-filter: blur(24px);
+  border: 1px solid var(--nx-line-strong);
+  border-radius: 16px; box-shadow: var(--nx-shadow);
+}
+.nx-menu-item {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  padding: 10px 14px; font-size: 13px; font-weight: 600; color: var(--nx-ink);
+  border-radius: 10px; transition: background .15s; cursor: pointer; text-align: start;
+}
+.nx-menu-item:hover { background: oklch(1 0 0 / 0.07); }
+.nx-menu-item[data-danger="true"]:hover { background: oklch(0.6 0.2 20 / 0.16); color: oklch(0.85 0.14 20); }
+
+/* Animation */
+@keyframes nx-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.nx-rise { animation: nx-rise .5s cubic-bezier(.2,.7,.2,1) both; }
+.nx-rise-1 { animation-delay: .05s; } .nx-rise-2 { animation-delay: .1s; }
+.nx-rise-3 { animation-delay: .15s; } .nx-rise-4 { animation-delay: .2s; }
+@keyframes nx-pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+.nx-live-dot { width: 7px; height: 7px; border-radius: 50%; background: oklch(0.8 0.16 165); box-shadow: 0 0 10px oklch(0.8 0.16 165 / 0.8); animation: nx-pulse-dot 2s infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .nx-rise, .nx-live-dot { animation: none; }
+  .nx-card-hover, .nx-card-hover:hover { transition: none; transform: none; }
+}
+
+/* Legacy component remap: reused dashboard components inside .nx inherit the new surface language */
+.nx .dash-card {
+  background: var(--nx-card);
+  border: 1px solid var(--nx-line);
+  border-radius: var(--nx-radius);
+  box-shadow: var(--nx-shadow), inset 0 1px 0 oklch(1 0 0 / 0.06);
+  backdrop-filter: blur(18px);
+}
+.nx .dash-card-hover { transition: transform .28s cubic-bezier(.2,.7,.2,1), border-color .28s, box-shadow .28s; }
+.nx .dash-card-hover:hover {
+  transform: translateY(-3px);
+  border-color: oklch(0.82 0.12 190 / 0.35);
+  box-shadow: 0 32px 70px -30px oklch(0 0 0 / 0.65), inset 0 1px 0 oklch(1 0 0 / 0.08);
+}
+.nx .dash-header { background: color-mix(in oklab, var(--nx-bg-0) 80%, transparent); }
+.nx .premium-dialog {
+  background: var(--nx-card); border: 1px solid var(--nx-line); border-radius: var(--nx-radius);
+  box-shadow: var(--nx-shadow); backdrop-filter: blur(18px); color: var(--nx-ink);
+}
+.nx .premium-input {
+  width: 100%; height: 44px; padding: 0 14px; border-radius: 12px;
+  background: oklch(1 0 0 / 0.045); border: 1px solid var(--nx-line); color: var(--nx-ink); font-size: 14px;
+}
+.nx .premium-input:focus { outline: none; border-color: oklch(0.82 0.12 190 / 0.55); box-shadow: 0 0 0 3px oklch(0.82 0.12 190 / 0.14); }
+
+/* Admin tables/forms inside the new shell */
+.nx-is-admin table { width: 100%; border-collapse: separate; border-spacing: 0; }
+.nx-is-admin th { font-size: 11.5px; font-weight: 700; padding: 12px 16px; border-bottom: 1px solid var(--nx-line); color: var(--nx-ink-40); text-align: start; }
+.nx-is-admin td { padding: 14px 16px; }
+.nx-is-admin tbody tr + tr td { border-top: 1px solid var(--nx-line); }
+.nx-is-admin tbody tr { transition: background .15s; }
+.nx-is-admin tbody tr:hover { background: oklch(1 0 0 / 0.03); }
+.nx-is-admin input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+.nx-is-admin select,
+.nx-is-admin textarea {
+  background: oklch(1 0 0 / 0.045); color: var(--nx-ink);
+  border: 1px solid var(--nx-line); border-radius: 12px;
+}
+.nx-is-admin input:focus-visible, .nx-is-admin select:focus-visible, .nx-is-admin textarea:focus-visible {
+  outline: none; border-color: oklch(0.82 0.12 190 / 0.55); box-shadow: 0 0 0 3px oklch(0.82 0.12 190 / 0.12);
+}
+.nx-is-admin select option { background: var(--nx-card-solid); color: var(--nx-ink); }
+.nx-is-admin [role="tablist"] { background: oklch(1 0 0 / 0.04); border: 1px solid var(--nx-line); border-radius: 13px; }
+.nx-is-admin [role="tab"][data-state="active"] {
+  background: linear-gradient(120deg, oklch(0.82 0.12 190 / 0.16), oklch(0.82 0.12 190 / 0.06));
+  color: var(--nx-teal); border: 1px solid oklch(0.82 0.12 190 / 0.3); box-shadow: none;
+}
+
+/* ================= Light mode ================= */
+:root:not(.dark) .nx {
+  --nx-bg-0: oklch(0.965 0.01 240);
+  --nx-bg-1: oklch(0.99 0.005 230);
+  --nx-teal: oklch(0.55 0.11 210);
+  --nx-teal-deep: oklch(0.48 0.11 215);
+  --nx-gold: oklch(0.62 0.12 72);
+  --nx-gold-deep: oklch(0.55 0.12 68);
+  --nx-ink: oklch(0.20 0.05 252);
+  --nx-ink-60: oklch(0.20 0.05 252 / 0.62);
+  --nx-ink-40: oklch(0.20 0.05 252 / 0.42);
+  --nx-line: oklch(0.20 0.05 252 / 0.10);
+  --nx-line-strong: oklch(0.20 0.05 252 / 0.18);
+  --nx-card: linear-gradient(165deg, oklch(1 0 0 / 0.9), oklch(1 0 0 / 0.7) 55%);
+  --nx-card-solid: oklch(1 0 0);
+  --nx-shadow: 0 20px 50px -26px oklch(0.20 0.06 260 / 0.22), inset 0 1px 0 oklch(1 0 0 / 0.7);
+}
+:root:not(.dark) .nx-bg {
+  background:
+    radial-gradient(1100px 520px at 88% -8%, oklch(0.72 0.12 195 / 0.16), transparent 60%),
+    radial-gradient(900px 480px at 4% 110%, oklch(0.84 0.13 82 / 0.10), transparent 55%),
+    radial-gradient(700px 500px at 12% -12%, oklch(0.75 0.10 250 / 0.14), transparent 65%),
+    linear-gradient(180deg, var(--nx-bg-1) 0%, var(--nx-bg-0) 60%);
+}
+:root:not(.dark) .nx-grid-overlay {
+  background-image:
+    linear-gradient(oklch(0.20 0.05 252 / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.20 0.05 252 / 0.05) 1px, transparent 1px);
+}
+:root:not(.dark) .nx header { background: oklch(1 0 0 / 0.8) !important; }
+:root:not(.dark) .nx .nx-btn-primary { color: oklch(0.99 0.005 230); }
+:root:not(.dark) .nx .nx-btn-gold { color: oklch(0.99 0.005 230); }
+:root:not(.dark) .nx .nx-menu { background: oklch(1 0 0 / 0.94); }
+:root:not(.dark) .nx .nx-tabbar { background: oklch(1 0 0 / 0.88); }
+:root:not(.dark) .nx .nx-input,
+:root:not(.dark) .nx .nx-btn-ghost,
+:root:not(.dark) .nx .nx-icon-btn { background: oklch(1 0 0 / 0.65); }
+:root:not(.dark) .nx .nx-input:focus { background: oklch(1 0 0); }
+:root:not(.dark) .nx .nx-nav-item[data-active="true"] {
+  background: linear-gradient(120deg, oklch(0.55 0.11 210 / 0.14), oklch(0.55 0.11 210 / 0.05));
+  border-color: oklch(0.55 0.11 210 / 0.35);
+}
+:root:not(.dark) .nx .nx-track { background: oklch(0.20 0.05 252 / 0.10); }
+:root:not(.dark) .nx .nx-avatar-ring > div { background: oklch(0.99 0.005 230); }
+
+/* white/* utility remap inside the new shell, mirrors the legacy .dash-shell light mapping */
+:root:not(.dark) .nx [class*="text-white"] { color: oklch(0.20 0.05 252 / 0.92); }
+:root:not(.dark) .nx [class*="text-white/30"],
+:root:not(.dark) .nx [class*="text-white/35"],
+:root:not(.dark) .nx [class*="text-white/40"],
+:root:not(.dark) .nx [class*="text-white/45"] { color: oklch(0.20 0.05 252 / 0.45); }
+:root:not(.dark) .nx [class*="text-white/50"],
+:root:not(.dark) .nx [class*="text-white/55"],
+:root:not(.dark) .nx [class*="text-white/60"],
+:root:not(.dark) .nx [class*="text-white/65"] { color: oklch(0.20 0.05 252 / 0.60); }
+:root:not(.dark) .nx [class*="text-white/70"],
+:root:not(.dark) .nx [class*="text-white/75"],
+:root:not(.dark) .nx [class*="text-white/80"],
+:root:not(.dark) .nx [class*="text-white/85"] { color: oklch(0.20 0.05 252 / 0.78); }
+:root:not(.dark) .nx [class*="bg-white/"] { background-color: oklch(0.20 0.06 260 / 0.045); }
+:root:not(.dark) .nx [class*="border-white/"] { border-color: oklch(0.20 0.06 260 / 0.10); }
+/* keep peer-checked switch on-state readable in light mode (remap above would clobber it) */
+:root:not(.dark) .nx .peer:checked ~ [class*="peer-checked:bg-emerald"] { background-color: oklch(0.70 0.15 162 / 0.90); border-color: oklch(0.55 0.13 162 / 0.85); }
+:root:not(.dark) .nx [class*="divide-white/"] > * + * { border-color: oklch(0.20 0.06 260 / 0.10); }
+:root:not(.dark) .nx .nx-nav-item:hover { background: oklch(0.20 0.05 252 / 0.05); }
+:root:not(.dark) .nx .nx-menu-item:hover { background: oklch(0.20 0.05 252 / 0.06); }
+:root:not(.dark) .nx .nx-is-admin tbody tr:hover { background: oklch(0.20 0.05 252 / 0.03); }

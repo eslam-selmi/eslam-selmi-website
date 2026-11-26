@@ -10,13 +10,13 @@ import { TOOLS, TOOL_IDS, adminListGrants, adminSetGrant, type ToolId } from "@/
 type Person = { id: string; full_name: string | null; email: string | null; activation_status: string };
 type Flag = { id: string; section_key: string; is_visible: boolean };
 
-function Switch({ on, onChange, label, disabled }: { on: boolean; onChange: (v: boolean) => void; label: string; disabled?: boolean }) {
+export function Switch({ on, onChange, label, disabled }: { on: boolean; onChange: (v: boolean) => void; label: string; disabled?: boolean }) {
   const { lang } = useI18n();
   return (
     <label className="inline-flex items-center gap-2 cursor-pointer select-none">
       <input type="checkbox" role="switch" className="sr-only peer" checked={on} disabled={disabled} aria-label={label} onChange={(e) => onChange(e.target.checked)} />
-      <span className="relative w-10 h-6 rounded-full bg-white/15 peer-checked:bg-emerald-500/70 transition after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:w-5 after:h-5 after:rounded-full after:bg-white after:transition peer-checked:after:translate-x-4 rtl:peer-checked:after:-translate-x-4" />
-      <span className={`text-xs font-semibold min-w-[44px] ${on ? "text-emerald-300" : "text-white/50"}`}>{on ? (lang === "ar" ? "مفعّل" : "On") : (lang === "ar" ? "معطّل" : "Off")}</span>
+      <span className="relative w-10 h-6 rounded-full bg-white/10 border border-white/30 peer-checked:bg-emerald-500/80 peer-checked:border-emerald-300/70 transition after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:w-5 after:h-5 after:rounded-full after:bg-white after:transition peer-checked:after:translate-x-4 rtl:peer-checked:after:-translate-x-4" />
+      <span className={`text-xs font-semibold min-w-[44px] ${on ? "text-emerald-300" : "text-white/75"}`}>{on ? (lang === "ar" ? "مفعّل" : "On") : (lang === "ar" ? "معطّل" : "Off")}</span>
     </label>
   );
 }
