@@ -15,6 +15,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as GraduatesRouteImport } from './routes/graduates'
 import { Route as LibraryRouteImport } from './routes/library'
+import { Route as CueHarnessRouteImport } from './routes/cue-harness'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PortalRouteImport } from './routes/portal'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -53,6 +54,11 @@ const GraduatesRoute = GraduatesRouteImport.update({
 const LibraryRoute = LibraryRouteImport.update({
   id: '/library',
   path: '/library',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CueHarnessRoute = CueHarnessRouteImport.update({
+  id: '/cue-harness',
+  path: '/cue-harness',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingRoute = OnboardingRouteImport.update({
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/graduates': typeof GraduatesRoute
   '/library': typeof LibraryRoute
+  '/cue-harness': typeof CueHarnessRoute
   '/onboarding': typeof OnboardingRoute
   '/portal': typeof PortalRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/graduates': typeof GraduatesRoute
   '/library': typeof LibraryRoute
+  '/cue-harness': typeof CueHarnessRoute
   '/onboarding': typeof OnboardingRoute
   '/portal': typeof PortalRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -143,6 +151,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/graduates': typeof GraduatesRoute
   '/library': typeof LibraryRoute
+  '/cue-harness': typeof CueHarnessRoute
   '/onboarding': typeof OnboardingRoute
   '/portal': typeof PortalRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -162,6 +171,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/graduates'
     | '/library'
+    | '/cue-harness'
     | '/onboarding'
     | '/portal'
     | '/sitemap.xml'
@@ -179,6 +189,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/graduates'
     | '/library'
+    | '/cue-harness'
     | '/onboarding'
     | '/portal'
     | '/sitemap.xml'
@@ -196,6 +207,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/graduates'
     | '/library'
+    | '/cue-harness'
     | '/onboarding'
     | '/portal'
     | '/sitemap.xml'
@@ -214,6 +226,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   GraduatesRoute: typeof GraduatesRoute
   LibraryRoute: typeof LibraryRoute
+  CueHarnessRoute: typeof CueHarnessRoute
   OnboardingRoute: typeof OnboardingRoute
   PortalRoute: typeof PortalRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -267,6 +280,13 @@ declare module '@tanstack/react-router' {
       path: '/library'
       fullPath: '/library'
       preLoaderRoute: typeof LibraryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cue-harness': {
+      id: '/cue-harness'
+      path: '/cue-harness'
+      fullPath: '/cue-harness'
+      preLoaderRoute: typeof CueHarnessRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding': {
@@ -342,6 +362,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   GraduatesRoute: GraduatesRoute,
   LibraryRoute: LibraryRoute,
+  CueHarnessRoute: CueHarnessRoute,
   OnboardingRoute: OnboardingRoute,
   PortalRoute: PortalRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
