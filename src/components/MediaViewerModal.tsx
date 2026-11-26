@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { X, ExternalLink, Loader2 } from "lucide-react";
+import { X, ExternalLink, Loader2, FileDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { safeHref } from "@/lib/safe-url";
@@ -87,6 +87,7 @@ export function MediaViewerModal({
   const source = mediaSource(resolvedUrl ?? "");
   const isVideoFile = source.kind === "video";
   const originalUrl = safeHref(item.isStoragePath ? resolvedUrl : item.url);
+  const isDownloadOnly = !!resolvedUrl && /\.(xlsx?|xlsm|docx?|pptx?|zip|rar|csv)(\?|$)/i.test(resolvedUrl);
   const isImageFile =
     item.isStoragePath && resolvedUrl && /\.(png|jpe?g|gif|webp|svg)(\?|$)/i.test(resolvedUrl);
 
@@ -146,6 +147,23 @@ export function MediaViewerModal({
               />
             ) : isImageFile ? (
               <img src={resolvedUrl} alt="" className="w-full h-full object-contain" />
+            ) : isDownloadOnly ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 p-6 text-center bg-[#0b1736]">
+                <div className="w-16 h-16 rounded-2xl bg-[var(--gold)]/10 border border-[var(--gold)]/30 flex items-center justify-center">
+                  <FileDown className="w-8 h-8 text-[var(--gold)]" />
+                </div>
+                <div>
+                  <h4 className="text-xl font-bold text-white mb-2">{item.title}</h4>
+                  <p className="text-white/60 max-w-md mx-auto">
+                    {isAr ? "هذا الملف يُفتح في برنامج على جهازك (إكسيل أو وورد). حمّله ثم افتحه." : "This file opens in an app on your device (Excel or Word). Download it, then open it."}
+                  </p>
+                </div>
+                {safeHref(resolvedUrl) && (
+                  <a href={safeHref(resolvedUrl) ?? undefined} download rel="noopener noreferrer" className="mt-2 px-6 h-12 rounded-xl bg-primary text-primary-foreground font-bold inline-flex items-center justify-center gap-2 transition">
+                    {isAr ? "تحميل الملف" : "Download file"} <FileDown className="w-4 h-4" />
+                  </a>
+                )}
+              </div>
             ) : source.kind === "external" && !isPdf && !item.isStoragePath && item.kind !== "embed" ? (
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 p-6 text-center">
                 <div className="w-16 h-16 rounded-full bg-sky-500/10 border border-sky-500/20 flex items-center justify-center">
