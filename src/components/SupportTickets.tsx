@@ -77,7 +77,7 @@ export function TraineeSupportButton({
         }`}
         style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}
       >
-        <LifeBuoy className="w-4 h-4" />
+        <Headset className="w-4 h-4" strokeWidth={1.75} />
         {isAr ? "مركز الدعم" : "Support Center"}
         {unreadCount > 0 && (
           <span className="absolute -top-1.5 -end-1.5 min-w-[20px] h-5 px-1.5 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center border-2 border-[#0b1736]">
