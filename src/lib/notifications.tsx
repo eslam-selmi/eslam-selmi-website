@@ -120,7 +120,7 @@ export function NotificationsBell({ userId, pending = [] }: { userId: string | u
               </div>
               <div>
                 <p className="text-sm font-bold leading-tight">الإشعارات</p>
-                <p className="text-[10px] text-white/55">{unreadOther > 0 || pendingTotal > 0 ? [pendingTotal > 0 ? `${pendingTotal} بانتظار إجراء` : "", unreadOther > 0 ? `${unreadOther} إشعار غير مقروء` : ""].filter(Boolean).join(" · ") : "كل شيء محدّث"}</p>
+                <p className="text-[10px] text-white/55">{unreadOther > 0 || pendingTotal > 0 ? [pendingTotal > 0 ? `${pendingTotal} بانتظار إجراء` : "", unreadOther > 0 ? `${unreadOther} إشعار غير مقروء` : ""].filter(Boolean).join(" · ") : "لا طلبات معلّقة في الأقسام المتابَعة"}</p>
               </div>
             </div>
             {unread > 0 && (

@@ -191,14 +191,16 @@ function AdminPage() {
     staleTime: 30_000,
     enabled: role === "admin",
     queryFn: async () => {
-      const [b, s, tr, pk, li] = await Promise.all([
+      const [b, s, tr, pk, li, cr, ug] = await Promise.all([
         supabase.from("consultation_slots").select("id", { count: "exact", head: true }).eq("status", "booked").gte("starts_at", new Date().toISOString()),
         supabase.from("support_tickets").select("id", { count: "exact", head: true }).in("status", ["open", "pending_admin"]),
         (supabase as any).from("tool_access_requests").select("id", { count: "exact", head: true }).eq("status", "pending"),
         (supabase as any).from("consultation_package_purchases").select("id", { count: "exact", head: true }).eq("status", "pending"),
         (supabase as any).from("course_interests").select("id", { count: "exact", head: true }).eq("status", "new"),
+        (supabase as any).from("enrollments").select("id", { count: "exact", head: true }).not("certificate_requested_at", "is", null).eq("certificate_issued", false),
+        (supabase as any).from("assignment_submissions").select("id", { count: "exact", head: true }).is("graded_at", null),
       ]);
-      return { packagePurchases: pk.error ? 0 : pk.count ?? 0, courseLeads: li.error ? 0 : li.count ?? 0, bookings: b.error ? null : b.count ?? 0, tickets: s.error ? null : s.count ?? 0, toolRequests: tr.error ? 0 : tr.count ?? 0 };
+      return { certRequests: cr.error ? 0 : cr.count ?? 0, ungraded: ug.error ? 0 : ug.count ?? 0, packagePurchases: pk.error ? 0 : pk.count ?? 0, courseLeads: li.error ? 0 : li.count ?? 0, bookings: b.error ? null : b.count ?? 0, tickets: s.error ? null : s.count ?? 0, toolRequests: tr.error ? 0 : tr.count ?? 0 };
     },
   });
   useEffect(() => {
@@ -210,6 +212,8 @@ function AdminPage() {
       .on("postgres_changes", { event: "*", schema: "public", table: "tool_access_requests" }, invalidate)
       .on("postgres_changes", { event: "*", schema: "public", table: "consultation_package_purchases" }, invalidate)
       .on("postgres_changes", { event: "*", schema: "public", table: "course_interests" }, invalidate)
+      .on("postgres_changes", { event: "*", schema: "public", table: "assignment_submissions" }, invalidate)
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "enrollments" }, invalidate)
       .subscribe();
     return () => { void supabase.removeChannel(channel); };
   }, [role, queryClient]);
@@ -245,6 +249,8 @@ function AdminPage() {
         { key: "enrollments", title: t("طلبات الانضمام", "Enrollment requests"), detail: t("بانتظار المراجعة والقبول", "Awaiting review"), count: pending, onOpen: () => setTab("enrollments") },
         { key: "tools", title: t("طلبات الوصول للأدوات", "Tool access requests"), detail: t("بانتظار قرارك", "Awaiting your decision"), count: overviewCounts.data?.toolRequests ?? 0, onOpen: () => setTab("tools") },
         { key: "packages", title: t("طلبات شراء باقات الاستشارات", "Consultation package purchases"), detail: t("بانتظار المراجعة", "Awaiting review"), count: overviewCounts.data?.packagePurchases ?? 0, onOpen: () => setTab("packages") },
+        { key: "certs", title: t("طلبات إصدار شهادات", "Certificate requests"), detail: t("بانتظار الإصدار", "Awaiting issue"), count: overviewCounts.data?.certRequests ?? 0, onOpen: () => setTab("enrollments") },
+        { key: "ungraded", title: t("تسليمات بانتظار التقييم", "Submissions awaiting grading"), detail: t("افتح الكورس ثم الواجبات", "Open the course, then assignments"), count: overviewCounts.data?.ungraded ?? 0, onOpen: () => setTab("courses") },
         { key: "leads", title: t("اهتمامات جديدة بالكورسات", "New course interests"), detail: t("لم تتم مراجعتها", "Not yet reviewed"), count: overviewCounts.data?.courseLeads ?? 0, onOpen: () => setTab("leads") },
         { key: "tickets", title: t("تذاكر الدعم", "Support tickets"), detail: t("مفتوحة أو بانتظار ردك", "Open or awaiting your reply"), count: overviewCounts.data?.tickets ?? 0, onOpen: () => setTab("tickets") },
       ]}
