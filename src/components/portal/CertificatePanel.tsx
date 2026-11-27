@@ -84,7 +84,7 @@ export function CertificatePanel({
           const { ar, en } = await renderOwnCertificates({ id: enrollment.id, course_id: course.id, name_ar: enrollment.name_ar, name_en: enrollment.name_en, courses: course as any }, date);
           for (const [b, n] of [[ar, "ar"], [en, "en"]] as const) { const u = URL.createObjectURL(b); const a = document.createElement("a"); a.href = u; a.download = `certificate-${n}.pdf`; a.click(); setTimeout(() => URL.revokeObjectURL(u), 10000); }
           toast.success(isAr ? "تم إصدار شهادتك ✅" : "Certificate issued ✅");
-        } catch { toast.error(isAr ? "صدرت الشهادة لكن تعذّر إنشاء الملف، جرّب مرة أخرى" : "Issued, but the file could not be created. Try again."); }
+        } catch (e) { console.error("self-certificate render failed:", e instanceof Error ? e.message : String(e)); toast.error(isAr ? "صدرت الشهادة لكن تعذّر إنشاء الملف، جرّب مرة أخرى" : "Issued, but the file could not be created. Try again."); }
         finally { setRequesting(false); }
         return;
       }
