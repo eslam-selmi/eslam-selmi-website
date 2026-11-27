@@ -5,11 +5,11 @@ import { readCertificateSettings } from "@/lib/certificate-settings";
 
 export type SelfCertInput = { id: string; course_id: string; name_ar: string | null; name_en: string | null; courses: { title: string; description?: string | null; total_hours?: number | null } | null };
 
-// Date rule: use the server's immutable certificate_issued_at when the column exists. A row without it (legacy or column not applied)
-// has NO known exact date, so the caller must pass the moment of a fresh issuance or not render.
-export function resolveIssueDate(row: { certificate_issued_at?: string | null }, freshlyIssuedAt?: Date): Date | null {
-  if (row.certificate_issued_at) { const d = new Date(row.certificate_issued_at); if (!isNaN(d.getTime())) return d; }
-  return freshlyIssuedAt ?? null;
+// Date rule: ONLY the server's immutable timestamp (from issue_my_certificate or the learner's own row). No client clock fallback.
+// Legacy rows have no timestamp: the exact issue date is unknown, so nothing is rendered with an invented date.
+export function resolveIssueDate(...candidates: Array<string | null | undefined>): Date | null {
+  for (const c of candidates) { if (!c) continue; const d = new Date(c); if (!isNaN(d.getTime())) return d; }
+  return null;
 }
 
 export function buildPayload(row: SelfCertInput, lang: "ar" | "en", issueDate: Date, settings: unknown, course: any) {

@@ -4,7 +4,7 @@ import { useI18n } from "@/lib/i18n";
 import { toast } from "sonner";
 import { CheckCircle2, Download, Award, Hourglass, Send, AlertCircle, Save } from "lucide-react";
 import type { Course, Enrollment } from "./types";
-import { LEARNER_PROGRESS_ENABLED, issueMyCertificate } from "@/lib/learner-progress";
+import { LEARNER_PROGRESS_ENABLED, issueMyCertificateFull } from "@/lib/learner-progress";
 import { DebtGateDialog } from "./DebtGateDialog";
 import { renderOwnCertificates, resolveIssueDate } from "@/lib/self-certificate";
 
@@ -70,16 +70,15 @@ export function CertificatePanel({
   async function requestCertificate() {
     if (LEARNER_PROGRESS_ENABLED) {
       // Prepared, default off: unpaid-due installments block before anything else.
-      const st = await issueMyCertificate(enrollment.id);
+      const { status: st, issuedAt } = await issueMyCertificateFull(enrollment.id);
       if (st === "debt") { setDebtOpen(true); return; }
       if (st === "unknown") return toast.error(isAr ? "تعذّر التحقق، جرّب مرة أخرى" : "Could not check, please try again");
       if (st === "finance_unknown") return toast.error(isAr ? "جاري مراجعة بيانات السداد، تواصل مع الإدارة لو استمرت الرسالة" : "We are checking your payment records. Contact us if this stays.");
       if (st === "issued") {
         // Server has set certificate_issued. Render locally from the learner's own row; QR -> /verify/<id>.
-        const wasIssued = !!enrollment.certificate_issued;
-        const date = resolveIssueDate(enrollment as any, wasIssued ? undefined : new Date());
+        const date = resolveIssueDate(issuedAt, (enrollment as any).certificate_issued_at);
         onRefresh();
-        if (!date) return toast.success(isAr ? "شهادتك صادرة" : "Your certificate is issued");
+        if (!date) return toast.success(isAr ? "شهادتك صادرة. تاريخ الإصدار الدقيق غير متاح للتحميل الذاتي، تواصل مع الإدارة" : "Your certificate is issued. The exact issue date is not available for self-download, please contact us.");
         try {
           setRequesting(true);
           const { ar, en } = await renderOwnCertificates({ id: enrollment.id, course_id: course.id, name_ar: enrollment.name_ar, name_en: enrollment.name_en, courses: course as any }, date);

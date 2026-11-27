@@ -2,10 +2,11 @@ import { describe, it, expect, vi } from "vitest";
 vi.mock("@/integrations/supabase/client", () => ({ supabase: {} }));
 import { resolveIssueDate, buildPayload } from "./self-certificate";
 describe("self-issue date and payload", () => {
-  it("uses the immutable server date; legacy row has no exact date; fresh issue uses now", () => {
-    expect(resolveIssueDate({ certificate_issued_at: "2026-11-01T10:00:00Z" })?.toISOString()).toBe("2026-11-01T10:00:00.000Z");
-    expect(resolveIssueDate({ certificate_issued_at: null })).toBeNull();
-    const n = new Date(); expect(resolveIssueDate({}, n)).toBe(n);
+  it("uses only the server timestamp; none means no date (no client clock)", () => {
+    expect(resolveIssueDate("2026-11-01T10:00:00Z")?.toISOString()).toBe("2026-11-01T10:00:00.000Z");
+    expect(resolveIssueDate(null, "2026-11-02T10:00:00Z")?.toISOString()).toBe("2026-11-02T10:00:00.000Z");
+    expect(resolveIssueDate(null, undefined)).toBeNull();
+    expect(resolveIssueDate("garbage")).toBeNull();
   });
   it("payload uses server row id for the verify QR and refuses missing names", () => {
     const row = { id: "enr-1", course_id: "c", name_ar: "أ", name_en: "A", courses: { title: "T", total_hours: 5 } };
