@@ -206,7 +206,7 @@ export function BookingDialog({ initiallyOpen = false }: { initiallyOpen?: boole
               <a href={link} target="_blank" rel="noreferrer" className="underline break-all text-xs" dir="ltr">{b.meeting_url}</a>
             </div>
           ) : (
-            <div className="text-xs text-muted-foreground">{tx("سيُضاف رابط الاجتماع (Google Meet / Zoom) هنا قبل الموعد.", "The meeting link (Google Meet / Zoom) will appear here before the session.")}</div>
+            <div className="text-xs text-muted-foreground">{isAr ? <>سيُضاف رابط الاجتماع هنا قبل الموعد، عبر <bdi dir="ltr" className="inline-block whitespace-nowrap">Google Meet / Zoom</bdi></> : "The meeting link (Google Meet / Zoom) will appear here before the session."}</div>
           )}
         </div>
         <div className="grid grid-cols-3 gap-2">
@@ -251,7 +251,7 @@ export function BookingDialog({ initiallyOpen = false }: { initiallyOpen?: boole
           <div className="flex items-start gap-4">
             <div className="size-12 grid place-items-center rounded-2xl shrink-0" style={{ background: gold, color: "var(--accent-foreground)" }}><Calendar className="size-6" /></div>
             <div className="min-w-0 flex-1">
-              <div className="font-display font-extrabold text-lg sm:text-xl">{tx("احجز استشارة ١:١", "Book a 1:1 Consultation")}</div>
+              <div className="font-display font-extrabold text-lg sm:text-xl">{isAr ? <>احجز استشارة <bdi dir="ltr">1:1</bdi></> : "Book a 1:1 Consultation"}</div>
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {[{ i: Clock, t: tx("٣٠ دقيقة", "30 minutes") }, { i: Video, t: "Google Meet / Zoom" }, { i: Sparkles, t: tx("مجاناً", "Free") }].map((b, i) => (
                   <span key={i} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold" style={{ background: "color-mix(in oklab, var(--gold) 14%, transparent)", color: "var(--accent)" }}>
