@@ -179,7 +179,7 @@ export function CertificatePanel({
                       ? (isAr ? "تم الاعتماد ✅" : "Approved ✅")
                       : gradState.submitted
                       ? (isAr ? "بانتظار اعتماد الأدمن" : "Awaiting admin approval")
-                      : (isAr ? "لازم تسلّم مشروع التخرّج وتاخد درجة نجاح قبل ما تطلب الشهادة" : "Submit your graduation project and earn a passing grade before requesting the certificate")}
+                      : (isAr ? "لازم تسلّم مشروع التخرّج ويعتمده الأدمن قبل ما تطلب الشهادة" : "Submit your graduation project and get it approved by the admin before requesting the certificate")}
                   </p>
                 </div>
               )}
