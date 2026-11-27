@@ -1,5 +1,5 @@
-// PREPARED, default OFF (VITE_LEARNER_PROGRESS=1). Explicit ADMIN approval of a trainee's graduation project (user 2026-11-27).
-// A score or a trainer's grade is not approval. Needs /downloads/PREPARED-graduation-approval.sql applied first.
+// Explicit ADMIN approval of a trainee's graduation project (user 2026-11-27).
+// A score or a trainer's grade is not approval. Uses the graduation_approvals table and admin_approve_graduation (applied live 2026-11-27).
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";

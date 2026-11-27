@@ -1,5 +1,4 @@
 import { GraduationApprovalControl } from "@/components/admin/GraduationApprovalControl";
-import { LEARNER_PROGRESS_ENABLED } from "@/lib/learner-progress";
 import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -429,7 +428,7 @@ export function SubmissionRow({
           {t("حفظ", "Save")}
         </button>
       </div>
-      {LEARNER_PROGRESS_ENABLED && gradProject && assignmentId && <GraduationApprovalControl assignmentId={assignmentId} userId={s.user_id} />}
+      {gradProject && assignmentId && <GraduationApprovalControl assignmentId={assignmentId} userId={s.user_id} />}
     </div>
   );
 }
