@@ -63,6 +63,7 @@ import { CourseFeedbackPanel } from "@/components/admin/CourseFeedbackPanel";
 import { Button } from "@/components/ui/button";
 import { Course, EnrollmentRow } from "@/components/admin/panels/types";
 import { Input, Select, StatCard, TextArea } from "@/components/admin/panels/ui";
+import { fetchPaymentLogos, setPaymentLogo } from "@/lib/payment-logos";
 
 export function PaymentMethodsPanel() {
   const { lang } = useI18n();
@@ -75,6 +76,38 @@ export function PaymentMethodsPanel() {
     details_en: "",
     order_index: "0",
   });
+  const [logos, setLogos] = useState<Record<string, string>>({});
+  const [newLogo, setNewLogo] = useState("");
+  async function loadLogos() {
+    try { setLogos(await fetchPaymentLogos()); } catch { toast.error(t("تعذر تحميل شعارات طرق الدفع", "Could not load payment logos")); }
+  }
+  async function saveLogo(id: string, logo: string | null) {
+    try { await setPaymentLogo(id, logo); await loadLogos(); toast.success(t("تم حفظ الشعار", "Logo saved")); }
+    catch (e: any) { toast.error(t("تعذر حفظ الشعار: ", "Could not save the logo: ") + (e?.message ?? "")); }
+  }
+
+  /** Shrinks a chosen image to a small PNG data URL (no storage needed). Stored in site_content, no schema change. */
+  function pickLogo(file: File | undefined, apply: (dataUrl: string) => void) {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) return toast.error(t("اختر صورة", "Choose an image"));
+    if (file.size > 5 * 1024 * 1024) return toast.error(t("الصورة كبيرة (الحد 5 ميجا)", "Image too large (max 5 MB)"));
+    const img = new Image();
+    const src = URL.createObjectURL(file);
+    img.onload = () => {
+      const max = 240;
+      const r = Math.min(1, max / Math.max(img.width, img.height));
+      const c = document.createElement("canvas");
+      c.width = Math.max(1, Math.round(img.width * r));
+      c.height = Math.max(1, Math.round(img.height * r));
+      c.getContext("2d")?.drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(src);
+      const out = c.toDataURL("image/png");
+      if (out.length > 120_000) return toast.error(t("الصورة معقدة زيادة، جرّب شعار أبسط", "Image too detailed, try a simpler logo"));
+      apply(out);
+    };
+    img.onerror = () => { URL.revokeObjectURL(src); toast.error(t("تعذر قراءة الصورة", "Could not read the image")); };
+    img.src = src;
+  }
 
   async function load() {
     const { data } = await supabase
@@ -85,19 +118,22 @@ export function PaymentMethodsPanel() {
   }
   useEffect(() => {
     load();
+    loadLogos();
   }, []);
 
   async function add() {
     if (!f.name_ar.trim() || !f.name_en.trim())
       return toast.error(t("أدخل الاسم بالعربي والإنجليزي", "Enter Arabic and English name"));
-    const { error } = await supabase.from("payment_methods" as any).insert({
+    const { data: created, error } = await supabase.from("payment_methods" as any).insert({
       name_ar: f.name_ar,
       name_en: f.name_en,
       details_ar: f.details_ar || null,
       details_en: f.details_en || null,
       order_index: Number(f.order_index) || 0,
-    } as any);
+    } as any).select("id").maybeSingle();
     if (error) return toast.error(error.message);
+    if (newLogo && (created as any)?.id) await saveLogo((created as any).id, newLogo);
+    setNewLogo("");
     setF({ name_ar: "", name_en: "", details_ar: "", details_en: "", order_index: "0" });
     toast.success(t("تمت الإضافة", "Added"));
     load();
@@ -153,6 +189,23 @@ export function PaymentMethodsPanel() {
             value={f.order_index}
             onChange={(v) => setF({ ...f, order_index: v })}
           />
+          {(<div className="space-y-1.5">
+            <p className="text-xs text-white/60">{t("شعار طريقة الدفع (اختياري)", "Payment method logo (optional)")}</p>
+            <div className="flex items-center gap-3">
+              {newLogo ? (
+                <span className="inline-flex items-center justify-center h-12 w-20 rounded-md bg-white p-1">
+                  <img src={newLogo} alt="" className="h-full w-full object-contain" />
+                </span>
+              ) : null}
+              <label className="px-3 h-10 inline-flex items-center rounded-lg bg-white/10 border border-white/15 text-sm cursor-pointer">
+                {newLogo ? t("تغيير الشعار", "Change logo") : t("اختيار شعار", "Choose logo")}
+                <input type="file" accept="image/*" className="hidden" onChange={(e) => pickLogo(e.target.files?.[0], (u) => setNewLogo(u))} />
+              </label>
+              {newLogo ? (
+                <button type="button" onClick={() => setNewLogo("")} className="text-xs px-2.5 h-8 rounded bg-white/10 border border-white/15">{t("إزالة", "Remove")}</button>
+              ) : null}
+            </div>
+          </div>)}
         </div>
         <button
           onClick={add}
@@ -175,6 +228,11 @@ export function PaymentMethodsPanel() {
           >
             <div className="flex items-start justify-between gap-3 mb-3">
               <div>
+                {logos[r.id] ? (
+                  <span className="inline-flex items-center justify-center h-9 w-16 rounded-md bg-white p-1 mb-1">
+                    <img src={logos[r.id]} alt="" className="h-full w-full object-contain" />
+                  </span>
+                ) : null}
                 <p className="font-bold">
                   {r.name_ar}{" "}
                   <span className="text-white/40 font-normal text-xs" dir="ltr">
@@ -184,6 +242,10 @@ export function PaymentMethodsPanel() {
                 <p className="text-[11px] text-white/40">#{r.order_index}</p>
               </div>
               <div className="flex gap-1.5">
+                {<label className="text-xs px-2.5 h-8 inline-flex items-center rounded bg-white/10 border border-white/15 cursor-pointer">
+                  {logos[r.id] ? t("تغيير الشعار", "Change logo") : t("إضافة شعار", "Add logo")}
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => pickLogo(e.target.files?.[0], (u) => saveLogo(r.id, u))} />
+                </label>}
                 <button
                   onClick={() => patch(r.id, { active: !r.active })}
                   className="text-xs px-2.5 h-8 rounded bg-white/10 border border-white/15"

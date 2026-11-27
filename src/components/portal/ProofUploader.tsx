@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Send } from "lucide-react";
 import { PaymentLogo } from "./PaymentLogo";
+import { fetchPaymentLogos } from "@/lib/payment-logos";
 
 
 export const PROOF_ALLOWED_EXT = ["jpg", "jpeg", "png", "pdf"];
@@ -14,11 +15,13 @@ export function ProofUploader({ enrollmentId, userId, currency, remaining, onUpl
   const [busy, setBusy] = useState(false);
   const [methods, setMethods] = useState<any[]>([]);
   const [selected, setSelected] = useState<any | null>(null);
+  const [logos, setLogos] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (remaining <= 0) return;
     supabase.from("payment_methods" as any).select("*").eq("active", true).order("order_index")
       .then(({ data }) => setMethods((data as any[]) ?? []));
+    fetchPaymentLogos().then(setLogos).catch(() => {});
   }, [remaining]);
 
   // Hide uploader entirely when nothing is owed
@@ -79,7 +82,7 @@ export function ProofUploader({ enrollmentId, userId, currency, remaining, onUpl
                 return (
                   <button key={m.id} type="button" onClick={() => setSelected(m)}
                     className={`text-xs px-3 py-2 rounded-lg border text-start transition ${active ? "bg-[var(--gold)]/25 border-[var(--gold)] text-white" : "bg-white/5 border-white/15 text-white/80 hover:bg-white/10"}`}>
-                    <span className="flex items-center gap-3 min-h-8"><PaymentLogo name={`${m.name_en || ""} ${m.name_ar || ""}`} /><span className="font-semibold block whitespace-nowrap">{isAr ? m.name_ar : m.name_en}</span></span>
+                    <span className="flex items-center gap-3 min-h-8"><PaymentLogo name={`${m.name_en || ""} ${m.name_ar || ""}`} logoUrl={logos[m.id]} /><span className="font-semibold block whitespace-nowrap">{isAr ? m.name_ar : m.name_en}</span></span>
                   </button>
                 );
               })}
