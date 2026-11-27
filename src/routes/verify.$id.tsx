@@ -20,7 +20,7 @@ export const Route = createFileRoute("/verify/$id")({
 });
 
 type VerifyResult =
-  | { ok: true; trainee_name_ar: string | null; trainee_name_en: string | null; course_title: string; total_hours: number; issued_at: string; certificate_id: string }
+  | { ok: true; trainee_name_ar: string | null; trainee_name_en: string | null; course_title: string; total_hours: number; issued_at: string | null; issued_at_exact?: boolean; certificate_id: string }
   | { ok: false; error: string };
 
 function VerifyPage() {
@@ -38,7 +38,8 @@ function VerifyPage() {
 
   const valid = state.data && (state.data as any).ok === true;
   const d = valid ? (state.data as Extract<VerifyResult, { ok: true }>) : null;
-  const issued = d ? new Date(d.issued_at) : null;
+  // Only an explicit server flag proves the date is the real issue date. Legacy rows (or an older server) show "date not recorded".
+  const issued = d && d.issued_at_exact === true && d.issued_at ? new Date(d.issued_at) : null;
 
   return (
     <div className="min-h-screen bg-[#070f24] text-white relative overflow-hidden">
@@ -102,9 +103,15 @@ function VerifyPage() {
                 {d!.trainee_name_en && <p className="mt-1.5 text-lg sm:text-xl font-semibold text-white/85" dir="ltr">{d!.trainee_name_en}</p>}
 
                 <div className="mt-6 flex flex-col sm:flex-row items-center gap-1 sm:gap-4 text-sm text-[var(--gold)]">
-                  <span className="inline-flex items-center gap-1.5" dir="rtl"><Calendar className="w-3.5 h-3.5" />تاريخ الإصدار: <bdi dir="rtl">{issued!.toLocaleDateString("ar-EG-u-nu-latn", { year: "numeric", month: "long", day: "numeric" })}</bdi></span>
+                  {issued ? (<>
+                  <span className="inline-flex items-center gap-1.5" dir="rtl"><Calendar className="w-3.5 h-3.5" />تاريخ الإصدار: <bdi dir="rtl">{issued.toLocaleDateString("ar-EG-u-nu-latn", { year: "numeric", month: "long", day: "numeric" })}</bdi></span>
                   <span className="hidden sm:inline text-white/25">|</span>
-                  <span className="inline-flex items-center gap-1.5" dir="ltr">Issued: <bdi dir="ltr">{issued!.toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" })}</bdi></span>
+                  <span className="inline-flex items-center gap-1.5" dir="ltr">Issued: <bdi dir="ltr">{issued.toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" })}</bdi></span>
+                  </>) : (<>
+                  <span className="inline-flex items-center gap-1.5" dir="rtl"><Calendar className="w-3.5 h-3.5" />تاريخ الإصدار: غير مسجّل</span>
+                  <span className="hidden sm:inline text-white/25">|</span>
+                  <span className="inline-flex items-center gap-1.5" dir="ltr">Issued: date not recorded</span>
+                  </>)}
                 </div>
 
                 <div className="mt-8 w-full border-t border-white/10 pt-5 space-y-1.5 text-xs text-white/55">
