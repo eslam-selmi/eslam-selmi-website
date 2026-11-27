@@ -15,6 +15,7 @@ import { AccountSettingsModal } from "@/components/AccountSettingsModal";
 import type { Course, Enrollment, Profile, ModuleRow } from "@/components/portal/types";
 import { EnrollmentCard } from "@/components/portal/EnrollmentCard";
 import { CourseDetail } from "@/components/portal/CourseDetail";
+import { resolveViewing } from "@/lib/portal-view";
 import { MyCertificatesSection } from "@/components/portal/MyCertificatesSection";
 import { UploadModal } from "@/components/portal/UploadModal";
 import { EnrollModal } from "@/components/portal/EnrollModal";
@@ -65,8 +66,8 @@ function PortalPage() {
   const [tab, setTab] = useState<PortalTabId>("overview");
   const search = Route.useSearch();
   const [viewingId, setViewingId] = useState<string | null>(search.view || null);
-  // A suspended enrollment never opens the course view, not even through a ?view= link (the server also hides its content).
-  const viewing = useMemo(() => { const e = enrollments.find(x => x.id === viewingId) || null; return e && (e as { blocked?: boolean }).blocked ? null : e; }, [viewingId, enrollments]);
+  // A suspended enrollment never opens the course view, even through a ?view= link (see lib/portal-view.ts).
+  const viewing = useMemo(() => resolveViewing(enrollments, viewingId), [viewingId, enrollments]);
   const setViewing = (v: Enrollment | null) => setViewingId(v ? v.id : null);
 
   useEffect(() => {

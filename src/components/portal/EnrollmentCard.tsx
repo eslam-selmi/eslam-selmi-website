@@ -121,11 +121,7 @@ export function EnrollmentCard({ en, onOpen, onWithdraw, progress = 0, doneCount
             <p className="mt-4 text-xs text-rose-800 dark:text-rose-200 bg-rose-500/5 border border-rose-400/15 rounded-xl p-3 leading-relaxed">
               {isAr ? "تم إيقاف وصولك لهذا الكورس مؤقتًا من الإدارة. تواصل مع الدعم لإعادة فتحه." : "Your access to this course is suspended by the administrator. Contact support to have it restored."}
             </p>
-            <div className="mt-auto pt-4">
-              <button onClick={onOpen} className="w-full text-xs h-11 rounded-xl bg-white/5 border border-white/15 hover:bg-white/10 transition font-semibold">
-                {isAr ? "عناوين المحاضرات 🔒" : "Lecture titles 🔒"}
-              </button>
-            </div>
+            <div className="mt-auto" />
           </>
         )}
         {en.status === "approved" && c && !suspended && (
