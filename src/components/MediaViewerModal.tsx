@@ -4,6 +4,7 @@ import { X, ExternalLink, Loader2, FileDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { safeHref } from "@/lib/safe-url";
+import { itemMediaClass, isMeasuredVideo } from "@/lib/media-class";
 import { mediaSource } from "@/lib/media-url";
 import { hasVideoCues } from "@/lib/video-cues";
 import { Button } from "@/components/ui/button";
@@ -41,6 +42,7 @@ export function MediaViewerModal({
   // Learner progress (default off). Files/links/notes count as seen on open; videos by actual played seconds.
   const tracker = useRef<ReturnType<typeof createWatchTracker> | null>(null);
   const durRef = useRef(0);
+  const mediaClass = item ? itemMediaClass(item) : "plain";
   const flushWatch = () => {
     if (!LEARNER_PROGRESS_ENABLED || !progress || !tracker.current || durRef.current <= 0) return;
     const snap = tracker.current.snapshot(); if (!snap.length) return;
@@ -49,7 +51,7 @@ export function MediaViewerModal({
   useEffect(() => {
     if (!LEARNER_PROGRESS_ENABLED || !progress || !item) return;
     tracker.current = null; durRef.current = 0;
-    if (item.kind !== "video" && item.kind !== "embed") void recordOpened(supabaseProgressStore, progress.userId, progress.itemId).catch(() => {});
+    if (!isMeasuredVideo(mediaClass) && mediaClass !== "embed_other") void recordOpened(supabaseProgressStore, progress.userId, progress.itemId).catch(() => {});
     const iv = window.setInterval(flushWatch, 30000);
     return () => { window.clearInterval(iv); flushWatch(); };
   }, [item?.id, progress?.itemId]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -151,6 +153,11 @@ export function MediaViewerModal({
             <X className="w-4 h-4" />
           </Button>
         </div>
+        {LEARNER_PROGRESS_ENABLED && progress && mediaClass === "embed_other" && (
+          <div className="px-4 py-2 text-xs bg-amber-500/15 text-amber-200 border-b border-amber-300/20 shrink-0">
+            {isAr ? "لا يمكن قياس مشاهدة هذا الفيديو، لذلك لن يُحتسب مكتملًا تلقائيًا. تواصل مع المدرّب." : "Watching this video cannot be measured, so it will not count as completed automatically. Contact your trainer."}
+          </div>
+        )}
 
         <div className="flex-1 min-h-0 bg-black/40 relative">
           {item.kind === "note" ? (

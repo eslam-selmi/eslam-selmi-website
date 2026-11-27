@@ -7,7 +7,7 @@ import { useI18n } from "@/lib/i18n";
 import { mediaSource } from "@/lib/media-url";
 import { readDurationFromUrl, sanitizeDuration } from "@/lib/duration-meta";
 
-type Row = { id: string; title: string; url: string | null; module_id: string };
+type Row = { id: string; title: string; url: string | null; module_id: string; cls?: string };
 export function VideoDurationRepair({ courseId }: { courseId: string }) {
   const { lang } = useI18n(); const isAr = lang === "ar";
   const [rows, setRows] = useState<Row[] | null>(null); const [busy, setBusy] = useState<string | null>(null); const [manual, setManual] = useState<Record<string, string>>({});
@@ -16,7 +16,8 @@ export function VideoDurationRepair({ courseId }: { courseId: string }) {
     if (error) { setRows(null); return; }
     const ids = (data ?? []).map((r: any) => r.item_id); if (!ids.length) return setRows([]);
     const { data: items } = await (supabase as any).from("module_items").select("id,title,url,module_id,course_modules!inner(course_id)").in("id", ids).eq("course_modules.course_id", courseId);
-    setRows((items ?? []).map((i: any) => ({ id: i.id, title: i.title, url: i.url, module_id: i.module_id })));
+    const cls = new Map<string, string>((data ?? []).map((r: any) => [r.item_id, r.media_class]));
+    setRows((items ?? []).map((i: any) => ({ id: i.id, title: i.title, url: i.url, module_id: i.module_id, cls: cls.get(i.id) })));
   }
   useEffect(() => { void load(); }, [courseId]);
   async function save(id: string, secs: number | null) {
@@ -41,9 +42,11 @@ export function VideoDurationRepair({ courseId }: { courseId: string }) {
       {rows.map((r) => (
         <div key={r.id} className="flex flex-wrap items-center gap-2 text-xs">
           <span className="flex-1 min-w-0 truncate">{r.title}</span>
+          {r.cls === "embed_other" ? <span className="text-amber-200">{isAr ? "غير قابل للقياس (Vimeo/Drive): استبدله برابط YouTube أو ملف فيديو، وإلا يبقى غير مكتمل" : "Cannot be measured (Vimeo/Drive): replace with a YouTube link or video file, otherwise it stays incomplete"}</span> : <>
           <button disabled={busy === r.id} onClick={() => fromMeta(r)} className="px-2.5 h-8 rounded-lg bg-[var(--gold)] text-[#0b1736] font-semibold">{isAr ? "اقرأ من الملف" : "Read from file"}</button>
           <input value={manual[r.id] ?? ""} onChange={(e) => setManual({ ...manual, [r.id]: e.target.value })} inputMode="numeric" placeholder={isAr ? "ثوانٍ" : "seconds"} className="w-20 h-8 px-2 rounded-lg bg-white/5 border border-white/15" />
           <button onClick={() => save(r.id, sanitizeDuration(Number(manual[r.id])))} className="px-2.5 h-8 rounded-lg bg-white/10 border border-white/15">{isAr ? "حفظ" : "Save"}</button>
+          </>}
         </div>
       ))}
     </div>
