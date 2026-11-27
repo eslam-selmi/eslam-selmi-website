@@ -156,7 +156,7 @@ export function SubscribersPanel() {
         <div className="mt-4 flex flex-col sm:flex-row gap-3">
           <label className="relative flex-1">
             <Search className="w-4 h-4 absolute top-1/2 -translate-y-1/2 start-3 opacity-50" />
-            <input value={q} onChange={(e) => setQ(e.target.value)} className="nx-input w-full h-11 ps-10 pe-3 rounded-xl" placeholder={t("ابحث بالاسم أو البريد أو الهاتف أو الكورس", "Search name, email, phone or course")} />
+            <input value={q} onChange={(e) => setQ(e.target.value)} className="nx-input w-full h-11 ps-10 pe-3 rounded-xl" style={{ paddingInlineStart: 40, paddingInlineEnd: 12 }} placeholder={t("ابحث بالاسم أو البريد أو الهاتف أو الكورس", "Search name, email, phone or course")} />
           </label>
         </div>
         <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
