@@ -90,7 +90,7 @@ function Run({ ar, run, onDone }: { ar: boolean; run: Started; onDone: (r: Resul
     done.current = true; setBusy(true); setErr(false);
     const { data, error } = await db.rpc("submit_exam", { p_attempt: run.attempt_id, p_answers: ansRef.current });
     if (error) { done.current = false; setBusy(false); setErr(true); return; }
-    onDone(data as Result, timeout);
+    onDone(data as Result, timeout || endAt.current <= Date.now()); // a retry after the time ran out is still a timed-out attempt
   }
   useEffect(() => {
     const h = setInterval(() => {
