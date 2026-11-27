@@ -536,7 +536,7 @@ function MaintenancePanel() {
 
 
 /* ---------------- HOMEPAGE LOCK ---------------- */
-function HomeLockPanel() {
+export function HomeLockPanel() {
   const { lang } = useI18n();
   const t = (a: string, b: string) => (lang === "ar" ? a : b);
   const [rowId, setRowId] = useState<string | null>(null);
