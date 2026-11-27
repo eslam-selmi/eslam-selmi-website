@@ -94,11 +94,16 @@ export function LatestAdditionsSection({ onView }: { onView?: () => void }) {
   const handleCardClick = async (it: Addition) => {
     let isIn = signedIn;
     if (it.collect_contacts && !isIn && !givenDetails) {
-      try {
-        const { data } = await supabase.auth.getSession();
-        isIn = !!data.session?.user;
-      } catch {
-        isIn = false;
+      // A transient auth failure must not force a known session to re-enter details: retry once, and on failure keep the last known state.
+      for (let attempt = 0; attempt < 2; attempt++) {
+        try {
+          const { data, error } = await supabase.auth.getSession();
+          if (error) throw error;
+          isIn = !!data.session?.user;
+          break;
+        } catch {
+          /* keep isIn as last known */
+        }
       }
     }
     if (shouldAskForDetails({ collectContacts: !!it.collect_contacts, signedIn: isIn, alreadyGiven: givenDetails || hasGivenDetails() })) setCollecting(it);
