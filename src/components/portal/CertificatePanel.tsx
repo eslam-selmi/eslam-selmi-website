@@ -45,12 +45,10 @@ export function CertificatePanel({
         .eq("user_id", enrollment.user_id!)
         .in("assignment_id", ids);
       const submitted = (subs ?? []).length > 0;
-      const approved = gradAssignments.some((a: any) => {
-        const s = (subs ?? []).find((x: any) => x.assignment_id === a.id);
-        if (!s || s.score == null || !s.graded_at) return false;
-        const pass = Number(a.max_score) * 0.6;
-        return Number(s.score) >= pass;
-      });
+      // Approval is the ADMIN's explicit approval record (user 2026-11-27). A score or a trainer's grade does not count.
+      // The record only exists once the prepared SQL is applied; before that, or on any read error, this stays "not approved" (fail closed).
+      const { data: appr, error: apprErr } = await (supabase as any).from("graduation_approvals").select("assignment_id").eq("user_id", enrollment.user_id!).in("assignment_id", ids);
+      const approved = !apprErr && (appr ?? []).length > 0 && submitted;
       setGradState({ required: true, submitted, approved, loading: false });
     })();
   }, [course.id, enrollment.user_id]);

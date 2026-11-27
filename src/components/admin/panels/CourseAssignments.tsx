@@ -1,3 +1,5 @@
+import { GraduationApprovalControl } from "@/components/admin/GraduationApprovalControl";
+import { LEARNER_PROGRESS_ENABLED } from "@/lib/learner-progress";
 import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -334,6 +336,8 @@ export function CourseAssignmentsAdmin({ courseId }: { courseId: string }) {
                           maxScore={a.max_score}
                           profile={profiles[s.user_id]}
                           onGrade={gradeSubmission}
+                          gradProject={!!a.is_graduation_project}
+                          assignmentId={a.id}
                         />
                       ))}
                     </div>
@@ -353,7 +357,11 @@ export function SubmissionRow({
   maxScore,
   profile,
   onGrade,
+  gradProject,
+  assignmentId,
 }: {
+  gradProject?: boolean;
+  assignmentId?: string;
   s: any;
   maxScore: number;
   profile: any;
@@ -421,6 +429,7 @@ export function SubmissionRow({
           {t("حفظ", "Save")}
         </button>
       </div>
+      {LEARNER_PROGRESS_ENABLED && gradProject && assignmentId && <GraduationApprovalControl assignmentId={assignmentId} userId={s.user_id} />}
     </div>
   );
 }
