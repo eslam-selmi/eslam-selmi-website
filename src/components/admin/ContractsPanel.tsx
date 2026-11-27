@@ -160,7 +160,13 @@ export function ContractsPanel() {
       try {
         await setContractLogo(savedId, logoDraft);
         setLogos((prev) => { const n = { ...prev }; if (logoDraft) n[savedId] = logoDraft; else delete n[savedId]; return n; });
-      } catch (e) { toast.error(t("تم حفظ العقد لكن تعذر حفظ اللوجو", "Contract saved but the logo could not be saved")); }
+      } catch (e) {
+        // Contract data is saved; the logo is not. Keep the dialog open with the chosen logo so nothing is lost, and do not claim success.
+        if (!editing && savedId) setEditing({ ...(payload as unknown as ContractRow), id: savedId });
+        setBusy(false);
+        load();
+        return toast.error(t("تم حفظ بيانات العقد لكن لم يُحفظ اللوجو. اللوجو ما زال في النافذة، اضغط حفظ للمحاولة مرة أخرى.", "Contract details were saved, but the logo was not. The logo is still in this window; press Save to try again."));
+      }
     }
     setBusy(false);
     toast.success(editing ? t("تم التحديث", "Updated") : t("تمت الإضافة", "Added"));
