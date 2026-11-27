@@ -20,13 +20,20 @@ describe("journey: learn -> persist -> eligibility -> debt gate (fake store, no 
     const st = fakeStore();
     await recordOpened(st, "u1", "file1");
     expect(st.db.get("u1file1").completed_at).toBeTruthy();
+    // fake server: trusted duration 100s, completes at 90% of distinct seconds (mirrors the prepared SQL)
+    const orig = st.save; (st as any).save = async (r: any) => { await orig(r); const n = (r.watched_seconds ?? []).length; const done = n >= 90; if (done) st.db.get(r.user_id + r.item_id).completed_at = "t"; return { completed: done }; };
     const w1 = createWatchTracker(100); play(w1, 0, 50);
-    expect((await recordWatched(st, "u1", "vid1", 100, w1.snapshot())).completed).toBe(false);
+    expect((await recordWatched(st, "u1", "vid1", w1.snapshot())).completed).toBe(false);
     const wSeek = createWatchTracker(100); play(wSeek, 99, 100);
-    expect((await recordWatched(st, "u1", "vid1", 100, wSeek.snapshot())).completed).toBe(false);
+    expect((await recordWatched(st, "u1", "vid1", wSeek.snapshot())).completed).toBe(false);
     const w2 = createWatchTracker(100); play(w2, 50, 100);
-    expect((await recordWatched(st, "u1", "vid1", 100, w2.snapshot())).completed).toBe(true);
+    expect((await recordWatched(st, "u1", "vid1", w2.snapshot())).completed).toBe(true);
     expect(st.db.get("u1vid1").completed_at).toBeTruthy();
+  });
+  it("client sends no duration and no completion claim for video", async () => {
+    const st = fakeStore(); const sent: any[] = []; const o = st.save; (st as any).save = async (r: any) => { sent.push(r); return o(r); };
+    await recordWatched(st, "u1", "v", [1, 2, 3]);
+    expect(Object.keys(sent[0]).sort()).toEqual(["item_id", "user_id", "watched_seconds"]);
   });
   it("debt blocks first, then content, graduation, names; all clear is ok", () => {
     expect(evaluateEligibility({ unpaid_due: true, items_left: 3 }, noGrad, false)).toEqual({ ok: false, reason: "debt" });
@@ -35,9 +42,16 @@ describe("journey: learn -> persist -> eligibility -> debt gate (fake store, no 
     expect(evaluateEligibility({ unpaid_due: false, items_left: 0 }, noGrad, false)).toEqual({ ok: false, reason: "names" });
     expect(evaluateEligibility({ unpaid_due: false, items_left: 0 }, { required: true, approved: true }, true)).toEqual({ ok: true });
   });
+  it("capstone: none -> not a blocker; required+not approved -> graduation; approved -> ok; legacy names missing -> names", () => {
+    const b = { unpaid_due: false, items_left: 0 };
+    expect(evaluateEligibility(b, { required: false, approved: false }, true)).toEqual({ ok: true });
+    expect(evaluateEligibility(b, { required: true, approved: false }, true)).toEqual({ ok: false, reason: "graduation" });
+    expect(evaluateEligibility(b, { required: true, approved: true }, true)).toEqual({ ok: true });
+    expect(evaluateEligibility(b, { required: true, approved: true }, false)).toEqual({ ok: false, reason: "names" });
+  });
   it("flag off: nothing is written", async () => {
     const st: any = fakeStore(); delete st.__test; let writes = 0; const o = st.save; st.save = async (r: any) => { writes++; return o(r); };
-    await recordOpened(st, "u1", "f"); await recordWatched(st, "u1", "v", 100, [1, 2]);
+    await recordOpened(st, "u1", "f"); await recordWatched(st, "u1", "v", [1, 2]);
     expect(writes).toBe(0);
   });
 });
@@ -53,5 +67,6 @@ describe("server gate fails closed", () => {
     for (const v of ["error", "throw", null, { status: "maybe" }, {}]) { (globalThis as any).__rpc = v; expect(await fetchGate("e")).toBe("unknown"); expect(await issueMyCertificate("e")).toBe("unknown"); }
     (globalThis as any).__rpc = { status: "debt" }; expect(await issueMyCertificate("e")).toBe("debt");
     (globalThis as any).__rpc = { status: "ok" }; expect(await fetchGate("e")).toBe("ok");
+    (globalThis as any).__rpc = { status: "finance_unknown" }; expect(await fetchGate("e")).toBe("finance_unknown");
   });
 });

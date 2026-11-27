@@ -44,7 +44,7 @@ export function MediaViewerModal({
   const flushWatch = () => {
     if (!LEARNER_PROGRESS_ENABLED || !progress || !tracker.current || durRef.current <= 0) return;
     const snap = tracker.current.snapshot(); if (!snap.length) return;
-    void recordWatched(supabaseProgressStore, progress.userId, progress.itemId, durRef.current, snap).catch(() => {});
+    void recordWatched(supabaseProgressStore, progress.userId, progress.itemId, snap).catch(() => {});
   };
   useEffect(() => {
     if (!LEARNER_PROGRESS_ENABLED || !progress || !item) return;
