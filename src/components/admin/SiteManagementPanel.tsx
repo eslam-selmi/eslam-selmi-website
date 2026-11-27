@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { invalidateSiteContent } from "@/lib/site-content";
 import { SiteProfilePanel } from "@/components/admin/SiteProfilePanel";
+import { HOME_LOCK_KEY, parseHomeLock } from "@/lib/home-lock";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Eye, EyeOff, Save, Plus, Trash2, Pencil, X, Calendar, Clock, Link as LinkIcon, Wrench, Power } from "lucide-react";
@@ -30,7 +31,7 @@ type Popup = {
 };
 
 export function SiteManagementPanel({ section = "profile" }: { section?: "profile" | "content" | "popups" | "maintenance" }) {
-  return section === "profile" ? <SiteProfilePanel /> : section === "content" ? <ContentPanel /> : section === "popups" ? <PopupsPanel /> : <MaintenancePanel />;
+  return section === "profile" ? <SiteProfilePanel /> : section === "content" ? <ContentPanel /> : section === "popups" ? <PopupsPanel /> : <div className="space-y-5"><MaintenancePanel /><HomeLockPanel /></div>;
 }
 
 /* ---------------- CONTENT ---------------- */
@@ -529,6 +530,65 @@ function MaintenancePanel() {
           {saving ? t("جارٍ الحفظ...", "Saving...") : t("حفظ الإعدادات", "Save settings")}
         </button>
       </div>
+    </div>
+  );
+}
+
+
+/* ---------------- HOMEPAGE LOCK ---------------- */
+function HomeLockPanel() {
+  const { lang } = useI18n();
+  const t = (a: string, b: string) => (lang === "ar" ? a : b);
+  const [rowId, setRowId] = useState<string | null>(null);
+  const [enabled, setEnabled] = useState(false);
+  const [msgAr, setMsgAr] = useState("");
+  const [msgEn, setMsgEn] = useState("");
+  const [loaded, setLoaded] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const { data, error } = await supabase.from("site_content").select("id, content").eq("section_key", HOME_LOCK_KEY).maybeSingle();
+      if (error) { toast.error(t("تعذر قراءة إعداد قفل الرئيسية", "Could not read the homepage lock setting")); return; }
+      if (data) { const c = parseHomeLock(data.content); setRowId(data.id); setEnabled(c.enabled); setMsgAr(c.message_ar); setMsgEn(c.message_en); }
+      setLoaded(true);
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function save(next: boolean) {
+    setSaving(true);
+    const content = { enabled: next, message_ar: msgAr, message_en: msgEn };
+    const res = rowId
+      ? await supabase.from("site_content").update({ content, is_visible: true }).eq("id", rowId)
+      : await supabase.from("site_content").insert({ section_key: HOME_LOCK_KEY, label: "قفل الصفحة الرئيسية", content, is_visible: true }).select("id").maybeSingle();
+    setSaving(false);
+    if (res.error) return toast.error(res.error.message);
+    if (!rowId && (res as any).data?.id) setRowId((res as any).data.id);
+    setEnabled(next);
+    invalidateSiteContent();
+    toast.success(next ? t("تم قفل الصفحة الرئيسية", "Homepage locked") : t("تم فتح الصفحة الرئيسية", "Homepage unlocked"));
+  }
+
+  if (!loaded) return <div className="dash-card p-6 text-sm text-white/55">{t("جارٍ التحميل...", "Loading...")}</div>;
+  return (
+    <div className="dash-card p-5 md:p-6 space-y-4">
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <h3 className="text-lg font-bold">{t("قفل الصفحة الرئيسية", "Lock the homepage")}</h3>
+          <p className="text-xs text-white/55 mt-1 max-w-md">
+            {t("عند التفعيل لا يرى الزوار ولا المتدربون الصفحة الرئيسية. المتدرب يُحوَّل إلى لوحته، والزائر يرى شاشة دخول أنيقة. الأدمن يرى الصفحة الرئيسية كالمعتاد. لا يمنع فتح لوحة المتدرب أو الأدمن.", "When on, visitors and trainees cannot see the homepage. A trainee is sent to their own portal and a visitor sees a clean sign-in screen. Admins see the homepage as usual. The trainee and admin areas stay open.")}
+          </p>
+        </div>
+        <button onClick={() => save(!enabled)} disabled={saving} className={`h-10 px-4 rounded-lg text-sm font-semibold flex items-center gap-2 disabled:opacity-50 ${enabled ? "bg-orange-500/20 text-orange-200 border border-orange-400/40" : "bg-emerald-500/15 text-emerald-300 border border-emerald-400/30"}`}>
+          <Power className="w-4 h-4" />{enabled ? t("الرئيسية مقفولة، اضغط للفتح", "Locked, press to unlock") : t("الرئيسية مفتوحة، اضغط للقفل", "Open, press to lock")}
+        </button>
+      </div>
+      <div className="grid md:grid-cols-2 gap-3">
+        <textarea value={msgAr} onChange={(e) => setMsgAr(e.target.value)} placeholder={t("رسالة للزائر بالعربية (اختياري)", "Visitor message in Arabic (optional)")} className="min-h-20 rounded-lg bg-white/5 border border-white/10 p-3 text-sm" />
+        <textarea value={msgEn} onChange={(e) => setMsgEn(e.target.value)} dir="ltr" placeholder={t("رسالة للزائر بالإنجليزية (اختياري)", "Visitor message in English (optional)")} className="min-h-20 rounded-lg bg-white/5 border border-white/10 p-3 text-sm" />
+      </div>
+      <Button onClick={() => save(enabled)} disabled={saving} className="h-9">{t("حفظ الرسائل", "Save messages")}</Button>
     </div>
   );
 }

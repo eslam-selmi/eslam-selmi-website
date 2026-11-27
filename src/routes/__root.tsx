@@ -19,6 +19,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { MotionConfig } from "motion/react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { MaintenanceGate } from "@/components/MaintenanceGate";
+import { HomeLockGate } from "@/components/HomeLockGate";
 import { SitePopup } from "@/components/SitePopup";
 import { TextEditLayer } from "@/components/home/TextEditLayer";
 import { SiteBranding } from "@/components/SiteBranding";
@@ -153,10 +154,12 @@ function RootComponent() {
           <MotionConfig reducedMotion={isMobile ? "always" : "user"}>
             <main>
               <MaintenanceGate>
-                <TextEditLayer>
-                  <Outlet />
-                </TextEditLayer>
-                <SitePopup />
+                <HomeLockGate>
+                  <TextEditLayer>
+                    <Outlet />
+                  </TextEditLayer>
+                  <SitePopup />
+                </HomeLockGate>
               </MaintenanceGate>
             </main>
             <Toaster position="top-center" richColors />
