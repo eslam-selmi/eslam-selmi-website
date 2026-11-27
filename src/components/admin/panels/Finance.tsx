@@ -614,7 +614,7 @@ export function BulkReceiptsTool() {
           chunk.map(async (p: any) => {
             const { data } = await supabase.storage
               .from("payment-proofs")
-              .createSignedUrl(p.proof_url, 300);
+              .createSignedUrl(p.proof_url, 30);
             if (!data?.signedUrl) return;
             const res = await fetch(data.signedUrl);
             if (!res.ok) return;
