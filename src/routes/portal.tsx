@@ -15,7 +15,7 @@ import { AccountSettingsModal } from "@/components/AccountSettingsModal";
 import type { Course, Enrollment, Profile, ModuleRow } from "@/components/portal/types";
 import { EnrollmentCard } from "@/components/portal/EnrollmentCard";
 import { CourseDetail } from "@/components/portal/CourseDetail";
-import { resolveViewing } from "@/lib/portal-view";
+import { resolveViewing, pickContinueTarget, pickReadyForCert } from "@/lib/portal-view";
 import { MyCertificatesSection } from "@/components/portal/MyCertificatesSection";
 import { UploadModal } from "@/components/portal/UploadModal";
 import { EnrollModal } from "@/components/portal/EnrollModal";
@@ -207,16 +207,7 @@ function PortalPage() {
   }, [enrollments, modules]);
 
   const alerts = usePortalAlerts(user?.id, enrollments);
-  const continueTarget = useMemo(() => {
-    for (const e of trEnrollments) {
-      if (e.status !== "approved" || (e as { blocked?: boolean }).blocked) continue;
-      const ms = modules.filter((m) => m.course_id === e.course_id);
-      if (ms.length === 0 || ms.every((m) => m.completed_by_admin)) continue;
-      const done = ms.filter((m) => m.completed_by_admin).length;
-      return { en: e, progress: Math.round((done / ms.length) * 100), done, total: ms.length };
-    }
-    return null;
-  }, [trEnrollments, modules]);
+  const continueTarget = useMemo(() => pickContinueTarget(trEnrollments, modules), [trEnrollments, modules]);
 
   useEffect(() => {
     if (tab === "certificates" && alerts.certCount) alerts.markSeen("certs");
@@ -227,8 +218,7 @@ function PortalPage() {
   // eligible only when there is no active continueTarget (the hero owns that state).
   const nudge = useMemo(() => {
     if (continueTarget) return { readyForCert: null, hasPending: false };
-    const approved = trEnrollments.filter((e) => e.status === "approved");
-    const readyForCert = approved.find((e) => !e.certificate_issued && !e.certificate_requested_at && !(e as { blocked?: boolean }).blocked) ?? null;
+    const readyForCert = pickReadyForCert(trEnrollments);
     const hasPending = trEnrollments.some((e) => e.status === "pending");
     return { readyForCert, hasPending };
   }, [trEnrollments, continueTarget]);
