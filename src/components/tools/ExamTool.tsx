@@ -81,22 +81,24 @@ function Run({ ar, run, onDone }: { ar: boolean; run: Started; onDone: (r: Resul
   const [err, setErr] = useState(false);
   const done = useRef(false);
   const ansRef = useRef<Record<string, number>>({});
-  ansRef.current = ans; // timer callback must read the latest answers, not the first render's empty object
+  const frozen = useRef<Record<string, number> | null>(null); // exact payload captured at expiry, reused by every retry
+  const [expired, setExpired] = useState(false);
+  if (!frozen.current) ansRef.current = ans; // timer callback must read the latest answers, not the first render's empty object
   const q = run.questions[i];
 
   async function submit(timeout: boolean) {
     if (done.current) return;
-    if (!timeout) { const un = run.questions.filter((x) => ansRef.current[x.id] === undefined).length; if (un && !window.confirm(t(`باقي ${un} سؤال بدون إجابة. تسليم؟`, `${un} unanswered. Submit?`))) return; }
+    if (!timeout && !frozen.current) { const un = run.questions.filter((x) => ansRef.current[x.id] === undefined).length; if (un && !window.confirm(t(`باقي ${un} سؤال بدون إجابة. تسليم؟`, `${un} unanswered. Submit?`))) return; }
     done.current = true; setBusy(true); setErr(false);
-    const { data, error } = await db.rpc("submit_exam", { p_attempt: run.attempt_id, p_answers: ansRef.current });
+    const { data, error } = await db.rpc("submit_exam", { p_attempt: run.attempt_id, p_answers: frozen.current ?? ansRef.current });
     if (error) { done.current = false; setBusy(false); setErr(true); return; }
-    onDone(data as Result, timeout || endAt.current <= Date.now()); // a retry after the time ran out is still a timed-out attempt
+    onDone(data as Result, timeout || frozen.current !== null); // a retry after the time ran out is still a timed-out attempt
   }
   useEffect(() => {
     const h = setInterval(() => {
       const s = Math.max(0, Math.round((endAt.current - Date.now()) / 1000));
       setLeft(s);
-      if (s <= 0) { clearInterval(h); void submit(true); }
+      if (s <= 0) { clearInterval(h); frozen.current = { ...ansRef.current }; setExpired(true); void submit(true); }
     }, 500);
     return () => clearInterval(h);
     // eslint-disable-next-line
@@ -118,7 +120,7 @@ function Run({ ar, run, onDone }: { ar: boolean; run: Started; onDone: (r: Resul
       <div className="dash-card p-5 space-y-3">
         <p className="text-lg leading-8">{q.stem}</p>
         {q.options.map((o, k) => (
-          <button key={k} type="button" onClick={() => setAns((a) => ({ ...a, [q.id]: k }))} className={`w-full text-start flex gap-3 items-start rounded-xl border p-3 ${ans[q.id] === k ? "border-emerald-400 bg-emerald-500/15" : "border-white/15"}`}>
+          <button key={k} type="button" disabled={expired} onClick={() => { if (!frozen.current) setAns((a) => ({ ...a, [q.id]: k })); }} className={`w-full text-start disabled:opacity-70 flex gap-3 items-start rounded-xl border p-3 ${ans[q.id] === k ? "border-emerald-400 bg-emerald-500/15" : "border-white/15"}`}>
             <span className="w-7 h-7 shrink-0 rounded-full border border-white/30 grid place-items-center text-xs">{ar ? L[k] : String.fromCharCode(65 + k)}</span><span>{o}</span>
           </button>
         ))}
