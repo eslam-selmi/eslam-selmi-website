@@ -65,7 +65,8 @@ function PortalPage() {
   const [tab, setTab] = useState<PortalTabId>("overview");
   const search = Route.useSearch();
   const [viewingId, setViewingId] = useState<string | null>(search.view || null);
-  const viewing = useMemo(() => enrollments.find(e => e.id === viewingId) || null, [viewingId, enrollments]);
+  // A suspended enrollment never opens the course view, not even through a ?view= link (the server also hides its content).
+  const viewing = useMemo(() => { const e = enrollments.find(x => x.id === viewingId) || null; return e && (e as { blocked?: boolean }).blocked ? null : e; }, [viewingId, enrollments]);
   const setViewing = (v: Enrollment | null) => setViewingId(v ? v.id : null);
 
   useEffect(() => {
