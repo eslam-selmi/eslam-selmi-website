@@ -68,7 +68,7 @@ export function ProofUploader({ enrollmentId, userId, currency, remaining, onUpl
 
   return (
     <div className="mt-4 rounded-xl border border-[var(--gold)]/25 bg-[var(--gold)]/5 p-4 space-y-3">
-      <p className="text-xs font-semibold text-[var(--gold)]">{isAr ? "📤 إرسال إيصال دفع" : "📤 Submit payment proof"}</p>
+      <p className="text-xs font-semibold text-amber-800 dark:text-[var(--gold)]">{isAr ? "📤 إرسال إيصال دفع" : "📤 Submit payment proof"}</p>
 
       {methods.length === 0 ? (
         <p className="text-xs text-white/50">{isAr ? "لا توجد طرق دفع متاحة حالياً. تواصل مع الإدارة." : "No payment methods available. Please contact admin."}</p>

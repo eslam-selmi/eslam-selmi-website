@@ -140,7 +140,7 @@ export function CertificatePanel({
         <div className="space-y-3">
           {!namesSaved && (
             <div className="rounded-xl border border-[var(--gold)]/30 bg-[var(--gold)]/5 p-3 space-y-2">
-              <p className="text-xs text-[var(--gold)] flex items-center gap-1.5">
+              <p className="text-xs text-amber-800 dark:text-[var(--gold)] flex items-center gap-1.5">
                 <AlertCircle className="w-3.5 h-3.5" /> {isAr ? "اكتب اسمك بالضبط زي ما تحبه يظهر على الشهادة" : "Write your name exactly as you want it on the certificate"}
               </p>
               <input value={nameAr} onChange={(e) => setNameAr(e.target.value)}
