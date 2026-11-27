@@ -682,6 +682,91 @@ export type Database = {
           },
         ]
       }
+      course_share_codes: {
+        Row: {
+          attempts: number
+          code_hash: string
+          created_at: string
+          expires_at: string
+          link_id: string
+        }
+        Insert: {
+          attempts?: number
+          code_hash: string
+          created_at?: string
+          expires_at: string
+          link_id: string
+        }
+        Update: {
+          attempts?: number
+          code_hash?: string
+          created_at?: string
+          expires_at?: string
+          link_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_share_codes_link_id_fkey"
+            columns: ["link_id"]
+            isOneToOne: true
+            referencedRelation: "course_share_links"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      course_share_links: {
+        Row: {
+          auto_close: boolean
+          bind_first: boolean
+          bound_email: string | null
+          claim_hash: string | null
+          closed_at: string | null
+          course_id: string
+          created_at: string
+          created_by: string
+          expires_at: string | null
+          id: string
+          revoked_at: string | null
+          token_hash: string
+        }
+        Insert: {
+          auto_close?: boolean
+          bind_first?: boolean
+          bound_email?: string | null
+          claim_hash?: string | null
+          closed_at?: string | null
+          course_id: string
+          created_at?: string
+          created_by: string
+          expires_at?: string | null
+          id?: string
+          revoked_at?: string | null
+          token_hash: string
+        }
+        Update: {
+          auto_close?: boolean
+          bind_first?: boolean
+          bound_email?: string | null
+          claim_hash?: string | null
+          closed_at?: string | null
+          course_id?: string
+          created_at?: string
+          created_by?: string
+          expires_at?: string | null
+          id?: string
+          revoked_at?: string | null
+          token_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_share_links_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       course_trainers: {
         Row: {
           course_id: string
@@ -915,6 +1000,128 @@ export type Database = {
           },
         ]
       }
+      exam_answers: {
+        Row: {
+          attempt_id: string
+          chosen: number | null
+          flagged: boolean | null
+          question_id: string
+        }
+        Insert: {
+          attempt_id: string
+          chosen?: number | null
+          flagged?: boolean | null
+          question_id: string
+        }
+        Update: {
+          attempt_id?: string
+          chosen?: number | null
+          flagged?: boolean | null
+          question_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exam_answers_attempt_id_fkey"
+            columns: ["attempt_id"]
+            isOneToOne: false
+            referencedRelation: "exam_attempts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exam_attempts: {
+        Row: {
+          count: number
+          domain_scores: Json | null
+          duration_s: number
+          id: string
+          option_orders: Json
+          question_ids: string[]
+          score: number | null
+          standard_scores: Json | null
+          started_at: string
+          submitted_at: string | null
+          user_id: string
+        }
+        Insert: {
+          count: number
+          domain_scores?: Json | null
+          duration_s: number
+          id?: string
+          option_orders: Json
+          question_ids: string[]
+          score?: number | null
+          standard_scores?: Json | null
+          started_at?: string
+          submitted_at?: string | null
+          user_id: string
+        }
+        Update: {
+          count?: number
+          domain_scores?: Json | null
+          duration_s?: number
+          id?: string
+          option_orders?: Json
+          question_ids?: string[]
+          score?: number | null
+          standard_scores?: Json | null
+          started_at?: string
+          submitted_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      exam_questions: {
+        Row: {
+          approved: boolean
+          correct: number
+          difficulty: string | null
+          domain: string
+          explanation: string | null
+          id: string
+          official_item: boolean
+          options: Json
+          refs: Json | null
+          source_status: string | null
+          standard: string | null
+          standard_title: string | null
+          stem: string
+          weight_pct: number | null
+        }
+        Insert: {
+          approved?: boolean
+          correct: number
+          difficulty?: string | null
+          domain: string
+          explanation?: string | null
+          id: string
+          official_item?: boolean
+          options: Json
+          refs?: Json | null
+          source_status?: string | null
+          standard?: string | null
+          standard_title?: string | null
+          stem: string
+          weight_pct?: number | null
+        }
+        Update: {
+          approved?: boolean
+          correct?: number
+          difficulty?: string | null
+          domain?: string
+          explanation?: string | null
+          id?: string
+          official_item?: boolean
+          options?: Json
+          refs?: Json | null
+          source_status?: string | null
+          standard?: string | null
+          standard_title?: string | null
+          stem?: string
+          weight_pct?: number | null
+        }
+        Relationships: []
+      }
       feedback_questions: {
         Row: {
           created_at: string
@@ -959,6 +1166,81 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      guest_access: {
+        Row: {
+          created_at: string
+          created_by: string
+          email: string
+          enabled: boolean
+          failed_count: number
+          id: string
+          locked_until: string | null
+          name: string
+          password_hash: string
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          email: string
+          enabled?: boolean
+          failed_count?: number
+          id?: string
+          locked_until?: string | null
+          name?: string
+          password_hash: string
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          email?: string
+          enabled?: boolean
+          failed_count?: number
+          id?: string
+          locked_until?: string | null
+          name?: string
+          password_hash?: string
+          updated_at?: string
+          version?: number
+        }
+        Relationships: []
+      }
+      guest_course_access: {
+        Row: {
+          course_id: string
+          created_at: string
+          guest_id: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          guest_id: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          guest_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guest_course_access_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "guest_course_access_guest_id_fkey"
+            columns: ["guest_id"]
+            isOneToOne: false
+            referencedRelation: "guest_access"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       installments: {
         Row: {
@@ -1221,6 +1503,98 @@ export type Database = {
           link?: string | null
           read?: boolean
           title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      page_access: {
+        Row: {
+          mode: string
+          page_key: string
+          password_hash: string | null
+          password_version: number
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          mode?: string
+          page_key: string
+          password_hash?: string | null
+          password_version?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          mode?: string
+          page_key?: string
+          password_hash?: string | null
+          password_version?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      page_access_grants: {
+        Row: {
+          page_key: string
+          user_id: string
+        }
+        Insert: {
+          page_key: string
+          user_id: string
+        }
+        Update: {
+          page_key?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_access_grants_page_key_fkey"
+            columns: ["page_key"]
+            isOneToOne: false
+            referencedRelation: "page_access"
+            referencedColumns: ["page_key"]
+          },
+        ]
+      }
+      page_unlock_attempts: {
+        Row: {
+          at: string
+          id: number
+          page_key: string
+          user_id: string
+        }
+        Insert: {
+          at?: string
+          id?: number
+          page_key: string
+          user_id: string
+        }
+        Update: {
+          at?: string
+          id?: number
+          page_key?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      page_unlocks: {
+        Row: {
+          expires_at: string
+          page_key: string
+          password_version: number
+          user_id: string
+        }
+        Insert: {
+          expires_at: string
+          page_key: string
+          password_version: number
+          user_id: string
+        }
+        Update: {
+          expires_at?: string
+          page_key?: string
+          password_version?: number
           user_id?: string
         }
         Relationships: []
@@ -1770,6 +2144,105 @@ export type Database = {
         }
         Relationships: []
       }
+      tool_access: {
+        Row: {
+          granted_at: string
+          granted_by: string | null
+          tool: string
+          user_id: string
+        }
+        Insert: {
+          granted_at?: string
+          granted_by?: string | null
+          tool: string
+          user_id: string
+        }
+        Update: {
+          granted_at?: string
+          granted_by?: string | null
+          tool?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      tool_access_requests: {
+        Row: {
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          id: string
+          status: string
+          tool: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          id?: string
+          status?: string
+          tool: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          id?: string
+          status?: string
+          tool?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      tool_workspace_versions: {
+        Row: {
+          created_at: string
+          data: Json
+          id: string
+          tool: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          data: Json
+          id?: string
+          tool: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          id?: string
+          tool?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      tool_workspaces: {
+        Row: {
+          data: Json
+          revision: number
+          tool: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          data?: Json
+          revision?: number
+          tool: string
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          data?: Json
+          revision?: number
+          tool?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       trainee_notes: {
         Row: {
           content: string
@@ -2012,10 +2485,12 @@ export type Database = {
         Args: { _code: string; _enrollment_id: string }
         Returns: Json
       }
+      can_view_page: { Args: { p_key: string }; Returns: boolean }
       cancel_my_booking: {
         Args: { _reason?: string; _slot_id: string }
         Returns: Json
       }
+      extra_lock_ok: { Args: { p_key: string }; Returns: boolean }
       generate_booking_slots: {
         Args: { _from: string; _to: string }
         Returns: number
@@ -2046,6 +2521,7 @@ export type Database = {
           trainee_name: string
         }[]
       }
+      get_my_tools: { Args: never; Returns: string[] }
       get_public_custom_countries: {
         Args: never
         Returns: {
@@ -2063,6 +2539,12 @@ export type Database = {
           section_key: string
         }[]
       }
+      guest_record_failure:
+        | {
+            Args: { _id: string; _lock_seconds: number; _max: number }
+            Returns: undefined
+          }
+        | { Args: { _lock_seconds: number; _max: number }; Returns: undefined }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -2070,7 +2552,26 @@ export type Database = {
         }
         Returns: boolean
       }
+      has_tool_access: { Args: { _tool: string }; Returns: boolean }
       is_trainer_of_course: { Args: { _course_id: string }; Returns: boolean }
+      list_page_access: {
+        Args: never
+        Returns: {
+          grants: number
+          has_password: boolean
+          mode: string
+          page_key: string
+        }[]
+      }
+      my_certificate_courses: {
+        Args: never
+        Returns: {
+          course_id: string
+          title: string
+          total_hours: number
+        }[]
+      }
+      my_tool_request_status: { Args: { p_tool: string }; Returns: string }
       notify_admins: {
         Args: { _body: string; _link: string; _title: string }
         Returns: undefined
@@ -2084,12 +2585,34 @@ export type Database = {
         }
         Returns: undefined
       }
+      page_mode: { Args: { p_key: string }; Returns: string }
+      request_tool_access: { Args: { p_tool: string }; Returns: string }
       reschedule_my_booking: {
         Args: { _new_slot_id: string; _slot_id: string }
         Returns: Json
       }
+      review_tool_request: {
+        Args: { p_approve: boolean; p_id: string }
+        Returns: string
+      }
+      set_page_access: {
+        Args: { p_key: string; p_mode: string; p_password?: string }
+        Returns: undefined
+      }
+      start_exam: {
+        Args: { p_count: number; p_domains?: string[]; p_duration_s: number }
+        Returns: Json
+      }
+      submit_exam: {
+        Args: { p_answers: Json; p_attempt: string }
+        Returns: Json
+      }
       trainer_has_perm: {
         Args: { _course_id: string; _perm: string }
+        Returns: boolean
+      }
+      unlock_page: {
+        Args: { p_key: string; p_password: string }
         Returns: boolean
       }
       validate_coupon: {
