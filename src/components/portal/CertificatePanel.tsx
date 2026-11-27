@@ -6,6 +6,7 @@ import { CheckCircle2, Download, Award, Hourglass, Send, AlertCircle, Save } fro
 import type { Course, Enrollment } from "./types";
 import { LEARNER_PROGRESS_ENABLED, issueMyCertificate } from "@/lib/learner-progress";
 import { DebtGateDialog } from "./DebtGateDialog";
+import { renderOwnCertificates, resolveIssueDate } from "@/lib/self-certificate";
 
 
 export function CertificatePanel({
@@ -72,6 +73,22 @@ export function CertificatePanel({
       const st = await issueMyCertificate(enrollment.id);
       if (st === "debt") { setDebtOpen(true); return; }
       if (st === "unknown") return toast.error(isAr ? "تعذّر التحقق، جرّب مرة أخرى" : "Could not check, please try again");
+      if (st === "finance_unknown") return toast.error(isAr ? "جاري مراجعة بيانات السداد، تواصل مع الإدارة لو استمرت الرسالة" : "We are checking your payment records. Contact us if this stays.");
+      if (st === "issued") {
+        // Server has set certificate_issued. Render locally from the learner's own row; QR -> /verify/<id>.
+        const wasIssued = !!enrollment.certificate_issued;
+        const date = resolveIssueDate(enrollment as any, wasIssued ? undefined : new Date());
+        onRefresh();
+        if (!date) return toast.success(isAr ? "شهادتك صادرة" : "Your certificate is issued");
+        try {
+          setRequesting(true);
+          const { ar, en } = await renderOwnCertificates({ id: enrollment.id, course_id: course.id, name_ar: enrollment.name_ar, name_en: enrollment.name_en, courses: course as any }, date);
+          for (const [b, n] of [[ar, "ar"], [en, "en"]] as const) { const u = URL.createObjectURL(b); const a = document.createElement("a"); a.href = u; a.download = `certificate-${n}.pdf`; a.click(); setTimeout(() => URL.revokeObjectURL(u), 10000); }
+          toast.success(isAr ? "تم إصدار شهادتك ✅" : "Certificate issued ✅");
+        } catch { toast.error(isAr ? "صدرت الشهادة لكن تعذّر إنشاء الملف، جرّب مرة أخرى" : "Issued, but the file could not be created. Try again."); }
+        finally { setRequesting(false); }
+        return;
+      }
       if (st === "ok") { toast.success(isAr ? "تم تسجيل طلب الشهادة ✅" : "Certificate request recorded ✅"); onRefresh(); return; }
       if (st === "content") return toast.error(isAr ? "لازم تكمل كل المحتوى المطلوب الأول" : "Finish all required content first");
       if (st === "graduation") return toast.error(isAr ? "لازم يتم اعتماد مشروع التخرّج الأول" : "Your graduation project must be approved first");

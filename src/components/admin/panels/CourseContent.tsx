@@ -8,6 +8,8 @@ import { PortalShell } from "@/components/PortalShell";
 import { toast } from "sonner";
 import { generateCertificatePdf } from "@/lib/certificate";
 import { useI18n } from "@/lib/i18n";
+import { VideoDurationRepair } from "@/components/admin/VideoDurationRepair";
+import { LEARNER_PROGRESS_ENABLED } from "@/lib/learner-progress";
 import { VideoCuesEditor } from "@/components/admin/VideoCuesEditor";
 import { isVideoFileItem, parseVideoCues, visibleItemText } from "@/lib/video-cues";
 import {
@@ -147,6 +149,7 @@ export function CourseContent({ courseId }: { courseId: string }) {
 
   return (
     <div className="space-y-4">
+      {LEARNER_PROGRESS_ENABLED && <VideoDurationRepair courseId={courseId} />}
       <div className="rounded-xl border border-white/10 bg-white/5 p-3 flex flex-wrap gap-2">
         <input
           value={newTitle}
