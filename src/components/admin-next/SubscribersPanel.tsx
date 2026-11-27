@@ -332,8 +332,8 @@ function SubscriberDetail({ p, enrs, units, onBack, onAccount, onCourse, t, fmt,
           <p className="text-[11px] opacity-50">{t("لا يوجد تتبّع لتقدّم كل متدرب على حدة؛ الأرقام تخص محتوى الكورس.", "Per-trainee progress is not tracked; the figures describe the course content.")}</p>
         </div>
         <div className="nx-card p-5 space-y-3">
-          <div className="flex items-center justify-between"><h2 className="font-bold">{t("المدفوعات", "Payments")}</h2>{pay && pay.length > 0 && <span className="text-xs font-bold">{approvedTotal.toLocaleString()} {cur}</span>}</div>
-          {pay === null ? <Loader2 className="w-4 h-4 animate-spin" /> : pay.length === 0 ? <p className="text-sm opacity-60">{t("لا توجد مدفوعات", "No payments")}</p> : pay.map((x) => (
+          <div className="flex items-center justify-between"><h2 className="font-bold">{t("المدفوعات المسجّلة", "Recorded payments")}</h2>{pay && pay.length > 0 && <span className="text-xs font-bold">{approvedTotal.toLocaleString()} {cur}</span>}</div>
+          {pay === null ? <Loader2 className="w-4 h-4 animate-spin" /> : pay.length === 0 ? <p className="text-sm opacity-60">{t("لا توجد مدفوعات مسجّلة. أقساط المديونية منفصلة وتظهر في القائمة.", "No recorded payments. Installment dues are separate and shown in the list.")}</p> : pay.map((x) => (
             <div key={x.id} className="flex items-center gap-3 text-sm"><span className="flex-1">{Number(x.amount).toLocaleString()} {x.currency}<span className="block text-[11px] opacity-60">{fmt(x.paid_at)}{x.payment_method_name ? ` · ${x.payment_method_name}` : ""}</span></span><span className={`px-2 py-0.5 rounded-md text-[10px] ${sc(x.status)}`}>{x.status}</span></div>
           ))}
         </div>
