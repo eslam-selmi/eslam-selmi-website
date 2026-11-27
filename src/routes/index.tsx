@@ -1,3 +1,4 @@
+import { getHomeLock } from "@/lib/home-lock.functions";
 import { ToolsSection } from "@/components/home/ToolsSection";
 import { createFileRoute } from "@tanstack/react-router";
 import { MotionConfig } from "motion/react";
@@ -28,6 +29,7 @@ const TraineeReviews = lazy(() => import("@/components/TraineeReviews").then(m =
 const LatestAdditionsSection = lazy(() => import("@/components/LatestAdditions").then(m => ({ default: m.LatestAdditionsSection })));
 
 export const Route = createFileRoute("/")({
+  loader: () => getHomeLock(),
   head: () => ({
     meta: [
       { title: "Eslam Selmi — Head of L&D & Talent" },
