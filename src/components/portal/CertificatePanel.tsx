@@ -23,7 +23,6 @@ export function CertificatePanel({
   const [saving, setSaving] = useState(false);
   const [requesting, setRequesting] = useState(false);
   const [debtOpen, setDebtOpen] = useState(false);
-  const [contentLeft, setContentLeft] = useState(false);
   const [gradState, setGradState] = useState<{ required: boolean; submitted: boolean; approved: boolean; loading: boolean }>({ required: false, submitted: false, approved: false, loading: true });
   const namesSaved = !!(enrollment.name_ar && enrollment.name_en);
   const issued = enrollment.certificate_issued && (enrollment.certificate_url_ar || enrollment.certificate_url_en || enrollment.certificate_url);
@@ -72,7 +71,7 @@ export function CertificatePanel({
     if (LEARNER_PROGRESS_ENABLED) {
       // Prepared, default off: unpaid-due installments block before anything else.
       const { status: st, issuedAt, blockers } = await issueMyCertificateFull(enrollment.id);
-      if (st === "debt") { setContentLeft(blockers.includes("content")); setDebtOpen(true); return; }
+      if (st === "debt") { setDebtOpen(true); return; }
       if (st === "unknown") return toast.error(isAr ? "تعذّر التحقق، جرّب مرة أخرى" : "Could not check, please try again");
       if (st === "finance_unknown") return toast.error(isAr ? "جاري مراجعة بيانات السداد، تواصل مع الإدارة لو استمرت الرسالة" : "We are checking your payment records. Contact us if this stays.");
       if (st === "issued") {
@@ -90,12 +89,10 @@ export function CertificatePanel({
         return;
       }
       if (st === "ok") { toast.success(isAr ? "تم تسجيل طلب الشهادة ✅" : "Certificate request recorded ✅"); onRefresh(); return; }
-      if (st === "content") return toast.error(isAr ? "لازم تكمل كل المحتوى المطلوب الأول" : "Finish all required content first");
       if (st === "graduation") return toast.error(isAr ? "لازم يتم اعتماد مشروع التخرّج الأول" : "Your graduation project must be approved first");
       if (st === "names") return toast.error(isAr ? "اكتب اسمك بالعربي والإنجليزي الأول" : "Save your name in Arabic and English first");
       return;
     }
-    if (!allModulesDone) return toast.error(isAr ? "لازم تكمل كل الدروس الأول" : "Finish all modules first");
     if (gradState.required && !gradState.approved) return toast.error(isAr ? "لازم يتم اعتماد مشروع التخرّج الأول" : "Your graduation project must be approved first");
     if (!namesSaved) return toast.error(isAr ? "اكتب اسمك بالعربي والإنجليزي الأول" : "Save your name in Arabic and English first");
     setRequesting(true);
@@ -108,11 +105,11 @@ export function CertificatePanel({
     onRefresh();
   }
 
-  const canRequest = allModulesDone && namesSaved && (!gradState.required || gradState.approved);
+  const canRequest = namesSaved && (!gradState.required || gradState.approved);
 
   return (
     <div className="dash-card dash-card-hover p-5">
-      {LEARNER_PROGRESS_ENABLED && <DebtGateDialog open={debtOpen} onClose={() => setDebtOpen(false)} isAr={isAr} contentLeft={contentLeft} />}
+      {LEARNER_PROGRESS_ENABLED && <DebtGateDialog open={debtOpen} onClose={() => setDebtOpen(false)} isAr={isAr} />}
       <h3 className="font-bold mb-3 flex items-center gap-2"><Award className="w-4 h-4 text-[var(--gold)]" /> {isAr ? "الشهادة" : "Certificate"}</h3>
 
       {issued ? (
@@ -175,11 +172,6 @@ export function CertificatePanel({
             </div>
           ) : (
             <>
-              {!allModulesDone && totalModules > 0 && (
-                <p className="text-[11px] text-white/55 text-center">
-                  {isAr ? `متبقى ${totalModules - completedModules} محاضرة قبل ما تقدر تطلب الشهادة` : `${totalModules - completedModules} lecture(s) remaining before you can request the certificate`}
-                </p>
-              )}
               {gradState.required && (
                 <div className={`rounded-xl border p-3 text-xs flex items-start gap-2 ${gradState.approved ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-200" : gradState.submitted ? "bg-amber-300/10 border-amber-300/30 text-amber-200" : "bg-rose-500/10 border-rose-500/30 text-rose-200"}`}>
                   {gradState.approved ? <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0" /> : <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />}

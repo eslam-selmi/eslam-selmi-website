@@ -35,9 +35,9 @@ describe("journey: learn -> persist -> eligibility -> debt gate (fake store, no 
     await recordWatched(st, "u1", "v", [1, 2, 3]);
     expect(Object.keys(sent[0]).sort()).toEqual(["item_id", "user_id", "watched_seconds"]);
   });
-  it("debt blocks first, then content, graduation, names; all clear is ok", () => {
+  it("debt blocks first, then graduation, names; unfinished content never blocks (user 2026-11-27 18:34); all clear is ok", () => {
     expect(evaluateEligibility({ unpaid_due: true, items_left: 3 }, noGrad, false)).toEqual({ ok: false, reason: "debt" });
-    expect(evaluateEligibility({ unpaid_due: false, items_left: 1 }, noGrad, true)).toEqual({ ok: false, reason: "content" });
+    expect(evaluateEligibility({ unpaid_due: false, items_left: 1 }, noGrad, true)).toEqual({ ok: true });
     expect(evaluateEligibility({ unpaid_due: false, items_left: 0 }, { required: true, approved: false }, true)).toEqual({ ok: false, reason: "graduation" });
     expect(evaluateEligibility({ unpaid_due: false, items_left: 0 }, noGrad, false)).toEqual({ ok: false, reason: "names" });
     expect(evaluateEligibility({ unpaid_due: false, items_left: 0 }, { required: true, approved: true }, true)).toEqual({ ok: true });

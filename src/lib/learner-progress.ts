@@ -12,7 +12,6 @@ export type Eligibility =
 // Order matters: debt is shown first so the trainee sees "pay first" before anything else.
 export function evaluateEligibility(b: Blockers, grad: { required: boolean; approved: boolean }, namesSaved: boolean): Eligibility {
   if (b.unpaid_due) return { ok: false, reason: "debt" };
-  if (b.items_left > 0) return { ok: false, reason: "content" };
   if (grad.required && !grad.approved) return { ok: false, reason: "graduation" };
   if (!namesSaved) return { ok: false, reason: "names" };
   return { ok: true };
@@ -77,5 +76,5 @@ export async function issueMyCertificateFull(enrollmentId: string): Promise<Issu
   } catch { return { status: "unknown", issuedAt: null, blockers: [] }; }
 }
 export async function issueMyCertificate(enrollmentId: string): Promise<GateStatus> { return (await issueMyCertificateFull(enrollmentId)).status; }
-export function gateFromBlockers(b: Blockers): GateStatus { return b.unpaid_due ? "debt" : b.items_left > 0 ? "content" : "ok"; }
+export function gateFromBlockers(b: Blockers): GateStatus { return b.unpaid_due ? "debt" : "ok"; }
 export { createWatchTracker };
