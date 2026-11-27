@@ -30,6 +30,8 @@ const LatestAdditionsSection = lazy(() => import("@/components/LatestAdditions")
 
 export const Route = createFileRoute("/")({
   loader: () => getHomeLock(),
+  // The document must never be served from a shared cache: the lock can be switched on at any time.
+  headers: () => ({ "Cache-Control": "private, no-store" }),
   head: () => ({
     meta: [
       { title: "Eslam Selmi — Head of L&D & Talent" },
