@@ -3,6 +3,7 @@ import { describe, it, expect, vi } from "vitest";
 import { createElement, act } from "react";
 import { createRoot } from "react-dom/client";
 
+(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
 const store: { rows: Array<{ id: string; section_key: string; content: unknown }>; writes: string[] } = { rows: [], writes: [] };
 vi.mock("@/integrations/supabase/client", () => {
   const from = () => {
