@@ -454,3 +454,14 @@
 .nx [data-bell-panel] p, .nx [data-bell-panel] span { color: inherit; }
 .nx [data-bell-panel] > div:first-child p:first-child { color: #fff !important; }
 .nx [data-bell-panel] > div:first-child p:last-child { color: rgb(255 255 255 / 0.75) !important; }
+
+/* Tablet only (640-1023px, where the bottom bar shows): more visible navigation. Phones are unchanged. */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .nx-tabbar { background: color-mix(in oklab, var(--nx-bg-0) 92%, transparent); backdrop-filter: blur(14px); border-top-color: var(--nx-line-strong); }
+  .nx-tabbar-item { font-size: 13px; padding: 10px 0 10px; color: var(--nx-ink-60); gap: 4px; }
+  .nx-tabbar-item svg { width: 24px; height: 24px; }
+  .nx-tabbar-item > span:first-child { padding: 4px 22px; border-radius: 999px; }
+  .nx-tabbar-item span.max-w-\[68px\] { max-width: 120px; }
+  .nx-tabbar-item[data-active="true"] { font-weight: 800; }
+  .nx-tabbar-item[data-active="true"] > span:first-child { background: color-mix(in oklab, var(--nx-teal) 22%, transparent); }
+}

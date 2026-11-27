@@ -666,13 +666,6 @@ export function CourseSettings({ course, onSaved }: { course: Course; onSaved: (
     onSaved();
   }
 
-  const whiteLabelUrl = f.slug
-    ? `${window.location.origin}/c/${f.slug
-        .trim()
-        .toLowerCase()
-        .replace(/[^a-z0-9-]+/g, "-")}`
-    : "";
-
   return (
     <div className="space-y-3">
       <CourseImageSetting id={course.id} title={course.title} />

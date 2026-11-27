@@ -462,7 +462,9 @@ export function EnrollmentDrawer({
               <span>
                 {enrollment.courses?.installments_count === 1
                   ? t("دفعة كاملة", "Full payment")
-                  : `${enrollment.courses?.installments_count} ${t(`أقساط`, `installments`)}`}
+                  : enrollment.courses?.installments_count
+                    ? `${enrollment.courses.installments_count} ${t(`أقساط`, `installments`)}`
+                    : "—"}
               </span>
             </div>
             {accountBlocked && (

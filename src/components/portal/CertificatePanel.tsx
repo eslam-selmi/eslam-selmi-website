@@ -4,6 +4,8 @@ import { useI18n } from "@/lib/i18n";
 import { toast } from "sonner";
 import { CheckCircle2, Download, Award, Hourglass, Send, AlertCircle, Save } from "lucide-react";
 import type { Course, Enrollment } from "./types";
+import { LEARNER_PROGRESS_ENABLED, issueMyCertificate } from "@/lib/learner-progress";
+import { DebtGateDialog } from "./DebtGateDialog";
 
 
 export function CertificatePanel({
@@ -19,6 +21,7 @@ export function CertificatePanel({
   const [nameEn, setNameEn] = useState(enrollment.name_en ?? "");
   const [saving, setSaving] = useState(false);
   const [requesting, setRequesting] = useState(false);
+  const [debtOpen, setDebtOpen] = useState(false);
   const [gradState, setGradState] = useState<{ required: boolean; submitted: boolean; approved: boolean; loading: boolean }>({ required: false, submitted: false, approved: false, loading: true });
   const namesSaved = !!(enrollment.name_ar && enrollment.name_en);
   const issued = enrollment.certificate_issued && (enrollment.certificate_url_ar || enrollment.certificate_url_en || enrollment.certificate_url);
@@ -64,6 +67,17 @@ export function CertificatePanel({
   }
 
   async function requestCertificate() {
+    if (LEARNER_PROGRESS_ENABLED) {
+      // Prepared, default off: unpaid-due installments block before anything else.
+      const st = await issueMyCertificate(enrollment.id);
+      if (st === "debt") { setDebtOpen(true); return; }
+      if (st === "unknown") return toast.error(isAr ? "تعذّر التحقق، جرّب مرة أخرى" : "Could not check, please try again");
+      if (st === "ok") { toast.success(isAr ? "تم تسجيل طلب الشهادة ✅" : "Certificate request recorded ✅"); onRefresh(); return; }
+      if (st === "content") return toast.error(isAr ? "لازم تكمل كل المحتوى المطلوب الأول" : "Finish all required content first");
+      if (st === "graduation") return toast.error(isAr ? "لازم يتم اعتماد مشروع التخرّج الأول" : "Your graduation project must be approved first");
+      if (st === "names") return toast.error(isAr ? "اكتب اسمك بالعربي والإنجليزي الأول" : "Save your name in Arabic and English first");
+      return;
+    }
     if (!allModulesDone) return toast.error(isAr ? "لازم تكمل كل الدروس الأول" : "Finish all modules first");
     if (gradState.required && !gradState.approved) return toast.error(isAr ? "لازم يتم اعتماد مشروع التخرّج الأول" : "Your graduation project must be approved first");
     if (!namesSaved) return toast.error(isAr ? "اكتب اسمك بالعربي والإنجليزي الأول" : "Save your name in Arabic and English first");
@@ -81,6 +95,7 @@ export function CertificatePanel({
 
   return (
     <div className="dash-card dash-card-hover p-5">
+      {LEARNER_PROGRESS_ENABLED && <DebtGateDialog open={debtOpen} onClose={() => setDebtOpen(false)} isAr={isAr} />}
       <h3 className="font-bold mb-3 flex items-center gap-2"><Award className="w-4 h-4 text-[var(--gold)]" /> {isAr ? "الشهادة" : "Certificate"}</h3>
 
       {issued ? (

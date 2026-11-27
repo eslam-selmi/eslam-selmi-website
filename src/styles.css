@@ -1684,3 +1684,13 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
 
 .tg-card::after { content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit; background: radial-gradient(90% 55% at 15% 105%, rgba(45, 212, 222, .16), transparent 70%); }
 @media (max-width: 767px) { .tg-deck { scroll-snap-type: x mandatory; padding-inline: max(.75rem, calc(50% - min(41vw, 165px))); } .tg-card, .tg-card:hover { scroll-snap-align: center; } .tg-deck[data-drag="1"] { scroll-snap-type: none; } }
+
+/* Thmanyah Serif Display Bold, self-hosted (hero heading only). Was a render-blocking third-party stylesheet. */
+@font-face {
+  font-family: "Thmanyah Serif Display";
+  src: url("/fonts/thmanyah-serif-display-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF, U+0020-007F, U+00A0-00FF, U+0100-024F, U+0250-02AF;
+}

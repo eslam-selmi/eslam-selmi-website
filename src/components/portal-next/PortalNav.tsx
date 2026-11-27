@@ -113,7 +113,7 @@ export function PortalTabBar({ items, tab, onSelect, lang }: {
                 <span className={`absolute -top-1.5 -end-2.5 min-w-[16px] h-4 px-1 rounded-md text-[9px] font-extrabold flex items-center justify-center ${it.alert ? "bg-[var(--nx-gold)] text-black" : "bg-white/15 text-white"}`}>{it.badge}</span>
               ) : null}
             </span>
-            <span className="truncate max-w-[64px]">{it.label}</span>
+            <span className="max-w-[68px] text-center leading-[1.15] line-clamp-2 break-words">{it.label}</span>
           </button>
         );
       })}

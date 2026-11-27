@@ -148,7 +148,7 @@ export function PortalHero({
             </div>
           </ProgressRing>
           <div className="text-start md:text-center">
-            <p className="text-sm font-bold"><bdi dir="ltr">{hoursEarned} / {hoursTotal}</bdi> <span className="text-[11px] text-white/50 font-semibold">{isAr ? "ساعة مكتملة" : "hrs completed"}</span></p>
+            <p className="text-sm font-bold"><span className="text-[11px] text-white/50 font-semibold">{isAr ? `أكملت ${hoursEarned} من ${hoursTotal} ساعة` : `${hoursEarned} of ${hoursTotal} hours completed`}</span></p>
             {continueTarget && (
               <p className="text-[11px] text-white/50 mt-1 max-w-[170px] truncate">
                 {isAr ? "الحالي:" : "Current:"} {continueTarget.en.courses?.title}
@@ -235,7 +235,7 @@ export function PortalOverviewClean({
   const unitsDone = courseRows.filter((r) => r.en.status === "approved").reduce((a, r) => a + r.done, 0);
   const unitsTotal = courseRows.filter((r) => r.en.status === "approved").reduce((a, r) => a + r.total, 0);
   const useHours = hoursTotal > 0;
-  const pct = useHours ? hoursPct : unitsTotal > 0 ? Math.round((unitsDone / unitsTotal) * 100) : 0;
+  const pct = unitsTotal > 0 ? Math.round((unitsDone / unitsTotal) * 100) : hoursPct;
   return (
     <div className="space-y-5 sm:space-y-7">
       <div className="flex items-start justify-between gap-3">
@@ -256,7 +256,7 @@ export function PortalOverviewClean({
               </div>
               <div>
                 <div className="flex items-center justify-between text-xs font-semibold text-white/55 mb-2">
-                  <span><span dir="ltr" className="inline-block">{continueTarget.done} / {continueTarget.total}</span> {ar ? "وحدة مكتملة" : "units completed"}</span>
+                  <span>{ar ? `أكملت ${continueTarget.done} من ${continueTarget.total} وحدة` : `${continueTarget.done} of ${continueTarget.total} units completed`}</span>
                   <bdi dir="ltr" className="font-bold text-[var(--nx-teal)]">{continueTarget.progress}%</bdi>
                 </div>
                 <div className="nx-track h-2 rounded-full overflow-hidden"><div className="h-full rounded-full bg-[var(--nx-teal)]" style={{ width: `${continueTarget.progress}%` }} /></div>
@@ -282,9 +282,8 @@ export function PortalOverviewClean({
             <p className="nx-display text-xl leading-none"><bdi dir="ltr">{pct}%</bdi></p>
           </ProgressRing>
           <div className="lg:text-center min-w-0">
-            <p className="text-sm font-bold">{useHours
-              ? <><span dir="ltr" className="inline-block">{hoursEarned} / {hoursTotal}</span> <span className="text-xs text-white/55 font-semibold">{ar ? "ساعة مكتملة" : "hours completed"}</span></>
-              : <><span dir="ltr" className="inline-block">{unitsDone} / {unitsTotal}</span> <span className="text-xs text-white/55 font-semibold">{ar ? "وحدة مكتملة" : "units completed"}</span></>}</p>
+            <p className="text-sm font-bold"><span className="text-xs text-white/70 font-semibold">{ar ? `أكملت ${unitsDone} من ${unitsTotal} وحدة` : `${unitsDone} of ${unitsTotal} units completed`}</span></p>
+            {useHours && <p className="text-[11px] text-white/45 mt-0.5">{ar ? `${hoursEarned} من ${hoursTotal} ساعة (للكورسات المحدد لها ساعات)` : `${hoursEarned} of ${hoursTotal} hours (courses with set hours)`}</p>}
             <button onClick={onGoCertificates} className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-[var(--nx-teal)] hover:underline">
               <Award className="w-3.5 h-3.5" /> {ar ? `شهادات صادرة: ${certs}` : `Certificates: ${certs}`}
             </button>
@@ -310,7 +309,7 @@ export function PortalOverviewClean({
                   {approved && progress !== null && (
                     <div className="mt-3.5">
                       <div className="nx-track h-1.5 rounded-full overflow-hidden"><div className="h-full rounded-full bg-[var(--nx-teal)]" style={{ width: `${progress}%` }} /></div>
-                      <p className="text-[11px] text-white/50 font-semibold mt-1.5"><span dir="ltr" className="inline-block">{done} / {total}</span> {ar ? "وحدة" : "units"} · <bdi dir="ltr">{progress}%</bdi></p>
+                      <p className="text-[11px] text-white/50 font-semibold mt-1.5">{ar ? `${done} من ${total} وحدة` : `${done} of ${total} units`} · <bdi dir="ltr">{progress}%</bdi></p>
                     </div>
                   )}
                 </button>

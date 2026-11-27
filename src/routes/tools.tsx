@@ -41,25 +41,55 @@ function ToolsPage() {
   const ar = lang === "ar";
   const [allowed, setAllowed] = useState<ToolId[] | null>(null);
   const [err, setErr] = useState(false);
+  const [fb, setFb] = useState<{ id: string; email?: string | null } | null>(null);
+  const [attempt, setAttempt] = useState(0);
+  const u = user ?? fb;
 
   useEffect(() => {
     if (loading) return;
-    if (!user) { nav({ to: "/auth" }); return; }
+    if (!user) {
+      // The auth hook can briefly report no user on a slow device. Confirm with the session before sending the visitor to sign-in.
+      let dead = false;
+      supabase.auth.getSession().then(({ data }) => {
+        if (dead) return;
+        if (data.session?.user) setFb({ id: data.session.user.id, email: data.session.user.email });
+        else nav({ to: "/auth" });
+      }).catch(() => { if (!dead) nav({ to: "/auth" }); });
+      return () => { dead = true; };
+    }
     if (role !== "admin" && (activationStatus === "pending" || activationStatus === "rejected")) { nav({ to: "/onboarding" }); return; }
+    setErr(false);
     fetchMyTools().then(setAllowed).catch(() => { setErr(true); setAllowed([]); });
-  }, [user, role, loading, activationStatus, nav]);
+  }, [user, role, loading, activationStatus, nav, attempt]);
 
-  if (loading || !user || allowed === null) {
+  useEffect(() => {
+    // Resolved through the session fallback: load the tool list too.
+    if (!user && fb) { setErr(false); fetchMyTools().then(setAllowed).catch(() => { setErr(true); setAllowed([]); }); }
+  }, [user, fb, attempt]);
+
+  if (loading || !u || allowed === null) {
     return <div className="min-h-screen grid place-items-center"><Loader2 className="w-6 h-6 animate-spin" /></div>;
   }
 
+  if (err && active) {
+    return (
+      <PortalShell userId={u.id} role={role === "admin" ? "admin" : "trainee"} userLabel={u.email ?? undefined}>
+        <div className="dash-card p-8 max-w-md mx-auto text-center space-y-3">
+          <h2 className="text-xl font-bold">{ar ? "تعذّر فتح الأداة" : "Could not open the tool"}</h2>
+          <p className="text-sm opacity-70">{ar ? "مشكلة في الاتصال أو التحقق من الصلاحية. جرّب مرة أخرى." : "A connection or access-check problem. Please try again."}</p>
+          <button className="h-11 px-5 rounded-xl bg-[var(--gold)] text-black font-bold" onClick={() => { setAllowed(null); setAttempt((n) => n + 1); }}>{ar ? "إعادة المحاولة" : "Try again"}</button>
+        </div>
+      </PortalShell>
+    );
+  }
+
   return (
-    <PortalShell userId={user.id} role={role === "admin" ? "admin" : "trainee"} userLabel={user.email}>
+    <PortalShell userId={u.id} role={role === "admin" ? "admin" : "trainee"} userLabel={u.email ?? undefined}>
       <div className="space-y-5">
         {active ? (
           allowed.includes(active)
             ? <LockGate key={active} pageKey={`page.${active}_tool`} ar={ar}>
-                {active === "exam" ? <ExamPage ar={ar} /> : <ToolWorkspace tool={active} userId={user.id} ar={ar} />}
+                {active === "exam" ? <ExamPage ar={ar} /> : <ToolWorkspace tool={active} userId={u.id} ar={ar} />}
               </LockGate>
             : <Denied ar={ar} tool={active} />
         ) : (
@@ -215,7 +245,9 @@ function ToolWorkspace({ tool, userId, ar }: { tool: ToolId; userId: string; ar:
   useEffect(() => {
     let url: string | null = null;
     let dead = false;
-    supabase.storage.from(BUCKET).download("app/workbook.html")
+    // Prefer the patched copy when it has been uploaded; fall back to the original so nothing regresses.
+    supabase.storage.from(BUCKET).download("app/workbook-v2.html")
+      .then((r) => (r.error || !r.data ? supabase.storage.from(BUCKET).download("app/workbook.html") : r))
       .then(({ data, error }) => {
         if (dead) return;
         if (error || !data) { setAppErr(true); return; }

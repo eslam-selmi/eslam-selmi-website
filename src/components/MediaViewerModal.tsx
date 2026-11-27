@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { X, ExternalLink, Loader2, FileDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,6 +8,7 @@ import { mediaSource } from "@/lib/media-url";
 import { hasVideoCues } from "@/lib/video-cues";
 import { Button } from "@/components/ui/button";
 import { VideoWithCues } from "@/components/VideoWithCues";
+import { LEARNER_PROGRESS_ENABLED, recordOpened, recordWatched, supabaseProgressStore, createWatchTracker } from "@/lib/learner-progress";
 
 export type MediaItem = {
   title: string;
@@ -17,20 +18,46 @@ export type MediaItem = {
   content?: string | null;
   /** If true, `url` is a storage path in `course-files` bucket, not a public URL */
   isStoragePath?: boolean;
+  /** module_items.id, used only for learner progress (flag-gated) */
+  id?: string;
 };
 
 export function MediaViewerModal({
   item,
   onClose,
+  progress,
 }: {
   item: MediaItem | null;
   onClose: () => void;
+  /** learner progress target; ignored unless VITE_LEARNER_PROGRESS=1 */
+  progress?: { userId: string; itemId: string };
 }) {
   const { lang } = useI18n();
   const isAr = lang === "ar";
   const [resolvedUrl, setResolvedUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+
+  // Learner progress (default off). Files/links/notes count as seen on open; videos by actual played seconds.
+  const tracker = useRef<ReturnType<typeof createWatchTracker> | null>(null);
+  const durRef = useRef(0);
+  const flushWatch = () => {
+    if (!LEARNER_PROGRESS_ENABLED || !progress || !tracker.current || durRef.current <= 0) return;
+    const snap = tracker.current.snapshot(); if (!snap.length) return;
+    void recordWatched(supabaseProgressStore, progress.userId, progress.itemId, durRef.current, snap).catch(() => {});
+  };
+  useEffect(() => {
+    if (!LEARNER_PROGRESS_ENABLED || !progress || !item) return;
+    tracker.current = null; durRef.current = 0;
+    if (item.kind !== "video" && item.kind !== "embed") void recordOpened(supabaseProgressStore, progress.userId, progress.itemId).catch(() => {});
+    const iv = window.setInterval(flushWatch, 30000);
+    return () => { window.clearInterval(iv); flushWatch(); };
+  }, [item?.id, progress?.itemId]); // eslint-disable-line react-hooks/exhaustive-deps
+  const onTick = LEARNER_PROGRESS_ENABLED && progress ? (t: number, playing: boolean, duration: number, rate: number) => {
+    if (!(duration > 0)) return;
+    if (!tracker.current || durRef.current !== duration) { tracker.current = createWatchTracker(duration); durRef.current = duration; }
+    tracker.current.tick(t, playing, rate);
+  } : undefined;
 
   useEffect(() => {
     if (!item) {
@@ -145,10 +172,11 @@ export function MediaViewerModal({
                 src={resolvedUrl}
                 content={item.content}
                 isAr={isAr}
+                onTick={onTick}
                 onError={() => setErr(isAr ? "تعذّر تشغيل الفيديو؛ يمكنك فتحه من المصدر." : "Video playback failed; open the source instead.")}
               />
-            ) : ytId && hasVideoCues(item.content) ? (
-              <VideoWithCues youtubeId={ytId} src="" content={item.content} isAr={isAr}
+            ) : ytId && (hasVideoCues(item.content) || (LEARNER_PROGRESS_ENABLED && !!progress)) ? (
+              <VideoWithCues youtubeId={ytId} src="" content={item.content} isAr={isAr} onTick={onTick}
                 onError={() => setErr(isAr ? "تعذّر تشغيل الفيديو؛ يمكنك فتحه من المصدر." : "Video playback failed; open the source instead.")} />
             ) : isImageFile ? (
               <img src={resolvedUrl} alt="" className="w-full h-full object-contain" />

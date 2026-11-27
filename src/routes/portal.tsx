@@ -182,13 +182,15 @@ function PortalPage() {
     const approved = enrollments.filter((e) => e.status === "approved");
     const certs = enrollments.filter((e) => e.certificate_issued).length;
     // Hours-as-progress: earned hours per course = total_hours * (completed_modules / total_modules)
-    let earned = 0, total = 0;
+    let earned = 0, total = 0, mDone = 0, mAll = 0, missingHours = false;
     for (const e of approved) {
       const courseTotal = Number(e.courses?.total_hours ?? 0);
       total += courseTotal;
       const ms = modules.filter((m) => m.course_id === e.course_id);
       if (ms.length === 0) continue;
       const done = ms.filter((m) => m.completed_by_admin).length;
+      mDone += done; mAll += ms.length;
+      if (courseTotal <= 0) missingHours = true;
       earned += courseTotal * (done / ms.length);
     }
     return {
@@ -196,7 +198,8 @@ function PortalPage() {
       pending: enrollments.filter((e) => e.status === "pending").length,
       certs,
       hoursEarned: Math.round(earned),
-      hoursPct: total > 0 ? Math.round((earned / total) * 100) : 0,
+      // Overall percentage = share of ALL required content (modules) across approved courses, so unfinished courses always count. Hours stay a separate figure.
+      hoursPct: mAll > 0 ? Math.round((mDone / mAll) * 100) : 0,
       hoursTotal: Math.round(total),
     };
   }, [enrollments, modules]);

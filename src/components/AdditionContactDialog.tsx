@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { additionContactSchema, type Addition } from "@/lib/latest-additions";
@@ -16,6 +16,17 @@ export function AdditionContactDialog({ item, onClose, onSaved }: {
   const [form, setForm] = useState({ full_name: "", phone: "", email: "" });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  // Keep the dialog inside the visible area above the on-screen keyboard (tablets keep it centered otherwise and the keyboard covers the fields).
+  const [vv, setVv] = useState<{ top: number; height: number } | null>(null);
+  useEffect(() => {
+    const v = window.visualViewport;
+    if (!v) return;
+    const sync = () => setVv({ top: v.offsetTop, height: v.height });
+    sync();
+    v.addEventListener("resize", sync);
+    v.addEventListener("scroll", sync);
+    return () => { v.removeEventListener("resize", sync); v.removeEventListener("scroll", sync); };
+  }, []);
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -39,12 +50,16 @@ export function AdditionContactDialog({ item, onClose, onSaved }: {
   }
 
   return <Dialog open onOpenChange={open => { if (!open && !busy) onClose(); }}>
-    <DialogContent dir={lang === "ar" ? "rtl" : "ltr"}>
+    <DialogContent
+      dir={lang === "ar" ? "rtl" : "ltr"}
+      onOpenAutoFocus={(e) => e.preventDefault()}
+      style={vv ? { top: vv.top + 8, bottom: "auto", maxHeight: Math.max(240, vv.height - 16), translate: "-50% 0" } : undefined}
+    >
       <DialogHeader className="pe-8 text-start">
         <DialogTitle>{t("بياناتك لعرض الملف", "Your details to view the resource")}</DialogTitle>
         <DialogDescription>{lang === "ar" ? item.title_ar : item.title_en}</DialogDescription>
       </DialogHeader>
-      <form onSubmit={submit} className="space-y-4">
+      <form onSubmit={submit} className="space-y-4" onFocusCapture={(e) => { const el = e.target as HTMLElement; setTimeout(() => el.scrollIntoView?.({ block: "center", behavior: "smooth" }), 300); }}>
         <div className="space-y-2"><Label htmlFor="addition-name">{t("الاسم الكامل", "Full name")}</Label>
           <Input id="addition-name" autoComplete="name" required minLength={2} maxLength={120} value={form.full_name} onChange={e => setForm({ ...form, full_name: e.target.value })} /></div>
         <div className="space-y-2"><Label htmlFor="addition-phone">{t("رقم التليفون", "Phone number")}</Label>

@@ -190,6 +190,7 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
                                 type="button"
                                 onClick={() =>
                                   setViewItem({
+                                    id: it.id,
                                     title: it.title,
                                     kind: ["file", "video", "pdf", "embed"].includes(it.kind) ? it.kind : "link",
                                     url: it.url,
@@ -216,7 +217,7 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
         )}
       </section>
 
-      <MediaViewerModal item={viewItem} onClose={() => setViewItem(null)} />
+      <MediaViewerModal item={viewItem} onClose={() => setViewItem(null)} progress={viewItem?.id && enrollment.user_id ? { userId: enrollment.user_id, itemId: viewItem.id } : undefined} />
 
 
       <AssignmentsSection courseId={c.id} />
