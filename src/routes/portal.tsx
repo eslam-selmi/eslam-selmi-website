@@ -207,7 +207,7 @@ function PortalPage() {
   const alerts = usePortalAlerts(user?.id, enrollments);
   const continueTarget = useMemo(() => {
     for (const e of trEnrollments) {
-      if (e.status !== "approved") continue;
+      if (e.status !== "approved" || (e as { blocked?: boolean }).blocked) continue;
       const ms = modules.filter((m) => m.course_id === e.course_id);
       if (ms.length === 0 || ms.every((m) => m.completed_by_admin)) continue;
       const done = ms.filter((m) => m.completed_by_admin).length;
@@ -226,7 +226,7 @@ function PortalPage() {
   const nudge = useMemo(() => {
     if (continueTarget) return { readyForCert: null, hasPending: false };
     const approved = trEnrollments.filter((e) => e.status === "approved");
-    const readyForCert = approved.find((e) => !e.certificate_issued && !e.certificate_requested_at) ?? null;
+    const readyForCert = approved.find((e) => !e.certificate_issued && !e.certificate_requested_at && !(e as { blocked?: boolean }).blocked) ?? null;
     const hasPending = trEnrollments.some((e) => e.status === "pending");
     return { readyForCert, hasPending };
   }, [trEnrollments, continueTarget]);

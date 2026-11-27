@@ -10,11 +10,13 @@ export function EnrollmentCard({ en, onOpen, onWithdraw, progress = 0, doneCount
   const hasCert = Boolean(en.certificate_url || en.certificate_url_ar || en.certificate_url_en);
 
   const status = {
-    pending: { label: isAr ? "قيد المراجعة" : "Under review", icon: Clock, ring: "border-amber-300/30", chip: "text-amber-200 bg-amber-300/10 border-amber-300/30", glow: "rgba(245,190,90,0.18)" },
-    approved: { label: isAr ? "مقبول" : "Approved", icon: CheckCircle2, ring: "border-[var(--gold)]/35", chip: "text-emerald-200 bg-emerald-300/10 border-emerald-300/30", glow: "rgba(212,175,55,0.22)" },
-    rejected: { label: isAr ? "مرفوض" : "Rejected", icon: XCircle, ring: "border-rose-400/30", chip: "text-rose-200 bg-rose-400/10 border-rose-400/30", glow: "rgba(244,114,140,0.15)" },
+    pending: { label: isAr ? "قيد المراجعة" : "Under review", icon: Clock, ring: "border-amber-300/30", chip: "text-amber-800 dark:text-amber-200 bg-amber-300/10 border-amber-300/30", glow: "rgba(245,190,90,0.18)" },
+    approved: { label: isAr ? "مقبول" : "Approved", icon: CheckCircle2, ring: "border-[var(--gold)]/35", chip: "text-emerald-800 dark:text-emerald-200 bg-emerald-300/10 border-emerald-300/30", glow: "rgba(212,175,55,0.22)" },
+    rejected: { label: isAr ? "مرفوض" : "Rejected", icon: XCircle, ring: "border-rose-400/30", chip: "text-rose-800 dark:text-rose-200 bg-rose-400/10 border-rose-400/30", glow: "rgba(244,114,140,0.15)" },
   }[en.status];
   const SIcon = status.icon;
+  // Admin can suspend access to one course. The server already hides the content; the card must say so instead of offering "Continue".
+  const suspended = en.status === "approved" && Boolean((en as { blocked?: boolean }).blocked);
 
   // Circular progress geometry
   const R = 22, CIRC = 2 * Math.PI * R;
@@ -42,8 +44,8 @@ export function EnrollmentCard({ en, onOpen, onWithdraw, progress = 0, doneCount
 
           <div className="flex-1 min-w-0">
             <h3 className="font-bold text-lg leading-snug line-clamp-2">{c?.title || (isAr ? "كورس غير متاح حاليًا" : "Course currently unavailable")}</h3>
-            <span className={`mt-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border text-[11px] ${status.chip}`}>
-              <SIcon className="w-3 h-3" /> {status.label}
+            <span className={`mt-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border text-[11px] ${suspended ? "text-rose-800 dark:text-rose-200 bg-rose-400/10 border-rose-400/30" : status.chip}`}>
+              <SIcon className="w-3 h-3" /> {suspended ? (isAr ? "الوصول موقوف" : "Access suspended") : status.label}
             </span>
           </div>
 
@@ -90,7 +92,7 @@ export function EnrollmentCard({ en, onOpen, onWithdraw, progress = 0, doneCount
 
         {en.status === "pending" && (
           <>
-            <p className="mt-4 text-xs text-amber-200/80 bg-amber-300/5 border border-amber-300/15 rounded-xl p-3 leading-relaxed">
+            <p className="mt-4 text-xs text-amber-800 dark:text-amber-200/80 bg-amber-300/5 border border-amber-300/15 rounded-xl p-3 leading-relaxed">
               {isAr ? "لم تتم الموافقة على انضمامك حتى الآن. يمكنك تصفح عناوين المحاضرات (المحتوى مقفل 🔒) أو سحب الطلب."
                     : "Your enrollment isn't approved yet. You can preview lecture titles (content locked 🔒) or withdraw the request."}
             </p>
@@ -106,7 +108,7 @@ export function EnrollmentCard({ en, onOpen, onWithdraw, progress = 0, doneCount
         )}
 
         {en.status === "rejected" && en.notes && (
-          <p className="mt-4 text-sm text-rose-200/80 bg-rose-500/5 border border-rose-400/15 rounded-xl p-3">{en.notes}</p>
+          <p className="mt-4 text-sm text-rose-800 dark:text-rose-200/80 bg-rose-500/5 border border-rose-400/15 rounded-xl p-3">{en.notes}</p>
         )}
 
         {en.status === "approved" && !c && (
@@ -114,7 +116,19 @@ export function EnrollmentCard({ en, onOpen, onWithdraw, progress = 0, doneCount
             {isAr ? "الكورس ده مش متاح للعرض دلوقتي. تواصل مع الدعم لو محتاج تفاصيل." : "This course is not open for viewing right now. Contact support if you need details."}
           </p>
         )}
-        {en.status === "approved" && c && (
+        {suspended && c && (
+          <>
+            <p className="mt-4 text-xs text-rose-800 dark:text-rose-200 bg-rose-500/5 border border-rose-400/15 rounded-xl p-3 leading-relaxed">
+              {isAr ? "تم إيقاف وصولك لهذا الكورس مؤقتًا من الإدارة. تواصل مع الدعم لإعادة فتحه." : "Your access to this course is suspended by the administrator. Contact support to have it restored."}
+            </p>
+            <div className="mt-auto pt-4">
+              <button onClick={onOpen} className="w-full text-xs h-11 rounded-xl bg-white/5 border border-white/15 hover:bg-white/10 transition font-semibold">
+                {isAr ? "عناوين المحاضرات 🔒" : "Lecture titles 🔒"}
+              </button>
+            </div>
+          </>
+        )}
+        {en.status === "approved" && c && !suspended && (
           <button onClick={onOpen}
             className="mt-auto w-full h-12 rounded-xl font-bold flex items-center justify-center gap-2 hover:brightness-110 transition shadow-[0_16px_34px_-18px_rgba(212,175,55,0.9)]"
             style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736", marginTop: "1.25rem" }}>
