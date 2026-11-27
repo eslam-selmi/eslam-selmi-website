@@ -23,6 +23,7 @@ export function CertificatePanel({
   const [saving, setSaving] = useState(false);
   const [requesting, setRequesting] = useState(false);
   const [debtOpen, setDebtOpen] = useState(false);
+  const [contentLeft, setContentLeft] = useState(false);
   const [gradState, setGradState] = useState<{ required: boolean; submitted: boolean; approved: boolean; loading: boolean }>({ required: false, submitted: false, approved: false, loading: true });
   const namesSaved = !!(enrollment.name_ar && enrollment.name_en);
   const issued = enrollment.certificate_issued && (enrollment.certificate_url_ar || enrollment.certificate_url_en || enrollment.certificate_url);
@@ -70,8 +71,8 @@ export function CertificatePanel({
   async function requestCertificate() {
     if (LEARNER_PROGRESS_ENABLED) {
       // Prepared, default off: unpaid-due installments block before anything else.
-      const { status: st, issuedAt } = await issueMyCertificateFull(enrollment.id);
-      if (st === "debt") { setDebtOpen(true); return; }
+      const { status: st, issuedAt, blockers } = await issueMyCertificateFull(enrollment.id);
+      if (st === "debt") { setContentLeft(blockers.includes("content")); setDebtOpen(true); return; }
       if (st === "unknown") return toast.error(isAr ? "تعذّر التحقق، جرّب مرة أخرى" : "Could not check, please try again");
       if (st === "finance_unknown") return toast.error(isAr ? "جاري مراجعة بيانات السداد، تواصل مع الإدارة لو استمرت الرسالة" : "We are checking your payment records. Contact us if this stays.");
       if (st === "issued") {
@@ -111,7 +112,7 @@ export function CertificatePanel({
 
   return (
     <div className="dash-card dash-card-hover p-5">
-      {LEARNER_PROGRESS_ENABLED && <DebtGateDialog open={debtOpen} onClose={() => setDebtOpen(false)} isAr={isAr} />}
+      {LEARNER_PROGRESS_ENABLED && <DebtGateDialog open={debtOpen} onClose={() => setDebtOpen(false)} isAr={isAr} contentLeft={contentLeft} />}
       <h3 className="font-bold mb-3 flex items-center gap-2"><Award className="w-4 h-4 text-[var(--gold)]" /> {isAr ? "الشهادة" : "Certificate"}</h3>
 
       {issued ? (

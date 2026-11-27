@@ -63,17 +63,18 @@ export async function fetchGate(enrollmentId: string): Promise<GateStatus> {
     return ["ok", "debt", "finance_unknown", "content", "graduation", "names", "issued"].includes(st) ? st : "unknown";
   } catch { return "unknown"; }
 }
-export type IssueResult = { status: GateStatus; issuedAt: string | null };
+export type IssueResult = { status: GateStatus; issuedAt: string | null; blockers: string[] };
 // The issue date comes ONLY from the server's immutable timestamp. No client clock fallback.
 export async function issueMyCertificateFull(enrollmentId: string): Promise<IssueResult> {
   try {
     const { data, error } = await (supabase as any).rpc("issue_my_certificate", { _enrollment: enrollmentId });
-    if (error) return { status: "unknown", issuedAt: null };
+    if (error) return { status: "unknown", issuedAt: null, blockers: [] };
     const st = data?.status;
     const status: GateStatus = ["ok", "debt", "finance_unknown", "content", "graduation", "names", "issued"].includes(st) ? st : "unknown";
     const t = typeof data?.issued_at === "string" && !isNaN(new Date(data.issued_at).getTime()) ? data.issued_at : null;
-    return { status, issuedAt: t };
-  } catch { return { status: "unknown", issuedAt: null }; }
+    const blockers: string[] = Array.isArray(data?.blockers) ? data.blockers.filter((x: unknown) => typeof x === "string") : [];
+    return { status, issuedAt: t, blockers };
+  } catch { return { status: "unknown", issuedAt: null, blockers: [] }; }
 }
 export async function issueMyCertificate(enrollmentId: string): Promise<GateStatus> { return (await issueMyCertificateFull(enrollmentId)).status; }
 export function gateFromBlockers(b: Blockers): GateStatus { return b.unpaid_due ? "debt" : b.items_left > 0 ? "content" : "ok"; }
