@@ -416,7 +416,7 @@ export function SubmissionRow({
           value={fb}
           onChange={(e) => setFb(e.target.value)}
           placeholder={t("ملاحظات", "Feedback")}
-          className="flex-1 h-8 px-2 rounded bg-white/5 border border-white/15 text-xs"
+          className="flex-1 min-w-0 h-8 px-2 rounded bg-white/5 border border-white/15 text-xs"
         />
         <button
           onClick={() => {

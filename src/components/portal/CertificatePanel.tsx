@@ -112,7 +112,7 @@ export function CertificatePanel({
 
       {issued ? (
         <div className="space-y-2.5">
-          <p className="text-xs text-emerald-300 flex items-center gap-1.5 mb-2">
+          <p className="text-xs text-emerald-700 dark:text-emerald-300 flex items-center gap-1.5 mb-2">
             <CheckCircle2 className="w-3.5 h-3.5" /> {isAr ? "شهادتك جاهزة — اختر اللغة للتحميل" : "Your certificate is ready — pick a language to download"}
           </p>
           {enrollment.certificate_url_ar && (
@@ -165,20 +165,20 @@ export function CertificatePanel({
           )}
 
           {requested ? (
-            <div className="rounded-xl bg-amber-300/10 border border-amber-300/30 p-3 text-xs text-amber-200 flex items-center gap-2">
+            <div className="rounded-xl bg-amber-300/10 border border-amber-300/30 p-3 text-xs text-amber-800 dark:text-amber-200 flex items-center gap-2">
               <Hourglass className="w-3.5 h-3.5" /> {isAr ? "طلبك مُرسل للأدمن، هتوصلك الشهادة قريب" : "Request sent — admin will issue your certificate soon"}
             </div>
           ) : (
             <>
               {gradState.required && (
-                <div className={`rounded-xl border p-3 text-xs flex items-start gap-2 ${gradState.approved ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-200" : gradState.submitted ? "bg-amber-300/10 border-amber-300/30 text-amber-200" : "bg-rose-500/10 border-rose-500/30 text-rose-200"}`}>
+                <div className={`rounded-xl border p-3 text-xs flex items-start gap-2 ${gradState.approved ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-800 dark:text-emerald-200" : gradState.submitted ? "bg-amber-300/10 border-amber-300/30 text-amber-800 dark:text-amber-200" : "bg-rose-500/10 border-rose-500/30 text-rose-800 dark:text-rose-200"}`}>
                   {gradState.approved ? <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0" /> : <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />}
                   <p>
                     🎓 {isAr ? "مشروع التخرّج: " : "Graduation project: "}
                     {gradState.approved
                       ? (isAr ? "تم الاعتماد ✅" : "Approved ✅")
                       : gradState.submitted
-                      ? (isAr ? "بانتظار تقييم الأدمن" : "Awaiting admin review")
+                      ? (isAr ? "بانتظار اعتماد الأدمن" : "Awaiting admin approval")
                       : (isAr ? "لازم تسلّم مشروع التخرّج وتاخد درجة نجاح قبل ما تطلب الشهادة" : "Submit your graduation project and earn a passing grade before requesting the certificate")}
                   </p>
                 </div>

@@ -25,7 +25,7 @@ export function GraduationApprovalControl({ assignmentId, userId }: { assignment
   }
   if (approved === null) return null;
   return (
-    <div className="flex items-center gap-2 mt-2 text-xs">
+    <div className="flex flex-wrap items-center gap-2 mt-2 text-xs">
       <span className={approved ? "text-emerald-300" : "text-amber-200"}>{approved ? (isAr ? "معتمد من الأدمن" : "Approved by admin") : (isAr ? "بانتظار اعتماد الأدمن (الدرجة وحدها لا تكفي)" : "Awaiting admin approval (a score alone is not enough)")}</span>
       <button disabled={busy} onClick={() => act(!approved)} className="px-3 h-8 rounded bg-white/10 border border-white/15">{approved ? (isAr ? "سحب الاعتماد" : "Withdraw") : (isAr ? "اعتماد المشروع" : "Approve project")}</button>
     </div>
