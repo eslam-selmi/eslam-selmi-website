@@ -216,7 +216,7 @@ export function Journey() {
               </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-3">
-                  {j.logo && <img src={j.logo} alt="" loading="lazy" decoding="async" className="size-11 shrink-0 rounded-xl bg-white object-contain p-1.5 border border-foreground/10" />}
+                  {j.logo && <img src={j.logo} alt="" loading="lazy" decoding="async" onError={(e) => { e.currentTarget.style.display = "none"; }} className="size-11 shrink-0 rounded-xl bg-white object-contain p-1.5 border border-foreground/10" />}
                   <div className="font-display font-bold text-xl leading-tight min-w-0">{j.company[lang]}</div>
                 </div>
                 <div
