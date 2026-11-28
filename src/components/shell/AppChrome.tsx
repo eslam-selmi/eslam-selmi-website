@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import {
-  LogOut, Home, ShieldCheck, Languages, KeyRound, Sun, Moon,
+  LogOut, ArrowUpLeft, ArrowUpRight, ShieldCheck, Languages, KeyRound, Sun, Moon,
   UserCog, Bell, ChevronDown,
 } from "lucide-react";
 import { ForcePasswordResetGate } from "@/components/ForcePasswordResetGate";
@@ -64,7 +64,7 @@ export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileB
   const L = {
     panelAdmin: isAr ? "لوحة الإدارة" : "Admin Panel",
     panelTrainee: isAr ? "بوابة المتدرب" : "Trainee Portal",
-    site: isAr ? "الموقع" : "Website",
+    site: isAr ? "الموقع الرئيسي" : "Main site",
     admin: isAr ? "الإدارة" : "Admin",
     logout: isAr ? "تسجيل الخروج" : "Sign out",
     switchLang: isAr ? "English" : "العربية",
@@ -124,7 +124,7 @@ export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileB
             </Link>
             <nav className={`hidden md:flex items-center gap-1 ${sidebar ? "lg:ms-0 lg:ps-0 lg:border-s-0" : "ms-2 ps-3 border-s border-white/10"}`}>
               <Link to="/" reloadDocument className="flex items-center gap-1.5 text-xs text-white/65 hover:text-white px-3 h-9 rounded-lg hover:bg-white/5 transition">
-                <Home className="w-3.5 h-3.5" /> {L.site}
+                {L.site} {isAr ? <ArrowUpLeft className="w-3.5 h-3.5" /> : <ArrowUpRight className="w-3.5 h-3.5" />}
               </Link>
               {role === "admin" ? (
                 <Link to="/admin" className="flex items-center gap-1.5 text-xs text-white/65 hover:text-white px-3 h-9 rounded-lg hover:bg-white/5 transition">
