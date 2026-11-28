@@ -38,7 +38,7 @@ http.createServer((q,s)=>{
   else if(p.endsWith('/rpc/get_public_tenant_courses'))out=[{id:'c1',title:'أساسيات القيادة',price:0}];
   else if(p.endsWith('/tenants')&&q.method==='PATCH'){Object.assign(tenant,JSON.parse(b));out=null;}
   else if(p.endsWith('/tenants')&&u.search.includes('kind=eq.trainer'))out=[tenant];
-  else if(p.endsWith('/rpc/approve_tenant_request')){ if(process.env.DUP){s.writeHead(409,h);return s.end(JSON.stringify({code:'23505',message:'duplicate key value violates unique constraint "tenants_slug_key"'}));} out=null;}
+  else if(p.endsWith('/rpc/approve_tenant_request')){ if(process.env.DUP){ if(process.env.DUP==='1'){s.writeHead(400,h);return s.end(JSON.stringify({code:'P0001',message:'slug already taken'}));} s.writeHead(409,h);return s.end(JSON.stringify({code:'23505',message:'duplicate key value violates unique constraint "tenants_slug_key"'}));} out=null;}
   else if(p.endsWith('/tenants'))out=tenant;
   else if(p.endsWith('/tenant_landing'))out=landing;
   else if(p.endsWith('/profiles'))out=Object.entries(names).map(([id,full_name])=>({id,full_name}));

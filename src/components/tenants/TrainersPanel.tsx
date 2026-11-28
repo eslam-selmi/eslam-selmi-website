@@ -78,7 +78,7 @@ function RequestCard({ r, onDone, t }: { r: TenantRequest; onDone: () => void; t
     });
     setBusy(false);
     if (error) {
-      const dup = error.code === "23505" || /duplicate key|unique/i.test(error.message);
+      const dup = error.code === "23505" || /slug already taken|duplicate key|unique/i.test(error.message);
       return toast.error(dup
         ? t(`الرابط /t/${r.requested_slug} مستخدم لمدرب آخر. اطلب من المدرب رابطاً مختلفاً قبل القبول.`, `The link /t/${r.requested_slug} is already used by another trainer. Ask the trainer for a different link before approving.`)
         : error.message);
