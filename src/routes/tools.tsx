@@ -10,7 +10,7 @@ import { TOOLS, fetchMyTools, isToolId, loadWorkspace, saveWorkspace, type ToolI
 
 export const Route = createFileRoute("/tools")({
   ssr: false,
-  validateSearch: (s: Record<string, unknown>): { t?: ToolId } => ({ t: isToolId(s.t) ? s.t : undefined }),
+  validateSearch: (s: Record<string, unknown>): { t?: ToolId; wb?: "v3" } => ({ t: isToolId(s.t) ? s.t : undefined, wb: s.wb === "v3" ? "v3" : undefined }),
   head: () => ({
     meta: [
       { title: "الأدوات التفاعلية · إسلام سلمي" },
@@ -23,6 +23,8 @@ export const Route = createFileRoute("/tools")({
 const ICONS = { tna: BarChart3, perf: Target, exam: GraduationCap } as const;
 // Private bucket "tool-assets". Reads are decided by storage policies that call has_tool_access().
 const BUCKET = "tool-assets";
+// Temporary preview of the v3 tool files (/tools?wb=v3): admins, plus the QA test account for the save test. Remove the id after the test.
+const V3_PREVIEW_USER_IDS = ["6f0772a9-bd6c-4efe-b333-0d0f53a31a8f"];
 const FILES: Partial<Record<ToolId, { handout?: string; excel?: string }>> = {
   tna: { handout: "tna/handbook.pdf", excel: "tna/original-workbook.xlsx" },
   perf: { handout: "perf/handbook.pdf" },
@@ -37,7 +39,7 @@ function ToolsPage() {
   const { user, role, loading, activationStatus } = useAuth();
   const { lang } = useI18n();
   const nav = useNavigate();
-  const { t: active } = Route.useSearch();
+  const { t: active, wb } = Route.useSearch();
   const ar = lang === "ar";
   const [allowed, setAllowed] = useState<ToolId[] | null>(null);
   const [err, setErr] = useState(false);
@@ -89,7 +91,7 @@ function ToolsPage() {
         {active ? (
           allowed.includes(active)
             ? <LockGate key={active} pageKey={`page.${active}_tool`} ar={ar}>
-                {active === "exam" ? <ExamPage ar={ar} /> : <ToolWorkspace tool={active} userId={u.id} ar={ar} />}
+                {active === "exam" ? <ExamPage ar={ar} /> : <ToolWorkspace tool={active} userId={u.id} ar={ar} preview={wb === "v3" && (role === "admin" || V3_PREVIEW_USER_IDS.includes(u.id))} />}
               </LockGate>
             : <Denied ar={ar} tool={active} />
         ) : (
@@ -222,9 +224,9 @@ function Chooser({ allowed, ar, failed }: { allowed: ToolId[]; ar: boolean; fail
 
 type Msg = { type?: string; tool?: string; data?: unknown; rev?: number; h?: number };
 
-function ToolWorkspace({ tool, userId, ar }: { tool: ToolId; userId: string; ar: boolean }) {
+function ToolWorkspace({ tool, userId, ar, preview }: { tool: ToolId; userId: string; ar: boolean; preview: boolean }) {
   const m = TOOLS[tool];
-  const files = FILES[tool] || {};
+  const files = preview && tool === "perf" ? { ...FILES.perf, handout: "perf/handbook-v2.pdf" } : FILES[tool] || {};
   const { lang } = useI18n();
   const frame = useRef<HTMLIFrameElement>(null);
   const rev = useRef(0);
@@ -246,7 +248,8 @@ function ToolWorkspace({ tool, userId, ar }: { tool: ToolId; userId: string; ar:
     let url: string | null = null;
     let dead = false;
     // Prefer the patched copy when it has been uploaded; fall back to the original so nothing regresses.
-    supabase.storage.from(BUCKET).download("app/workbook-v2.html")
+    // Preview: /tools?wb=v3 reads the new versioned file; every other visit keeps the old order.
+    supabase.storage.from(BUCKET).download(preview ? "app/workbook-v3.html" : "app/workbook-v2.html")
       .then((r) => (r.error || !r.data ? supabase.storage.from(BUCKET).download("app/workbook.html") : r))
       .then(({ data, error }) => {
         if (dead) return;
@@ -256,7 +259,7 @@ function ToolWorkspace({ tool, userId, ar }: { tool: ToolId; userId: string; ar:
       })
       .catch(() => !dead && setAppErr(true));
     return () => { dead = true; if (url) URL.revokeObjectURL(url); };
-  }, [tool]);
+  }, [tool, preview]);
 
   async function openFile(path: string | undefined, download: boolean) {
     if (!path) return;
