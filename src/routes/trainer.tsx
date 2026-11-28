@@ -90,7 +90,7 @@ function TrainerDashboard() {
       </header>
 
       <section className="grid grid-cols-3 gap-3 text-center">
-        <div className="rounded-xl border p-3"><div className="text-2xl font-bold">{courses.length}{tenant.max_courses != null ? ` / ${tenant.max_courses}` : ""}</div><div className="text-xs">{t("الكورسات", "Courses")}</div></div>
+        <div className="rounded-xl border p-3"><div className="text-2xl font-bold" dir="ltr">{courses.length}{tenant.max_courses != null ? ` / ${tenant.max_courses}` : ""}</div><div className="text-xs">{tenant.max_courses != null ? t(`الكورسات (المستخدم من الحد: ${courses.length} من ${tenant.max_courses})`, `Courses (used of limit: ${courses.length} of ${tenant.max_courses})`) : t("الكورسات", "Courses")}</div></div>
         <div className="rounded-xl border p-3"><div className="text-2xl font-bold">{enrollments.length}</div><div className="text-xs">{t("تسجيلات المتدربين", "Learner enrollments")}</div></div>
         <div className="rounded-xl border p-3"><div className="text-2xl font-bold">{tenant.feature_tools_upload ? t("مفعّل", "On") : t("مغلق", "Off")}</div><div className="text-xs">{t("رفع الأدوات", "Tool upload")}</div></div>
       </section>

@@ -60,7 +60,7 @@ function TextEditInner({ children }: { children: ReactNode }) {
     supabase.auth.getUser().then(async ({ data }) => {
       if (!data.user) return;
       const { data: ok } = await supabase.rpc("has_role", { _user_id: data.user.id, _role: "admin" });
-      setIsAdmin(!!ok);
+      setIsAdmin(ok === true);
     });
   }, []);
 
