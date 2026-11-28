@@ -153,7 +153,7 @@ export function CourseFeedbackButton({ courseId, userId }: { courseId: string; u
       </button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent dir={isAr ? "rtl" : "ltr"} className="max-h-[85vh] overflow-y-auto sm:max-w-lg">
-          <DialogHeader><DialogTitle>{isAr ? "قيّم الكورس" : "Rate this course"}</DialogTitle></DialogHeader>
+          <DialogHeader className="text-start sm:text-start pe-10"><DialogTitle>{isAr ? "قيّم الكورس" : "Rate this course"}</DialogTitle></DialogHeader>
           <CourseFeedbackForm courseId={courseId} userId={userId} bare />
         </DialogContent>
       </Dialog>
