@@ -6,6 +6,7 @@ import { AppChrome } from "@/components/shell/AppChrome";
 import { useI18n } from "@/lib/i18n";
 import { useTranslatedTexts } from "@/lib/useTranslatedTexts";
 import { toast } from "sonner";
+import { resolveIssueDate, renderOwnCertificates } from "@/lib/self-certificate";
 import { findCountry } from "@/lib/countries";
 import { LEARNER_PROGRESS_ENABLED, unitsDone, type ItemLite, type ProgressLite } from "@/lib/learner-progress";
 import { Calendar, Clock, Layers, Loader2, Sparkles, BookOpen, GraduationCap } from "lucide-react";
@@ -272,6 +273,15 @@ function PortalPage() {
   }
 
 
+  async function downloadOwnCert(en: any) {
+    const date = resolveIssueDate(en.certificate_issued_at);
+    if (!date) { toast.error(isAr ? "تاريخ الإصدار غير متاح للتحميل الذاتي، تواصل مع الإدارة" : "The issue date is not available for self-download, please contact us."); return; }
+    try {
+      const { ar, en: enBlob } = await renderOwnCertificates({ id: en.id, course_id: en.course_id, name_ar: en.name_ar, name_en: en.name_en, courses: en.courses }, date);
+      for (const [b, n] of [[ar, "ar"], [enBlob, "en"]] as const) { const u = URL.createObjectURL(b); const a = document.createElement("a"); a.href = u; a.download = `certificate-${n}.pdf`; a.click(); setTimeout(() => URL.revokeObjectURL(u), 10000); }
+    } catch (e) { console.error("self-certificate render failed:", e instanceof Error ? e.message : String(e)); toast.error(isAr ? "تعذّر إنشاء الملف، جرّب مرة أخرى" : "The file could not be created. Try again."); }
+  }
+
   async function downloadCert(url: string) {
     // Open the tab synchronously (inside the tap) so Safari does not block it, then point it at the signed file.
     const w = window.open("", "_blank");
@@ -395,9 +405,10 @@ function PortalPage() {
           <SectionHeader icon={GraduationCap} hint={isAr ? "إنجازاتك" : "Your achievements"} title={isAr ? "شهاداتي" : "My certificates"} />
           <MyCertificatesSection
             enrollments={trEnrollments
-              .filter((e) => e.certificate_issued && (e.certificate_url_ar || e.certificate_url_en || e.certificate_url))
+              .filter((e) => e.certificate_issued && (e.certificate_url_ar || e.certificate_url_en || e.certificate_url || LEARNER_PROGRESS_ENABLED))
               .map((e) => (e.courses || !certCourses[e.course_id] ? e : { ...e, courses: certCourses[e.course_id] as any }))}
             onDownload={downloadCert}
+            onDownloadOwn={LEARNER_PROGRESS_ENABLED ? downloadOwnCert : undefined}
             lang={lang}
           />
         </section>

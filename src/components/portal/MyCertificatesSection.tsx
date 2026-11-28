@@ -2,9 +2,11 @@ import { Clock, CheckCircle2, Download, ExternalLink, Award } from "lucide-react
 import type { Enrollment } from "./types";
 
 
-export function MyCertificatesSection({ enrollments, onDownload, lang }: {
+export function MyCertificatesSection({ enrollments, onDownload, onDownloadOwn, lang }: {
   enrollments: Enrollment[];
   onDownload: (url: string) => void;
+  /** Server-issued certificate with no stored file: the browser renders it from the learner's own row. */
+  onDownloadOwn?: (en: Enrollment) => void;
   lang: "ar" | "en";
 }) {
   const isAr = lang === "ar";
@@ -67,6 +69,13 @@ export function MyCertificatesSection({ enrollments, onDownload, lang }: {
                   <button onClick={() => onDownload(en.certificate_url!)}
                     className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold bg-[var(--gold)] text-[#0b1736] hover:brightness-110 transition">
                     <Download className="w-3.5 h-3.5" /> {isAr ? "تحميل الشهادة" : "Download certificate"}
+                  </button>
+                )}
+
+                {!en.certificate_url_ar && !en.certificate_url_en && !en.certificate_url && onDownloadOwn && (
+                  <button onClick={() => onDownloadOwn(en)}
+                    className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold bg-[var(--gold)] text-[#0b1736] hover:brightness-110 transition">
+                    <Download className="w-3.5 h-3.5" /> {isAr ? "تحميل الشهادة (عربي وإنجليزي)" : "Download certificate (Arabic and English)"}
                   </button>
                 )}
 
