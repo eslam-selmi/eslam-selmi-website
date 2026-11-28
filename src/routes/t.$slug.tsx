@@ -90,6 +90,13 @@ function TenantLanding() {
       onJoin={async () => { try { await join(); setMsg("joined"); } catch (e: any) { setMsg("err:" + e.message); } }}
       vars={themeVars(themeByKey(landing.theme))}
     />
+    {user && (
+      <div style={{ textAlign: "center", padding: "1rem" }}>
+        <a href="/portal" data-testid="to-portal" style={{ display: "inline-block", padding: "0.7rem 1.4rem", borderRadius: "999px", border: "1px solid currentColor", textDecoration: "none" }}>
+          {lang === "ar" ? "اذهب إلى كورساتي (التقديم والدراسة)" : "Go to my courses (apply and study)"}
+        </a>
+      </div>
+    )}
     {user && <LearnerTools tenantId={tenant.id} lang={lang === "ar" ? "ar" : "en"} />}
     </>
   );

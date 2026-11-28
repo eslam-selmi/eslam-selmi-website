@@ -379,7 +379,7 @@ export function SubmissionRow({
             {profile?.full_name || profile?.email || s.user_id.slice(0, 8)}
           </p>
           <p className="text-[10px] text-white/45 mt-0.5">
-            {new Date(s.submitted_at).toLocaleString("ar-EG")}
+            {s.submitted_at && !Number.isNaN(new Date(s.submitted_at).getTime()) ? new Date(s.submitted_at).toLocaleString("ar-EG") : "—"}
           </p>
         </div>
         {s.score !== null && (
