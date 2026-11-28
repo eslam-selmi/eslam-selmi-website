@@ -87,8 +87,9 @@ t('legacy owner course intact',(await cnt('owner',`select count(*) n from course
 // storage
 await db.exec(`reset role; insert into storage.objects(bucket_id,name) values('course-files','t/${noraT}/seed.pdf'),('course-files','legacy/owner.pdf'),('payment-proofs','${U.legacy}/p.png')`);
 await db.exec(`grant usage on schema storage to authenticated, anon; grant execute on all functions in schema storage to authenticated, anon; grant all on storage.objects, storage.buckets to authenticated`);
-await bad('sara upload blocked: tools_upload OFF','saraU',`insert into storage.objects(bucket_id,name) values('course-files','t/${saraT}/a.pdf')`);
-await ok('nora uploads into own prefix (tools_upload ON)','noraU',`insert into storage.objects(bucket_id,name) values('course-files','t/${noraT}/a.pdf')`);
+await db.exec(`reset role; update tenants set extra_features='{"lesson_files":true}'::jsonb where id='${noraT}'`);
+await bad('sara upload blocked: lesson_files OFF','saraU',`insert into storage.objects(bucket_id,name) values('course-files','t/${saraT}/a.pdf')`);
+await ok('nora uploads into own prefix (lesson_files ON)','noraU',`insert into storage.objects(bucket_id,name) values('course-files','t/${noraT}/a.pdf')`);
 await bad('nora cannot upload into sara prefix','noraU',`insert into storage.objects(bucket_id,name) values('course-files','t/${saraT}/x.pdf')`);
 await bad('nora cannot upload to bucket root path','noraU',`insert into storage.objects(bucket_id,name) values('course-files','x.pdf')`);
 await bad('nora cannot upload to other bucket','noraU',`insert into storage.objects(bucket_id,name) values('payment-proofs','t/${noraT}/x.pdf')`);
@@ -118,6 +119,7 @@ t('trainer cannot activate owner legacy learner (0 rows)',(await cnt('saraU',`wi
 t('trainer cannot grant roles',(await cnt('saraU',`with u as (insert into user_roles(user_id,role) values('${U.saraU}','admin') returning 1) select count(*) n from u`))===-1);
 
 // themes
+await as('owner',`update tenants set feature_theme=true where id='${saraT}'`);
 await ok('sara picks valid theme','saraU',`update tenant_landing set theme='ocean' where tenant_id='${saraT}'`);
 t('sara theme stored',(await cnt('saraU',`select count(*) n from tenant_landing where theme='ocean'`))===1);
 await bad('invalid theme rejected by DB','saraU',`update tenant_landing set theme='hotpink' where tenant_id='${saraT}'`);

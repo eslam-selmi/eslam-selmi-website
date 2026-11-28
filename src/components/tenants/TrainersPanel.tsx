@@ -155,7 +155,8 @@ function TenantCard({ tn, domains, onDone, t }: { tn: Tenant; domains: TenantDom
         <Toggle label={t("رفع الأدوات", "Tool upload")} v={tn.feature_tools_upload} set={(b) => patch({ feature_tools_upload: b })} />
         <Toggle label={t("لاندنج بيدج", "Landing page")} v={tn.feature_landing} set={(b) => patch({ feature_landing: b })} />
         <Toggle label={t("دومين خاص", "Custom domain")} v={tn.feature_custom_domain} set={(b) => patch({ feature_custom_domain: b })} />
-        {Object.entries(tn.extra_features ?? {}).map(([k, v]) => (
+        <Toggle label={t("رفع ملفات الدروس", "Lesson file upload")} v={!!tn.extra_features?.lesson_files} set={(b) => patch({ extra_features: { ...(tn.extra_features ?? {}), lesson_files: b } })} />
+        {Object.entries(tn.extra_features ?? {}).filter(([k]) => k !== "lesson_files").map(([k, v]) => (
           <Toggle key={k} label={k} v={!!v} set={(b) => patch({ extra_features: { ...(tn.extra_features ?? {}), [k]: b } })} />
         ))}
         <form className="flex items-center gap-1" onSubmit={(e) => { e.preventDefault(); const f = new FormData(e.currentTarget); const k = String(f.get("k") ?? "").trim().toLowerCase().replace(/[^a-z0-9_]/g, ""); if (!k) return; patch({ extra_features: { ...(tn.extra_features ?? {}), [k]: false } }); e.currentTarget.reset(); }}>

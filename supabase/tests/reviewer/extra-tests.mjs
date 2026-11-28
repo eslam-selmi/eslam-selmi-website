@@ -146,6 +146,14 @@ await db.exec(`insert into storage.objects(bucket_id,name) values('course-files'
 t('N1 enrolled tenant learner reads own course file',(await cnt(db,'l2',`select count(*) n from storage.objects where bucket_id='course-files' and name='t/${noraT}/${noraC}/m/a.pdf'`))===1);
 t('N2 learner cannot read file of a course path they are not enrolled in',(await cnt(db,'l2',`select count(*) n from storage.objects where bucket_id='course-files' and name='t/${noraT}/${ownC}/m/b.pdf'`))===0);
 t('N3 outsider cannot read tenant course file',(await cnt(db,'outsider',`select count(*) n from storage.objects where bucket_id='course-files' and name='t/${noraT}/${noraC}/m/a.pdf'`))===0);
+{const ins=async(n)=>(await as(db,'noraU',`insert into storage.objects(bucket_id,name) values('course-files','t/${noraT}/${noraC}/m/${n}.pdf')`)).ok;
+await as(db,'owner',`update tenants set feature_tools_upload=false, extra_features='{}'::jsonb where id='${noraT}'`);
+t('O1 lesson upload refused when both switches off',!(await ins('o1')));
+await as(db,'owner',`update tenants set feature_tools_upload=true where id='${noraT}'`);
+t('O2 lesson upload refused when only the tools switch is on',!(await ins('o2')));
+await as(db,'owner',`update tenants set feature_tools_upload=false, extra_features='{"lesson_files":true}'::jsonb where id='${noraT}'`);
+t('O3 lesson upload allowed with lesson_files on and tools off',await ins('o3'));
+await as(db,'owner',`update tenants set feature_tools_upload=false, extra_features='{}'::jsonb where id='${noraT}'`);}
 console.log('--- C. suspended tenant ---');
 await as(db,'noraU',`insert into courses(title,tenant_id,active) values('Nora C2','${noraT}',true)`);
 await as(db,'owner',`update tenants set status='suspended' where id='${noraT}'`);

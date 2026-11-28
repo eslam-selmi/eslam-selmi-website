@@ -322,6 +322,7 @@ $$;
 
 
 -- 9. Storage: tenant-prefixed paths. Trainer files live under  t/<tenant_id>/...  in course-files.
+-- Lesson attachments are gated by their own owner switch (extra_features.lesson_files), separate from the tools library switch (tools_upload).
 -- Existing admin-only write policies stay; trainers get NO access outside their own prefix.
 CREATE OR REPLACE FUNCTION public.storage_tenant_of(_name text) RETURNS uuid
 LANGUAGE sql IMMUTABLE AS $$
@@ -335,12 +336,12 @@ CREATE POLICY "tenant admin reads own course files" ON storage.objects FOR SELEC
 CREATE POLICY "tenant admin uploads own course files" ON storage.objects FOR INSERT TO authenticated
   WITH CHECK (bucket_id = 'course-files' AND public.storage_tenant_of(name) IS NOT NULL
          AND public.is_tenant_admin(public.storage_tenant_of(name))
-         AND public.tenant_feature(public.storage_tenant_of(name), 'tools_upload'));
+         AND public.tenant_feature(public.storage_tenant_of(name), 'lesson_files'));
 CREATE POLICY "tenant admin updates own course files" ON storage.objects FOR UPDATE TO authenticated
   USING (bucket_id = 'course-files' AND public.storage_tenant_of(name) IS NOT NULL
-         AND public.is_tenant_admin(public.storage_tenant_of(name)) AND public.tenant_feature(public.storage_tenant_of(name), 'tools_upload'))
+         AND public.is_tenant_admin(public.storage_tenant_of(name)) AND public.tenant_feature(public.storage_tenant_of(name), 'lesson_files'))
   WITH CHECK (bucket_id = 'course-files' AND public.storage_tenant_of(name) IS NOT NULL
-         AND public.is_tenant_admin(public.storage_tenant_of(name)) AND public.tenant_feature(public.storage_tenant_of(name), 'tools_upload'));
+         AND public.is_tenant_admin(public.storage_tenant_of(name)) AND public.tenant_feature(public.storage_tenant_of(name), 'lesson_files'));
 CREATE POLICY "tenant admin deletes own course files" ON storage.objects FOR DELETE TO authenticated
   USING (bucket_id = 'course-files' AND public.storage_tenant_of(name) IS NOT NULL
          AND public.is_tenant_admin(public.storage_tenant_of(name)));
