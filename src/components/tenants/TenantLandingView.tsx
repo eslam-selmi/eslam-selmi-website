@@ -50,8 +50,8 @@ export function TenantLandingView(p: Props) {
         <ol>
           {courses.map((x, i) => (
             <li key={x.id}><span className="tl-num">{String(i + 1).padStart(2, "0")}</span>
-              <div><h3>{x.cover_emoji} {x.title}</h3><p>{x.description}</p></div>
-              <em>{x.total_hours ? `${x.total_hours}${c.hours}` : ""}</em></li>
+              <div><h3>{x.title}</h3><p>{x.description}</p></div>
+              <em style={{ fontStyle: "normal" }}>{x.total_hours ? `${x.total_hours}${c.hours}` : ""}</em></li>
           ))}
         </ol>
       </section>
