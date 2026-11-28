@@ -15,6 +15,7 @@ export function PdfCanvasViewer({ data, onFail, label }: { data: ArrayBuffer; on
     let cancelled = false;
     let doc: import("pdfjs-dist").PDFDocumentProxy | null = null;
     let task: { destroy: () => unknown } | null = null;
+    let cleanup: (() => void) | null = null;
     (async () => {
       try {
         const pdfjs = await import("pdfjs-dist");
@@ -30,32 +31,57 @@ export function PdfCanvasViewer({ data, onFail, label }: { data: ArrayBuffer; on
         host.innerHTML = "";
         const cssWidth = Math.max(280, host.clientWidth - 16);
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const scroller = host.parentElement;
+        const slots: { n: number; slot: HTMLDivElement; canvas: HTMLCanvasElement; w: number; h: number; scale: number; busy: boolean; drawn: boolean }[] = [];
+        const draw = async (e: (typeof slots)[number]) => {
+          if (e.busy || e.drawn || cancelled || !doc) return;
+          e.busy = true;
+          try {
+            const page = await doc.getPage(e.n);
+            const vp = page.getViewport({ scale: e.scale * dpr });
+            e.canvas.width = Math.floor(vp.width);
+            e.canvas.height = Math.floor(vp.height);
+            await page.render({ canvas: e.canvas, viewport: vp }).promise;
+            e.drawn = true;
+          } catch { /* a page that fails stays blank */ }
+          e.busy = false;
+        };
+        const release = (e: (typeof slots)[number]) => {
+          if (!e.drawn || e.busy) return;
+          e.canvas.width = 0; e.canvas.height = 0; e.drawn = false;
+        };
+        const io = new IntersectionObserver((entries) => {
+          for (const en of entries) {
+            const e = slots.find((x) => x.slot === en.target);
+            if (!e) continue;
+            if (en.isIntersecting) void draw(e); else release(e);
+          }
+        }, { root: scroller, rootMargin: "800px 0px" });
+        cleanup = () => io.disconnect();
         for (let n = 1; n <= doc.numPages; n++) {
           if (cancelled) return;
           const page = await doc.getPage(n);
           const base = page.getViewport({ scale: 1 });
           const scale = cssWidth / base.width;
-          const vp = page.getViewport({ scale: scale * dpr });
+          const h = base.height * scale;
+          const slot = document.createElement("div");
+          slot.style.cssText = `width:${cssWidth}px;height:${h.toFixed(1)}px;margin:8px auto;background:#fff;border-radius:4px;overflow:hidden`;
           const canvas = document.createElement("canvas");
-          canvas.width = Math.floor(vp.width);
-          canvas.height = Math.floor(vp.height);
-          canvas.style.width = `${cssWidth}px`;
-          canvas.style.height = `${(base.height * scale).toFixed(1)}px`;
-          canvas.style.display = "block";
-          canvas.style.margin = "8px auto";
-          canvas.style.background = "#fff";
-          canvas.style.borderRadius = "4px";
+          canvas.style.cssText = `width:${cssWidth}px;height:${h.toFixed(1)}px;display:block`;
           canvas.setAttribute("aria-label", `${label} ${n}/${doc.numPages}`);
-          host.appendChild(canvas);
-          await page.render({ canvas, viewport: vp }).promise;
+          slot.appendChild(canvas);
+          host.appendChild(slot);
+          const e = { n, slot, canvas, w: cssWidth, h, scale, busy: false, drawn: false };
+          slots.push(e);
+          io.observe(slot);
           if (n === 1) setState("ready");
-          setPages({ done: n, total: doc.numPages });
         }
+        setPages({ done: doc.numPages, total: doc.numPages });
       } catch {
         if (!cancelled) onFail();
       }
     })();
-    return () => { cancelled = true; try { task?.destroy(); } catch { /* ignore */ } };
+    return () => { cancelled = true; try { cleanup?.(); task?.destroy(); } catch { /* ignore */ } };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
