@@ -57,6 +57,13 @@ t('anon-style public landing visible only when published+feature',(await cnt('le
 // learners
 await ok('l1 joins sara','l1',`select join_tenant_as_learner('sara')`);
 await ok('l2 joins nora','l2',`select join_tenant_as_learner('nora')`);
+t('new learner is pending, not approved',(await cnt('l1',`select count(*) n from tenant_members where user_id='${U.l1}' and status='pending'`))===1);
+await bad('pending learner cannot enroll in trainer course yet','l1',`insert into enrollments(user_id,course_id,status) values('${U.l1}','${saraC}','pending')`);
+await bad('learner cannot self-approve','l1',`select set_tenant_learner_status('${saraT}','${U.l1}','approved')`);
+await bad('sara cannot approve a nora learner','saraU',`select set_tenant_learner_status('${noraT}','${U.l2}','approved')`);
+await ok('sara approves her learner','saraU',`select set_tenant_learner_status('${saraT}','${U.l1}','approved')`);
+await ok('nora approves her learner','noraU',`select set_tenant_learner_status('${noraT}','${U.l2}','approved')`);
+await bad('sara cannot approve an owner legacy learner','saraU',`select set_tenant_learner_status('${saraT}','${U.legacy}','approved')`);
 await bad('join unknown tenant fails','l1',`select join_tenant_as_learner('nope')`);
 await ok('l1 enrolls in sara course','l1',`insert into enrollments(user_id,course_id,status) values('${U.l1}','${saraC}','pending')`);
 await bad('l1 cannot enroll in nora course (not joined)','l1',`insert into enrollments(user_id,course_id,status) values('${U.l1}','${noraC}','pending')`);

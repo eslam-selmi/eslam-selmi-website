@@ -34,6 +34,8 @@ CREATE TABLE IF NOT EXISTS public.tenant_members (
   tenant_id uuid NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE,
   user_id uuid NOT NULL,
   role text NOT NULL CHECK (role IN ('admin','learner')),
+  -- a trainer's own learners start 'pending' and are approved by that trainer (or the owner); only 'approved' gets access
+  status text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','approved','blocked')),
   created_at timestamptz NOT NULL DEFAULT now(),
   PRIMARY KEY (tenant_id, user_id, role)
 );
@@ -52,7 +54,7 @@ $$ SELECT EXISTS (SELECT 1 FROM public.tenant_members m JOIN public.tenants t ON
 
 CREATE OR REPLACE FUNCTION public.is_tenant_learner(_tenant uuid) RETURNS boolean
 LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS
-$$ SELECT EXISTS (SELECT 1 FROM public.tenant_members m WHERE m.tenant_id = _tenant AND m.user_id = auth.uid() AND m.role = 'learner') $$;
+$$ SELECT EXISTS (SELECT 1 FROM public.tenant_members m WHERE m.tenant_id = _tenant AND m.user_id = auth.uid() AND m.role = 'learner' AND m.status = 'approved') $$;
 
 CREATE OR REPLACE FUNCTION public.tenant_feature(_tenant uuid, _feature text) RETURNS boolean
 LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS
@@ -119,7 +121,7 @@ BEGIN
   INSERT INTO public.tenants (slug, kind, name, max_courses, feature_tools_upload, feature_landing, feature_custom_domain)
   VALUES (r.requested_slug, 'trainer', r.full_name, _max_courses, _tools_upload, _landing, _custom_domain)
   RETURNING id INTO t;
-  INSERT INTO public.tenant_members (tenant_id, user_id, role) VALUES (t, r.user_id, 'admin');
+  INSERT INTO public.tenant_members (tenant_id, user_id, role, status) VALUES (t, r.user_id, 'admin', 'approved');
   UPDATE public.tenant_requests SET status = 'approved', decided_by = auth.uid(), decided_at = now(), tenant_id = t WHERE id = _request;
   RETURN t;
 END $$;
@@ -142,6 +144,17 @@ BEGIN
   IF t IS NULL THEN RAISE EXCEPTION 'unknown tenant'; END IF;
   INSERT INTO public.tenant_members (tenant_id, user_id, role) VALUES (t, auth.uid(), 'learner') ON CONFLICT DO NOTHING;
   RETURN t;
+END $$;
+
+-- A trainer (or the owner) approves, blocks or re-pends a learner of THAT tenant only. This is separate from the
+-- owner's profile activation rule, which is not touched.
+CREATE OR REPLACE FUNCTION public.set_tenant_learner_status(_tenant uuid, _user uuid, _status text) RETURNS void
+LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+BEGIN
+  IF NOT (public.is_platform_admin() OR public.is_tenant_admin(_tenant)) THEN RAISE EXCEPTION 'not allowed'; END IF;
+  IF _status NOT IN ('pending','approved','blocked') THEN RAISE EXCEPTION 'bad status'; END IF;
+  UPDATE public.tenant_members SET status = _status WHERE tenant_id = _tenant AND user_id = _user AND role = 'learner';
+  IF NOT FOUND THEN RAISE EXCEPTION 'not a learner of this tenant'; END IF;
 END $$;
 
 -- Public, safe-fields-only lookup for a tenant landing page.
