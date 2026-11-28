@@ -99,7 +99,7 @@ export function CourseCertificateSettings({ course }: { course: { id: string; ti
     <div className="dash-card p-4 space-y-4">
       <h4 className="font-bold">التصميم</h4>
       <div className="space-y-2" role="radiogroup" aria-label="تنسيق الشهادة">
-        <span className="text-xs text-muted-foreground">تنسيق الشهادة: يُطبَّق على كل الشهادات التي تُصدر لهذا الكورس بعد الحفظ.</span>
+        <div><span className="block text-sm font-bold">تنسيق الشهادة</span><span className="block text-xs text-muted-foreground">يُطبَّق على كل الشهادات التي تُصدر لهذا الكورس بعد الحفظ.</span></div>
         <div className="flex flex-wrap gap-3">
           {([["portrait", "عمودي", "Portrait", "h-16 w-12"], ["landscape", "أفقي", "Landscape", "h-12 w-16"]] as const).map(([v, ar, en, box]) => <button key={v} type="button" role="radio" aria-checked={s.orientation === v} onClick={() => setS((p) => ({ ...p, orientation: v }))}
             className={`flex items-center gap-3 rounded-lg border px-4 py-3 text-sm transition ${s.orientation === v ? "border-primary bg-primary/15 ring-1 ring-primary" : "border-border bg-transparent opacity-80 hover:opacity-100"}`}>
