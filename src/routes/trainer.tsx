@@ -21,6 +21,7 @@ function TrainerDashboard() {
   const qc = useQueryClient();
   const [title, setTitle] = useState("");
   const [host, setHost] = useState("");
+  const [msg, setMsg] = useState<string | null>(null);
   const [land, setLand] = useState({ headline: "", subtitle: "", about: "", theme: "terracotta", published: false });
 
   const q = useQuery({
@@ -39,7 +40,12 @@ function TrainerDashboard() {
         tdb.from("tenant_domains").select("*").eq("tenant_id", tid),
       ]);
       if (l.data) setLand({ headline: l.data.headline ?? "", subtitle: l.data.subtitle ?? "", about: l.data.about ?? "", theme: l.data.theme ?? "terracotta", published: !!l.data.published });
-      return { tenant: tn.data as Tenant, courses: (c.data as any[]) ?? [], enrollments: (e.data as any[]) ?? [], domains: (d.data as TenantDomain[]) ?? [] };
+      const { data: lm } = await tdb.from("tenant_members").select("user_id,status,created_at").eq("tenant_id", tid).eq("role", "learner").order("created_at");
+      const ids = ((lm as any[]) ?? []).map((x) => x.user_id);
+      const { data: pr } = ids.length ? await supabase.from("profiles").select("id,full_name").in("id", ids) : { data: [] as any[] };
+      const names = new Map(((pr as any[]) ?? []).map((x) => [x.id, x.full_name as string | null]));
+      const learners = ((lm as any[]) ?? []).map((x) => ({ user_id: x.user_id as string, status: x.status as string, name: names.get(x.user_id) ?? null }));
+      return { learners, tenant: tn.data as Tenant, courses: (c.data as any[]) ?? [], enrollments: (e.data as any[]) ?? [], domains: (d.data as TenantDomain[]) ?? [] };
     },
   });
   const refresh = () => qc.invalidateQueries({ queryKey: ["trainer-home"] });
@@ -49,7 +55,11 @@ function TrainerDashboard() {
   if (q.error) return <main className="p-6">{isDbMissing(q.error as any) ? t("غير متاح بعد.", "Not available yet.") : (q.error as Error).message}</main>;
   if (!q.data) return <main className="p-6"><Link to="/become-trainer" className="underline">{t("ليس لديك منصة مدرب. قدّم طلبًا.", "No trainer platform yet. Send a request.")}</Link></main>;
 
-  const { tenant, courses, enrollments, domains } = q.data;
+  const { tenant, courses, enrollments, domains, learners } = q.data;
+  async function setLearner(uid: string, status: "approved" | "blocked" | "pending") {
+    const { error } = await tdb.rpc("set_tenant_learner_status", { _tenant: tenant.id, _user: uid, _status: status });
+    if (error) setMsg(error.message); else refresh();
+  }
   const full = tenant.max_courses != null && courses.length >= tenant.max_courses;
 
   async function addCourse(e: React.FormEvent) {
@@ -83,6 +93,23 @@ function TrainerDashboard() {
         <div className="rounded-xl border p-3"><div className="text-2xl font-bold">{courses.length}{tenant.max_courses != null ? ` / ${tenant.max_courses}` : ""}</div><div className="text-xs">{t("الكورسات", "Courses")}</div></div>
         <div className="rounded-xl border p-3"><div className="text-2xl font-bold">{enrollments.length}</div><div className="text-xs">{t("تسجيلات المتدربين", "Learner enrollments")}</div></div>
         <div className="rounded-xl border p-3"><div className="text-2xl font-bold">{tenant.feature_tools_upload ? t("مفعّل", "On") : t("مغلق", "Off")}</div><div className="text-xs">{t("رفع الأدوات", "Tool upload")}</div></div>
+      </section>
+
+      <section className="space-y-2">
+        <h2 className="font-semibold">{t("متدربوك", "Your learners")}</h2>
+        <ul className="divide-y rounded-xl border">
+          {learners.map((l) => (
+            <li key={l.user_id} className="p-3 flex items-center justify-between gap-2">
+              <span>{l.name || l.user_id.slice(0, 8)} <span className="text-xs text-muted-foreground">({l.status === "approved" ? t("مقبول", "approved") : l.status === "blocked" ? t("محظور", "blocked") : t("بانتظار القبول", "pending")})</span></span>
+              <span className="flex gap-2">
+                {l.status !== "approved" && <button className="px-3 py-1 rounded bg-primary text-primary-foreground text-sm" onClick={() => setLearner(l.user_id, "approved")}>{t("قبول", "Approve")}</button>}
+                {l.status !== "blocked" && <button className="px-3 py-1 rounded border text-sm" onClick={() => setLearner(l.user_id, "blocked")}>{t("حظر", "Block")}</button>}
+              </span>
+            </li>
+          ))}
+          {learners.length === 0 && <li className="p-3 text-sm text-muted-foreground">{t("لا متدربين بعد.", "No learners yet.")}</li>}
+        </ul>
+        {msg && <p className="text-sm text-destructive" role="alert">{msg}</p>}
       </section>
 
       <section className="space-y-3">

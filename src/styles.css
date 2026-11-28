@@ -1696,3 +1696,7 @@ html[dir="rtl"] .prog-panel .prog-index .prog-tab[data-active="true"] { backgrou
   font-display: swap;
   unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF, U+0020-007F, U+00A0-00FF, U+0100-024F, U+0250-02AF;
 }
+
+/* Thmanyah Sans (Regular, Bold), self-hosted for the trainer pages. Same family and release as @dawod/thmanyah-font-web. */
+@font-face { font-family: "Thmanyah Sans"; src: url("/fonts/thmanyah-sans-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF, U+0020-007F, U+00A0-00FF, U+0100-024F, U+0250-02AF; }
+@font-face { font-family: "Thmanyah Sans"; src: url("/fonts/thmanyah-sans-Bold.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF, U+0020-007F, U+00A0-00FF, U+0100-024F, U+0250-02AF; }
