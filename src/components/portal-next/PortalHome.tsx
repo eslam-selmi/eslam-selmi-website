@@ -95,7 +95,7 @@ export function PortalHero({
   greeting: string;
   firstName: string;
   fullName: string;
-  welcomeLine: string;
+  welcomeLine?: string;
   countryFlag?: string | null;
   countryName?: string | null;
   avatarSrc?: string | null;
@@ -123,7 +123,7 @@ export function PortalHero({
             <p className="nx-eyebrow">{greeting}</p>
             <h1 className="nx-display text-3xl sm:text-[40px] leading-[1.15] mt-2 truncate">{firstName}</h1>
           </div>
-          <p className="text-white/60 text-[15px] leading-relaxed mt-3 max-w-lg">{welcomeLine}</p>
+          {welcomeLine && <p className="text-white/60 text-[15px] leading-relaxed mt-3 max-w-lg">{welcomeLine}</p>}
           <div className="flex flex-wrap items-center gap-2.5 mt-5">
             {continueTarget ? (
               <button onClick={() => onOpenCourse(continueTarget.en)} className="nx-btn nx-btn-primary">
@@ -223,7 +223,7 @@ export function PortalOverviewClean({
   lang, firstName, welcomeLine, continueTarget, hoursEarned, hoursTotal, hoursPct, certs, courseRows,
   availableCount, onOpenCourse, onBrowse, onGoMyCourses, onGoCertificates, supportNode,
 }: {
-  lang: string; firstName: string; welcomeLine: string;
+  lang: string; firstName: string; welcomeLine?: string;
   continueTarget: { en: Enrollment; progress: number; done: number; total: number } | null;
   hoursEarned: number; hoursTotal: number; hoursPct: number; certs: number;
   courseRows: CourseRowVM[]; availableCount: number;
@@ -241,7 +241,7 @@ export function PortalOverviewClean({
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h1 className="nx-display text-[26px] sm:text-[34px] leading-tight truncate">{ar ? `أهلاً، ${firstName}` : `Welcome, ${firstName}`}</h1>
-          <p className="text-white/55 text-sm sm:text-[15px] mt-1.5 leading-relaxed">{welcomeLine}</p>
+          {welcomeLine && <p className="text-white/55 text-sm sm:text-[15px] mt-1.5 leading-relaxed">{welcomeLine}</p>}
         </div>
         {supportNode && <div className="lg:hidden shrink-0">{supportNode}</div>}
       </div>

@@ -331,17 +331,6 @@ function PortalPage() {
   const hour = new Date().getHours();
   const greeting = timeGreeting(lang, hour);
   const firstName = (profile?.full_name || "").trim().split(/\s+/)[0] || (isAr ? "متدرب جديد" : "there");
-  const welcomeLine = isAr
-    ? (hour < 5 ? `${firstName}، يمكنك متابعة الكورس من حيث توقفت.`
-      : hour < 12 ? `صباح النشاط يا ${firstName} — ابدأ يومك بمحاضرة جديدة.`
-      : hour < 17 ? `أهلاً ${firstName} — نظرة سريعة على كورساتك وتقدمك.`
-      : hour < 21 ? `مساء الخير يا ${firstName} — وقت مثالي لمراجعة ما أنجزته اليوم.`
-      : `${firstName}، جلسة مذاكرة هادئة قبل النوم؟ محتواك في انتظارك.`)
-    : (hour < 5 ? `${firstName}, the night is quiet — pick up where you left off.`
-      : hour < 12 ? `Good morning ${firstName} — start the day with a fresh lecture.`
-      : hour < 17 ? `Hi ${firstName} — a quick look at your courses and progress.`
-      : hour < 21 ? `Good evening ${firstName} — a great time to review today's progress.`
-      : `${firstName}, a calm late-night session? Your content is ready.`);
 
   return (
     <AppChrome {...chromeProps}>
@@ -351,7 +340,6 @@ function PortalPage() {
         <PortalOverviewClean
           lang={lang}
           firstName={firstName}
-          welcomeLine={welcomeLine}
           continueTarget={continueTarget}
           hoursEarned={stats.hoursEarned}
           hoursTotal={stats.hoursTotal}
