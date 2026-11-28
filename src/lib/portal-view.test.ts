@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { resolveViewing } from "./portal-view";
+import { resolveViewing, shouldSyncViewParam } from "./portal-view";
 
 const list = [
   { id: "a", blocked: false },
@@ -39,4 +39,10 @@ describe("pickReadyForCert", () => {
     expect(pickReadyForCert(list)?.id).toBe("5");
     expect(pickReadyForCert(list.slice(0, 4))).toBeNull();
   });
+});
+
+describe("shouldSyncViewParam", () => {
+  it("never rewrites the URL once the user has left /portal (e.g. opening a tool)", () => { expect(shouldSyncViewParam("/tools", null, null)).toBe(false); expect(shouldSyncViewParam("/tools", null, "a")).toBe(false); });
+  it("syncs on /portal when the view differs", () => { expect(shouldSyncViewParam("/portal", null, "a")).toBe(true); expect(shouldSyncViewParam("/portal", "a", null)).toBe(true); });
+  it("does nothing on /portal when already in sync", () => { expect(shouldSyncViewParam("/portal", "a", "a")).toBe(false); expect(shouldSyncViewParam("/portal", null, null)).toBe(false); expect(shouldSyncViewParam("/portal", "", null)).toBe(false); });
 });

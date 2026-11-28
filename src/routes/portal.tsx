@@ -15,7 +15,7 @@ import { AccountSettingsModal } from "@/components/AccountSettingsModal";
 import type { Course, Enrollment, Profile, ModuleRow } from "@/components/portal/types";
 import { EnrollmentCard } from "@/components/portal/EnrollmentCard";
 import { CourseDetail } from "@/components/portal/CourseDetail";
-import { resolveViewing, pickContinueTarget, pickReadyForCert } from "@/lib/portal-view";
+import { resolveViewing, pickContinueTarget, pickReadyForCert, shouldSyncViewParam } from "@/lib/portal-view";
 import { MyCertificatesSection } from "@/components/portal/MyCertificatesSection";
 import { UploadModal } from "@/components/portal/UploadModal";
 import { EnrollModal } from "@/components/portal/EnrollModal";
@@ -71,6 +71,7 @@ function PortalPage() {
   const setViewing = (v: Enrollment | null) => setViewingId(v ? v.id : null);
 
   useEffect(() => {
+    if (!shouldSyncViewParam(window.location.pathname, new URLSearchParams(window.location.search).get("view"), viewingId)) return;
     nav({ to: "/portal", search: { view: viewingId || undefined }, replace: true });
   }, [viewingId, nav]);
 

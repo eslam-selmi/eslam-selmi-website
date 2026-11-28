@@ -29,3 +29,11 @@ export function pickContinueTarget<E extends Enr, M extends Mod>(enrollments: E[
 export function pickReadyForCert<E extends Enr>(enrollments: E[]): E | null {
   return enrollments.filter((e) => e.status === "approved").find((e) => !e.certificate_issued && !e.certificate_requested_at && !e.blocked) ?? null;
 }
+
+// Keep ?view= in the URL only while the portal is the current page and the value really differs.
+// Without the path check, clicking a link to another page (e.g. /tools?t=exam) re-ran the sync
+// effect from the still-mounted portal and replaced the URL back to /portal.
+export function shouldSyncViewParam(pathname: string, currentView: string | null | undefined, viewingId: string | null | undefined): boolean {
+  if (pathname !== "/portal" && pathname !== "/portal/") return false;
+  return (currentView || null) !== (viewingId || null);
+}
