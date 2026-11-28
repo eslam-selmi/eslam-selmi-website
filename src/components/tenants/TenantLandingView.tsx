@@ -84,6 +84,7 @@ const CSS = `
 .tl-hero{position:relative;padding:5rem 6vw 6rem;overflow:hidden}
 .tl-kicker{letter-spacing:.14em;text-transform:uppercase;font-size:.78rem;color:var(--a);font-weight:700}
 .tl-root h1,.tl-root h2{font-family:'Thmanyah Serif Display','Thmanyah Sans',serif}
+.tl-root h3,.tl-root h4,.tl-root button,.tl-root input,.tl-root .tl-num,.tl-root em{font-family:'Thmanyah Sans','Thmanyah Serif Display',system-ui,sans-serif}
 .tl-hero h1{font-size:clamp(2.6rem,9vw,6.4rem);line-height:.98;font-weight:800;max-width:14ch;margin:.3em 0}
 .tl-sub{max-width:46ch;font-size:1.15rem;opacity:.82}
 .tl-cta{display:inline-block;margin-top:24px;background:var(--a);color:var(--tl-accent-ink);border:0;border-radius:0;padding:14px 26px;font-weight:700;font-size:1rem;cursor:pointer;box-shadow:6px 6px 0 var(--tl-ink);text-decoration:none}
