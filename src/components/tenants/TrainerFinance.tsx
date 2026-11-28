@@ -34,23 +34,23 @@ export function TrainerFinance({ tenant, courses, t }: { tenant: Tenant; courses
 
   async function run(p: PromiseLike<{ error: { message: string } | null }>) {
     const { error } = await p;
-    if (error) toast.error(error.message); else refresh();
+    if (error) { toast.error(error.message); return false; }
+    refresh();
+    return true;
   }
   async function addPayment(e: React.FormEvent<HTMLFormElement>, eid: string) {
     e.preventDefault();
     const form = e.currentTarget;
     const f = new FormData(form); const amount = Number(f.get("amount"));
     if (!(amount > 0)) return toast.error(t("المبلغ غير صحيح", "Invalid amount"));
-    await run(db.from("payments").insert({ enrollment_id: eid, amount, note: String(f.get("note") ?? "") || null }));
-    form.reset();
+    if (await run(db.from("payments").insert({ enrollment_id: eid, amount, note: String(f.get("note") ?? "") || null }))) form.reset();
   }
   async function addInstallment(e: React.FormEvent<HTMLFormElement>, eid: string) {
     e.preventDefault();
     const form = e.currentTarget;
     const f = new FormData(form); const amount = Number(f.get("amount"));
     if (!(amount > 0)) return toast.error(t("المبلغ غير صحيح", "Invalid amount"));
-    await run(db.from("installments").insert({ enrollment_id: eid, amount, due_date: String(f.get("due") ?? "") || null }));
-    form.reset();
+    if (await run(db.from("installments").insert({ enrollment_id: eid, amount, due_date: String(f.get("due") ?? "") || null }))) form.reset();
   }
   async function setDiscount(eid: string, v: string) {
     const n = Math.max(0, Number(v) || 0);
