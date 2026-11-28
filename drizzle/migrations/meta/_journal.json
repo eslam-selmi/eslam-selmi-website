@@ -57,6 +57,13 @@
       "when": 1795756109757,
       "tag": "0007_security_interest_conversion_and_reschedule",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1795859963642,
+      "tag": "0008_block_suspended_accounts_course_content",
+      "breakpoints": true
     }
   ]
 }

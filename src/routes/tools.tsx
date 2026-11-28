@@ -28,7 +28,7 @@ const FILES: Partial<Record<ToolId, { handout?: string; excel?: string }>> = {
   perf: { handout: "perf/handbook.pdf" },
 };
 async function signedUrl(path: string): Promise<string | null> {
-  const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(path, 30);
+  const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(path, 10);
   return error ? null : data.signedUrl;
 }
 

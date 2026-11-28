@@ -81,7 +81,7 @@ export function MediaViewerModal({
         if (item.isStoragePath) {
           const { data, error } = await supabase.storage
             .from("course-files")
-            .createSignedUrl(url, 600);
+            .createSignedUrl(url, 60);
           if (error) throw error;
           if (!cancelled) setResolvedUrl(data.signedUrl);
         } else {
