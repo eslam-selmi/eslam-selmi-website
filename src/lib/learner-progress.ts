@@ -1,9 +1,9 @@
-// PREPARED, default OFF. Needs the prepared SQL in docs/prepared-sql/learner_progress_and_self_certificate.sql applied first.
+// ON by default. Server rules: drizzle/migrations/0009_recorded_course_auto_certificate.sql. Server switch: app_private.feature_flags.learner_progress. Set VITE_LEARNER_PROGRESS=0 to disable the client.
 import { supabase } from "@/integrations/supabase/client";
 import { createWatchTracker, WATCH_THRESHOLD } from "@/lib/watch-tracker";
 import { itemMediaClass, isMeasuredVideo } from "@/lib/media-class";
 
-export const LEARNER_PROGRESS_ENABLED = import.meta.env.VITE_LEARNER_PROGRESS === "1";
+export const LEARNER_PROGRESS_ENABLED = import.meta.env.VITE_LEARNER_PROGRESS !== "0";
 
 export type Blockers = { unpaid_due: boolean; items_left: number };
 export type Eligibility =

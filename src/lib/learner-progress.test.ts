@@ -51,8 +51,11 @@ describe("journey: learn -> persist -> eligibility -> debt gate (fake store, no 
     expect(evaluateEligibility(b, { required: true, approved: true }, false)).toEqual({ ok: false, reason: "names" });
   });
   it("flag off: nothing is written", async () => {
+    vi.stubEnv("VITE_LEARNER_PROGRESS", "0"); vi.resetModules();
+    const m = await import("@/lib/learner-progress");
     const st: any = fakeStore(); delete st.__test; let writes = 0; const o = st.save; st.save = async (r: any) => { writes++; return o(r); };
-    await recordOpened(st, "u1", "f"); await recordWatched(st, "u1", "v", [1, 2]);
+    await m.recordOpened(st, "u1", "f"); await m.recordWatched(st, "u1", "v", [1, 2]);
+    vi.unstubAllEnvs();
     expect(writes).toBe(0);
   });
 });
