@@ -31,8 +31,13 @@ const P=(n)=>`insert into payments(enrollment_id,amount) values('${noraE}',${n})
 {const r=await as('noraU',P(999999));t('W7 overpayment unchanged (still accepted, business rule untouched)',r.ok);}
 {const r=await as('noraU',`insert into installments(enrollment_id,amount) values('${noraE}',100)`);t('W8 tenant positive installment allowed',r.ok);}
 {const r=await as('noraU',`update installments set amount=-1 where enrollment_id='${noraE}'`);t('W9 tenant installment UPDATE to negative refused',!r.ok);}
-{const r=await db.query(`select count(*) n from notifications where user_id='${U.l2}' and title like '%دفعة%'`);t('W10 only the 2 accepted inserts notified (refused ones did not)',Number(r.rows[0].n)===2);}
-{const r=await db.query(`select count(*) n from payments where enrollment_id='${noraE}'`);t('W11 refused rows not stored',Number(r.rows[0].n)===2);}
+{const r=await as('noraU',`insert into payments(enrollment_id,amount) values('${noraE}','NaN')`);t('W14 tenant NaN payment INSERT refused',!r.ok);}
+{const r=await as('noraU',`insert into installments(enrollment_id,amount) values('${noraE}','NaN')`);t('W15 tenant NaN installment INSERT refused',!r.ok);}
+{const r=await as('noraU',`update payments set amount='NaN' where enrollment_id='${noraE}'`);t('W16 tenant payment UPDATE to NaN refused',!r.ok);}
+{const r=await as('noraU',`update installments set amount='NaN' where enrollment_id='${noraE}'`);t('W17 tenant installment UPDATE to NaN refused',!r.ok);}
+{const r=await db.query(`select count(*) n from payments where amount='NaN'::numeric`);t('W18 no NaN stored by tenant (engine: NaN=NaN true in PG)',Number(r.rows[0].n)===0);}
+{const q=async()=>Number((await db.query(`select count(*) n from notifications where user_id='${U.l2}' and title like '%دفعة%'`)).rows[0].n);const b=await q();await as('noraU',P(-1));await as('noraU',P("'NaN'"));await as('noraU',P(0));const a=await q();t('W10 refused inserts add zero notifications (baseline-relative; legacy duplicate triggers do not matter)',a===b);const b2=a;await as('noraU',P(10));const a2=await q();t('W10b accepted insert notifies (count>baseline)',a2>b2);}
+{const r=await db.query(`select count(*) n from payments where enrollment_id='${noraE}'`);t('W11 refused rows not stored',Number(r.rows[0].n)===3);}
 // V4: discount bounds server-side (guard): -1 refused, 1001 refused (price 1000), 500 allowed
 {const r=await as('noraU',`update enrollments set discount_amount=-1 where id='${noraE}'`);t('V4a negative discount REFUSED (enrollment guard)',!r.ok);}
 {const r=await as('noraU',`update enrollments set discount_amount=1001 where id='${noraE}'`);t('V4b discount above course price REFUSED (enrollment guard)',!r.ok);}
@@ -46,6 +51,7 @@ const ownE=(await db.query(`select id from enrollments where course_id='${ownC}'
 {const r=await as('noraU',`with u as (insert into payments(enrollment_id,amount) values('${ownE}',1) returning 1) select count(*) n from u`);t('V6 tenant admin CANNOT add payment to owner enrollment (policy)',!r.ok || Number(r.rows?.[0]?.n)===0);}
 console.log(`pass=${pass} fail=${fail}`);
 
+{const r=await as('noraU',`insert into payments(enrollment_id,amount) values('${noraE}',null)`);t('W19 NULL amount refused',!r.ok);}
 // owner legacy flow unchanged: platform tenant enrollment still accepts any amount (no behavior change)
 {const r=await db.query(`select 1`);}
 await db.exec(`insert into payments(enrollment_id,amount) values('${ownE}',-7)`);

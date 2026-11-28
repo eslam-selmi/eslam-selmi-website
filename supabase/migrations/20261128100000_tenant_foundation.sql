@@ -416,7 +416,7 @@ CREATE POLICY "tenant admin manages own installments" ON public.installments FOR
   USING (public.is_tenant_admin(public.enrollment_tenant(enrollment_id)))
   WITH CHECK (public.is_tenant_admin(public.enrollment_tenant(enrollment_id)));
 
--- 14a2. Tenant-only amount rule: payments and installments of a trainer tenant's enrollments must be > 0.
+-- 14a2. Tenant-only amount rule: payments and installments of a trainer tenant's enrollments must be > 0 and not NaN.
 -- Rows of the platform (owner) tenant are not touched. Overpayment and refund rules are not changed.
 -- BEFORE trigger: the insert/update is refused before the AFTER notification trigger can run.
 CREATE OR REPLACE FUNCTION public.trg_tenant_amount_positive() RETURNS trigger
@@ -424,7 +424,7 @@ LANGUAGE plpgsql SET search_path = public AS $$
 DECLARE _t uuid;
 BEGIN
   _t := public.enrollment_tenant(NEW.enrollment_id);
-  IF _t IS NOT NULL AND _t <> public.platform_tenant_id() AND NOT (NEW.amount > 0) THEN
+  IF _t IS NOT NULL AND _t <> public.platform_tenant_id() AND (NEW.amount IS NULL OR NEW.amount = 'NaN'::numeric OR NOT (NEW.amount > 0)) THEN
     RAISE EXCEPTION 'amount must be greater than zero' USING ERRCODE = '23514';
   END IF;
   RETURN NEW;
