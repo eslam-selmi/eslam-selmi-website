@@ -1010,6 +1010,16 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 .certificate-landscape .certificate-seal-wrap { top:540px; }
 .certificate-landscape .certificate-verification { top:652px; left:64px; }
 .certificate-landscape.certificate-ar .certificate-verification { left:auto; right:64px; }
+/* Compact copy (no intro/bridge sentences): the name and programme carry the sheet. */
+.certificate-sheet.certificate-compact .certificate-student { top:478px; }
+.certificate-sheet.certificate-compact.certificate-ar .certificate-student { top:455px; }
+.certificate-compact .certificate-student-line { top:572px; }
+.certificate-sheet.certificate-compact .certificate-course { top:612px; }
+.certificate-sheet.certificate-compact .certificate-hours { top:676px; }
+.certificate-sheet.certificate-compact.certificate-landscape .certificate-student,.certificate-compact.certificate-landscape.certificate-ar .certificate-student { top:304px; }
+.certificate-compact.certificate-landscape .certificate-student-line { top:386px; }
+.certificate-sheet.certificate-compact.certificate-landscape .certificate-course { top:428px; }
+.certificate-sheet.certificate-compact.certificate-landscape .certificate-hours { top:480px; }
 .certificate-preview { width:100%; max-width:794px; aspect-ratio:794/1123; margin:auto; position:relative; overflow:hidden; }
 /* scale comes from a custom property: a global rule resets inline transform:scale() inside <main> */
 .certificate-preview-content { position:absolute; top:0; left:0; transform-origin:top left; transform:scale(var(--certificate-scale,0)); }

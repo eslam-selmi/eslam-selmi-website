@@ -55,7 +55,7 @@ export function CertificateDocument({ payload: p, qr, logo = brandLogoAsset.url,
   const hours = ar ? Number(p.totalHours).toLocaleString("ar-EG") : String(p.totalHours);
   const microN = land ? 1.42 : 1;
   const micro = ar ? "CERTIFICATE OF COMPLETION · شهادة إتمام · ".repeat(Math.round(18 * microN)) : "CERTIFICATE OF COMPLETION · ".repeat(Math.round(26 * microN));
-  return <article className={`certificate-sheet ${ar ? "certificate-ar" : "certificate-en"}${land ? " certificate-landscape" : ""}`} style={style} dir={ar ? "rtl" : "ltr"} aria-label={tx("title")}>
+  return <article className={`certificate-sheet ${ar ? "certificate-ar" : "certificate-en"}${land ? " certificate-landscape" : ""}${!tx("intro") && !tx("bridge") ? " certificate-compact" : ""}`} style={style} dir={ar ? "rtl" : "ltr"} aria-label={tx("title")}>
     {on.showLines && <img className="certificate-watermark" src="/certificate-watermark.webp" alt="" aria-hidden="true" />}
     {on.showSpine && <><CertificateBands landscape={land} /><div className="certificate-micro certificate-micro-top" aria-hidden="true">{micro}</div><div className="certificate-micro certificate-micro-bottom" aria-hidden="true">{micro}</div></>}
     {on.showBrand && <img className="certificate-logo" src={logo} alt="" />}
@@ -63,10 +63,10 @@ export function CertificateDocument({ payload: p, qr, logo = brandLogoAsset.url,
     <h1 className="certificate-title" style={{ fontSize: `${(land ? (ar ? 50 : 36) : ar ? 58 : 41) * s.titleScale / 100}px` }}>{tx("title")}</h1>
     <p className="certificate-subtitle">{tx("subtitle")}</p>
     <div className="certificate-divider" aria-hidden="true"><i /><b /><i /></div>
-    <p className="certificate-intro">{tx("intro")}</p>
+    {tx("intro") && <p className="certificate-intro">{tx("intro")}</p>}
     <h2 className="certificate-student" style={{ fontSize: `${nameSize}px` }}>{student}</h2>
     <div className="certificate-student-line" aria-hidden="true" />
-    <p className="certificate-bridge">{tx("bridge")}</p>
+    {tx("bridge") && <p className="certificate-bridge">{tx("bridge")}</p>}
     <h3 className="certificate-course" style={{ fontSize: `${courseSize}px` }}>{course}</h3>
     {on.showHours && Number(p.totalHours) > 0 && <p className="certificate-hours">{tx("hoursPrefix")} <strong>{hours}</strong> {tx("hoursLabel")}</p>}
     <div className="certificate-date">{on.showDate && <><div className="certificate-line-value">{date}</div><span>{tx("dateLabel")}</span></>}</div>
