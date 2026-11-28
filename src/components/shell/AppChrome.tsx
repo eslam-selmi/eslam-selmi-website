@@ -23,13 +23,14 @@ type Props = {
   /** Trainee layout: pill navigation in the header instead of a sidebar. */
   topNav?: React.ReactNode;
   footer?: React.ReactNode;
+  headerActions?: React.ReactNode;
   onAccountSettings?: () => void;
   pendingActions?: PendingAction[];
   demo?: boolean; // preview harness: no auth side effects, static bell
   children: React.ReactNode;
 };
 
-export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileBar, topNav, footer, onAccountSettings, demo, pendingActions, children }: Props) {
+export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileBar, topNav, footer, headerActions, onAccountSettings, demo, pendingActions, children }: Props) {
   const { profile } = useSiteProfile();
   const nav = useNavigate();
   const { lang, setLang, dir } = useI18n();
@@ -106,16 +107,19 @@ export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileB
         <div className={`max-w-[1400px] mx-auto px-4 sm:px-6 ${topNav ? "min-h-16 py-2 flex flex-wrap min-[1500px]:flex-nowrap items-center justify-between gap-x-3 gap-y-2" : "h-16 flex items-center justify-between gap-3"}`}>
           <div className="flex items-center gap-3 min-w-0">
             <Link to="/" reloadDocument aria-label={isAr ? "العودة إلى الموقع" : "Back to website"} className={`flex items-center gap-3 group shrink-0 ${sidebar ? "lg:hidden" : ""}`}>
+              {/* Light header: navy mark on transparent. Dark header: white mark on transparent. No tile behind either. */}
+              <img
+                src={profile.logo || brandLogoAsset.url}
+                alt="Eslam Selmi"
+                className={`${topNav ? "h-9 w-auto max-w-[44px] object-contain" : "h-9 w-9 rounded-xl object-contain p-1"} dark:hidden`}
+                onError={(e) => { const el = e.currentTarget; if (el.src !== brandLogoAsset.url) { el.src = brandLogoAsset.url; return; } el.onerror = null; el.style.display = "none"; }}
+              />
               <img
                 src={profile.logoDark || brandLogoAsset.url}
-                alt="Eslam Selmi"
-                className={topNav ? "h-9 w-auto max-w-[44px] object-contain" : "h-9 w-9 rounded-xl object-contain bg-white/10 p-1 border border-white/15 group-hover:border-[var(--nx-teal)]/60 transition"}
-                onError={(e) => {
-                  const el = e.currentTarget;
-                  if (el.src !== brandLogoAsset.url) { el.src = brandLogoAsset.url; return; }
-                  el.onerror = null;
-                  el.style.display = "none";
-                }}
+                alt=""
+                aria-hidden
+                className={`${topNav ? "h-9 w-auto max-w-[44px] object-contain" : "h-9 w-9 rounded-xl object-contain p-1"} hidden dark:block`}
+                onError={(e) => { const el = e.currentTarget; if (el.src !== brandLogoAsset.url) { el.src = brandLogoAsset.url; return; } el.onerror = null; el.style.display = "none"; }}
               />
               <div className={`${topNav ? "" : "hidden sm:block"} leading-tight`}>
                 <p className="text-[9px] text-white/40 font-bold" style={{ letterSpacing: dir === "ltr" ? "0.2em" : 0 }}>ESLAM SELMI</p>
@@ -146,6 +150,7 @@ export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileB
                 </Link>
               </span>
             )}
+            {headerActions}
             <button onClick={toggle} title={theme === "dark" ? (isAr ? "الوضع الفاتح" : "Light mode") : (isAr ? "الوضع الداكن" : "Dark mode")} aria-label="toggle theme" className="nx-icon-btn">
               {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>

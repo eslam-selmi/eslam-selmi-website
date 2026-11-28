@@ -68,10 +68,11 @@ export function MediaViewerModal({
     const iv = window.setInterval(flushWatch, 30000);
     return () => { window.clearInterval(iv); flushWatch(); };
   }, [item?.id, progress?.itemId]); // eslint-disable-line react-hooks/exhaustive-deps
-  const onTick = LEARNER_PROGRESS_ENABLED && progress ? (t: number, playing: boolean, duration: number, rate: number) => {
+  const onTick = LEARNER_PROGRESS_ENABLED && progress ? (t: number, playing: boolean, duration: number, rate: number, ended?: boolean) => {
     if (!(duration > 0)) return;
     if (!tracker.current || durRef.current !== duration) { tracker.current = createWatchTracker(duration); durRef.current = duration; }
     tracker.current.tick(t, playing, rate);
+    if (ended) tracker.current.end();
     const r = Math.min(1, tracker.current.ratio());
     setPct((prev) => { const n = Math.floor(r * 100); return prev === n ? prev : n; });
     // Send progress when the learner pauses, seeks or reaches the end (not only every 30 s), so the server can decide completion promptly.

@@ -45,7 +45,7 @@ export function VideoWithCues({
   /** optional: reports watch state (used by share links; nothing else needs it) */
   onProgress?: (p: { ended: boolean; maxRatio: number; cuesAnswered: number }) => void;
   /** optional: raw playback samples (time, playing, duration, rate) for actual-watch tracking; unused unless the learner-progress flag is on */
-  onTick?: (t: number, playing: boolean, duration: number, rate: number) => void;
+  onTick?: (t: number, playing: boolean, duration: number, rate: number, ended?: boolean) => void;
 }) {
   const cues = useMemo(() => parseVideoCues(content), [content]);
   const ref = useRef<HTMLVideoElement>(null);
@@ -141,7 +141,7 @@ export function VideoWithCues({
         onPause={() => { const v = ref.current; if (v && onTick) onTick(v.currentTime, false, v.duration, v.playbackRate); }}
         onSeeking={() => { const v = ref.current; if (v && onTick) onTick(v.currentTime, false, v.duration, v.playbackRate); }}
         onTimeUpdate={() => { const v = ref.current; if (v && onTick) onTick(v.currentTime, !v.paused && !v.seeking, v.duration, v.playbackRate); if (v) resumeAt.current = v.currentTime; if (v && v.duration > 0) maxRatio.current = Math.max(maxRatio.current, v.currentTime / v.duration); check(); }}
-        onEnded={() => { ended.current = true; emit(); }}
+        onEnded={() => { ended.current = true; const v = ref.current; if (v && onTick) onTick(v.duration, false, v.duration, v.playbackRate, true); emit(); }}
         onSeeked={check}
         onLoadedMetadata={() => { const v = ref.current; if (v && resumeAt.current > 0 && Math.abs(v.currentTime - resumeAt.current) > 1 && resumeAt.current < v.duration - 0.5) v.currentTime = resumeAt.current; }}
         onError={onError}

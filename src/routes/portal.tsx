@@ -320,16 +320,13 @@ function PortalPage() {
         lang={lang}
       />
     ),
-    footer: (
-      <>
-        <TraineeSupportButton
-          userId={user.id}
-          enrolledCourses={trEnrollments
-            .filter((e) => e.status === "approved" && e.courses)
-            .map((e) => ({ id: e.course_id, title: e.courses!.title }))}
-        />
-        <button onClick={() => setAccountOpen(true)} className="nx-pill-link">{isAr ? "إعدادات الحساب" : "Account settings"}</button>
-      </>
+    headerActions: (
+      <TraineeSupportButton
+        userId={user.id}
+        enrolledCourses={trEnrollments
+          .filter((e) => e.status === "approved" && e.courses)
+          .map((e) => ({ id: e.course_id, title: e.courses!.title }))}
+      />
     ),
     mobileBar: (
       <PortalTabBar
@@ -341,12 +338,23 @@ function PortalPage() {
     ),
   };
 
+  const accountModal = (
+    <AccountSettingsModal
+      open={accountOpen}
+      onClose={() => setAccountOpen(false)}
+      userId={user.id}
+      userEmail={profile?.email}
+      onSaved={() => refresh({ silent: true })}
+    />
+  );
+
   if (viewing) {
     // always read the freshest enrollment so name/cert updates flow into the detail view
     const fresh = trEnrollments.find((e) => e.id === viewing.id) ?? enrollments.find((e) => e.id === viewing.id) ?? viewing;
     return (
       <AppChrome {...chromeProps}>
         <CourseDetail enrollment={fresh} onBack={() => { setViewing(null); refresh(); }} onDownloadCert={downloadCert} onRefresh={refresh} />
+        {accountModal}
       </AppChrome>
     );
   }
@@ -527,13 +535,7 @@ function PortalPage() {
 
       {showUpload && <UploadModal onClose={() => setShowUpload(false)} />}
 
-      <AccountSettingsModal
-        open={accountOpen}
-        onClose={() => setAccountOpen(false)}
-        userId={user.id}
-        userEmail={profile?.email}
-        onSaved={() => refresh({ silent: true })}
-      />
+      {accountModal}
     </AppChrome>
 
   );

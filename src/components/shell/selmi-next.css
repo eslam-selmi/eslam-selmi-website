@@ -395,7 +395,6 @@
   .nx-frame { display: block; }
 }
 :root:not(.dark) .nx .nx-side-brand img { background: oklch(0.24 0.07 258); border-radius: 12px; padding: 6px; }
-:root:not(.dark) .nx header a > img { background: oklch(0.24 0.07 258); border-color: transparent; }
 :root:not(.dark) .nx .nx-side .nx-card .grid > div { border: 0; background: #fff; border-radius: 10px; }
 
 /* Dark mode top bar: lighter frosted glass, consistent rounded corners (floating bar, same shape as light). */
@@ -417,7 +416,6 @@
   :root.dark .nx header { border-radius: 18px; }
   :root:not(.dark) .nx header { border-radius: 18px; }
 }
-:root:not(.dark) .nx header a > img { background-color: oklch(0.24 0.07 258) !important; border-color: transparent !important; }
 
 /* Admin overview title card: inner spacing */
 .nx .nx-admin-hero { padding: 28px 32px !important; overflow: hidden; }
