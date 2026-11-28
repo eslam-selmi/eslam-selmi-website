@@ -43,7 +43,18 @@ function TenantLanding() {
 
   if (q.isLoading) return <div style={{ minHeight: "60vh", display: "grid", placeItems: "center" }}>…</div>;
   if (q.error) return <div style={{ minHeight: "60vh", display: "grid", placeItems: "center" }}>{isDbMissing(q.error as any) ? "…" : "Something went wrong."}</div>;
-  if (!q.data || !q.data.landing?.published) return <div style={{ minHeight: "60vh", display: "grid", placeItems: "center" }}>404</div>;
+  if (!q.data || !q.data.landing?.published) {
+    const ar = lang === "ar";
+    return (
+      <div style={{ minHeight: "60vh", display: "grid", placeItems: "center", textAlign: "center", padding: "2rem", fontFamily: "'Thmanyah Sans', system-ui, sans-serif" }}>
+        <div>
+          <h1 style={{ fontFamily: "'Thmanyah Serif Display', serif", fontSize: "2rem", margin: 0 }}>{ar ? "هذه الصفحة غير متاحة" : "This page is not available"}</h1>
+          <p style={{ opacity: 0.7, marginTop: "0.75rem" }}>{ar ? "قد يكون الرابط غير صحيح أو أن الصفحة لم تُنشر بعد." : "The link may be wrong, or the page is not published yet."}</p>
+          <a href="/" style={{ display: "inline-block", marginTop: "1rem", textDecoration: "underline" }}>{ar ? "العودة للرئيسية" : "Back to home"}</a>
+        </div>
+      </div>
+    );
+  }
   const { tenant, landing, courses } = q.data;
 
   async function join() {
