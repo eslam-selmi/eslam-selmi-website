@@ -162,6 +162,18 @@ export function CoursesPanel({
     refresh();
   }
 
+  // Live courses: the admin marks the course finished; only then can enrolled trainees evaluate it (server enforces it too, see migration 0013).
+  async function toggleFinished(id: string, finished: boolean) {
+    const msg = finished
+      ? t("إلغاء إنهاء الكورس؟ سيختفي زر التقييم عن المتدربين.", "Reopen this course? The evaluation button will be hidden for trainees.")
+      : t("إنهاء الكورس؟ سيظهر زر التقييم للمتدربين المسجلين.", "Mark this course as finished? Enrolled trainees will see the evaluation button.");
+    if (!confirm(msg)) return;
+    const { error } = await (supabase as any).from("courses").update({ finished_at: finished ? null : new Date().toISOString() }).eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success(finished ? t("تم إلغاء الإنهاء", "Reopened") : t("تم إنهاء الكورس", "Course marked finished"));
+    refresh();
+  }
+
   async function deleteCourseForever(id: string, title: string) {
     if (
       !confirm(
@@ -281,7 +293,14 @@ export function CoursesPanel({
                           <ToggleLeft className="w-5 h-5 text-white/40" />
                         )}
                        </Button>
-                       <details className="relative group"><summary aria-label={t("مزيد من الإجراءات", "More actions")} title={t("مزيد من الإجراءات", "More actions")} className="flex size-9 cursor-pointer list-none items-center justify-center rounded-md text-muted-foreground hover:bg-secondary [&::-webkit-details-marker]:hidden"><MoreHorizontal className="size-4" /></summary><div className="absolute end-0 top-full z-20 min-w-36 rounded-md border border-border bg-popover p-1 shadow-lg"><Button size="sm" variant="ghost" className="w-full justify-start" 
+                       <details className="relative group"><summary aria-label={t("مزيد من الإجراءات", "More actions")} title={t("مزيد من الإجراءات", "More actions")} className="flex size-9 cursor-pointer list-none items-center justify-center rounded-md text-muted-foreground hover:bg-secondary [&::-webkit-details-marker]:hidden"><MoreHorizontal className="size-4" /></summary><div className="absolute end-0 top-full z-20 min-w-36 rounded-md border border-border bg-popover p-1 shadow-lg">{(c as any).delivery_mode !== "recorded" && (
+                       <Button size="sm" variant="ghost" className="w-full justify-start" data-testid="finish-course-btn"
+                        onClick={() => toggleFinished(c.id, Boolean((c as any).finished_at))}
+                      >
+                         <CheckCircle2 className="w-4 h-4" /> {(c as any).finished_at ? t("إلغاء إنهاء الكورس", "Reopen course") : t("إنهاء الكورس", "Mark finished")}
+                       </Button>
+                       )}
+                       <Button size="sm" variant="ghost" className="w-full justify-start" 
                         onClick={() => del(c.id, Boolean((c as any).is_archived))}
                         title={
                           (c as any).is_archived ? t("استعادة", "Restore") : t("أرشفة", "Archive")

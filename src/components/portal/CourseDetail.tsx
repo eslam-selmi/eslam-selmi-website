@@ -71,8 +71,10 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
   const totalPaid = payments.filter((p) => p.status !== "rejected" && p.status !== "pending").reduce((s, p) => s + Number(p.amount), 0);
   const coursePrice = Number(c.price ?? 0);
   const completedCount = modules.filter((m) => isUnitDone(m)).length;
-  // Evaluation button: recorded courses show it only when every unit is complete. Live courses are held back until the owner confirms which "course finished" signal to use (none is wired yet), so they stay hidden (fails closed).
-  const canRate = enrollment.status === "approved" && (c as any).delivery_mode === "recorded" && modules.length > 0 && completedCount === modules.length;
+  // Evaluation button: recorded courses show it only when every unit is complete. Live courses: only after the admin marks the course finished (courses.finished_at). Server rule: migration 0013.
+  const allItems: any[] = Object.values(items).flat() as any[];
+  const doneIds = new Set(progRows.filter((r) => r.completed_at).map((r) => r.item_id));
+  const canRate = enrollment.status === "approved" && (((c as any).delivery_mode === "recorded" && allItems.length > 0 && allItems.every((i: any) => doneIds.has(i.id))) || ((c as any).delivery_mode !== "recorded" && !!(c as any).finished_at));
   const progressPct = modules.length ? Math.round((completedCount / modules.length) * 100) : 0;
 
   // Translate module titles + session titles
