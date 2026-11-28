@@ -94,6 +94,9 @@ DROP POLICY IF EXISTS "tenant admin reads own submissions" ON public.assignment_
 DROP POLICY IF EXISTS "tenant admin grades own submissions" ON public.assignment_submissions;
 DROP FUNCTION IF EXISTS public.assignment_tenant(uuid);
 -- Restore finance objects changed by section 14 (original definitions copied from 20260523140436 and 20260626083801).
+DROP TRIGGER IF EXISTS trg_tenant_payment_amount ON public.payments;
+DROP TRIGGER IF EXISTS trg_tenant_installment_amount ON public.installments;
+DROP FUNCTION IF EXISTS public.trg_tenant_amount_positive();
 DROP POLICY IF EXISTS "tenant admin manages own payments" ON public.payments;
 DROP POLICY IF EXISTS "tenant admin manages own installments" ON public.installments;
 DROP POLICY IF EXISTS "tenant admin manages own coupons" ON public.coupons;
