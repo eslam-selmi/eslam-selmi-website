@@ -20,7 +20,7 @@ export const Route = createFileRoute("/verify/$id")({
 });
 
 type VerifyResult =
-  | { ok: true; trainee_name_ar: string | null; trainee_name_en: string | null; course_title: string; total_hours: number; issued_at: string; certificate_id: string }
+  | { ok: true; trainee_name_ar: string | null; trainee_name_en: string | null; course_title: string; total_hours: number; issued_at: string; certificate_id: string; issuer_name?: string | null }
   | { ok: false; error: string };
 
 function VerifyPage() {
@@ -93,8 +93,8 @@ function VerifyPage() {
                   </svg>
                 </div>
 
-                <h1 className="mt-5 text-[17px] sm:text-2xl font-extrabold text-emerald-200 text-balance">الشهادة موثّقة وصادرة من إسلام سلمي</h1>
-                <p className="mt-1 text-[13px] sm:text-base font-semibold text-white/75 text-balance" dir="ltr">This certificate is verified and issued by Eslam Selmi</p>
+                <h1 className="mt-5 text-[17px] sm:text-2xl font-extrabold text-emerald-200 text-balance">{d!.issuer_name ? `الشهادة موثّقة وصادرة من ${d!.issuer_name}` : "الشهادة موثّقة وصادرة من إسلام سلمي"}</h1>
+                <p className="mt-1 text-[13px] sm:text-base font-semibold text-white/75 text-balance" dir="ltr">{`This certificate is verified and issued by ${d!.issuer_name ?? "Eslam Selmi"}`}</p>
 
                 <div className="my-8 h-px w-40 bg-gradient-to-r from-transparent via-[var(--gold)]/60 to-transparent" />
 
