@@ -16,7 +16,7 @@ import type { Enrollment } from "./types";
 import type { Tables } from "@/integrations/supabase/types";
 import { AssignmentsSection } from "./Assignments";
 import { CertificatePanel } from "./CertificatePanel";
-import { CourseFeedbackForm } from "./CourseFeedbackForm";
+import { CourseFeedbackButton } from "./CourseFeedbackForm";
 import { ProofUploader } from "./ProofUploader";
 import { ModuleNotes } from "./ModuleNotes";
 import { downloadSessionIcs } from "./ics";
@@ -71,6 +71,8 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
   const totalPaid = payments.filter((p) => p.status !== "rejected" && p.status !== "pending").reduce((s, p) => s + Number(p.amount), 0);
   const coursePrice = Number(c.price ?? 0);
   const completedCount = modules.filter((m) => isUnitDone(m)).length;
+  // Evaluation button: recorded courses show it only when every unit is complete. Live courses are held back until the owner confirms which "course finished" signal to use (none is wired yet), so they stay hidden (fails closed).
+  const canRate = enrollment.status === "approved" && (c as any).delivery_mode === "recorded" && modules.length > 0 && completedCount === modules.length;
   const progressPct = modules.length ? Math.round((completedCount / modules.length) * 100) : 0;
 
   // Translate module titles + session titles
@@ -101,6 +103,9 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
               <span>{c.installments_count === 1 ? (isAr ? "دفعة كاملة" : "Single payment") : (isAr ? `${c.installments_count} أقساط` : `${c.installments_count} installments`)}</span>
               {Number(c.total_hours) > 0 && <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5 text-[var(--gold)]" /> {c.total_hours} {isAr ? "ساعة تدريبية" : "training hrs"}</span>}
             </div>
+            {canRate && enrollment.user_id && (
+              <div className="mt-4"><CourseFeedbackButton courseId={c.id} userId={enrollment.user_id} /></div>
+            )}
             {safeHref(c.online_url) && (
               <a href={safeHref(c.online_url)!} target="_blank" rel="noopener"
                 className="mt-4 inline-flex items-center gap-2 text-sm px-4 h-10 rounded-xl bg-[var(--gold)]/15 border border-[var(--gold)]/40 text-[var(--gold)] hover:bg-[var(--gold)]/25 transition">
@@ -316,9 +321,6 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
           onDownloadCert={onDownloadCert}
           onRefresh={onRefresh}
         />
-        {enrollment.status === "approved" && (modules.length === 0 || completedCount > 0) && (
-          <CourseFeedbackForm courseId={c.id} userId={enrollment.user_id} />
-        )}
 
       </section>
     </div>

@@ -150,6 +150,13 @@ export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileB
                 </Link>
               </span>
             )}
+            <button onClick={() => setLang(isAr ? "en" : "ar")} aria-label={isAr ? "Switch to English" : "التحويل للعربية"} className="nx-pill-link">
+              <Languages className="w-3.5 h-3.5 opacity-70" />
+              <span className={`font-bold leading-none ${isAr ? "text-[12px] tracking-wider" : "text-[15px]"}`}>{isAr ? "En" : "ع"}</span>
+            </button>
+            <button onClick={() => toggle()} aria-label={theme === "dark" ? (isAr ? "الوضع الفاتح" : "Light mode") : (isAr ? "الوضع الداكن" : "Dark mode")} className="nx-icon-btn">
+              {theme === "dark" ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-400" />}
+            </button>
             {headerActions}
             {demo ? (
               <button className="nx-icon-btn relative" aria-label="notifications">
@@ -180,12 +187,6 @@ export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileB
                   )}
                   <button className="nx-menu-item" onClick={() => { setMenuOpen(false); setShowChangePassword(true); }}>
                     <KeyRound className="w-4 h-4 text-[var(--nx-teal)]" /> {L.password}
-                  </button>
-                  <button className="nx-menu-item" onClick={() => { toggle(); }}>
-                    {theme === "dark" ? <Sun className="w-4 h-4 text-[var(--nx-teal)]" /> : <Moon className="w-4 h-4 text-[var(--nx-teal)]" />} {theme === "dark" ? (isAr ? "الوضع الفاتح" : "Light mode") : (isAr ? "الوضع الداكن" : "Dark mode")}
-                  </button>
-                  <button className="nx-menu-item" onClick={() => { setLang(isAr ? "en" : "ar"); setMenuOpen(false); }}>
-                    <Languages className="w-4 h-4 text-[var(--nx-teal)]" /> {L.switchLang}
                   </button>
                   <hr className="nx-divider my-1.5" />
                   <button className="nx-menu-item" data-danger onClick={() => { if (!demo) { signOut(); nav({ to: "/auth" }); } setMenuOpen(false); }}>

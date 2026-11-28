@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
 import { toast } from "sonner";
 import { Star, MessageSquareHeart, CheckCircle2 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import type { Database, Json } from "@/integrations/supabase/types";
 
 type Q = Database["public"]["Tables"]["feedback_questions"]["Row"];
@@ -24,7 +25,7 @@ function Stars({ value, onChange }: { value: number; onChange: (n: number) => vo
 
 const pill = (on: boolean) => `h-9 px-2 rounded-lg text-xs border ${on ? "border-[var(--gold)] bg-[var(--gold)]/15 text-[var(--gold)]" : "border-white/15 bg-white/5 text-white/70"}`;
 
-export function CourseFeedbackForm({ courseId, userId }: { courseId: string; userId: string }) {
+export function CourseFeedbackForm({ courseId, userId, bare = false, onDone }: { courseId: string; userId: string; bare?: boolean; onDone?: () => void }) {
   const { lang } = useI18n();
   const isAr = lang === "ar";
   const [loading, setLoading] = useState(true);
@@ -75,16 +76,16 @@ export function CourseFeedbackForm({ courseId, userId }: { courseId: string; use
     setSaving(false);
     if (error) return toast.error(error.message);
     toast.success(isAr ? "شكراً لتقييمك 🙏" : "Thanks for your feedback 🙏");
-    setExisting(true); setEditing(false);
+    setExisting(true); setEditing(false); onDone?.();
   }
 
   if (loading || questions.length === 0) return null;
 
   return (
-    <div className="dash-card dash-card-hover p-5">
-      <h3 className="font-bold mb-3 flex items-center gap-2">
+    <div className={bare ? "" : "dash-card dash-card-hover p-5"}>
+      {!bare && <h3 className="font-bold mb-3 flex items-center gap-2">
         <MessageSquareHeart className="w-4 h-4 text-[var(--gold)]" /> {isAr ? "قيّم الكورس" : "Rate this course"}
-      </h3>
+      </h3>}
       {existing && !editing ? (
         <div className="space-y-2">
           <p className="text-xs text-emerald-300 flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5" /> {isAr ? "تم استلام تقييمك، شكراً لك" : "Your feedback was received, thank you"}</p>
@@ -136,5 +137,26 @@ export function CourseFeedbackForm({ courseId, userId }: { courseId: string; use
         </div>
       )}
     </div>
+  );
+}
+
+// Header button that opens the evaluation in a dialog. The caller decides when it may appear (all content done / live course finished).
+export function CourseFeedbackButton({ courseId, userId }: { courseId: string; userId: string }) {
+  const { lang } = useI18n();
+  const isAr = lang === "ar";
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button type="button" onClick={() => setOpen(true)} data-testid="rate-course-btn"
+        className="inline-flex items-center gap-2 text-sm px-4 h-10 rounded-xl bg-[var(--gold)]/15 border border-[var(--gold)]/40 text-[var(--gold)] hover:bg-[var(--gold)]/25 transition">
+        <MessageSquareHeart className="w-4 h-4" /> {isAr ? "قيّم الكورس" : "Rate this course"}
+      </button>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent dir={isAr ? "rtl" : "ltr"} className="max-h-[85vh] overflow-y-auto sm:max-w-lg">
+          <DialogHeader><DialogTitle>{isAr ? "قيّم الكورس" : "Rate this course"}</DialogTitle></DialogHeader>
+          <CourseFeedbackForm courseId={courseId} userId={userId} bare />
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
