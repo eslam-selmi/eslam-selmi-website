@@ -278,3 +278,27 @@ BEGIN
 END;
 $$;
 
+
+-- 9. Storage: tenant-prefixed paths. Trainer files live under  t/<tenant_id>/...  in course-files.
+-- Existing admin-only write policies stay; trainers get NO access outside their own prefix.
+CREATE OR REPLACE FUNCTION public.storage_tenant_of(_name text) RETURNS uuid
+LANGUAGE sql IMMUTABLE AS $$
+  SELECT CASE WHEN split_part(_name, '/', 1) = 't'
+              AND split_part(_name, '/', 2) ~ '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+         THEN split_part(_name, '/', 2)::uuid END $$;
+
+CREATE POLICY "tenant admin reads own course files" ON storage.objects FOR SELECT TO authenticated
+  USING (bucket_id = 'course-files' AND public.storage_tenant_of(name) IS NOT NULL
+         AND public.is_tenant_admin(public.storage_tenant_of(name)));
+CREATE POLICY "tenant admin uploads own course files" ON storage.objects FOR INSERT TO authenticated
+  WITH CHECK (bucket_id = 'course-files' AND public.storage_tenant_of(name) IS NOT NULL
+         AND public.is_tenant_admin(public.storage_tenant_of(name))
+         AND public.tenant_feature(public.storage_tenant_of(name), 'tools_upload'));
+CREATE POLICY "tenant admin updates own course files" ON storage.objects FOR UPDATE TO authenticated
+  USING (bucket_id = 'course-files' AND public.storage_tenant_of(name) IS NOT NULL
+         AND public.is_tenant_admin(public.storage_tenant_of(name)) AND public.tenant_feature(public.storage_tenant_of(name), 'tools_upload'))
+  WITH CHECK (bucket_id = 'course-files' AND public.storage_tenant_of(name) IS NOT NULL
+         AND public.is_tenant_admin(public.storage_tenant_of(name)) AND public.tenant_feature(public.storage_tenant_of(name), 'tools_upload'));
+CREATE POLICY "tenant admin deletes own course files" ON storage.objects FOR DELETE TO authenticated
+  USING (bucket_id = 'course-files' AND public.storage_tenant_of(name) IS NOT NULL
+         AND public.is_tenant_admin(public.storage_tenant_of(name)));

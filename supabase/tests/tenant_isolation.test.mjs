@@ -75,4 +75,19 @@ t('sara cannot approve legacy enrollment',(await cnt('saraU',`with u as (update 
 await ok('owner suspends sara','owner',`update tenants set status='suspended' where id='${saraT}'`);
 t('suspended sara loses course write access',(await cnt('saraU',`with u as (update courses set title='x' where title='Sara C1' returning 1) select count(*) n from u`))===0);
 t('legacy owner course intact',(await cnt('owner',`select count(*) n from courses where title='Owner legacy course' and tenant_id=platform_tenant_id()`))===1);
+
+// storage
+await db.exec(`reset role; insert into storage.objects(bucket_id,name) values('course-files','t/${noraT}/seed.pdf'),('course-files','legacy/owner.pdf'),('payment-proofs','${U.legacy}/p.png')`);
+await db.exec(`grant usage on schema storage to authenticated, anon; grant execute on all functions in schema storage to authenticated, anon; grant all on storage.objects, storage.buckets to authenticated`);
+await bad('sara upload blocked: tools_upload OFF','saraU',`insert into storage.objects(bucket_id,name) values('course-files','t/${saraT}/a.pdf')`);
+await ok('nora uploads into own prefix (tools_upload ON)','noraU',`insert into storage.objects(bucket_id,name) values('course-files','t/${noraT}/a.pdf')`);
+await bad('nora cannot upload into sara prefix','noraU',`insert into storage.objects(bucket_id,name) values('course-files','t/${saraT}/x.pdf')`);
+await bad('nora cannot upload to bucket root path','noraU',`insert into storage.objects(bucket_id,name) values('course-files','x.pdf')`);
+await bad('nora cannot upload to other bucket','noraU',`insert into storage.objects(bucket_id,name) values('payment-proofs','t/${noraT}/x.pdf')`);
+await bad('nora cannot use malformed tenant prefix','noraU',`insert into storage.objects(bucket_id,name) values('course-files','t/not-a-uuid/x.pdf')`);
+t('nora reads own prefix only',(await cnt('noraU',`select count(*) n from storage.objects where bucket_id='course-files'`))===2);
+t('sara reads nothing in course-files',(await cnt('saraU',`select count(*) n from storage.objects where bucket_id='course-files'`))===0);
+t('nora cannot read owner legacy file or payment proofs',(await cnt('noraU',`select count(*) n from storage.objects where name in ('legacy/owner.pdf','${U.legacy}/p.png')`))===0);
+t('sara cannot delete nora file',(await cnt('saraU',`with d as (delete from storage.objects where bucket_id='course-files' and name like 't/%' returning 1) select count(*) n from d`))===0);
+t('owner still reads legacy file',(await cnt('owner',`select count(*) n from storage.objects where name='legacy/owner.pdf'`))===1);
 console.log(`\nRESULT pass=${pass} fail=${fail} (base migrations failing in harness: ${baseFail})`);
