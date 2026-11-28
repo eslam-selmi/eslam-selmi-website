@@ -42,6 +42,9 @@ import {
   ShieldCheck,
   LayoutDashboard,
   MoreHorizontal,
+  Mail,
+  Phone,
+  Copy,
 } from "lucide-react";
 import { findCountry } from "@/lib/countries";
 import { safeHref } from "@/lib/safe-url";
@@ -62,6 +65,66 @@ import { CourseFeedbackPanel } from "@/components/admin/CourseFeedbackPanel";
 import { Button } from "@/components/ui/button";
 import { Course, EnrollmentRow } from "@/components/admin/panels/types";
 import { StatusPill } from "@/components/admin/panels/ui";
+
+function ContactLine({ value, kind }: { value: string; kind: "email" | "phone" }) {
+  const { lang } = useI18n();
+  const [copied, setCopied] = useState(false);
+  const Icon = kind === "email" ? Mail : Phone;
+  const label =
+    lang === "ar" ? (kind === "email" ? "الإيميل" : "رقم الموبايل") : kind === "email" ? "email" : "phone number";
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(value);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = value;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  }
+
+  return (
+    <div dir="ltr" className="flex items-center justify-end gap-1.5 text-xs text-white/50">
+      <button
+        type="button"
+        data-copy-btn
+        onClick={copy}
+        title={
+          copied
+            ? lang === "ar"
+              ? "تم النسخ ✓"
+              : "Copied ✓"
+            : lang === "ar"
+              ? `نسخ ${label}`
+              : `Copy ${label}`
+        }
+        aria-label={
+          copied
+            ? lang === "ar"
+              ? "تم النسخ"
+              : "Copied"
+            : lang === "ar"
+              ? `نسخ ${label}`
+              : `Copy ${label}`
+        }
+        className={`inline-flex size-5 shrink-0 items-center justify-center rounded transition ${
+          copied ? "text-emerald-300" : "text-white/35 hover:text-white hover:bg-white/10"
+        }`}
+      >
+        {copied ? <Check className="size-3" /> : <Copy className="size-3" />}
+      </button>
+      <span className={kind === "email" ? "truncate min-w-0" : ""}>{value}</span>
+      <Icon className="size-3 shrink-0 text-white/35" />
+    </div>
+  );
+}
 
 export function EnrollmentsTable({
   enrollments,
@@ -203,14 +266,6 @@ export function EnrollmentsTable({
                         >
                           <td className="px-4 py-3">
                             <div className="font-medium flex items-center gap-2 flex-wrap">
-                              {country && (
-                                <span
-                                  className="text-base"
-                                  title={lang === "ar" ? country.name_ar : country.name_en}
-                                >
-                                  {country.flag}
-                                </span>
-                              )}
                               <span>{en.profiles?.full_name || "—"}</span>
                               {en.profiles?.account_blocked && (
                                 <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">
@@ -218,9 +273,13 @@ export function EnrollmentsTable({
                                 </span>
                               )}
                             </div>
-                            <div className="text-xs text-white/50">{en.profiles?.email}</div>
-                            <div className="text-xs text-white/40" dir="ltr">
-                              {en.profiles?.phone}
+                            <div className="mt-1 space-y-1">
+                              {en.profiles?.email && (
+                                <ContactLine value={en.profiles.email} kind="email" />
+                              )}
+                              {en.profiles?.phone && (
+                                <ContactLine value={en.profiles.phone} kind="phone" />
+                              )}
                             </div>
                           </td>
                           <td className="px-4 py-3 text-xs">
@@ -336,9 +395,13 @@ export function BannedPanel({
                 <tr key={en.user_id} className="hover:bg-white/[0.02]">
                   <td className="px-4 py-3">
                     <div className="font-medium">{en.profiles?.full_name || "—"}</div>
-                    <div className="text-xs text-white/50">{en.profiles?.email}</div>
-                    <div className="text-xs text-white/40" dir="ltr">
-                      {en.profiles?.phone}
+                    <div className="mt-1 space-y-1">
+                      {en.profiles?.email && (
+                        <ContactLine value={en.profiles.email} kind="email" />
+                      )}
+                      {en.profiles?.phone && (
+                        <ContactLine value={en.profiles.phone} kind="phone" />
+                      )}
                     </div>
                   </td>
                   <td className="px-4 py-3 text-xs">
