@@ -220,10 +220,10 @@ export type CourseRowVM = { en: Enrollment; progress: number | null; done: numbe
 
 /** Course-first overview: one "continue" card, one progress card, then the trainee's own courses. Real data only. */
 export function PortalOverviewClean({
-  lang, firstName, welcomeLine, continueTarget, hoursEarned, hoursTotal, hoursPct, certs, courseRows,
+  lang, greeting, firstName, welcomeLine, continueTarget, hoursEarned, hoursTotal, hoursPct, certs, courseRows,
   availableCount, onOpenCourse, onBrowse, onGoMyCourses, onGoCertificates, supportNode,
 }: {
-  lang: string; firstName: string; welcomeLine?: string;
+  lang: string; greeting: string; firstName: string; welcomeLine?: string;
   continueTarget: { en: Enrollment; progress: number; done: number; total: number } | null;
   hoursEarned: number; hoursTotal: number; hoursPct: number; certs: number;
   courseRows: CourseRowVM[]; availableCount: number;
@@ -240,7 +240,7 @@ export function PortalOverviewClean({
     <div className="space-y-5 sm:space-y-7">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h1 className="nx-display text-[26px] sm:text-[34px] leading-tight truncate">{ar ? `أهلاً، ${firstName}` : `Welcome, ${firstName}`}</h1>
+          <h1 className="nx-display text-[26px] sm:text-[34px] leading-tight truncate">{ar ? `${greeting}، ${firstName}` : `${greeting}, ${firstName}`}</h1>
           {welcomeLine && <p className="text-white/55 text-sm sm:text-[15px] mt-1.5 leading-relaxed">{welcomeLine}</p>}
         </div>
         {supportNode && <div className="lg:hidden shrink-0">{supportNode}</div>}

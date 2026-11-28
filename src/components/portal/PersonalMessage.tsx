@@ -9,7 +9,7 @@ type Tab = "my-courses" | "certificates" | "available";
 export function timeGreeting(lang: string, hour = new Date().getHours()) {
   const ar = lang === "ar";
   if (hour >= 5 && hour < 12) return ar ? "صباح الخير" : "Good morning";
-  if (hour >= 12 && hour < 17) return ar ? "نهارك سعيد" : "Good afternoon";
+  if (hour >= 12 && hour < 17 && !ar) return "Good afternoon";
   return ar ? "مساء الخير" : "Good evening";
 }
 

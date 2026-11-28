@@ -339,6 +339,7 @@ function PortalPage() {
         <PortalAlerts alerts={alerts} lang={lang} onGo={(t) => setTab(t)} />
         <PortalOverviewClean
           lang={lang}
+          greeting={greeting}
           firstName={firstName}
           continueTarget={continueTarget}
           hoursEarned={stats.hoursEarned}
