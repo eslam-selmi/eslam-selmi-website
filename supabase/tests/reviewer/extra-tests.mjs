@@ -107,6 +107,12 @@ await as(db,'owner',`update tenants set feature_tools_upload=false where id='${n
 {const r=await as(db,'noraU',`insert into storage.objects(bucket_id,name) values('tool-assets','t/${noraT}/a.html')`);t('J9 tool upload refused while switch is off',!r.ok);}
 await as(db,'owner',`update tenants set feature_tools_upload=true where id='${noraT}'`);
 {const r=await as(db,'noraU',`insert into storage.objects(bucket_id,name) values('tool-assets','t/${noraT}/a.html')`);t('J10 tool upload allowed after owner enables',r.ok);}
+t('J11 approved tenant learner reads tenant tool file without owner profile activation',(await cnt(db,'l2',`select count(*) n from storage.objects where bucket_id='tool-assets' and name='t/${noraT}/a.html'`))===1);
+t('J12 non-member cannot read tenant tool file',(await cnt(db,'outsider',`select count(*) n from storage.objects where bucket_id='tool-assets' and name='t/${noraT}/a.html'`))===0);
+{const r=await as(db,'noraU',`insert into storage.objects(bucket_id,name) values('tool-assets','tna/x.html')`);t('J13 tenant admin cannot write owner tool paths',!r.ok);}
+await as(db,'owner',`update tenants set status='suspended' where id='${noraT}'`);
+t('J14 suspended tenant: learner loses tool file access',(await cnt(db,'l2',`select count(*) n from storage.objects where bucket_id='tool-assets' and name='t/${noraT}/a.html'`))===0);
+await as(db,'owner',`update tenants set status='active' where id='${noraT}'`);
 
 console.log('--- K. public RPC scoping ---');
 {const r=await as(db,'noraU',`select verify_certificate('${noraE}') v`);const v=r.rows[0].v;t('K1 tenant certificate verifies and names the trainer as issuer',v.ok===true&&v.issuer_name==='Nora');}
