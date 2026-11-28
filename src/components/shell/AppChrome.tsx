@@ -103,7 +103,7 @@ export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileB
         <div className="nx-main flex-1 min-w-0 relative">
       <header className="sticky top-0 z-[60] border-b border-white/[0.07] bg-[oklch(0.13_0.035_258/0.78)] backdrop-blur-2xl">
         <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[var(--nx-teal)]/35 to-transparent" />
-        <div className={`max-w-[1400px] mx-auto px-4 sm:px-6 ${topNav ? "min-h-16 py-2 flex flex-wrap xl:flex-nowrap items-center justify-between gap-x-3 gap-y-2" : "h-16 flex items-center justify-between gap-3"}`}>
+        <div className={`max-w-[1400px] mx-auto px-4 sm:px-6 ${topNav ? "min-h-16 py-2 flex flex-wrap min-[1500px]:flex-nowrap items-center justify-between gap-x-3 gap-y-2" : "h-16 flex items-center justify-between gap-3"}`}>
           <div className="flex items-center gap-3 min-w-0">
             <Link to="/" reloadDocument aria-label={isAr ? "العودة إلى الموقع" : "Back to website"} className={`flex items-center gap-3 group shrink-0 ${sidebar ? "lg:hidden" : ""}`}>
               <img
@@ -136,7 +136,7 @@ export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileB
             </nav>
           </div>
 
-          {topNav && <div className="hidden lg:flex order-3 xl:order-none w-full xl:w-auto justify-center">{topNav}</div>}
+          {topNav && <div className="hidden lg:flex order-3 min-[1500px]:order-none w-full min-[1500px]:w-auto justify-center">{topNav}</div>}
 
           <div className="flex items-center gap-2">
             {topNav && (
