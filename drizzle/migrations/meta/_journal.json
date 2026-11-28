@@ -64,6 +64,13 @@
       "when": 1795859963642,
       "tag": "0008_block_suspended_accounts_course_content",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1795866372834,
+      "tag": "0009_recorded_course_auto_certificate",
+      "breakpoints": true
     }
   ]
 }
