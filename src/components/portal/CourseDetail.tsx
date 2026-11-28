@@ -111,12 +111,21 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
         </div>
 
         {modules.length > 0 && (
-          <div className="mt-6">
-            <div className="flex justify-between text-xs text-white/60 mb-2">
-              <span>{isAr ? "التقدّم" : "Progress"}</span><span className="font-semibold text-[var(--gold)]">{progressPct}% ({completedCount}/{modules.length})</span>
+          <div className="mt-6 flex items-center gap-4" data-testid="course-progress">
+            <div className="relative shrink-0" style={{ width: 76, height: 76 }} role="img" aria-label={`${progressPct}%`}>
+              <svg viewBox="0 0 76 76" width="76" height="76" className="-rotate-90">
+                <circle cx="38" cy="38" r="32" fill="none" stroke="currentColor" strokeWidth="7" className="text-white/10" />
+                <circle cx="38" cy="38" r="32" fill="none" stroke="var(--gold)" strokeWidth="7" strokeLinecap="round" strokeDasharray={2 * Math.PI * 32} strokeDashoffset={2 * Math.PI * 32 * (1 - progressPct / 100)} style={{ transition: "stroke-dashoffset .6s ease" }} />
+              </svg>
+              <span className="absolute inset-0 flex items-center justify-center text-[15px] font-extrabold text-[var(--gold)]" data-testid="course-ring-pct">{progressPct}%</span>
             </div>
-            <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-              <div className="h-full transition-all rounded-full" style={{ width: `${progressPct}%`, background: "linear-gradient(90deg, var(--gold), #b8923f)" }} />
+            <div className="flex-1 min-w-0">
+              <div className="flex justify-between text-xs text-white/60 mb-2">
+                <span>{isAr ? "التقدّم" : "Progress"}</span><span className="font-semibold text-[var(--gold)]">{completedCount}/{modules.length} {isAr ? "وحدة" : "units"}</span>
+              </div>
+              <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                <div className="h-full transition-all rounded-full" style={{ width: `${progressPct}%`, background: "linear-gradient(90deg, var(--gold), #b8923f)" }} />
+              </div>
             </div>
           </div>
         )}
