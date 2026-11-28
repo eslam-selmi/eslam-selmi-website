@@ -257,7 +257,8 @@ export function MediaViewerModal({
                 src={resolvedUrl + (isPdf ? "#toolbar=0" : "")}
                 title={item.title}
                 className="w-full h-full bg-white"
-                sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-presentation"
+                // Browsers (Edge/Chrome) refuse to show their built-in PDF viewer inside a sandboxed iframe ("This page has been blocked"), so PDFs get no sandbox attribute. Other embeds keep it.
+                sandbox={isPdf ? undefined : "allow-scripts allow-same-origin allow-popups allow-forms allow-presentation"}
                 referrerPolicy="strict-origin-when-cross-origin"
                 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen"
                 allowFullScreen
