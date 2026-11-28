@@ -1,6 +1,6 @@
 // Counts distinct seconds actually played. A seek (jump) never adds credit, so seeking to the end is not "watched".
-// PROPOSED rule (not settled with the user): item counts as watched at >= 90% distinct seconds.
-export const WATCH_THRESHOLD = 0.9;
+// User rule (2026-11-28): a recorded video counts only after its whole duration was actually played (no skipped credit).
+export const WATCH_THRESHOLD = 1;
 export function createWatchTracker(duration: number) {
   const seen = new Set<number>();
   let last: number | null = null;

@@ -274,13 +274,13 @@ export function ModuleCard({
             </p>
           )}
         </div>
-        <button
+        {!LEARNER_PROGRESS_ENABLED && <button
           onClick={onToggle}
           className={`flex items-center gap-1 text-xs px-2.5 h-8 rounded-lg ${m.completed_by_admin ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" : "bg-white/5 border border-white/15 text-white/70"}`}
         >
           <Check className="w-3.5 h-3.5" />{" "}
           {m.completed_by_admin ? t("مكتمل", "Complete") : t("وضع علامة الإكمال", "Mark complete")}
-        </button>
+        </button>}
         <button onClick={onDelete} className="p-2 rounded-lg hover:bg-rose-500/10 text-rose-300">
           <Trash2 className="w-4 h-4" />
         </button>

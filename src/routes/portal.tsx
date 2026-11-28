@@ -7,6 +7,7 @@ import { useI18n } from "@/lib/i18n";
 import { useTranslatedTexts } from "@/lib/useTranslatedTexts";
 import { toast } from "sonner";
 import { findCountry } from "@/lib/countries";
+import { LEARNER_PROGRESS_ENABLED, unitsDone, type ItemLite, type ProgressLite } from "@/lib/learner-progress";
 import { Calendar, Clock, Layers, Loader2, Sparkles, BookOpen, GraduationCap } from "lucide-react";
 import { TraineeSupportButton } from "@/components/SupportTickets";
 import { MyAccessSection } from "@/components/portal/MyAccessSection";
@@ -60,6 +61,13 @@ function PortalPage() {
   // Titles of courses with an issued certificate, kept even if the course is later set inactive.
   const [certCourses, setCertCourses] = useState<Record<string, { id: string; title: string; total_hours: number | null }>>({});
   const [modules, setModules] = useState<ModuleRow[]>([]);
+  const [itemsLite, setItemsLite] = useState<ItemLite[]>([]);
+  const [progLite, setProgLite] = useState<ProgressLite[]>([]);
+  // Units done for a course. With learner progress on, the old admin mark is ignored and a unit is done when all its items are marked by the learner.
+  const doneUnits = (courseId: string) => {
+    const ms = modules.filter((m) => m.course_id === courseId);
+    return LEARNER_PROGRESS_ENABLED ? unitsDone(ms.map((m) => m.id), itemsLite, progLite) : ms.filter((m) => m.completed_by_admin).length;
+  };
   const [loadingData, setLoadingData] = useState(true);
   const [showUpload, setShowUpload] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
@@ -120,6 +128,15 @@ function PortalPage() {
         .select("id,course_id,completed_by_admin")
         .in("course_id", approvedCourseIds);
       setModules((m.data as ModuleRow[]) ?? []);
+      if (LEARNER_PROGRESS_ENABLED) {
+        const ids = ((m.data as any[]) ?? []).map((x) => x.id);
+        if (ids.length) {
+          const it = await supabase.from("module_items").select("id,module_id,kind,url").in("module_id", ids);
+          setItemsLite((it.data as ItemLite[]) ?? []);
+          const pr = await (supabase as any).from("learner_item_progress").select("item_id,completed_at").eq("user_id", user.id);
+          setProgLite((pr.data as ProgressLite[]) ?? []);
+        }
+      }
     } else {
       setModules([]);
     }
@@ -191,7 +208,7 @@ function PortalPage() {
       total += courseTotal;
       const ms = modules.filter((m) => m.course_id === e.course_id);
       if (ms.length === 0) continue;
-      const done = ms.filter((m) => m.completed_by_admin).length;
+      const done = doneUnits(e.course_id);
       mDone += done; mAll += ms.length;
       if (courseTotal <= 0) missingHours = true;
       earned += courseTotal * (done / ms.length);
@@ -205,10 +222,11 @@ function PortalPage() {
       hoursPct: mAll > 0 ? Math.round((mDone / mAll) * 100) : 0,
       hoursTotal: Math.round(total),
     };
-  }, [enrollments, modules]);
+  }, [enrollments, modules, itemsLite, progLite]);
 
   const alerts = usePortalAlerts(user?.id, enrollments);
-  const continueTarget = useMemo(() => pickContinueTarget(trEnrollments, modules), [trEnrollments, modules]);
+  const effModules = useMemo(() => LEARNER_PROGRESS_ENABLED ? modules.map((m) => ({ ...m, completed_by_admin: unitsDone([m.id], itemsLite, progLite) === 1 })) : modules, [modules, itemsLite, progLite]);
+  const continueTarget = useMemo(() => pickContinueTarget(trEnrollments, effModules), [trEnrollments, effModules]);
 
   useEffect(() => {
     if (tab === "certificates" && alerts.certCount) alerts.markSeen("certs");
@@ -345,7 +363,7 @@ function PortalPage() {
             .filter((e) => (e.status === "approved" || e.status === "pending") && e.courses)
             .map((e) => {
               const ms = modules.filter((m) => m.course_id === e.course_id);
-              const done = ms.filter((m) => m.completed_by_admin).length;
+              const done = doneUnits(e.course_id);
               return { en: e, progress: ms.length ? Math.round((done / ms.length) * 100) : null, done, total: ms.length };
             })}
           availableCount={availableCourses.length}
@@ -414,7 +432,7 @@ function PortalPage() {
             <div className="grid sm:grid-cols-2 gap-4">
               {trEnrollments.map((en) => {
                 const mods = modules.filter((m) => m.course_id === en.course_id);
-                const done = mods.filter((m) => m.completed_by_admin).length;
+                const done = doneUnits(en.course_id);
                 return (
                   <EnrollmentCard
                     key={en.id}

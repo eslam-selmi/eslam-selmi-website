@@ -164,7 +164,14 @@ export function CertificatePanel({
             </div>
           )}
 
-          {requested ? (
+          {LEARNER_PROGRESS_ENABLED && !issued ? (
+            <div className="rounded-xl bg-white/5 border border-white/10 p-3 text-xs text-white/75 flex items-start gap-2">
+              <Hourglass className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+              {(course as any).delivery_mode === "recorded"
+                ? (isAr ? "الشهادة بتصدر تلقائيًا بعد مشاهدة كل الفيديوهات المسجلة كاملة وسداد المستحق." : "Your certificate is issued automatically once all recorded videos are fully watched and nothing is owed.")
+                : (isAr ? "الشهادة في الكورسات المباشرة بيصدرها المدرّب." : "Certificates for live courses are issued by your trainer.")}
+            </div>
+          ) : requested ? (
             <div className="rounded-xl bg-amber-300/10 border border-amber-300/30 p-3 text-xs text-amber-800 dark:text-amber-200 flex items-center gap-2">
               <Hourglass className="w-3.5 h-3.5" /> {isAr ? "طلبك مُرسل للأدمن، هتوصلك الشهادة قريب" : "Request sent — admin will issue your certificate soon"}
             </div>

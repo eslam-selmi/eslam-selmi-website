@@ -7,7 +7,7 @@ type ProfileRow = Tables<"profiles">;
 
 export type Course = Pick<CourseRow,
   "id" | "title" | "description" | "price" | "currency" | "starts_at" | "ends_at" |
-  "installments_count" | "online_url" | "cover_emoji" | "active"
+  "installments_count" | "online_url" | "cover_emoji" | "active" | "delivery_mode"
 > & { total_hours: CourseRow["total_hours"] | null; is_archived?: CourseRow["is_archived"] };
 
 export type Enrollment = Pick<EnrollmentRow,

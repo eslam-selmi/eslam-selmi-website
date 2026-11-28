@@ -9,7 +9,7 @@ import { mediaSource } from "@/lib/media-url";
 import { hasVideoCues } from "@/lib/video-cues";
 import { Button } from "@/components/ui/button";
 import { VideoWithCues } from "@/components/VideoWithCues";
-import { LEARNER_PROGRESS_ENABLED, recordOpened, recordWatched, supabaseProgressStore, createWatchTracker } from "@/lib/learner-progress";
+import { LEARNER_PROGRESS_ENABLED, recordOpened, markItemDone, recordWatched, supabaseProgressStore, createWatchTracker } from "@/lib/learner-progress";
 
 export type MediaItem = {
   title: string;
@@ -39,10 +39,14 @@ export function MediaViewerModal({
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
-  // Learner progress (default off). Files/links/notes count as seen on open; videos by actual played seconds.
+  // Learner progress (default off). Files/links/notes are recorded as opened, learner marks them finished; videos by actual played seconds.
   const tracker = useRef<ReturnType<typeof createWatchTracker> | null>(null);
   const durRef = useRef(0);
   const mediaClass = item ? itemMediaClass(item) : "plain";
+  const [markedDone, setMarkedDone] = useState(false);
+  useEffect(() => { setMarkedDone(false); }, [item?.id]);
+  const canMark = LEARNER_PROGRESS_ENABLED && !!progress && !isMeasuredVideo(mediaClass) && mediaClass !== "embed_other";
+  const onMarkDone = async () => { if (!progress) return; const r = await markItemDone(supabaseProgressStore, progress.userId, progress.itemId, { measuredVideo: false }); if (r.ok) setMarkedDone(true); };
   const flushWatch = () => {
     if (!LEARNER_PROGRESS_ENABLED || !progress || !tracker.current || durRef.current <= 0) return;
     const snap = tracker.current.snapshot(); if (!snap.length) return;
@@ -139,6 +143,11 @@ export function MediaViewerModal({
               <p className="text-[11px] text-white/55 truncate">{item.subtitle}</p>
             )}
           </div>
+          {canMark && (
+            <Button size="sm" onClick={onMarkDone} disabled={markedDone} className="bg-emerald-500/90 hover:bg-emerald-500 text-white">
+              {markedDone ? (isAr ? "تم تسجيل الإنجاز" : "Marked as finished") : (isAr ? "تم الانتهاء" : "I finished this")}
+            </Button>
+          )}
           {originalUrl && (
             <Button asChild variant="outline" size="sm" className="bg-white/10 border-white/25 text-white hover:bg-white/20 hover:text-white">
               <a href={originalUrl} target="_blank" rel="noopener noreferrer">
@@ -153,9 +162,10 @@ export function MediaViewerModal({
             <X className="w-4 h-4" />
           </Button>
         </div>
+
         {LEARNER_PROGRESS_ENABLED && progress && mediaClass === "embed_other" && (
           <div className="px-4 py-2 text-xs bg-amber-500/15 text-amber-200 border-b border-amber-300/20 shrink-0">
-            {isAr ? "لا يمكن قياس مشاهدة هذا الفيديو، لذلك لن يُحتسب مكتملًا تلقائيًا. تواصل مع المدرّب." : "Watching this video cannot be measured, so it will not count as completed automatically. Contact your trainer."}
+            {isAr ? "لا يمكن قياس مشاهدة هذا الفيديو بعد، لذلك لن يُحتسب مكتملًا تلقائيًا. تواصل مع المدرّب." : "Watching this video cannot be measured yet, so it will not be counted as complete automatically. Please contact the trainer."}
           </div>
         )}
 

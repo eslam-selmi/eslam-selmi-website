@@ -1,6 +1,7 @@
 // PREPARED, default OFF. Needs the prepared SQL in docs/prepared-sql/learner_progress_and_self_certificate.sql applied first.
 import { supabase } from "@/integrations/supabase/client";
 import { createWatchTracker, WATCH_THRESHOLD } from "@/lib/watch-tracker";
+import { itemMediaClass, isMeasuredVideo } from "@/lib/media-class";
 
 export const LEARNER_PROGRESS_ENABLED = import.meta.env.VITE_LEARNER_PROGRESS === "1";
 
@@ -35,11 +36,42 @@ export const supabaseProgressStore: ProgressStore = {
   },
 };
 
-// File item: opening it counts as seen (complete).
+// File / link / live-session item: opening only records that it was opened. It is NOT completion (opening is not proof of reading).
+// The learner marks it finished explicitly with markItemDone. This is tracking only and never blocks the certificate.
 export async function recordOpened(store: ProgressStore, userId: string, itemId: string) {
   if (!LEARNER_PROGRESS_ENABLED && !(store as any).__test) return;
+  const prev = await store.load(userId, itemId);
+  if (prev?.opened_at) return;
+  await store.save({ user_id: userId, item_id: itemId, opened_at: new Date().toISOString() });
+}
+
+// Explicit "I finished this" mark. Only allowed after the item was opened. Videos are never marked this way (they are decided by watched seconds).
+export async function markItemDone(store: ProgressStore, userId: string, itemId: string, kind: { measuredVideo: boolean }) {
+  if (!LEARNER_PROGRESS_ENABLED && !(store as any).__test) return { ok: false as const, reason: "disabled" as const };
+  if (kind.measuredVideo) return { ok: false as const, reason: "video" as const };
+  const prev = await store.load(userId, itemId);
+  if (!prev?.opened_at) return { ok: false as const, reason: "not_opened" as const };
+  if (prev.completed_at) return { ok: true as const };
   const now = new Date().toISOString();
-  await store.save({ user_id: userId, item_id: itemId, opened_at: now, completed_at: now });
+  await store.save({ user_id: userId, item_id: itemId, opened_at: prev.opened_at, completed_at: now });
+  return { ok: true as const };
+}
+
+export type ItemLite = { id: string; module_id: string; kind: string; url?: string | null };
+export type ProgressLite = { item_id: string; completed_at: string | null };
+
+// A unit (module) counts as complete in the learner's progress only when it has items and every one has a learner completion.
+// The old admin mark (course_modules.completed_by_admin) is deliberately ignored.
+export function unitsDone(moduleIds: string[], items: ItemLite[], prog: ProgressLite[]): number {
+  const done = new Set(prog.filter((p) => p.completed_at).map((p) => p.item_id));
+  return moduleIds.filter((m) => { const its = items.filter((i) => i.module_id === m); return its.length > 0 && its.every((i) => done.has(i.id)); }).length;
+}
+
+// Certificate condition (user 2026-11-28 14:21:59): ALL recorded videos. Live sessions, files and links never block.
+// Embedded Vimeo/Drive items cannot be measured yet, so they are NOT exempted: they stay incomplete (and block) until measurable support exists.
+export function videosLeft(items: ItemLite[], prog: ProgressLite[]): number {
+  const done = new Set(prog.filter((p) => p.completed_at).map((p) => p.item_id));
+  return items.filter((i) => { const c = itemMediaClass(i); return (isMeasuredVideo(c) || c === "embed_other") && !done.has(i.id); }).length;
 }
 
 // Video item: send only the seconds actually played. The client sends NO duration and NO completion claim; the server compares

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { createWatchTracker } from "./watch-tracker";
-import { evaluateEligibility, recordOpened, recordWatched, type ProgressStore } from "./learner-progress";
+import { evaluateEligibility, recordOpened, recordWatched, markItemDone, unitsDone, videosLeft, type ProgressStore } from "./learner-progress";
 
 function fakeStore() {
   const db = new Map<string, any>();
@@ -19,9 +19,10 @@ describe("journey: learn -> persist -> eligibility -> debt gate (fake store, no 
   it("file open persists as seen; video completes only after real watching, across sessions", async () => {
     const st = fakeStore();
     await recordOpened(st, "u1", "file1");
-    expect(st.db.get("u1file1").completed_at).toBeTruthy();
-    // fake server: trusted duration 100s, completes at 90% of distinct seconds (mirrors the prepared SQL)
-    const orig = st.save; (st as any).save = async (r: any) => { await orig(r); const n = (r.watched_seconds ?? []).length; const done = n >= 90; if (done) st.db.get(r.user_id + r.item_id).completed_at = "t"; return { completed: done }; };
+    expect(st.db.get("u1file1").opened_at).toBeTruthy();
+    expect(st.db.get("u1file1").completed_at ?? null).toBeNull(); // opening is not completion
+    // fake server: trusted duration 100s, completes only at 100% of distinct seconds (mirrors the prepared SQL)
+    const orig = st.save; (st as any).save = async (r: any) => { await orig(r); const n = (r.watched_seconds ?? []).length; const done = n >= 100; if (done) st.db.get(r.user_id + r.item_id).completed_at = "t"; return { completed: done }; };
     const w1 = createWatchTracker(100); play(w1, 0, 50);
     expect((await recordWatched(st, "u1", "vid1", w1.snapshot())).completed).toBe(false);
     const wSeek = createWatchTracker(100); play(wSeek, 99, 100);
@@ -35,7 +36,7 @@ describe("journey: learn -> persist -> eligibility -> debt gate (fake store, no 
     await recordWatched(st, "u1", "v", [1, 2, 3]);
     expect(Object.keys(sent[0]).sort()).toEqual(["item_id", "user_id", "watched_seconds"]);
   });
-  it("debt blocks first, then graduation, names; unfinished content never blocks (user 2026-11-27 18:34); all clear is ok", () => {
+  it("debt blocks first, then graduation, names; eligibility helper only covers debt/graduation/names; content is decided by the server for recorded videos only; all clear is ok", () => {
     expect(evaluateEligibility({ unpaid_due: true, items_left: 3 }, noGrad, false)).toEqual({ ok: false, reason: "debt" });
     expect(evaluateEligibility({ unpaid_due: false, items_left: 1 }, noGrad, true)).toEqual({ ok: true });
     expect(evaluateEligibility({ unpaid_due: false, items_left: 0 }, { required: true, approved: false }, true)).toEqual({ ok: false, reason: "graduation" });
@@ -68,5 +69,37 @@ describe("server gate fails closed", () => {
     (globalThis as any).__rpc = { status: "debt" }; expect(await issueMyCertificate("e")).toBe("debt");
     (globalThis as any).__rpc = { status: "ok" }; expect(await fetchGate("e")).toBe("ok");
     (globalThis as any).__rpc = { status: "finance_unknown" }; expect(await fetchGate("e")).toBe("finance_unknown");
+  });
+});
+
+describe("explicit completion and recorded-video-only certificate condition (user 2026-11-28 14:21:59)", () => {
+  it("file: open, then explicit mark; marking before opening is refused; videos cannot be marked by hand", async () => {
+    const st = fakeStore();
+    expect((await markItemDone(st, "u1", "f1", { measuredVideo: false })).ok).toBe(false);
+    await recordOpened(st, "u1", "f1");
+    expect((await markItemDone(st, "u1", "f1", { measuredVideo: false })).ok).toBe(true);
+    expect(st.db.get("u1f1").completed_at).toBeTruthy();
+    await recordOpened(st, "u1", "v1");
+    expect((await markItemDone(st, "u1", "v1", { measuredVideo: true })).ok).toBe(false);
+  });
+  it("legacy admin marks are ignored: a unit is done only when every item has a learner completion", () => {
+    const items = [{ id: "a", module_id: "m1", kind: "file" }, { id: "b", module_id: "m1", kind: "file" }, { id: "c", module_id: "m2", kind: "file" }];
+    expect(unitsDone(["m1", "m2", "m3"], items, [{ item_id: "a", completed_at: "t" }])).toBe(0);
+    expect(unitsDone(["m1", "m2", "m3"], items, [{ item_id: "a", completed_at: "t" }, { item_id: "b", completed_at: "t" }, { item_id: "c", completed_at: null }])).toBe(1);
+  });
+  it("all recorded videos count toward the certificate; files, links, live sessions never do", () => {
+    const yt = { id: "y", module_id: "m", kind: "video", url: "https://www.youtube.com/watch?v=abcdefghijk" };
+    const mp4 = { id: "p", module_id: "m", kind: "video", url: "https://x.test/a.mp4" };
+    const others = [{ id: "f", module_id: "m", kind: "file", url: "https://x.test/a.pdf" }, { id: "l", module_id: "m", kind: "link", url: "https://zoom.us/j/1" }, { id: "n", module_id: "m", kind: "note", url: null }];
+    expect(videosLeft([yt, mp4, ...others], [])).toBe(2);
+    expect(videosLeft([yt, mp4, ...others], [{ item_id: "y", completed_at: "t" }])).toBe(1);
+    expect(videosLeft([yt, mp4, ...others], [{ item_id: "y", completed_at: "t" }, { item_id: "p", completed_at: "t" }])).toBe(0);
+    expect(videosLeft(others, [])).toBe(0);
+    const vimeo = { id: "v", module_id: "m", kind: "video", url: "https://vimeo.com/123" };
+    expect(videosLeft([vimeo], [])).toBe(1); // not silently exempted until measurable
+  });
+  it("watch tracker: 99% is not enough, full playback is", () => {
+    const w = createWatchTracker(100); play(w, 0, 98); expect(w.done()).toBe(false);
+    const w2 = createWatchTracker(100); play(w2, 0, 100); expect(w2.done()).toBe(true);
   });
 });
