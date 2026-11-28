@@ -24,7 +24,7 @@ const ICONS = { tna: BarChart3, perf: Target, exam: GraduationCap } as const;
 // Private bucket "tool-assets". Reads are decided by storage policies that call has_tool_access().
 const BUCKET = "tool-assets";
 // Temporary preview of the v3 tool files (/tools?wb=v3): admins, plus the QA test account for the save test. Remove the id after the test.
-const V3_PREVIEW_USER_IDS = ["6f0772a9-bd6c-4efe-b333-0d0f53a31a8f"];
+const V3_PREVIEW_USER_IDS: string[] = [];
 const FILES: Partial<Record<ToolId, { handout?: string; excel?: string }>> = {
   tna: { handout: "tna/handbook.pdf", excel: "tna/original-workbook.xlsx" },
   perf: { handout: "perf/handbook.pdf" },
