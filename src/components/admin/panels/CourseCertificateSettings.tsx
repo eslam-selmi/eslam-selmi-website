@@ -102,7 +102,7 @@ export function CourseCertificateSettings({ course }: { course: { id: string; ti
         <div><span className="block text-sm font-bold">تنسيق الشهادة</span><span className="block text-xs text-muted-foreground">يُطبَّق على كل الشهادات التي تُصدر لهذا الكورس بعد الحفظ.</span></div>
         <div className="flex flex-wrap gap-3">
           {([["portrait", "عمودي", "Portrait", "h-16 w-12"], ["landscape", "أفقي", "Landscape", "h-12 w-16"]] as const).map(([v, ar, en, box]) => <button key={v} type="button" role="radio" aria-checked={s.orientation === v} onClick={() => setS((p) => ({ ...p, orientation: v }))}
-            className={`flex items-center gap-3 rounded-lg border px-4 py-3 text-sm transition ${s.orientation === v ? "border-primary bg-primary/15 ring-1 ring-primary" : "border-border bg-transparent opacity-80 hover:opacity-100"}`}>
+            className={`flex items-center gap-3 rounded-lg border px-4 py-3 text-sm transition ${s.orientation === v ? "border-primary bg-primary/15 ring-1 ring-primary" : "border-border bg-transparent hover:bg-secondary"}`}>
             <span className={`${box} flex flex-col items-center justify-between rounded-[3px] border border-border bg-[#f4f5f2] py-1`} aria-hidden="true"><i className="block h-1 w-full bg-[#0f2a63]" /><i className="block size-3 rounded-full border-2 border-[#0f2a63]" /><i className="block h-1 w-full bg-[#0f2a63]" /></span>
             <span className="text-start font-bold">{ar}<span className="block text-xs font-normal text-muted-foreground" dir="ltr">{en}</span></span>
           </button>)}
