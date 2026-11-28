@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/portal-auth";
 import { useI18n } from "@/lib/i18n";
+import { TENANT_THEMES, themeByKey, themeVars } from "@/lib/tenant-themes";
 import { tdb, HOST_RE, isDbMissing, type Tenant, type TenantDomain } from "@/lib/tenants";
 
 export const Route = createFileRoute("/trainer")({
@@ -20,7 +21,7 @@ function TrainerDashboard() {
   const qc = useQueryClient();
   const [title, setTitle] = useState("");
   const [host, setHost] = useState("");
-  const [land, setLand] = useState({ headline: "", subtitle: "", about: "", brand_color: "#c2410c", published: false });
+  const [land, setLand] = useState({ headline: "", subtitle: "", about: "", theme: "terracotta", published: false });
 
   const q = useQuery({
     enabled: !!user,
@@ -37,7 +38,7 @@ function TrainerDashboard() {
         tdb.from("tenant_landing").select("*").eq("tenant_id", tid).maybeSingle(),
         tdb.from("tenant_domains").select("*").eq("tenant_id", tid),
       ]);
-      if (l.data) setLand({ headline: l.data.headline ?? "", subtitle: l.data.subtitle ?? "", about: l.data.about ?? "", brand_color: l.data.brand_color ?? "#c2410c", published: !!l.data.published });
+      if (l.data) setLand({ headline: l.data.headline ?? "", subtitle: l.data.subtitle ?? "", about: l.data.about ?? "", theme: l.data.theme ?? "terracotta", published: !!l.data.published });
       return { tenant: tn.data as Tenant, courses: (c.data as any[]) ?? [], enrollments: (e.data as any[]) ?? [], domains: (d.data as TenantDomain[]) ?? [] };
     },
   });
@@ -101,8 +102,23 @@ function TrainerDashboard() {
           <input className="w-full border rounded px-3 py-2 bg-background" placeholder={t("العنوان الرئيسي", "Headline")} value={land.headline} onChange={(e) => setLand({ ...land, headline: e.target.value })} />
           <input className="w-full border rounded px-3 py-2 bg-background" placeholder={t("سطر تعريفي", "Subtitle")} value={land.subtitle} onChange={(e) => setLand({ ...land, subtitle: e.target.value })} />
           <textarea className="w-full border rounded px-3 py-2 bg-background" rows={3} placeholder={t("نبذة", "About")} value={land.about} onChange={(e) => setLand({ ...land, about: e.target.value })} />
+          <div>
+            <div className="text-sm mb-2">{t("لون صفحتك (معاينة قبل الحفظ)", "Page colours (preview before saving)")}</div>
+            <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="theme">
+              {TENANT_THEMES.map((th) => (
+                <button type="button" key={th.key} role="radio" aria-checked={land.theme === th.key} onClick={() => setLand({ ...land, theme: th.key })}
+                  className={`rounded-lg border-2 p-1 ${land.theme === th.key ? "border-foreground" : "border-transparent"}`} title={lang === "ar" ? th.ar : th.en}>
+                  <span className="flex h-8 w-16 overflow-hidden rounded" style={{ background: th.bg }}><span style={{ background: th.accent }} className="w-6" /><span style={{ background: th.panel }} className="w-4 ms-auto" /></span>
+                  <span className="block text-[11px] mt-1">{lang === "ar" ? th.ar : th.en}</span>
+                </button>
+              ))}
+            </div>
+            <div className="mt-3 rounded-xl p-4 text-sm" style={{ ...(themeVars(themeByKey(land.theme)) as React.CSSProperties), background: "var(--tl-bg)", color: "var(--tl-ink)", border: "2px solid var(--tl-ink)" }}>
+              <b>{land.headline || tenant.name}</b>
+              <div className="mt-2 flex gap-2 items-center"><span className="px-3 py-1" style={{ background: "var(--tl-accent)", color: "var(--tl-accent-ink)" }}>{t("سجّل", "Register")}</span><span className="px-3 py-1" style={{ background: "var(--tl-panel)", color: "var(--tl-panel-ink)" }}>{t("عن المدرب", "About")}</span></div>
+            </div>
+          </div>
           <div className="flex items-center gap-4 text-sm">
-            <label>{t("اللون", "Accent")} <input type="color" value={land.brand_color} onChange={(e) => setLand({ ...land, brand_color: e.target.value })} /></label>
             <label className="flex gap-2"><input type="checkbox" checked={land.published} onChange={(e) => setLand({ ...land, published: e.target.checked })} />{t("نشر الصفحة", "Publish page")}</label>
             <button onClick={saveLanding} className="ms-auto px-4 py-2 rounded-lg bg-primary text-primary-foreground">{t("حفظ", "Save")}</button>
           </div>

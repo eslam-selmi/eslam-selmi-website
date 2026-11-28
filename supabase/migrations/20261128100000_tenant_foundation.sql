@@ -338,3 +338,7 @@ BEGIN
 END $$;
 CREATE TRIGGER tenant_domains_guard BEFORE INSERT OR UPDATE ON public.tenant_domains
   FOR EACH ROW EXECUTE FUNCTION public.trg_tenant_domains_guard();
+
+-- 12. Trainer colour theme: one of ten fixed keys, validated in the database. Applies only to that tenant's page.
+ALTER TABLE public.tenant_landing ADD COLUMN IF NOT EXISTS theme text NOT NULL DEFAULT 'terracotta'
+  CHECK (theme IN ('terracotta','ocean','forest','plum','sand','rose','slate','midnight','mint','saffron'));

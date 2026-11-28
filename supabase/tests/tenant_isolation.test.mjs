@@ -104,4 +104,16 @@ t('legacy learner does not see trainer courses',(await cnt('legacy',`select coun
 t('legacy learner still sees owner course',(await cnt('legacy',`select count(*) n from courses where title='Owner legacy course'`))===1);
 t('sara learner sees sara course',(await cnt('l1',`select count(*) n from courses where title='Sara C1'`))===1);
 t('nora learner does not see sara course',(await cnt('l2',`select count(*) n from courses where title='Sara C1'`))===0);
+
+// activation rule untouched
+t('trainer cannot activate own learner profile (0 rows)',(await cnt('saraU',`with u as (update profiles set activation_status='active' where id='${U.l1}' returning 1) select count(*) n from u`))===0);
+t('trainer cannot activate owner legacy learner (0 rows)',(await cnt('saraU',`with u as (update profiles set activation_status='active' where id='${U.legacy}' returning 1) select count(*) n from u`))===0);
+t('trainer cannot grant roles',(await cnt('saraU',`with u as (insert into user_roles(user_id,role) values('${U.saraU}','admin') returning 1) select count(*) n from u`))===-1);
+
+// themes
+await ok('sara picks valid theme','saraU',`update tenant_landing set theme='ocean' where tenant_id='${saraT}'`);
+t('sara theme stored',(await cnt('saraU',`select count(*) n from tenant_landing where theme='ocean'`))===1);
+await bad('invalid theme rejected by DB','saraU',`update tenant_landing set theme='hotpink' where tenant_id='${saraT}'`);
+t('sara cannot change nora theme (0 rows)',(await cnt('saraU',`with u as (update tenant_landing set theme='plum' where tenant_id='${noraT}' returning 1) select count(*) n from u`))===0);
+t('theme default for new landing',(await cnt('owner',`select count(*) n from tenant_landing where tenant_id='${noraT}'`))===0);
 console.log(`\nRESULT pass=${pass} fail=${fail} (base migrations failing in harness: ${baseFail})`);

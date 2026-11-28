@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/portal-auth";
 import { tdb, isDbMissing } from "@/lib/tenants";
+import { themeByKey, themeVars } from "@/lib/tenant-themes";
 
 // Trainer public page. Deliberately its own layout and styling (sand paper, oversized type, offset blocks),
 // not a variant of the owner's homepage. Content comes from the trainer's own tenant_landing row.
@@ -14,11 +15,7 @@ export const Route = createFileRoute("/t/$slug")({
 });
 
 type PublicTenant = { id: string; slug: string; name: string; feature_landing: boolean };
-type Landing = { headline: string | null; subtitle: string | null; about: string | null; brand_color: string | null; logo_url: string | null; published: boolean };
-
-function safeColor(c?: string | null) {
-  return c && /^#[0-9a-fA-F]{6}$/.test(c) ? c : "#c2410c";
-}
+type Landing = { headline: string | null; subtitle: string | null; about: string | null; theme: string | null; logo_url: string | null; published: boolean };
 
 function TenantLanding() {
   const { slug } = Route.useParams();
@@ -51,7 +48,7 @@ function TenantLanding() {
   }
   if (!q.data || !q.data.landing?.published) return <div className="tl-wrap"><p>Page not found.</p></div>;
   const { tenant, landing, courses } = q.data;
-  const accent = safeColor(landing.brand_color);
+  const vars = themeVars(themeByKey(landing.theme));
 
   async function join() {
     const { error } = await tdb.rpc("join_tenant_as_learner", { _slug: slug });
@@ -78,7 +75,7 @@ function TenantLanding() {
   }
 
   return (
-    <div className="tl-root" style={{ ["--tl-accent" as any]: accent }}>
+    <div className="tl-root" style={vars as React.CSSProperties}>
       <style>{CSS}</style>
       <header className="tl-top">
         <span className="tl-mark">{landing.logo_url ? <img src={landing.logo_url} alt="" /> : tenant.name.slice(0, 1)}</span>
@@ -124,25 +121,25 @@ function TenantLanding() {
 }
 
 const CSS = `
-.tl-root{min-height:100vh;background:#f4ede1;color:#1f1a14;font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;--a:var(--tl-accent)}
+.tl-root{min-height:100vh;background:var(--tl-bg);color:var(--tl-ink);font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;--a:var(--tl-accent)}
 .tl-wrap{min-height:60vh;display:grid;place-items:center}
-.tl-top{display:flex;align-items:center;gap:18px;padding:18px 6vw;border-bottom:2px solid #1f1a14}
+.tl-top{display:flex;align-items:center;gap:18px;padding:18px 6vw;border-bottom:2px solid var(--tl-ink)}
 .tl-top b{margin-inline-end:auto;font-size:1.05rem}.tl-top a{color:inherit;text-decoration:none;font-weight:600}
-.tl-mark{width:38px;height:38px;border-radius:10px;background:var(--a);color:#fff;display:grid;place-items:center;font-weight:800;overflow:hidden}.tl-mark img{width:100%;height:100%;object-fit:cover}
-.tl-pill{border:2px solid #1f1a14;padding:6px 16px;border-radius:999px}
+.tl-mark{width:38px;height:38px;border-radius:10px;background:var(--a);color:var(--tl-accent-ink);display:grid;place-items:center;font-weight:800;overflow:hidden}.tl-mark img{width:100%;height:100%;object-fit:cover}
+.tl-pill{border:2px solid var(--tl-ink);padding:6px 16px;border-radius:999px}
 .tl-hero{position:relative;padding:9vh 6vw 8vh;overflow:hidden}
 .tl-kicker{letter-spacing:.14em;text-transform:uppercase;font-size:.78rem;color:var(--a);font-weight:700}
 .tl-hero h1{font-size:clamp(2.6rem,9vw,6.4rem);line-height:.98;font-weight:800;max-width:14ch;margin:.3em 0}
-.tl-sub{max-width:46ch;font-size:1.15rem;color:#4a4136}
-.tl-cta{display:inline-block;margin-top:24px;background:var(--a);color:#fff;border:0;border-radius:0;padding:14px 26px;font-weight:700;font-size:1rem;cursor:pointer;box-shadow:6px 6px 0 #1f1a14;text-decoration:none}
-.tl-block{position:absolute;inset-inline-end:-40px;top:12vh;width:min(34vw,340px);aspect-ratio:1;background:var(--a);opacity:.9;transform:rotate(8deg);z-index:0}
+.tl-sub{max-width:46ch;font-size:1.15rem;opacity:.82}
+.tl-cta{display:inline-block;margin-top:24px;background:var(--a);color:var(--tl-accent-ink);border:0;border-radius:0;padding:14px 26px;font-weight:700;font-size:1rem;cursor:pointer;box-shadow:6px 6px 0 var(--tl-ink);text-decoration:none}
+.tl-block{position:absolute;inset-inline-end:-50px;bottom:-70px;width:min(26vw,260px);aspect-ratio:1;background:var(--a);opacity:.9;transform:rotate(8deg);z-index:0}
 .tl-hero>*:not(.tl-block){position:relative;z-index:1}
-.tl-about{background:#1f1a14;color:#f4ede1;padding:7vh 6vw;font-size:1.25rem;line-height:1.7}.tl-about p{max-width:62ch}
+.tl-about{background:var(--tl-panel);color:var(--tl-panel-ink);padding:7vh 6vw;font-size:1.25rem;line-height:1.7}.tl-about p{max-width:62ch}
 .tl-courses{padding:8vh 6vw}.tl-courses h2,.tl-join h2{font-size:2rem;margin-bottom:20px}
-.tl-courses ol{list-style:none;padding:0;margin:0;border-top:2px solid #1f1a14}
-.tl-courses li{display:grid;grid-template-columns:70px 1fr auto;gap:18px;padding:22px 0;border-bottom:2px solid #1f1a14;align-items:start}
-.tl-num{font-size:2rem;font-weight:800;color:var(--a)}.tl-courses h3{font-size:1.3rem;font-weight:700}.tl-courses p,.tl-muted{color:#4a4136}
-.tl-join{padding:7vh 6vw 12vh;border-top:2px solid #1f1a14;max-width:640px}
-.tl-join form{display:grid;gap:12px}.tl-join input{padding:13px;border:2px solid #1f1a14;background:#fff;font:inherit}
+.tl-courses ol{list-style:none;padding:0;margin:0;border-top:2px solid var(--tl-ink)}
+.tl-courses li{display:grid;grid-template-columns:70px 1fr auto;gap:18px;padding:22px 0;border-bottom:2px solid var(--tl-ink);align-items:start}
+.tl-num{font-size:2rem;font-weight:800;color:var(--a)}.tl-courses h3{font-size:1.3rem;font-weight:700}.tl-courses p,.tl-muted{opacity:.82}
+.tl-join{padding:7vh 6vw 12vh;border-top:2px solid var(--tl-ink);max-width:640px}
+.tl-join form{display:grid;gap:12px}.tl-join input{padding:13px;border:2px solid var(--tl-ink);background:var(--tl-bg);color:var(--tl-ink);font:inherit}
 .tl-link{background:none;border:0;text-decoration:underline;cursor:pointer;font:inherit;justify-self:start}.tl-msg{margin-top:14px;font-weight:600}
 `;
