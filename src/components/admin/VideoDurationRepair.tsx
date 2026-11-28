@@ -1,10 +1,11 @@
-// PREPARED, default OFF (VITE_LEARNER_PROGRESS=1). Lists course videos with no trusted duration and lets the ADMIN set it,
-// from the file's own metadata or by typing it. Needs the prepared SQL (admin_videos_missing_duration, admin_set_item_duration).
+// Lists course videos with no trusted duration and lets the ADMIN set it, from the file's own metadata or by typing it.
+// Plain admin update of module_items.duration_seconds (no new server function). The server only completes a video against this value.
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
 import { mediaSource } from "@/lib/media-url";
+import { itemMediaClass, isMeasuredVideo } from "@/lib/media-class";
 import { readDurationFromUrl, sanitizeDuration } from "@/lib/duration-meta";
 
 type Row = { id: string; title: string; url: string | null; module_id: string; cls?: string };
@@ -12,17 +13,17 @@ export function VideoDurationRepair({ courseId }: { courseId: string }) {
   const { lang } = useI18n(); const isAr = lang === "ar";
   const [rows, setRows] = useState<Row[] | null>(null); const [busy, setBusy] = useState<string | null>(null); const [manual, setManual] = useState<Record<string, string>>({});
   async function load() {
-    const { data, error } = await (supabase as any).rpc("admin_videos_missing_duration");
+    // Plain admin read of this course's items (same access the content editor already uses); no extra server function needed.
+    const { data: items, error } = await supabase.from("module_items")
+      .select("id,title,url,kind,module_id,duration_seconds,course_modules!inner(course_id)").eq("course_modules.course_id", courseId);
     if (error) { setRows(null); return; }
-    const ids = (data ?? []).map((r: any) => r.item_id); if (!ids.length) return setRows([]);
-    const { data: items } = await (supabase as any).from("module_items").select("id,title,url,module_id,course_modules!inner(course_id)").in("id", ids).eq("course_modules.course_id", courseId);
-    const cls = new Map<string, string>((data ?? []).map((r: any) => [r.item_id, r.media_class]));
-    setRows((items ?? []).map((i: any) => ({ id: i.id, title: i.title, url: i.url, module_id: i.module_id, cls: cls.get(i.id) })));
+    setRows((items ?? []).filter((i: any) => i.duration_seconds == null && (isMeasuredVideo(itemMediaClass(i)) || itemMediaClass(i) === "embed_other"))
+      .map((i: any) => ({ id: i.id, title: i.title, url: i.url, module_id: i.module_id, cls: itemMediaClass(i) })));
   }
   useEffect(() => { void load(); }, [courseId]);
   async function save(id: string, secs: number | null) {
     if (!secs) return toast.error(isAr ? "المدة غير صالحة" : "Invalid duration");
-    const { error } = await (supabase as any).rpc("admin_set_item_duration", { _item: id, _seconds: secs });
+    const { error } = await supabase.from("module_items").update({ duration_seconds: Math.round(secs) }).eq("id", id);
     if (error) return toast.error(error.message);
     toast.success(isAr ? "تم حفظ المدة" : "Duration saved"); void load();
   }

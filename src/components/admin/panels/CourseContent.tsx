@@ -149,7 +149,7 @@ export function CourseContent({ courseId }: { courseId: string }) {
 
   return (
     <div className="space-y-4">
-      {LEARNER_PROGRESS_ENABLED && <VideoDurationRepair courseId={courseId} />}
+      <VideoDurationRepair courseId={courseId} />
       <div className="rounded-xl border border-white/10 bg-white/5 p-3 flex flex-wrap gap-2">
         <input
           value={newTitle}
