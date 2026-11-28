@@ -134,6 +134,8 @@ export function MediaViewerModal({
   const isPdf =
     item.kind === "pdf" ||
     (resolvedUrl && /\.pdf(\?|$)/i.test(resolvedUrl));
+  // Only our own storage-bucket or same-site relative files explicitly typed pdf with a .pdf path lose the sandbox; external or ambiguous URLs stay sandboxed.
+  const trustedPdf = !!((item.isStoragePath || /^\/(?!\/)/.test(item.url ?? "")) && item.kind === "pdf" && /\.pdf$/i.test(item.url ?? ""));
   const source = mediaSource(resolvedUrl ?? "");
   const isVideoFile = source.kind === "video";
   const ytId = source.kind === "embed" ? (/^https:\/\/www\.youtube\.com\/embed\/([A-Za-z0-9_-]{11})/.exec(source.url)?.[1] ?? null) : null;
@@ -258,7 +260,7 @@ export function MediaViewerModal({
                 title={item.title}
                 className="w-full h-full bg-white"
                 // Browsers (Edge/Chrome) refuse to show their built-in PDF viewer inside a sandboxed iframe ("This page has been blocked"), so PDFs get no sandbox attribute. Other embeds keep it.
-                sandbox={isPdf ? undefined : "allow-scripts allow-same-origin allow-popups allow-forms allow-presentation"}
+                sandbox={trustedPdf ? undefined : "allow-scripts allow-same-origin allow-popups allow-forms allow-presentation"}
                 referrerPolicy="strict-origin-when-cross-origin"
                 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen"
                 allowFullScreen
