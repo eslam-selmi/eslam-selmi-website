@@ -118,6 +118,27 @@ export function MediaViewerModal({
     };
   }, [item]);
 
+  // Byte-verified PDF: fetch the file, accept only if it starts with %PDF- and re-wrap it as application/pdf. Only then is it shown without a sandbox.
+  const [verifiedPdfUrl, setVerifiedPdfUrl] = useState<string | null>(null);
+  useEffect(() => {
+    setVerifiedPdfUrl(null);
+    if (!item || item.kind !== "pdf" || !resolvedUrl) return;
+    let cancelled = false;
+    let obj: string | null = null;
+    (async () => {
+      try {
+        const r = await fetch(resolvedUrl);
+        if (!r.ok) return;
+        const buf = await r.arrayBuffer();
+        const head = new TextDecoder().decode(new Uint8Array(buf.slice(0, 5)));
+        if (head !== "%PDF-") return;
+        obj = URL.createObjectURL(new Blob([buf], { type: "application/pdf" }));
+        if (!cancelled) setVerifiedPdfUrl(obj); else URL.revokeObjectURL(obj);
+      } catch { /* keep the sandboxed original */ }
+    })();
+    return () => { cancelled = true; if (obj) URL.revokeObjectURL(obj); };
+  }, [item, resolvedUrl]);
+
   useEffect(() => {
     if (!item) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -134,8 +155,7 @@ export function MediaViewerModal({
   const isPdf =
     item.kind === "pdf" ||
     (resolvedUrl && /\.pdf(\?|$)/i.test(resolvedUrl));
-  // Only our own storage-bucket or same-site relative files explicitly typed pdf with a .pdf path lose the sandbox; external or ambiguous URLs stay sandboxed.
-  const trustedPdf = !!((item.isStoragePath || /^\/(?!\/)/.test(item.url ?? "")) && item.kind === "pdf" && /\.pdf$/i.test(item.url ?? ""));
+  const trustedPdf = !!verifiedPdfUrl;
   const source = mediaSource(resolvedUrl ?? "");
   const isVideoFile = source.kind === "video";
   const ytId = source.kind === "embed" ? (/^https:\/\/www\.youtube\.com\/embed\/([A-Za-z0-9_-]{11})/.exec(source.url)?.[1] ?? null) : null;
@@ -256,10 +276,10 @@ export function MediaViewerModal({
               </div>
             ) : (
               <iframe
-                src={resolvedUrl + (isPdf ? "#toolbar=0" : "")}
+                src={(verifiedPdfUrl ?? resolvedUrl) + (isPdf ? "#toolbar=0" : "")}
                 title={item.title}
                 className="w-full h-full bg-white"
-                // Browsers (Edge/Chrome) refuse to show their built-in PDF viewer inside a sandboxed iframe ("This page has been blocked"), so PDFs get no sandbox attribute. Other embeds keep it.
+                // Browsers (Edge/Chrome) refuse to show their built-in PDF viewer inside a sandboxed iframe ("This page has been blocked"), so only byte-verified (%PDF-) PDFs, re-wrapped as application/pdf, get no sandbox. Everything else keeps it.
                 sandbox={trustedPdf ? undefined : "allow-scripts allow-same-origin allow-popups allow-forms allow-presentation"}
                 referrerPolicy="strict-origin-when-cross-origin"
                 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen"
