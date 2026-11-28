@@ -21,8 +21,8 @@ describe("journey: learn -> persist -> eligibility -> debt gate (fake store, no 
     await recordOpened(st, "u1", "file1");
     expect(st.db.get("u1file1").opened_at).toBeTruthy();
     expect(st.db.get("u1file1").completed_at ?? null).toBeNull(); // opening is not completion
-    // fake server: trusted duration 100s, completes only at 100% of distinct seconds (mirrors the prepared SQL)
-    const orig = st.save; (st as any).save = async (r: any) => { await orig(r); const n = (r.watched_seconds ?? []).length; const done = n >= 100; if (done) st.db.get(r.user_id + r.item_id).completed_at = "t"; return { completed: done }; };
+    // fake server: trusted duration 100s, completes at 95% of distinct seconds (mirrors the prepared SQL)
+    const orig = st.save; (st as any).save = async (r: any) => { await orig(r); const n = (r.watched_seconds ?? []).length; const done = n >= Math.ceil(100 * 0.95); if (done) st.db.get(r.user_id + r.item_id).completed_at = "t"; return { completed: done }; };
     const w1 = createWatchTracker(100); play(w1, 0, 50);
     expect((await recordWatched(st, "u1", "vid1", w1.snapshot())).completed).toBe(false);
     const wSeek = createWatchTracker(100); play(wSeek, 99, 100);
@@ -101,8 +101,8 @@ describe("explicit completion and recorded-video-only certificate condition (use
     const vimeo = { id: "v", module_id: "m", kind: "video", url: "https://vimeo.com/123" };
     expect(videosLeft([vimeo], [])).toBe(1); // not silently exempted until measurable
   });
-  it("watch tracker: 99% is not enough, full playback is", () => {
-    const w = createWatchTracker(100); play(w, 0, 98); expect(w.done()).toBe(false);
+  it("watch tracker: 94% is not enough, 95% and full playback are", () => {
+    const w = createWatchTracker(100); play(w, 0, 93.9); expect(w.done()).toBe(false);
     const w2 = createWatchTracker(100); play(w2, 0, 100); expect(w2.done()).toBe(true);
   });
 });

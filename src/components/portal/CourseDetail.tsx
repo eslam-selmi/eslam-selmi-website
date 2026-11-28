@@ -208,7 +208,7 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
                               if (pr?.completed_at) return <p className="text-[11px] text-emerald-300 mt-0.5" data-testid="item-status">{isAr ? "✓ تم الإكمال" : "✓ Completed"}</p>;
                               if (isMeasuredVideo(itemMediaClass(it))) {
                                 const pc = itemWatchPercent(pr?.watched_seconds, it.duration_seconds);
-                                return <p className="text-[11px] text-white/55 mt-0.5" data-testid="item-status">{pc > 0 ? (isAr ? `شوهد ${pc}%، يكتمل بمشاهدته كاملًا بدون تخطّي` : `${pc}% watched, completes after watching it all without skipping`) : (isAr ? "لم يكتمل بعد، يكتمل بمشاهدته كاملًا بدون تخطّي" : "Not completed yet, completes after watching it all without skipping")}</p>;
+                                return <p className="text-[11px] text-white/55 mt-0.5" data-testid="item-status">{pc > 0 ? (isAr ? `شوهد ${pc}%، يكتمل عند مشاهدة 95% فعليًا بدون تخطّي` : `${pc}% watched, completes at 95% actually watched, without skipping`) : (isAr ? "لم يكتمل بعد، يكتمل عند مشاهدة 95% فعليًا بدون تخطّي" : "Not completed yet, completes at 95% actually watched, without skipping")}</p>;
                               }
                               return null;
                             })()}

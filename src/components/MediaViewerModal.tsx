@@ -6,6 +6,7 @@ import { useI18n } from "@/lib/i18n";
 import { safeHref } from "@/lib/safe-url";
 import { itemMediaClass, isMeasuredVideo } from "@/lib/media-class";
 import { mediaSource } from "@/lib/media-url";
+import { WATCH_THRESHOLD } from "@/lib/watch-tracker";
 import { hasVideoCues } from "@/lib/video-cues";
 import { Button } from "@/components/ui/button";
 import { VideoWithCues } from "@/components/VideoWithCues";
@@ -74,10 +75,10 @@ export function MediaViewerModal({
     tracker.current.tick(t, playing, rate);
     if (ended) tracker.current.end();
     const r = Math.min(1, tracker.current.ratio());
-    setPct((prev) => { const n = Math.floor(r * 100); return prev === n ? prev : n; });
+    setPct((prev) => { const n = r >= WATCH_THRESHOLD ? 100 : Math.floor(r * 100); return prev === n ? prev : n; });
     // Send progress when the learner pauses, seeks or reaches the end (not only every 30 s), so the server can decide completion promptly.
     const now = Date.now();
-    if ((!playing || r >= 1) && now - lastFlush.current > 2000) { lastFlush.current = now; flushWatch(); }
+    if ((!playing || r >= WATCH_THRESHOLD) && now - lastFlush.current > 2000) { lastFlush.current = now; flushWatch(); }
   } : undefined;
 
   useEffect(() => {

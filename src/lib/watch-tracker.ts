@@ -1,6 +1,7 @@
 // Counts distinct seconds actually played. A seek (jump) never adds credit, so seeking to the end is not "watched".
-// User rule (2026-11-28): a recorded video counts only after its whole duration was actually played (no skipped credit).
-export const WATCH_THRESHOLD = 1;
+// User rule (2026-11-28 16:12, WhatsApp message wamid.HBgMOTY2NTU1Mzc2MjI4FQIAEhgWM0VCMDdFNDY3Mzk2RkUyMjFFMDgxOAA=): a recorded video counts once 95% of its seconds were actually played. Seeks never add credit.
+// Server mirror: drizzle/migrations/0012_video_threshold_95.sql (completes at ceil(0.95 * duration_seconds) distinct seconds).
+export const WATCH_THRESHOLD = 0.95;
 export function createWatchTracker(duration: number) {
   const seen = new Set<number>();
   let last: number | null = null;
