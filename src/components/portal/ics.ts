@@ -12,7 +12,7 @@ export function downloadSessionIcs(s: {
   const end = new Date(start.getTime() + (Number(s.durationMinutes) || 60) * 60000);
   const desc = [s.description, s.courseTitle, s.url].filter(Boolean).join("\n");
   const lines = [
-    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Eslam Selmi//Portal//EN", "CALSCALE:GREGORIAN", "METHOD:PUBLISH",
+    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Learning Portal//EN", "CALSCALE:GREGORIAN", "METHOD:PUBLISH",
     "BEGIN:VEVENT",
     `UID:${s.id}@eslam-selmi.com`,
     `DTSTAMP:${fmt(new Date())}`,

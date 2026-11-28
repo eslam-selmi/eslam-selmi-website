@@ -8,17 +8,18 @@ const COPY = {
   en: { kicker: "Learning with", courses: "Courses", join: "Join", register: "Register as a learner", none: "No courses published yet.",
     create: "Create your learner account", signin: "Sign in", signedIn: "You are signed in", name: "Full name", email: "Email", password: "Password",
     submitUp: "Register", submitIn: "Sign in", toIn: "Already registered? Sign in", toUp: "New here? Register", registerWith: "Register with",
-    joined: "Done. You are registered with this trainer.", confirm: "Check your email to confirm, then sign in here to finish joining.", hours: "h" },
+    joined: "Done. You are registered with this trainer.", pending: "You are registered. The trainer has not approved your account yet.", blocked: "Your access to this trainer is suspended.", enter: "Open my learning area", member: "You are a learner here", confirm: "Check your email to confirm, then sign in here to finish joining.", hours: "h" },
   ar: { kicker: "تعلّم مع", courses: "الكورسات", join: "انضم", register: "سجّل كمتدرب", none: "لا توجد كورسات منشورة بعد.",
     create: "أنشئ حساب المتدرب", signin: "تسجيل الدخول", signedIn: "أنت مسجّل الدخول", name: "الاسم الكامل", email: "البريد الإلكتروني", password: "كلمة المرور",
     submitUp: "تسجيل", submitIn: "دخول", toIn: "عندك حساب؟ سجّل الدخول", toUp: "جديد هنا؟ سجّل", registerWith: "سجّل عند",
-    joined: "تم. أنت الآن مسجّل عند هذا المدرب.", confirm: "راجع بريدك لتأكيد الحساب، ثم سجّل الدخول هنا لإكمال الانضمام.", hours: "س" },
+    joined: "تم. أنت الآن مسجّل عند هذا المدرب.", pending: "تم تسجيلك. المدرب لم يعتمد حسابك بعد.", blocked: "تم إيقاف وصولك عند هذا المدرب.", enter: "افتح منطقة التعلّم", member: "أنت متدرب هنا", confirm: "راجع بريدك لتأكيد الحساب، ثم سجّل الدخول هنا لإكمال الانضمام.", hours: "س" },
 } as const;
 
 type Props = {
   tenant: PublicTenant; landing: Landing; courses: LandingCourse[]; lang: "ar" | "en"; vars: Record<string, string>;
   signedIn: boolean; mode: "signup" | "login"; setMode: (m: "signup" | "login") => void;
   form: { name: string; email: string; password: string }; setForm: (f: { name: string; email: string; password: string }) => void;
+  member: null | "pending" | "approved" | "blocked"; learnHref: string;
   busy: boolean; msg: string | null; onSubmit: (e: FormEvent) => void; onJoin: () => void;
 };
 
@@ -34,13 +35,13 @@ export function TenantLandingView(p: Props) {
       <header className="tl-top">
         <span className="tl-mark">{landing.logo_url ? <img src={landing.logo_url} alt="" /> : tenant.name.slice(0, 1)}</span>
         <b>{tenant.name}</b>
-        <a href="#courses">{c.courses}</a><a href="#join" className="tl-pill">{c.join}</a>
+        <a href="#courses">{c.courses}</a>{p.member === "approved" ? <a href={p.learnHref} className="tl-pill">{c.enter}</a> : !p.member && <a href="#join" className="tl-pill">{c.join}</a>}
       </header>
       <section className="tl-hero">
         <p className="tl-kicker">{c.kicker} {tenant.name}</p>
         <h1>{landing.headline || tenant.name}</h1>
         <p className="tl-sub">{landing.subtitle}</p>
-        <a href="#join" className="tl-cta">{c.register}</a>
+        {p.member === "approved" ? <a href={p.learnHref} className="tl-cta">{c.enter}</a> : !p.member && <a href="#join" className="tl-cta">{c.register}</a>}
         <div className="tl-block" aria-hidden />
       </section>
       {landing.about && <section className="tl-about"><p>{landing.about}</p></section>}
@@ -56,8 +57,10 @@ export function TenantLandingView(p: Props) {
         </ol>
       </section>
       <section id="join" className="tl-join">
-        <h2>{p.signedIn ? c.signedIn : p.mode === "signup" ? c.create : c.signin}</h2>
-        {p.signedIn ? (
+        <h2>{p.member === "approved" ? c.member : p.member === "pending" ? c.pending : p.member === "blocked" ? c.blocked : p.signedIn ? c.signedIn : p.mode === "signup" ? c.create : c.signin}</h2>
+        {p.member ? (
+          p.member === "approved" ? <a className="tl-cta" href={p.learnHref}>{c.enter}</a> : null
+        ) : p.signedIn ? (
           <button className="tl-cta" onClick={p.onJoin}>{c.registerWith} {tenant.name}</button>
         ) : (
           <form onSubmit={p.onSubmit}>

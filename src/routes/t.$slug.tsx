@@ -42,6 +42,17 @@ function TenantLanding() {
     },
   });
 
+  const mem = useQuery({
+    queryKey: ["tenant-member", q.data?.tenant.id, user?.id],
+    enabled: !!user && !!q.data?.tenant.id,
+    queryFn: async () => {
+      const { data } = await tdb.from("tenant_members").select("status,role").eq("tenant_id", q.data!.tenant.id).eq("user_id", user!.id).maybeSingle();
+      return (data as { status: string; role: string } | null) ?? null;
+    },
+  });
+  const member = (mem.data ? (mem.data.role === "admin" ? "approved" : mem.data.status) : null) as null | "pending" | "approved" | "blocked";
+
+
   if (q.isLoading) return <div style={{ minHeight: "60vh", display: "grid", placeItems: "center" }}>…</div>;
   if (q.error) return <div style={{ minHeight: "60vh", display: "grid", placeItems: "center" }}>{isDbMissing(q.error as any) ? "…" : "Something went wrong."}</div>;
   if (!q.data || !q.data.landing?.published) {
@@ -86,18 +97,12 @@ function TenantLanding() {
     <TenantLandingView
       tenant={tenant} landing={landing} courses={courses} lang={lang === "ar" ? "ar" : "en"}
       signedIn={!!user} mode={mode} setMode={setMode} form={form} setForm={setForm} busy={busy} msg={msg}
+      member={user ? member : null} learnHref={`/t/${slug}/learn`}
       onSubmit={submit}
       onJoin={async () => { try { await join(); setMsg("joined"); } catch (e: any) { setMsg("err:" + e.message); } }}
       vars={themeVars(themeByKey(landing.theme))}
     />
-    {user && (
-      <div style={{ textAlign: "center", padding: "1rem" }}>
-        <a href="/portal" data-testid="to-portal" style={{ display: "inline-block", padding: "0.7rem 1.4rem", borderRadius: "999px", border: "1px solid currentColor", textDecoration: "none" }}>
-          {lang === "ar" ? "اذهب إلى كورساتي (التقديم والدراسة)" : "Go to my courses (apply and study)"}
-        </a>
-      </div>
-    )}
-    {user && <LearnerTools tenantId={tenant.id} lang={lang === "ar" ? "ar" : "en"} />}
+    {user && member === "approved" && <LearnerTools tenantId={tenant.id} lang={lang === "ar" ? "ar" : "en"} />}
     </>
   );
 }
