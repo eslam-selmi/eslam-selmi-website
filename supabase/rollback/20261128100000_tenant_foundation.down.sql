@@ -62,6 +62,7 @@ DROP TRIGGER IF EXISTS courses_tenant_guard ON public.courses;
 DROP TRIGGER IF EXISTS tenant_domains_guard ON public.tenant_domains;
 DROP TRIGGER IF EXISTS tenants_guard ON public.tenants;
 
+DROP POLICY IF EXISTS "tenant learner reads own course files" ON storage.objects;
 -- 4. Remove the tenant_id column from courses, then the new tables and functions.
 DROP INDEX IF EXISTS public.courses_tenant_idx;
 ALTER TABLE public.courses DROP COLUMN IF EXISTS tenant_id;

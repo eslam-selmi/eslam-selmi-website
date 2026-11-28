@@ -71,7 +71,7 @@ import { Input, Select, TextArea } from "@/components/admin/panels/ui";
 import { courseDeliveryMode } from "@/lib/course-delivery";
 import { CourseImageSetting } from "@/components/admin/CourseImageSetting";
 
-export function CourseContent({ courseId }: { courseId: string }) {
+export function CourseContent({ courseId, pathPrefix = "" }: { courseId: string; pathPrefix?: string }) {
   const { lang } = useI18n();
   const t = (a: string, b: string) => (lang === "ar" ? a : b);
 
@@ -182,6 +182,7 @@ export function CourseContent({ courseId }: { courseId: string }) {
               onDelete={() => delModule(m.id)}
               onChangeOnlineUrl={(url: string) => updateOnlineUrl(m.id, url)}
               onItemsChanged={loadModules}
+              pathPrefix={pathPrefix}
             />
           ))}
         </div>
@@ -199,6 +200,7 @@ export function ModuleCard({
   onChangeOnlineUrl,
   onItemsChanged,
   allModules = [],
+  pathPrefix = "",
 }: any) {
   const { lang } = useI18n();
   const t = (a: string, b: string) => (lang === "ar" ? a : b);
@@ -227,7 +229,7 @@ export function ModuleCard({
     let url = itemUrl;
     if (itemKind === "file" && (window as any).__pendingFile) {
       const file: File = (window as any).__pendingFile;
-      const path = `${m.course_id}/${m.id}/${Date.now()}-${file.name}`;
+      const path = `${pathPrefix ? pathPrefix + "/" : ""}${m.course_id}/${m.id}/${Date.now()}-${file.name.replace(/[^A-Za-z0-9._-]/g, "_")}`;
       const { error: upErr } = await supabase.storage.from("course-files").upload(path, file);
       if (upErr) return toast.error(upErr.message);
       url = path; // store storage path; signed URL generated on access

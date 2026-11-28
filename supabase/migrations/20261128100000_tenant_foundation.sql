@@ -516,6 +516,15 @@ CREATE POLICY "tenant admin deletes own tool files" ON storage.objects FOR DELET
   USING (bucket_id = 'tool-assets' AND public.storage_tenant_of(name) IS NOT NULL
          AND public.is_tenant_admin(public.storage_tenant_of(name)) AND public.tenant_feature(public.storage_tenant_of(name), 'tools_upload'));
 
+-- 14e. Learners read lesson files of their own tenant course: path t/<tenant_id>/<course_id>/... and an approved, unblocked enrollment.
+CREATE POLICY "tenant learner reads own course files" ON storage.objects FOR SELECT TO authenticated
+  USING (bucket_id = 'course-files' AND public.storage_tenant_of(name) IS NOT NULL
+    AND split_part(name, '/', 3) ~ '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+    AND EXISTS (SELECT 1 FROM public.enrollments e JOIN public.courses c ON c.id = e.course_id
+      WHERE e.user_id = auth.uid() AND e.status = 'approved' AND e.blocked = false
+        AND e.course_id = split_part(name, '/', 3)::uuid AND c.tenant_id = public.storage_tenant_of(name)
+        AND public.is_tenant_learner(c.tenant_id)));
+
 -- 15. Owner-controlled theme switch, enforced in the database: without it the trainer keeps the default theme.
 CREATE OR REPLACE FUNCTION public.trg_landing_theme_gate() RETURNS trigger
 LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$

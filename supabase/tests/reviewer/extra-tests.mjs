@@ -142,6 +142,10 @@ t('L10 other tenant admin / outsider cannot read submission',(await cnt(db,'outs
 await db.exec(`insert into assignments(module_id,course_id,title) select id,course_id,'OWNHW' from course_modules limit 0`);
 {const bad=[`javascript:alert(1)`,`data:image/png;base64,AAAA`,`http://tracker.example/p.png`,`//x.example/a.png`];let allBad=true;for(const u of bad){const r=await as(db,'noraU',`update tenant_landing set logo_url='${u}' where tenant_id='${noraT}'`);if(r.ok)allBad=false;}t('M1 unsafe logo_url schemes refused',allBad);}
 {const r=await as(db,'noraU',`update tenant_landing set logo_url='https://cdn.example.com/logo.png' where tenant_id='${noraT}'`);t('M2 https logo_url accepted',r.ok);}
+await db.exec(`insert into storage.objects(bucket_id,name) values('course-files','t/${noraT}/${noraC}/m/a.pdf'),('course-files','t/${noraT}/${ownC}/m/b.pdf')`);
+t('N1 enrolled tenant learner reads own course file',(await cnt(db,'l2',`select count(*) n from storage.objects where bucket_id='course-files' and name='t/${noraT}/${noraC}/m/a.pdf'`))===1);
+t('N2 learner cannot read file of a course path they are not enrolled in',(await cnt(db,'l2',`select count(*) n from storage.objects where bucket_id='course-files' and name='t/${noraT}/${ownC}/m/b.pdf'`))===0);
+t('N3 outsider cannot read tenant course file',(await cnt(db,'outsider',`select count(*) n from storage.objects where bucket_id='course-files' and name='t/${noraT}/${noraC}/m/a.pdf'`))===0);
 console.log('--- C. suspended tenant ---');
 await as(db,'noraU',`insert into courses(title,tenant_id,active) values('Nora C2','${noraT}',true)`);
 await as(db,'owner',`update tenants set status='suspended' where id='${noraT}'`);
