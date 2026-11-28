@@ -16,7 +16,7 @@ export function TrainerFinance({ tenant, courses, t }: { tenant: Tenant; courses
     enabled: ids.length > 0,
     queryFn: async () => {
       const { data: en, error } = await db.from("enrollments")
-        .select("id,user_id,course_id,name_ar,name_en,status,discount_amount,certificate_issued,certificate_url,courses(title,price)")
+        .select("id,user_id,course_id,name_ar,name_en,status,discount_amount,certificate_issued,certificate_url,certificate_requested_at,courses(title,price)")
         .in("course_id", ids).order("created_at", { ascending: false });
       if (error) throw error;
       const eids = (en ?? []).map((x: any) => x.id);
@@ -110,7 +110,7 @@ export function TrainerFinance({ tenant, courses, t }: { tenant: Tenant; courses
                     ))}
                   </ul>
                   <div className="flex flex-wrap items-center gap-2">
-                    <span>{t("الشهادة", "Certificate")}: {r.certificate_issued ? t("صادرة", "issued") : t("غير صادرة", "not issued")}</span>
+                    <span>{t("الشهادة", "Certificate")}: {r.certificate_issued ? t("صادرة", "issued") : t("غير صادرة", "not issued")}{!r.certificate_issued && r.certificate_requested_at ? <b data-testid="cert-requested" className="ms-2 text-amber-500">{t("المتدرب طلب الشهادة", "Learner requested the certificate")}</b> : null}</span>
                     <label className="flex items-center gap-1 text-xs">{t("ملف الشهادة (PDF)", "Certificate file (PDF)")}<input type="file" accept="application/pdf" onChange={(e) => uploadCert(r.id, e.target.files?.[0])} className="text-xs" /></label>
                     {r.certificate_issued && <button className="underline text-xs" onClick={() => run(db.from("enrollments").update({ certificate_issued: false, certificate_url: null }).eq("id", r.id))}>{t("سحب الشهادة", "Revoke")}</button>}
                   </div>
