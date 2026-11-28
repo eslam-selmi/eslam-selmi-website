@@ -69,6 +69,11 @@ function PortalPage() {
     const ms = modules.filter((m) => m.course_id === courseId);
     return LEARNER_PROGRESS_ENABLED ? unitsDone(ms.map((m) => m.id), itemsLite, progLite) : ms.filter((m) => m.completed_by_admin).length;
   };
+  // Units that can be completed: a unit with no items is not counted (it can never be done and the server gate ignores it).
+  const countUnits = (courseId: string) => {
+    const ms = modules.filter((m) => m.course_id === courseId);
+    return LEARNER_PROGRESS_ENABLED ? ms.filter((m) => itemsLite.some((i) => i.module_id === m.id)).length : ms.length;
+  };
   const [loadingData, setLoadingData] = useState(true);
   const [showUpload, setShowUpload] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
@@ -207,12 +212,12 @@ function PortalPage() {
     for (const e of approved) {
       const courseTotal = Number(e.courses?.total_hours ?? 0);
       total += courseTotal;
-      const ms = modules.filter((m) => m.course_id === e.course_id);
-      if (ms.length === 0) continue;
+      const nUnits = countUnits(e.course_id);
+      if (nUnits === 0) continue;
       const done = doneUnits(e.course_id);
-      mDone += done; mAll += ms.length;
+      mDone += done; mAll += nUnits;
       if (courseTotal <= 0) missingHours = true;
-      earned += courseTotal * (done / ms.length);
+      earned += courseTotal * (done / nUnits);
     }
     return {
       active: approved.length,
@@ -383,7 +388,7 @@ function PortalPage() {
             .map((e) => {
               const ms = modules.filter((m) => m.course_id === e.course_id);
               const done = doneUnits(e.course_id);
-              return { en: e, progress: ms.length ? Math.round((done / ms.length) * 100) : null, done, total: ms.length };
+              return { en: e, progress: countUnits(e.course_id) ? Math.round((done / countUnits(e.course_id)) * 100) : null, done, total: countUnits(e.course_id) };
             })}
           availableCount={availableCourses.length}
           onOpenCourse={(en) => setViewing(en)}
@@ -451,15 +456,15 @@ function PortalPage() {
           ) : (
             <div className="grid sm:grid-cols-2 gap-4">
               {trEnrollments.map((en) => {
-                const mods = modules.filter((m) => m.course_id === en.course_id);
+                const nUnits = countUnits(en.course_id);
                 const done = doneUnits(en.course_id);
                 return (
                   <EnrollmentCard
                     key={en.id}
                     en={en}
-                    progress={mods.length ? Math.round((done / mods.length) * 100) : 0}
+                    progress={nUnits ? Math.round((done / nUnits) * 100) : 0}
                     doneCount={done}
-                    totalCount={mods.length}
+                    totalCount={nUnits}
                     onOpen={() => setViewing(en)}
                     onWithdraw={withdraw}
                   />

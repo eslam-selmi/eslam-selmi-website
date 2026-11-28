@@ -231,7 +231,7 @@ export function CoursesPanel({
             return (
               <div
                 key={c.id}
-                className="dash-card dash-card-hover p-5 hover:border-[var(--gold)]/30 transition"
+                className="dash-card dash-card-hover relative p-5 hover:border-[var(--gold)]/30 transition has-[details[open]]:z-30"
               >
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-xl bg-[var(--gold)]/10 border border-[var(--gold)]/30 flex items-center justify-center text-2xl shrink-0">

@@ -70,12 +70,14 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
 
   const totalPaid = payments.filter((p) => p.status !== "rejected" && p.status !== "pending").reduce((s, p) => s + Number(p.amount), 0);
   const coursePrice = Number(c.price ?? 0);
-  const completedCount = modules.filter((m) => isUnitDone(m)).length;
+  // A unit with no content can never be completed, so it is not counted (same rule as the server gate, which looks at items). Without this a finished course stops at e.g. 92%.
+  const countedModules = LEARNER_PROGRESS_ENABLED ? modules.filter((m: any) => (items[m.id] ?? []).length > 0) : modules;
+  const completedCount = countedModules.filter((m) => isUnitDone(m)).length;
   // Evaluation button: recorded courses show it only when every unit is complete. Live courses: only after the admin marks the course finished (courses.finished_at). Server rule: migration 0013.
   const allItems: any[] = Object.values(items).flat() as any[];
   const doneIds = new Set(progRows.filter((r) => r.completed_at).map((r) => r.item_id));
   const canRate = enrollment.status === "approved" && (((c as any).delivery_mode === "recorded" && allItems.length > 0 && allItems.every((i: any) => doneIds.has(i.id))) || ((c as any).delivery_mode !== "recorded" && !!(c as any).finished_at));
-  const progressPct = modules.length ? Math.round((completedCount / modules.length) * 100) : 0;
+  const progressPct = countedModules.length ? Math.round((completedCount / countedModules.length) * 100) : 0;
 
   // Translate module titles + session titles
   const moduleTitles = useMemo(() => modules.map((m: any) => m.title || ""), [modules]);
@@ -128,7 +130,7 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex justify-between text-xs text-white/60 mb-2">
-                <span>{isAr ? "التقدّم" : "Progress"}</span><span className="font-semibold text-[var(--gold)]">{completedCount}/{modules.length} {isAr ? "وحدة" : "units"}</span>
+                <span>{isAr ? "التقدّم" : "Progress"}</span><span className="font-semibold text-[var(--gold)]">{completedCount}/{countedModules.length} {isAr ? "وحدة" : "units"}</span>
               </div>
               <div className="h-2 rounded-full bg-white/10 overflow-hidden">
                 <div className="h-full transition-all rounded-full" style={{ width: `${progressPct}%`, background: "linear-gradient(90deg, var(--gold), #b8923f)" }} />
@@ -317,8 +319,8 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
         <CertificatePanel
           enrollment={enrollment}
           course={c}
-          allModulesDone={modules.length > 0 && modules.every((m: any) => isUnitDone(m))}
-          totalModules={modules.length}
+          allModulesDone={countedModules.length > 0 && countedModules.every((m: any) => isUnitDone(m))}
+          totalModules={countedModules.length}
           completedModules={completedCount}
           onDownloadCert={onDownloadCert}
           onRefresh={onRefresh}
