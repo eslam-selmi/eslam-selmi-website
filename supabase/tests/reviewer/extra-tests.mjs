@@ -42,12 +42,81 @@ await db.exec(`insert into public.user_roles(user_id,role) values('${U.legacyTra
 
 // ---------- B. tenant admin powers over enrollments ----------
 console.log('--- B. tenant admin enrollment powers ---');
-{const r=await as(db,'noraU',`update enrollments set certificate_issued=true, certificate_url='https://attacker.example/cert.pdf' where user_id='${U.l2}'`);t('B1 tenant admin can NOT issue certificate (fixed)',!r.ok);}
-{const r=await as(db,'noraU',`update enrollments set discount_amount=999, coupon_code='SELF', grace_until=now()+interval '1 year' where user_id='${U.l2}'`);t('B2 tenant admin can NOT set discount/coupon/grace (fixed)',!r.ok);}
+{const r=await as(db,'noraU',`update enrollments set certificate_issued=true, certificate_url='https://attacker.example/cert.pdf' where user_id='${U.l2}'`);t('B1 tenant admin can NOT forge certificate URL (external URL refused)',!r.ok);}
+{const r=await as(db,'noraU',`update enrollments set discount_amount=999, coupon_code='SELF', grace_until=now()+interval '1 year' where user_id='${U.l2}'`);t('B2 tenant admin can NOT set coupon_code/grace or discount above price',!r.ok);}
 {const r=await as(db,'noraU',`update enrollments set blocked=true where user_id='${U.l2}'`);t('B3 tenant admin can block enrollment',r.ok);}
 await as(db,'noraU',`update enrollments set blocked=false, certificate_issued=false, certificate_url=null where user_id='${U.l2}'`);
 
 // ---------- C. suspension gaps ----------
+
+await db.exec(`alter table coupons enable row level security; alter table coupon_redemptions enable row level security; grant all on coupons, coupon_redemptions to authenticated; create policy "admin manage coupons" on coupons for all using (public.has_role(auth.uid(),'admin'::app_role)) with check (public.has_role(auth.uid(),'admin'::app_role))`);
+console.log('--- I. tenant finance, coupons, certificates, owner gates ---');
+await as(db,'owner',`update courses set price=1000 where id='${noraC}'`);
+await as(db,'owner',`insert into courses(title,price,active) values('Owner paid',500,true)`);
+const ownC=(await db.query(`select id from courses where title='Owner paid'`)).rows[0].id;
+await as(db,'outsider',`insert into enrollments(user_id,course_id,status) values('${U.outsider}','${ownC}','pending')`);
+const ownE=(await db.query(`select id from enrollments where user_id='${U.outsider}' and course_id='${ownC}'`)).rows[0].id;
+const noraE=(await db.query(`select id from enrollments where user_id='${U.l2}' and course_id='${noraC}'`)).rows[0].id;
+{const r=await as(db,'noraU',`insert into payments(enrollment_id,amount) values('${noraE}',400)`);t('I1 tenant admin records payment on own enrollment',r.ok);}
+{const r=await as(db,'noraU',`insert into installments(enrollment_id,amount,due_date) values('${noraE}',300,'2027-01-01')`);t('I2 tenant admin adds installment on own enrollment',r.ok);}
+t('I3 tenant admin sees own payment',(await cnt(db,'noraU',`select count(*) n from payments where enrollment_id='${noraE}'`))===1);
+{const r=await as(db,'noraU',`insert into payments(enrollment_id,amount) values('${ownE}',1)`);t('I4 tenant admin CANNOT add payment to owner enrollment',!r.ok);}
+{const r=await as(db,'noraU',`insert into installments(enrollment_id,amount) values('${ownE}',1)`);t('I5 tenant admin CANNOT add installment to owner enrollment',!r.ok);}
+await db.exec(`insert into payments(enrollment_id,amount) values('${ownE}',77)`);
+t('I6 tenant admin cannot read owner payments',(await cnt(db,'noraU',`select count(*) n from payments where enrollment_id='${ownE}'`))===0);
+t('I7 tenant admin cannot update/delete owner payments (0 rows)',(await cnt(db,'noraU',`with u as (update payments set amount=0 where enrollment_id='${ownE}' returning 1) select count(*) n from u`))===0);
+t('I8 learner cannot write payment to self',!(await as(db,'l2',`insert into payments(enrollment_id,amount) values('${noraE}',1)`)).ok);
+{const r=await as(db,'noraU',`update enrollments set discount_amount=200 where id='${noraE}'`);t('I9 tenant admin sets discount within price',r.ok);}
+{const r=await as(db,'noraU',`update enrollments set discount_amount=5000 where id='${noraE}'`);t('I10 discount above course price refused',!r.ok);}
+{const r=await as(db,'noraU',`update enrollments set certificate_issued=true, certificate_url='t/${noraT}/${noraE}.pdf' where id='${noraE}'`);t('I11 tenant admin issues certificate with canonical own path',r.ok);}
+for(const [n,p] of [['other tenant prefix',`t/${U.owner}/c.pdf`],['external URL','https://attacker.example/c.pdf'],['dot-dot',`t/${noraT}/../x.pdf`],['owner path',`${U.l2}/c.pdf`],['own prefix but other enrollment',`t/${noraT}/${ownE}.pdf`],['own prefix arbitrary name',`t/${noraT}/cert1.pdf`]]){const r=await as(db,'noraU',`update enrollments set certificate_url='${p}' where id='${noraE}'`);t('I12 certificate path forgery refused: '+n,!r.ok);}
+{const r=await as(db,'noraU',`update enrollments set certificate_issued=true, certificate_url='t/${noraT}/${ownE}.pdf' where id='${ownE}'`);t('I13 tenant admin cannot issue certificate on owner enrollment (0 rows or error)',!r.ok||(await cnt(db,'owner',`select count(*) n from enrollments where id='${ownE}' and certificate_issued`))===0);}
+// coupons
+{const r=await as(db,'noraU',`insert into coupons(code,discount_type,discount_value,tenant_id) values('NORA10','percent',10,'${noraT}')`);t('I14 tenant admin creates coupon in own tenant',r.ok);}
+{const r=await as(db,'noraU',`insert into coupons(code,discount_type,discount_value) values('SNEAK','percent',50)`);t('I15 tenant admin cannot create coupon in platform tenant (default tenant)',!r.ok);}
+{const r=await as(db,'noraU',`insert into coupons(code,discount_type,discount_value,tenant_id,course_id) values('X','percent',5,'${noraT}','${ownC}')`);t('I16 tenant coupon cannot target an owner course',!r.ok);}
+await as(db,'owner',`insert into coupons(code,discount_type,discount_value) values('OWN20','percent',20)`);
+await as(db,'owner',`insert into coupons(code,discount_type,discount_value) values('NORA10','percent',99)`);
+t('I17 same code allowed in two tenants',(await cnt(db,'owner',`select count(*) n from coupons where code='NORA10'`))===2);
+t('I18 (and no broad coupon listing) tenant admin cannot see owner coupons',(await cnt(db,'noraU',`select count(*) n from coupons where code='OWN20'`))===0);
+const vc=async(u,code,c)=>JSON.parse(JSON.stringify((await as(db,u,`select validate_coupon('${code}','${c}') v`)).rows?.[0]?.v||{}));
+t('I19 tenant coupon valid on tenant course',(await vc('l2','NORA10',noraC)).ok===true && Number((await vc('l2','NORA10',noraC)).discount_amount)===100);
+t('I20 tenant coupon NOT valid on owner course',(await vc('outsider','NORA10',ownC)).ok!==true || Number((await vc('outsider','NORA10',ownC)).discount_value)===99);
+t('I21 owner coupon NOT valid on tenant course',(await vc('l2','OWN20',noraC)).ok!==true);
+t('I22 owner coupon valid on owner course',(await vc('outsider','OWN20',ownC)).ok===true);
+// owner feature gates
+await db.exec(`insert into storage.objects(bucket_id,name) values('certificates','t/${noraT}/${noraE}.pdf')`);
+t('I23 tenant learner reads own certificate file',(await cnt(db,'l2',`select count(*) n from storage.objects where bucket_id='certificates' and name='t/${noraT}/${noraE}.pdf'`))===1);
+t('I24 other user cannot read it',(await cnt(db,'outsider',`select count(*) n from storage.objects where bucket_id='certificates' and name='t/${noraT}/${noraE}.pdf'`))===0);
+console.log('--- J. owner feature gates (server enforced) ---');
+await db.exec(`insert into tenant_landing(tenant_id) values('${noraT}') on conflict do nothing`);
+{const r=await as(db,'noraU',`update tenant_landing set theme='ocean' where tenant_id='${noraT}'`);t('J1 theme change refused while switch is off',!r.ok&&(await cnt(db,'owner',`select count(*) n from tenant_landing where tenant_id='${noraT}' and theme='terracotta'`))===1);}
+await as(db,'owner',`update tenants set feature_theme=true where id='${noraT}'`);
+{const r=await as(db,'noraU',`update tenant_landing set theme='ocean' where tenant_id='${noraT}'`);t('J2 theme change allowed after owner enables it',r.ok&&(await cnt(db,'owner',`select count(*) n from tenant_landing where tenant_id='${noraT}' and theme='ocean'`))===1);}
+await as(db,'owner',`update tenants set feature_theme=false where id='${noraT}'`);
+{const r=await as(db,'noraU',`update tenant_landing set theme='forest' where tenant_id='${noraT}'`);t('J3 theme change refused again after owner disables',!r.ok&&(await cnt(db,'owner',`select count(*) n from tenant_landing where tenant_id='${noraT}' and theme='ocean'`))===1);}
+{const r=await as(db,'noraU',`update tenants set feature_theme=true, max_courses=null where id='${noraT}'`);t('J4 trainer cannot flip own switches',!r.ok||(await cnt(db,'owner',`select count(*) n from tenants where id='${noraT}' and feature_theme`))===0);}
+await as(db,'owner',`update tenants set max_courses=1 where id='${noraT}'`);
+{const r=await as(db,'noraU',`insert into courses(title,tenant_id,active) values('Nora C2','${noraT}',true)`);t('J5 course limit enforced (1 allowed, 2nd refused)',!r.ok);}
+await as(db,'owner',`update tenants set max_courses=null where id='${noraT}'`);
+{const r=await as(db,'noraU',`insert into courses(title,tenant_id,active) values('Nora C2','${noraT}',true)`);t('J6 unlimited: further courses allowed',r.ok);}
+await as(db,'owner',`update tenants set extra_features='{"bulk_export": true}' where id='${noraT}'`);
+t('J7 extensible switch readable via tenant_feature',(await cnt(db,'owner',`select count(*) n from tenants where tenant_feature(id,'bulk_export')`))===1);
+t('J8 unknown switch is false',(await cnt(db,'owner',`select count(*) n from tenants where tenant_feature(id,'nope') is not true and slug='nora'`))===1);
+await as(db,'owner',`update tenants set feature_tools_upload=false where id='${noraT}'`);
+{const r=await as(db,'noraU',`insert into storage.objects(bucket_id,name) values('tool-assets','t/${noraT}/a.html')`);t('J9 tool upload refused while switch is off',!r.ok);}
+await as(db,'owner',`update tenants set feature_tools_upload=true where id='${noraT}'`);
+{const r=await as(db,'noraU',`insert into storage.objects(bucket_id,name) values('tool-assets','t/${noraT}/a.html')`);t('J10 tool upload allowed after owner enables',r.ok);}
+
+console.log('--- K. public RPC scoping ---');
+{const r=await as(db,'noraU',`select verify_certificate('${noraE}') v`);const v=r.rows[0].v;t('K1 tenant certificate verifies and names the trainer as issuer',v.ok===true&&v.issuer_name==='Nora');}
+{await db.exec(`select set_config('app.bypass_enrollment_guard','on',false); update enrollments set certificate_issued=true where id='${ownE}'; select set_config('app.bypass_enrollment_guard','off',false)`);const r=await as(db,null,`select verify_certificate('${ownE}') v`);const v=r.rows[0].v;t('K2 owner certificate keeps no tenant issuer',v.ok===true&&v.issuer_name===null);}
+
+console.log('--- K. public RPC scoping ---');
+{const r=await as(db,'noraU',`select verify_certificate('${noraE}') v`);const v=r.rows[0].v;t('K1 tenant certificate verifies and names the trainer as issuer',v.ok===true&&v.issuer_name==='Nora');}
+{await db.exec(`update enrollments set certificate_issued=true where id='${ownE}'`);const r=await as(db,null,`select verify_certificate('${ownE}') v`);const v=r.rows[0].v;t('K2 owner certificate keeps no tenant issuer',v.ok===true&&v.issuer_name===null);}
+await db.exec(`insert into course_feedback(user_id,course_id,comments,is_featured) values('${U.l2}','${noraC}','great trainer',true),('${U.outsider}','${ownC}','owner course ok',true)`);
+t('K3 homepage testimonials exclude trainer-tenant feedback',(await cnt(db,null,`select count(*) n from get_featured_feedback()`))===1&&(await cnt(db,null,`select count(*) n from get_featured_feedback() where comments='owner course ok'`))===1);
 console.log('--- C. suspended tenant ---');
 await as(db,'noraU',`insert into courses(title,tenant_id,active) values('Nora C2','${noraT}',true)`);
 await as(db,'owner',`update tenants set status='suspended' where id='${noraT}'`);
@@ -66,7 +135,9 @@ await db.exec(`insert into assignments(course_id,title) values('${noraC}','a1')`
 const asg=(await db.query(`select id from assignments where course_id='${noraC}'`)).rows[0].id;
 await db.exec(`insert into assignment_submissions(assignment_id,user_id,link) values('${asg}','${U.l2}','https://x.test/f.pdf')`);
 t('D2 tenant admin CANNOT read submissions of own tenant course',(await cnt(db,'noraU',`select count(*) n from assignment_submissions where assignment_id='${asg}'`))===0);
-{const r=await as(db,'noraU',`insert into storage.objects(bucket_id,name) values('certificates','t/${noraT}/c.pdf')`);t('D3 tenant admin CANNOT upload to certificates bucket',!r.ok);}
+{const r=await as(db,'noraU',`insert into storage.objects(bucket_id,name) values('certificates','t/${noraT}/c.pdf')`);t('D3 tenant admin CAN upload to own certificates prefix (finance/cert scope)',r.ok);}
+{const r=await as(db,'noraU',`insert into storage.objects(bucket_id,name) values('certificates','t/${U.owner}/c.pdf')`);t('D3b tenant admin cannot upload to a foreign prefix',!r.ok);}
+{const r=await as(db,'noraU',`insert into storage.objects(bucket_id,name) values('certificates','${U.l2}/x.pdf')`);t('D3c tenant admin cannot write into owner (non-tenant) certificate paths',!r.ok);}
 
 // ---------- E. suspended platform admin inconsistency ----------
 console.log('--- E. suspended platform admin ---');

@@ -67,12 +67,14 @@ function RequestCard({ r, onDone, t }: { r: TenantRequest; onDone: () => void; t
   const [tools, setTools] = useState(false);
   const [landing, setLanding] = useState(true);
   const [domain, setDomain] = useState(false);
+  const [theme, setTheme] = useState(false);
+  const [unlimited, setUnlimited] = useState(false);
   const [busy, setBusy] = useState(false);
 
   async function approve() {
     setBusy(true);
     const { error } = await tdb.rpc("approve_tenant_request", {
-      _request: r.id, _max_courses: max, _tools_upload: tools, _landing: landing, _custom_domain: domain,
+      _request: r.id, _max_courses: unlimited ? null : max, _tools_upload: tools, _landing: landing, _custom_domain: domain, _theme: theme,
     });
     setBusy(false);
     if (error) return toast.error(error.message);
@@ -100,8 +102,10 @@ function RequestCard({ r, onDone, t }: { r: TenantRequest; onDone: () => void; t
       </div>
       <div className="flex flex-wrap gap-4 text-sm items-center">
         <label className="flex items-center gap-2">{t("أقصى عدد كورسات", "Max courses")}
-          <input type="number" min={0} value={max} onChange={(e) => setMax(Math.max(0, Number(e.target.value) || 0))} className="w-16 border rounded px-2 py-1 bg-background" />
+          <input type="number" min={0} value={max} disabled={unlimited} onChange={(e) => setMax(Math.max(0, Number(e.target.value) || 0))} className="w-16 border rounded px-2 py-1 bg-background disabled:opacity-40" />
         </label>
+        <Toggle label={t("بدون حد", "Unlimited")} v={unlimited} set={setUnlimited} />
+        <Toggle label={t("تغيير الثيم", "Change theme")} v={theme} set={setTheme} />
         <Toggle label={t("رفع الأدوات", "Tool upload")} v={tools} set={setTools} />
         <Toggle label={t("لاندنج بيدج", "Landing page")} v={landing} set={setLanding} />
         <Toggle label={t("دومين خاص", "Custom domain")} v={domain} set={setDomain} />
@@ -144,11 +148,20 @@ function TenantCard({ tn, domains, onDone, t }: { tn: Tenant; domains: TenantDom
       </div>
       <div className="flex flex-wrap gap-4 text-sm items-center">
         <label className="flex items-center gap-2">{t("أقصى عدد كورسات", "Max courses")}
-          <input type="number" min={0} defaultValue={tn.max_courses ?? 0} onBlur={(e) => patch({ max_courses: Math.max(0, Number(e.target.value) || 0) })} className="w-16 border rounded px-2 py-1 bg-background" />
+          <input key={String(tn.max_courses)} type="number" min={0} disabled={tn.max_courses === null} defaultValue={tn.max_courses ?? 0} onBlur={(e) => patch({ max_courses: Math.max(0, Number(e.target.value) || 0) })} className="w-16 border rounded px-2 py-1 bg-background disabled:opacity-40" />
         </label>
+        <Toggle label={t("بدون حد", "Unlimited")} v={tn.max_courses === null} set={(b) => patch({ max_courses: b ? null : 3 })} />
+        <Toggle label={t("تغيير الثيم", "Change theme")} v={!!tn.feature_theme} set={(b) => patch({ feature_theme: b })} />
         <Toggle label={t("رفع الأدوات", "Tool upload")} v={tn.feature_tools_upload} set={(b) => patch({ feature_tools_upload: b })} />
         <Toggle label={t("لاندنج بيدج", "Landing page")} v={tn.feature_landing} set={(b) => patch({ feature_landing: b })} />
         <Toggle label={t("دومين خاص", "Custom domain")} v={tn.feature_custom_domain} set={(b) => patch({ feature_custom_domain: b })} />
+        {Object.entries(tn.extra_features ?? {}).map(([k, v]) => (
+          <Toggle key={k} label={k} v={!!v} set={(b) => patch({ extra_features: { ...(tn.extra_features ?? {}), [k]: b } })} />
+        ))}
+        <form className="flex items-center gap-1" onSubmit={(e) => { e.preventDefault(); const f = new FormData(e.currentTarget); const k = String(f.get("k") ?? "").trim().toLowerCase().replace(/[^a-z0-9_]/g, ""); if (!k) return; patch({ extra_features: { ...(tn.extra_features ?? {}), [k]: false } }); e.currentTarget.reset(); }}>
+          <input name="k" dir="ltr" placeholder={t("ميزة جديدة", "new feature key")} className="w-32 border rounded px-2 py-1 bg-background text-xs" />
+          <button className="px-2 py-1 rounded border text-xs">+</button>
+        </form>
       </div>
       {domains.length > 0 && (
         <div className="text-sm space-y-2 border-t pt-3">

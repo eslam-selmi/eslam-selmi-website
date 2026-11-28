@@ -20,6 +20,8 @@ CREATE TABLE IF NOT EXISTS public.tenants (
   feature_tools_upload boolean NOT NULL DEFAULT false,
   feature_landing boolean NOT NULL DEFAULT false,
   feature_custom_domain boolean NOT NULL DEFAULT false,
+  feature_theme boolean NOT NULL DEFAULT false,            -- may the trainer change the colour theme
+  extra_features jsonb NOT NULL DEFAULT '{}'::jsonb,        -- future owner switches without a schema change: {"name": true}
   max_courses integer CHECK (max_courses IS NULL OR max_courses >= 0),
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
@@ -67,7 +69,9 @@ LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS
 $$ SELECT COALESCE((SELECT CASE _feature
     WHEN 'tools_upload' THEN feature_tools_upload
     WHEN 'landing' THEN feature_landing
-    WHEN 'custom_domain' THEN feature_custom_domain END
+    WHEN 'custom_domain' THEN feature_custom_domain
+    WHEN 'theme' THEN feature_theme
+    ELSE (extra_features ->> _feature)::boolean END
   FROM public.tenants WHERE id = _tenant AND status = 'active'), false) $$;
 
 -- tenants / members policies
@@ -117,7 +121,8 @@ CREATE POLICY "platform admin manages requests" ON public.tenant_requests FOR UP
   USING (public.is_platform_admin()) WITH CHECK (public.is_platform_admin());
 
 CREATE OR REPLACE FUNCTION public.approve_tenant_request(_request uuid, _max_courses integer DEFAULT 3,
-  _tools_upload boolean DEFAULT false, _landing boolean DEFAULT true, _custom_domain boolean DEFAULT false)
+  _tools_upload boolean DEFAULT false, _landing boolean DEFAULT true, _custom_domain boolean DEFAULT false,
+  _theme boolean DEFAULT false)
 RETURNS uuid LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
 DECLARE r public.tenant_requests; t uuid;
 BEGIN
@@ -125,8 +130,8 @@ BEGIN
   SELECT * INTO r FROM public.tenant_requests WHERE id = _request FOR UPDATE;
   IF NOT FOUND OR r.status <> 'pending' THEN RAISE EXCEPTION 'request not pending'; END IF;
   IF EXISTS (SELECT 1 FROM public.tenants WHERE slug = r.requested_slug) THEN RAISE EXCEPTION 'slug already taken'; END IF;
-  INSERT INTO public.tenants (slug, kind, name, max_courses, feature_tools_upload, feature_landing, feature_custom_domain)
-  VALUES (r.requested_slug, 'trainer', r.full_name, _max_courses, _tools_upload, _landing, _custom_domain)
+  INSERT INTO public.tenants (slug, kind, name, max_courses, feature_tools_upload, feature_landing, feature_custom_domain, feature_theme)
+  VALUES (r.requested_slug, 'trainer', r.full_name, _max_courses, _tools_upload, _landing, _custom_domain, _theme)
   RETURNING id INTO t;
   INSERT INTO public.tenant_members (tenant_id, user_id, role, status) VALUES (t, r.user_id, 'admin', 'approved');
   UPDATE public.tenant_requests SET status = 'approved', decided_by = auth.uid(), decided_at = now(), tenant_id = t WHERE id = _request;
@@ -260,6 +265,13 @@ CREATE POLICY "enroll only in joined tenant" ON public.enrollments AS RESTRICTIV
 
 -- 8. Enrollment guard: let a tenant admin review enrollments of their own tenant (same function, one added allowance).
 
+-- A tenant certificate reference is exactly the canonical storage path of THIS enrollment inside the tenant's own
+-- prefix: t/<tenant_id>/<enrollment_id>.pdf (optionally -ar / -en before .pdf). Nothing else is accepted.
+CREATE OR REPLACE FUNCTION public.tenant_cert_path_ok(_tenant uuid, _enrollment uuid, _path text) RETURNS boolean
+LANGUAGE sql IMMUTABLE AS $$
+  SELECT _path IS NULL OR _path ~ ('^t/' || _tenant::text || '/' || _enrollment::text || '(-ar|-en)?\.pdf$')
+$$;
+
 -- Extend enrollment guard to also protect grace_until
 CREATE OR REPLACE FUNCTION public.trg_enrollment_guard_trainee()
 RETURNS trigger
@@ -275,17 +287,19 @@ BEGIN
     RETURN NEW;
   END IF;
   -- Tenant admin: may change review fields of enrollments in their own tenant, never the course or learner.
-  -- Least privilege: status, blocked and notes only. Certificates, discounts, coupons and grace dates stay with the platform admin.
+  -- Tenant admin (trainer) manages their own platform: review fields, finance fields and certificates of THEIR tenant's
+  -- enrollments only. Never the course or learner, never the coupon code (coupons go through the coupon functions).
+  -- Discount must stay within the course price; certificate files must live under the tenant's own storage prefix.
   IF public.is_tenant_admin(public.course_tenant(OLD.course_id))
      AND NEW.course_id IS NOT DISTINCT FROM OLD.course_id
      AND NEW.user_id IS NOT DISTINCT FROM OLD.user_id
-     AND NEW.certificate_issued IS NOT DISTINCT FROM OLD.certificate_issued
-     AND NEW.certificate_url IS NOT DISTINCT FROM OLD.certificate_url
-     AND NEW.certificate_url_ar IS NOT DISTINCT FROM OLD.certificate_url_ar
-     AND NEW.certificate_url_en IS NOT DISTINCT FROM OLD.certificate_url_en
-     AND NEW.discount_amount IS NOT DISTINCT FROM OLD.discount_amount
      AND NEW.coupon_code IS NOT DISTINCT FROM OLD.coupon_code
-     AND NEW.grace_until IS NOT DISTINCT FROM OLD.grace_until THEN
+     AND (NEW.discount_amount IS NOT DISTINCT FROM OLD.discount_amount
+          OR (NEW.discount_amount IS NOT NULL AND NEW.discount_amount >= 0
+              AND NEW.discount_amount <= COALESCE((SELECT price FROM public.courses WHERE id = OLD.course_id), 0)))
+     AND public.tenant_cert_path_ok(public.course_tenant(OLD.course_id), OLD.id, NEW.certificate_url)
+     AND public.tenant_cert_path_ok(public.course_tenant(OLD.course_id), OLD.id, NEW.certificate_url_ar)
+     AND public.tenant_cert_path_ok(public.course_tenant(OLD.course_id), OLD.id, NEW.certificate_url_en) THEN
     RETURN NEW;
   END IF;
   IF NEW.status IS DISTINCT FROM OLD.status
@@ -387,5 +401,167 @@ DO $do$ BEGIN
     EXECUTE 'CREATE TRIGGER course_trainers_platform_only BEFORE INSERT OR UPDATE ON public.course_trainers FOR EACH ROW EXECUTE FUNCTION public.trg_course_trainers_platform_only()';
   END IF;
 END $do$;
+
+-- 14. Trainer-managed finance and certificates, scoped to the trainer's own tenant.
+CREATE OR REPLACE FUNCTION public.enrollment_tenant(_enrollment uuid) RETURNS uuid
+LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS
+$$ SELECT c.tenant_id FROM public.enrollments e JOIN public.courses c ON c.id = e.course_id WHERE e.id = _enrollment $$;
+
+-- 14a. Payments and installments of the tenant's own enrollments.
+CREATE POLICY "tenant admin manages own payments" ON public.payments FOR ALL TO authenticated
+  USING (public.is_tenant_admin(public.enrollment_tenant(enrollment_id)))
+  WITH CHECK (public.is_tenant_admin(public.enrollment_tenant(enrollment_id)));
+CREATE POLICY "tenant admin manages own installments" ON public.installments FOR ALL TO authenticated
+  USING (public.is_tenant_admin(public.enrollment_tenant(enrollment_id)))
+  WITH CHECK (public.is_tenant_admin(public.enrollment_tenant(enrollment_id)));
+
+-- 14b. Coupons belong to a tenant. Codes are unique per tenant; a coupon only works on that tenant's courses.
+ALTER TABLE public.coupons ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.coupon_redemptions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.coupons ADD COLUMN IF NOT EXISTS tenant_id uuid REFERENCES public.tenants(id);
+UPDATE public.coupons SET tenant_id = public.platform_tenant_id() WHERE tenant_id IS NULL;
+ALTER TABLE public.coupons ALTER COLUMN tenant_id SET DEFAULT public.platform_tenant_id();
+ALTER TABLE public.coupons ALTER COLUMN tenant_id SET NOT NULL;
+ALTER TABLE public.coupons DROP CONSTRAINT IF EXISTS coupons_code_key;
+CREATE UNIQUE INDEX IF NOT EXISTS coupons_tenant_code_key ON public.coupons (tenant_id, code);
+CREATE POLICY "tenant admin manages own coupons" ON public.coupons FOR ALL TO authenticated
+  USING (public.is_tenant_admin(tenant_id))
+  WITH CHECK (public.is_tenant_admin(tenant_id) AND (course_id IS NULL OR public.course_tenant(course_id) = tenant_id));
+CREATE POLICY "tenant admin reads own redemptions" ON public.coupon_redemptions FOR SELECT TO authenticated
+  USING (public.is_tenant_admin(public.enrollment_tenant(enrollment_id)));
+DROP POLICY IF EXISTS "authenticated view active coupons" ON public.coupons;
+-- (the old broad 'authenticated view active coupons' policy was already removed by 20260608040105 and is deliberately NOT recreated)
+
+CREATE OR REPLACE FUNCTION public.validate_coupon(_code text, _course_id uuid)
+RETURNS jsonb LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path TO 'public' AS $$
+DECLARE
+  _c RECORD; _price numeric; _discount numeric; _uid uuid := auth.uid();
+BEGIN
+  IF _uid IS NULL THEN RETURN jsonb_build_object('ok', false, 'error', 'unauthenticated'); END IF;
+  SELECT * INTO _c FROM public.coupons WHERE code = _code AND active = true AND tenant_id = public.course_tenant(_course_id);
+  IF NOT FOUND THEN RETURN jsonb_build_object('ok', false, 'error', 'invalid_code'); END IF;
+  IF _c.expires_at IS NOT NULL AND _c.expires_at <= now() THEN RETURN jsonb_build_object('ok', false, 'error', 'expired'); END IF;
+  IF _c.max_uses IS NOT NULL AND _c.used_count >= _c.max_uses THEN RETURN jsonb_build_object('ok', false, 'error', 'exhausted'); END IF;
+  IF _c.course_id IS NOT NULL AND _c.course_id <> _course_id THEN RETURN jsonb_build_object('ok', false, 'error', 'wrong_course'); END IF;
+  IF EXISTS (SELECT 1 FROM public.coupon_redemptions WHERE coupon_id = _c.id AND user_id = _uid) THEN
+    RETURN jsonb_build_object('ok', false, 'error', 'already_used');
+  END IF;
+  SELECT COALESCE(price, 0) INTO _price FROM public.courses WHERE id = _course_id;
+  IF _c.discount_type = 'percent' THEN _discount := round(_price * _c.discount_value / 100.0, 2);
+  ELSE _discount := LEAST(_c.discount_value, _price); END IF;
+  RETURN jsonb_build_object('ok', true, 'coupon_id', _c.id, 'code', _c.code, 'discount_type', _c.discount_type,
+    'discount_value', _c.discount_value, 'discount_amount', _discount, 'final_price', GREATEST(_price - _discount, 0));
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION public.apply_coupon_to_enrollment(_enrollment_id uuid, _code text)
+RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path TO 'public' AS $function$
+DECLARE
+  _en RECORD; _c RECORD; _price numeric; _discount numeric; _uid uuid := auth.uid();
+BEGIN
+  IF _uid IS NULL THEN RETURN jsonb_build_object('ok', false, 'error', 'unauthenticated'); END IF;
+  SELECT * INTO _en FROM public.enrollments WHERE id = _enrollment_id;
+  IF NOT FOUND OR _en.user_id <> _uid THEN RETURN jsonb_build_object('ok', false, 'error', 'not_found'); END IF;
+  IF _en.coupon_code IS NOT NULL THEN RETURN jsonb_build_object('ok', false, 'error', 'already_applied'); END IF;
+  SELECT * INTO _c FROM public.coupons WHERE code = _code AND active = true AND tenant_id = public.course_tenant(_en.course_id) FOR UPDATE;
+  IF NOT FOUND THEN RETURN jsonb_build_object('ok', false, 'error', 'invalid_code'); END IF;
+  IF _c.expires_at IS NOT NULL AND _c.expires_at <= now() THEN RETURN jsonb_build_object('ok', false, 'error', 'expired'); END IF;
+  IF _c.max_uses IS NOT NULL AND _c.used_count >= _c.max_uses THEN RETURN jsonb_build_object('ok', false, 'error', 'exhausted'); END IF;
+  IF _c.course_id IS NOT NULL AND _c.course_id <> _en.course_id THEN RETURN jsonb_build_object('ok', false, 'error', 'wrong_course'); END IF;
+  IF EXISTS (SELECT 1 FROM public.coupon_redemptions WHERE coupon_id = _c.id AND user_id = _uid) THEN
+    RETURN jsonb_build_object('ok', false, 'error', 'already_used');
+  END IF;
+  SELECT COALESCE(price, 0) INTO _price FROM public.courses WHERE id = _en.course_id;
+  IF _c.discount_type = 'percent' THEN _discount := round(_price * _c.discount_value / 100.0, 2);
+  ELSE _discount := LEAST(_c.discount_value, _price); END IF;
+  PERFORM set_config('app.bypass_enrollment_guard', 'on', true);
+  UPDATE public.enrollments SET coupon_code = _c.code, discount_amount = _discount WHERE id = _enrollment_id;
+  PERFORM set_config('app.bypass_enrollment_guard', 'off', true);
+  INSERT INTO public.coupon_redemptions(coupon_id, user_id, enrollment_id, discount_amount) VALUES (_c.id, _uid, _enrollment_id, _discount);
+  UPDATE public.coupons SET used_count = used_count + 1 WHERE id = _c.id;
+  RETURN jsonb_build_object('ok', true, 'discount_amount', _discount, 'final_price', GREATEST(_price - _discount, 0));
+END;
+$function$;
+
+-- 14c. Certificate files: the tenant admin may use only their own prefix t/<tenant_id>/ in the certificates bucket.
+-- A tenant learner reads only the certificate file referenced by their own issued enrollment.
+CREATE POLICY "tenant learner reads own certificate file" ON storage.objects FOR SELECT TO authenticated
+  USING (bucket_id = 'certificates' AND public.storage_tenant_of(name) IS NOT NULL AND EXISTS (
+    SELECT 1 FROM public.enrollments e WHERE e.user_id = auth.uid() AND e.certificate_issued
+      AND name IN (e.certificate_url, e.certificate_url_ar, e.certificate_url_en)));
+CREATE POLICY "tenant admin reads own certificates" ON storage.objects FOR SELECT TO authenticated
+  USING (bucket_id = 'certificates' AND public.storage_tenant_of(name) IS NOT NULL AND public.is_tenant_admin(public.storage_tenant_of(name)));
+CREATE POLICY "tenant admin uploads own certificates" ON storage.objects FOR INSERT TO authenticated
+  WITH CHECK (bucket_id = 'certificates' AND public.storage_tenant_of(name) IS NOT NULL AND public.is_tenant_admin(public.storage_tenant_of(name)));
+CREATE POLICY "tenant admin updates own certificates" ON storage.objects FOR UPDATE TO authenticated
+  USING (bucket_id = 'certificates' AND public.storage_tenant_of(name) IS NOT NULL AND public.is_tenant_admin(public.storage_tenant_of(name)))
+  WITH CHECK (bucket_id = 'certificates' AND public.storage_tenant_of(name) IS NOT NULL AND public.is_tenant_admin(public.storage_tenant_of(name)));
+CREATE POLICY "tenant admin deletes own certificates" ON storage.objects FOR DELETE TO authenticated
+  USING (bucket_id = 'certificates' AND public.storage_tenant_of(name) IS NOT NULL AND public.is_tenant_admin(public.storage_tenant_of(name)));
+
+-- 14d. Tool files: a tenant admin may manage files under t/<tenant_id>/ in tool-assets ONLY while the owner's
+-- tools_upload switch is on; the tenant's approved learners may read them. Owner paths (app/, tna/, perf/, exam/) are untouched.
+CREATE POLICY "tenant admin reads own tool files" ON storage.objects FOR SELECT TO authenticated
+  USING (bucket_id = 'tool-assets' AND public.storage_tenant_of(name) IS NOT NULL
+         AND (public.is_tenant_admin(public.storage_tenant_of(name)) OR public.is_tenant_learner(public.storage_tenant_of(name))));
+CREATE POLICY "tenant admin uploads own tool files" ON storage.objects FOR INSERT TO authenticated
+  WITH CHECK (bucket_id = 'tool-assets' AND public.storage_tenant_of(name) IS NOT NULL
+         AND public.is_tenant_admin(public.storage_tenant_of(name)) AND public.tenant_feature(public.storage_tenant_of(name), 'tools_upload'));
+CREATE POLICY "tenant admin updates own tool files" ON storage.objects FOR UPDATE TO authenticated
+  USING (bucket_id = 'tool-assets' AND public.storage_tenant_of(name) IS NOT NULL
+         AND public.is_tenant_admin(public.storage_tenant_of(name)) AND public.tenant_feature(public.storage_tenant_of(name), 'tools_upload'))
+  WITH CHECK (bucket_id = 'tool-assets' AND public.storage_tenant_of(name) IS NOT NULL
+         AND public.is_tenant_admin(public.storage_tenant_of(name)) AND public.tenant_feature(public.storage_tenant_of(name), 'tools_upload'));
+CREATE POLICY "tenant admin deletes own tool files" ON storage.objects FOR DELETE TO authenticated
+  USING (bucket_id = 'tool-assets' AND public.storage_tenant_of(name) IS NOT NULL
+         AND public.is_tenant_admin(public.storage_tenant_of(name)) AND public.tenant_feature(public.storage_tenant_of(name), 'tools_upload'));
+
+-- 15. Owner-controlled theme switch, enforced in the database: without it the trainer keeps the default theme.
+CREATE OR REPLACE FUNCTION public.trg_landing_theme_gate() RETURNS trigger
+LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+BEGIN
+  IF auth.uid() IS NULL OR public.is_platform_admin() THEN RETURN NEW; END IF;
+  IF NOT public.tenant_feature(NEW.tenant_id, 'theme')
+     AND NEW.theme IS DISTINCT FROM (CASE WHEN TG_OP = 'UPDATE' THEN OLD.theme ELSE 'terracotta' END) THEN
+    RAISE EXCEPTION 'theme change is not enabled for this trainer';
+  END IF;
+  RETURN NEW;
+END $$;
+CREATE TRIGGER landing_theme_gate BEFORE INSERT OR UPDATE ON public.tenant_landing
+  FOR EACH ROW EXECUTE FUNCTION public.trg_landing_theme_gate();
+
+-- 16. Public RPCs that were written for a single owner now respect the tenant.
+-- verify_certificate stays callable by anyone with the certificate id, and now also returns the issuer
+-- (trainer tenant name, or NULL for the owner) so the page never brands a trainer's certificate as the owner's.
+CREATE OR REPLACE FUNCTION public.verify_certificate(_enrollment_id uuid)
+RETURNS jsonb LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $$
+  SELECT CASE
+    WHEN e.id IS NULL OR e.certificate_issued = false THEN jsonb_build_object('ok', false, 'error', 'not_found')
+    ELSE jsonb_build_object('ok', true, 'trainee_name_ar', e.name_ar, 'trainee_name_en', e.name_en,
+      'course_title', c.title, 'course_description', c.description, 'total_hours', c.total_hours,
+      'issued_at', e.updated_at, 'certificate_id', e.id,
+      'issuer_name', (SELECT t.name FROM public.tenants t WHERE t.id = c.tenant_id AND t.kind = 'trainer'))
+  END
+  FROM public.enrollments e LEFT JOIN public.courses c ON c.id = e.course_id WHERE e.id = _enrollment_id;
+$$;
+
+-- The owner's homepage testimonials show only feedback on the owner's (platform) courses.
+CREATE OR REPLACE FUNCTION public.get_featured_feedback() RETURNS TABLE (
+  id uuid, trainee_name text, course_title text, rating numeric, comments text, created_at timestamptz
+) LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $$
+  SELECT f.id,
+    split_part(coalesce(nullif(e.name_ar,''), nullif(p.full_name,''), 'متدرب'), ' ', 1)
+      || coalesce(' ' || left(nullif(split_part(coalesce(nullif(e.name_ar,''), p.full_name, ''), ' ', 2),''),1) || '.', ''),
+    c.title,
+    round((coalesce(f.content_rating,0)+coalesce(f.trainer_rating,0)+coalesce(f.expectations_rating,0))::numeric
+      / nullif((f.content_rating IS NOT NULL)::int+(f.trainer_rating IS NOT NULL)::int+(f.expectations_rating IS NOT NULL)::int,0), 1),
+    f.comments, f.created_at
+  FROM public.course_feedback f
+  JOIN public.courses c ON c.id = f.course_id AND c.tenant_id = public.platform_tenant_id()
+  LEFT JOIN public.profiles p ON p.id = f.user_id
+  LEFT JOIN public.enrollments e ON e.user_id = f.user_id AND e.course_id = f.course_id
+  WHERE f.is_featured AND f.comments IS NOT NULL AND length(trim(f.comments)) > 0
+  ORDER BY f.created_at DESC LIMIT 24
+$$;
 
 COMMIT;

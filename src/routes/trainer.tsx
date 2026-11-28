@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/portal-auth";
 import { useI18n } from "@/lib/i18n";
 import { TENANT_THEMES, themeByKey, themeVars } from "@/lib/tenant-themes";
+import { TrainerFinance } from "@/components/tenants/TrainerFinance";
 import { tdb, HOST_RE, isDbMissing, type Tenant, type TenantDomain } from "@/lib/tenants";
 
 export const Route = createFileRoute("/trainer")({
@@ -123,6 +124,8 @@ function TrainerDashboard() {
         {full && <p className="text-xs text-destructive">{t("وصلت للحد الأقصى من الكورسات.", "You reached your course limit.")}</p>}
       </section>
 
+      <TrainerFinance tenant={tenant} courses={courses} t={t} />
+
       {tenant.feature_landing ? (
         <section className="space-y-2">
           <h2 className="font-semibold">{t("صفحتك العامة", "Your public page")}</h2>
@@ -130,11 +133,11 @@ function TrainerDashboard() {
           <input className="w-full border rounded px-3 py-2 bg-background" placeholder={t("سطر تعريفي", "Subtitle")} value={land.subtitle} onChange={(e) => setLand({ ...land, subtitle: e.target.value })} />
           <textarea className="w-full border rounded px-3 py-2 bg-background" rows={3} placeholder={t("نبذة", "About")} value={land.about} onChange={(e) => setLand({ ...land, about: e.target.value })} />
           <div>
-            <div className="text-sm mb-2">{t("لون صفحتك (معاينة قبل الحفظ)", "Page colours (preview before saving)")}</div>
+            <div className="text-sm mb-2">{t("لون صفحتك (معاينة قبل الحفظ)", "Page colours (preview before saving)")}{!tenant.feature_theme && <span className="ms-2 text-xs text-muted-foreground">{t("تغيير الثيم غير مفعّل من المالك.", "Theme change is not enabled by the owner.")}</span>}</div>
             <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="theme">
               {TENANT_THEMES.map((th) => (
-                <button type="button" key={th.key} role="radio" aria-checked={land.theme === th.key} onClick={() => setLand({ ...land, theme: th.key })}
-                  className={`rounded-lg border-2 p-1 ${land.theme === th.key ? "border-foreground" : "border-transparent"}`} title={lang === "ar" ? th.ar : th.en}>
+                <button type="button" key={th.key} role="radio" aria-checked={land.theme === th.key} disabled={!tenant.feature_theme} onClick={() => setLand({ ...land, theme: th.key })}
+                  className={`rounded-lg border-2 p-1 disabled:opacity-40 ${land.theme === th.key ? "border-foreground" : "border-transparent"}`} title={lang === "ar" ? th.ar : th.en}>
                   <span className="flex h-8 w-16 overflow-hidden rounded" style={{ background: th.bg }}><span style={{ background: th.accent }} className="w-6" /><span style={{ background: th.panel }} className="w-4 ms-auto" /></span>
                   <span className="block text-[11px] mt-1">{lang === "ar" ? th.ar : th.en}</span>
                 </button>

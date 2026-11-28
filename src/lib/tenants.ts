@@ -14,6 +14,8 @@ export type Tenant = {
   feature_tools_upload: boolean;
   feature_landing: boolean;
   feature_custom_domain: boolean;
+  feature_theme: boolean;
+  extra_features: Record<string, boolean>;
   max_courses: number | null;
 };
 
