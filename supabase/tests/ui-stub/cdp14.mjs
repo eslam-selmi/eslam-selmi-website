@@ -49,6 +49,33 @@ await send('Page.navigate',{url:'http://127.0.0.1:5199/t/demo-trainer'});await w
 console.log('TOOLS_SHOWN', await ev(`document.body.innerText.includes('أدواتي')&&document.body.innerText.includes('guide.pdf')`));
 console.log('CLICK', await clickText('guide.pdf'));await wait(1500);
 }
+if(process.env.MODE==='misc'){
+console.log('OPEN', await clickText('عمر فيكستشر'));await wait(1500);
+console.log('INSTAMT', await ev(`(()=>{const i=document.querySelector('form input[name=amount]:not([placeholder])')||[...document.querySelectorAll('input[name=amount]')].pop();const set=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set;set.call(i,'300');i.dispatchEvent(new Event('input',{bubbles:true}));return i.value})()`));
+console.log('INSBTN', await clickText('إضافة قسط'));await wait(1500);
+console.log('INSAMT_AFTER', await ev(`[...document.querySelectorAll('input[name=amount]')].pop().value`));
+console.log('DISC', await ev(`(()=>{const i=[...document.querySelectorAll('input[type=number]')].find(x=>x.max);if(!i)return 'none';const set=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set;i.focus();set.call(i,'99999');i.dispatchEvent(new Event('input',{bubbles:true}));i.blur();return 'max='+i.max})()`));await wait(1500);
+console.log('DELETES', await ev(`[...document.querySelectorAll('button')].filter(b=>/حذف/.test(b.innerText)).length`));
+await send('Page.navigate',{url:'http://127.0.0.1:5199/t/demo-trainer/learn'});await wait(6000);
+console.log('LEARN', (await ev('document.body.innerText.slice(0,400)')||'').replace(/\n+/g,' | '));
+}
+if(process.env.MODE==='nm'){
+await send('Page.navigate',{url:'http://127.0.0.1:5199/t/demo-trainer/learn'});await wait(7000);
+console.log('NM_TESTID', await ev(`!!document.querySelector('[data-testid=learn-notmember]')`));
+console.log('NM_TEXT', await ev(`document.body.innerText.slice(0,200)`));
+console.log('NM_LINK', await ev(`document.querySelector('[data-testid=learn-notmember] a')?.getAttribute('href')`));
+console.log('NM_COURSES', await ev(`document.body.innerText.includes('ابدأ الدراسة')`));
+}
+if(process.env.MODE==='del'){
+console.log('OPEN', await clickText('عمر فيكستشر'));await wait(1500);
+console.log('INS_ROW', await ev(`document.body.innerText.includes('300')`));
+console.log('DEL_INS', await ev(`(()=>{const b=[...document.querySelectorAll('li button')].find(x=>/حذف/.test(x.innerText));if(!b)return 'no del btn';b.click();return 'clicked'})()`));await wait(1500);
+console.log('INS_GONE', await ev(`![...document.querySelectorAll('li')].some(l=>/300/.test(l.innerText)&&/حذف/.test(l.innerText))`));
+console.log('TAB_S', await clickText('الجلسات'));await wait(1500);
+console.log('SESS_ROW', await ev(`document.body.innerText.includes('جلسة 1')`));
+console.log('DEL_SESS', await ev(`(()=>{const b=[...document.querySelectorAll('button.text-rose-300')].pop();if(!b)return 'no del btn';b.click();return 'clicked'})()`));await wait(1500);
+console.log('SESS_GONE', await ev(`!document.body.innerText.includes('جلسة 1')`));
+}
 const sh=await ev('document.documentElement.scrollHeight');
 const shot=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:true,clip:{x:0,y:0,width:+w,height:Math.min(sh,2600),scale:1}});
 fs.writeFileSync(out,Buffer.from(shot.data,'base64'));ch.kill();process.exit(0);

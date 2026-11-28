@@ -4,7 +4,7 @@ const st={learners:[{user_id:'22222222-0000-0000-0000-000000000001',status:'pend
 const names={'22222222-0000-0000-0000-000000000001':'Sara Fixture','22222222-0000-0000-0000-000000000002':'Omar Fixture'};
 const tenant={id:T,slug:'demo-trainer',kind:'trainer',name:'Layla Hassan',status:'active',feature_tools_upload:false,feature_landing:true,feature_custom_domain:false,max_courses:3};
 st.mods=[];st.items=[];st.asg=[{id:'a1',course_id:'c1',title:'HW1',max_score:100}];st.pay=[];st.enr=[{id:'e1',user_id:'22222222-0000-0000-0000-000000000002',course_id:'c1',name_ar:'عمر فيكستشر',name_en:null,status:'approved',discount_amount:0,certificate_issued:false,certificate_requested_at:'2026-11-28T07:00:00Z',certificate_url:null,courses:{title:'أساسيات القيادة',price:1000}}];
-st.sess=[];st.sub=[{id:'s1',assignment_id:'a1',user_id:'22222222-0000-0000-0000-000000000002',content:'my work',link:null,score:null,feedback:null},{id:'s2',assignment_id:'a1',user_id:'22222222-0000-0000-0000-000000000001',content:'dated work',link:null,score:null,feedback:null,submitted_at:'2026-11-27T09:30:00Z'}];
+st.sess=process.env.SEED?[{id:'q1',course_id:'c1',title:'جلسة 1',starts_at:'2026-12-01T10:00:00Z',duration_minutes:60,link:null}]:[];st.sub=[{id:'s1',assignment_id:'a1',user_id:'22222222-0000-0000-0000-000000000002',content:'my work',link:null,score:null,feedback:null},{id:'s2',assignment_id:'a1',user_id:'22222222-0000-0000-0000-000000000001',content:'dated work',link:null,score:null,feedback:null,submitted_at:'2026-11-27T09:30:00Z'}];
 const landing={tenant_id:T,headline:'تدرّب على القيادة بثقة',subtitle:'x',about:'y',theme:'terracotta',published:true};
 http.createServer((q,s)=>{
  const h={'access-control-allow-origin':'*','access-control-allow-headers':'*','access-control-allow-methods':'*','content-type':'application/json'};
@@ -14,7 +14,7 @@ http.createServer((q,s)=>{
   if(!p.includes('site_')&&!p.includes('realtime'))console.log(q.method,p+u.search.slice(0,90),b.slice(0,120));
   let out=[];
   if(p.endsWith('/rpc/set_tenant_learner_status')){const j=JSON.parse(b);const l=st.learners.find(x=>x.user_id===j._user);if(l)l.status=j._status;out=null;}
-  else if(p.endsWith('/tenant_members')&&u.search.includes('user_id=eq')&&!u.search.includes('role=eq.admin'))out={status:'approved',role:'learner'};
+  else if(p.endsWith('/tenant_members')&&u.search.includes('user_id=eq')&&!u.search.includes('role=eq.admin')){if(process.env.MEM==='none'){s.writeHead(200,h);return s.end(obj?'null':'[]');}out={status:process.env.MEM==='pending'?'pending':'approved',role:'learner'};}
   else if(p.endsWith('/tenant_members')){ if(u.search.includes('role=eq.admin'))out=[{tenant_id:T}]; else out=st.learners;}
   else if(p.includes('/storage/v1/object/course-files/')){ if(process.env.DENY){s.writeHead(403,h);return s.end(JSON.stringify({statusCode:'403',error:'Unauthorized',message:'new row violates row-level security policy'}));} out={Key:'ok'};}
   else if(p.includes('/storage/v1/object/sign/tool-assets/')){out={signedURL:'/object/sign/tool-assets/guide.pdf?token=t'};}
@@ -24,11 +24,13 @@ http.createServer((q,s)=>{
   else if(p.endsWith('/course_modules')&&q.method==='DELETE'){st.mods=[];out=null;}
   else if(p.endsWith('/enrollments')){ if(q.method==='POST'){out=null;} else out=st.enr.map(e=>({...e,courses:{id:'c1',title:'أساسيات القيادة',description:null,price:0,currency:'EGP',active:true,installments_count:1,cover_emoji:'📘',total_hours:4}}));}
   else if(p.endsWith('/payments')){ if(q.method==='POST'){const j=JSON.parse(b);st.pay.push({id:'p'+st.pay.length,currency:'EGP',...j});out=null;} else out=st.pay;}
-  else if(p.endsWith('/installments'))out=[];
+  else if(p.endsWith('/installments')){ if(q.method==='DELETE'){st.ins=[];out=null;} else out=process.env.SEED?(st.ins=st.ins||[{id:'n1',enrollment_id:'e1',amount:300,due_date:null,paid:false}]):[];}
   else if(p.includes('/storage/v1/object/list'))out=process.env.TOOLS?[{name:'guide.pdf'}]:[];
+  else if(p.endsWith('/course_sessions')&&q.method==='DELETE'){st.sess=[];out=null;}
   else if(p.endsWith('/course_sessions')){ if(q.method==='POST'){const j=JSON.parse(b);st.sess.push({id:'x'+st.sess.length,...j});out=null;} else out=st.sess;}
   else if(p.endsWith('/course_modules')){ if(q.method==='POST'){const j=JSON.parse(b);st.mods.push({id:'m'+st.mods.length,created_at:new Date().toISOString(),...j});out=null;} else out=st.mods;}
   else if(p.endsWith('/module_items')){ if(q.method==='POST'){const j=JSON.parse(b);st.items.push({id:'i'+st.items.length,created_at:new Date().toISOString(),...j});out=null;} else out=st.items;}
+  else if(p.endsWith('/assignments')&&q.method==='DELETE'){st.asg=[];out=null;}
   else if(p.endsWith('/assignments')){ if(q.method==='POST'){const j=JSON.parse(b);st.asg.push({id:'a'+(st.asg.length+1),created_at:new Date().toISOString(),...j});out=null;} else out=st.asg;}
   else if(p.endsWith('/assignment_submissions')){ if(q.method==='PATCH'){Object.assign(st.sub[0],JSON.parse(b));out=null;} else out=st.sub;}
   else if(p.endsWith('/rpc/get_public_tenant'))out=[tenant];
