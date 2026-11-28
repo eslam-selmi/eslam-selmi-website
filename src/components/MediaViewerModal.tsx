@@ -122,7 +122,7 @@ export function MediaViewerModal({
   const [verifiedPdfUrl, setVerifiedPdfUrl] = useState<string | null>(null);
   useEffect(() => {
     setVerifiedPdfUrl(null);
-    if (!item || item.kind !== "pdf" || !resolvedUrl) return;
+    if (!item || !resolvedUrl || !(item.kind === "pdf" || /\.pdf(\?|$)/i.test(resolvedUrl))) return;
     let cancelled = false;
     let obj: string | null = null;
     (async () => {
