@@ -231,7 +231,7 @@ export function ModuleCard({
       const file: File = (window as any).__pendingFile;
       const path = `${pathPrefix ? pathPrefix + "/" : ""}${m.course_id}/${m.id}/${Date.now()}-${file.name.replace(/[^A-Za-z0-9._-]/g, "_")}`;
       const { error: upErr } = await supabase.storage.from("course-files").upload(path, file);
-      if (upErr) return toast.error(upErr.message);
+      if (upErr) return toast.error(pathPrefix ? t("تعذّر رفع الملف. رفع الملفات غير مفعّل لحسابك حاليًا، أو أن الملف مرفوض. اطلب من المالك تفعيله.", "Could not upload the file. File upload is currently not enabled for your account, or the file was refused. Ask the owner to enable it.") : upErr.message);
       url = path; // store storage path; signed URL generated on access
       (window as any).__pendingFile = null;
     }
