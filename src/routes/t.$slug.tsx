@@ -39,7 +39,7 @@ function TenantLanding() {
       if (!tenant) return null;
       const [l, c] = await Promise.all([
         tdb.from("tenant_landing").select("*").eq("tenant_id", tenant.id).maybeSingle(),
-        supabase.from("courses").select("id,title,description,total_hours,cover_emoji,slug").eq("tenant_id" as any, tenant.id).eq("active", true).eq("is_archived", false),
+        tdb.rpc("get_public_tenant_courses", { _slug: slug }),
       ]);
       return { tenant, landing: (l.data as Landing | null) ?? null, courses: (c.data as any[]) ?? [] };
     },

@@ -302,3 +302,39 @@ CREATE POLICY "tenant admin updates own course files" ON storage.objects FOR UPD
 CREATE POLICY "tenant admin deletes own course files" ON storage.objects FOR DELETE TO authenticated
   USING (bucket_id = 'course-files' AND public.storage_tenant_of(name) IS NOT NULL
          AND public.is_tenant_admin(public.storage_tenant_of(name)));
+
+-- 10. Keep the owner's public catalogue the owner's. Trainer courses are not readable through the general
+-- course policies; they are served by get_public_tenant_courses (landing) or to that tenant's own learners.
+DROP POLICY IF EXISTS "anon view active courses" ON public.courses;
+DROP POLICY IF EXISTS "authenticated view active courses" ON public.courses;
+CREATE POLICY "anon view active courses" ON public.courses FOR SELECT TO anon
+  USING (active = true AND is_archived = false AND tenant_id = public.platform_tenant_id());
+CREATE POLICY "authenticated view active courses" ON public.courses FOR SELECT TO authenticated
+  USING (((active = true AND is_archived = false)
+          AND (tenant_id = public.platform_tenant_id() OR public.is_tenant_learner(tenant_id)))
+         OR public.has_role(auth.uid(), 'admin'::public.app_role));
+
+CREATE OR REPLACE FUNCTION public.get_public_tenant_courses(_slug text)
+RETURNS TABLE (id uuid, title text, description text, total_hours numeric, cover_emoji text)
+LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $$
+  SELECT c.id, c.title, c.description, c.total_hours, c.cover_emoji
+  FROM public.courses c JOIN public.tenants t ON t.id = c.tenant_id
+  JOIN public.tenant_landing l ON l.tenant_id = t.id
+  WHERE t.slug = _slug AND t.status = 'active' AND t.kind = 'trainer' AND t.feature_landing AND l.published
+    AND c.active = true AND c.is_archived = false
+  ORDER BY c.created_at $$;
+GRANT EXECUTE ON FUNCTION public.get_public_tenant(text), public.get_public_tenant_courses(text) TO anon, authenticated;
+
+-- 11. Domains: no client (not even the owner's browser session) may mark a domain verified or active.
+-- Only a server-side verifier (service role, no auth.uid()) can, once DNS check + hosting attach exist.
+CREATE OR REPLACE FUNCTION public.trg_tenant_domains_guard() RETURNS trigger
+LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+BEGIN
+  IF auth.uid() IS NOT NULL AND NEW.status IN ('verified','active')
+     AND (TG_OP = 'INSERT' OR NEW.status IS DISTINCT FROM OLD.status) THEN
+    RAISE EXCEPTION 'domain verification is not available yet';
+  END IF;
+  RETURN NEW;
+END $$;
+CREATE TRIGGER tenant_domains_guard BEFORE INSERT OR UPDATE ON public.tenant_domains
+  FOR EACH ROW EXECUTE FUNCTION public.trg_tenant_domains_guard();

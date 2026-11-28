@@ -158,12 +158,12 @@ function TenantCard({ tn, domains, onDone, t }: { tn: Tenant; domains: TenantDom
                 <div className="text-xs text-muted-foreground" dir="ltr">TXT _verify = {d.verification_token}</div>
               </div>
               <div className="flex gap-2">
-                {d.status !== "active" && <button onClick={() => setDomain(d.id, "active")} className="px-2 py-1 rounded border text-xs">{t("تفعيل (بعد التحقق)", "Activate (after verifying)")}</button>}
-                {d.status === "active" && <button onClick={() => setDomain(d.id, "disabled")} className="px-2 py-1 rounded border text-xs">{t("فصل", "Disable")}</button>}
+                <button disabled title={t("غير متاح حتى يتم بناء التحقق من الملكية وربط الاستضافة", "Unavailable until ownership verification and hosting attach are built")} className="px-2 py-1 rounded border text-xs opacity-50 cursor-not-allowed">{t("التفعيل غير متاح بعد", "Activation unavailable yet")}</button>
+                {d.status === "requested" && <button onClick={() => setDomain(d.id, "disabled")} className="px-2 py-1 rounded border text-xs">{t("رفض الطلب", "Decline")}</button>}
               </div>
             </div>
           ))}
-          <p className="text-xs text-muted-foreground">{t("التحقق من DNS وربط الدومين بالاستضافة غير منفذ بعد، التفعيل هنا يغيّر الحالة فقط.", "DNS verification and attaching the domain to hosting are not built yet; activating here only changes the stored status.")}</p>
+          <p className="text-xs text-muted-foreground">{t("التحقق من ملكية الدومين وربطه بالاستضافة غير منفذ بعد، والقاعدة ترفض تفعيل أي دومين الآن. الطلبات محفوظة فقط.", "Domain ownership verification and hosting attach are not built yet; the database refuses to activate any domain for now. Requests are only stored.")}</p>
         </div>
       )}
     </div>

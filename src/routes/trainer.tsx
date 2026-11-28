@@ -114,7 +114,7 @@ function TrainerDashboard() {
           <h2 className="font-semibold">{t("دومين خاص", "Custom domain")}</h2>
           {domains.map((d) => <p key={d.id} className="text-sm" dir="ltr"><b>{d.hostname}</b> · {d.status} · TXT {d.verification_token}</p>)}
           <form onSubmit={requestDomain} className="flex gap-2"><input dir="ltr" className="flex-1 border rounded px-3 py-2 bg-background" placeholder="training.example.com" value={host} onChange={(e) => setHost(e.target.value)} /><button className="px-4 py-2 rounded-lg border">{t("طلب ربط", "Request")}</button></form>
-          <p className="text-xs text-muted-foreground">{t("المالك يفعّل الدومين بعد التحقق.", "The owner activates the domain after verification.")}</p>
+          <p className="text-xs text-muted-foreground">{t("الطلب يُحفظ فقط. التحقق من الملكية وربط الدومين غير متاحين بعد.", "The request is only stored. Ownership verification and domain attach are not available yet.")}</p>
         </section>
       )}
     </main>

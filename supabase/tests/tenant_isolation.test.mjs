@@ -51,7 +51,8 @@ await bad('sara cannot request domain (feature off)','saraU',`insert into tenant
 await ok('nora can request domain (feature on)','noraU',`insert into tenant_domains(tenant_id,hostname) values('${noraT}','nora-training.com')`);
 t('nora cannot self-activate domain (0 rows)',(await cnt('noraU',`with u as (update tenant_domains set status='active' where tenant_id='${noraT}' returning 1) select count(*) n from u`))===0);
 t('sara cannot read nora domains',(await cnt('saraU',`select count(*) n from tenant_domains`))===0);
-await ok('owner activates nora domain','owner',`update tenant_domains set status='active' where tenant_id='${noraT}'`);
+await bad('even owner cannot mark domain active/verified from a client session','owner',`update tenant_domains set status='active' where tenant_id='${noraT}'`);
+await ok('owner can disable a domain request','owner',`update tenant_domains set status='disabled' where tenant_id='${noraT}'`);
 t('anon-style public landing visible only when published+feature',(await cnt('legacy',`select count(*) n from tenant_landing`))===1);
 // learners
 await ok('l1 joins sara','l1',`select join_tenant_as_learner('sara')`);
@@ -90,4 +91,17 @@ t('sara reads nothing in course-files',(await cnt('saraU',`select count(*) n fro
 t('nora cannot read owner legacy file or payment proofs',(await cnt('noraU',`select count(*) n from storage.objects where name in ('legacy/owner.pdf','${U.legacy}/p.png')`))===0);
 t('sara cannot delete nora file',(await cnt('saraU',`with d as (delete from storage.objects where bucket_id='course-files' and name like 't/%' returning 1) select count(*) n from d`))===0);
 t('owner still reads legacy file',(await cnt('owner',`select count(*) n from storage.objects where name='legacy/owner.pdf'`))===1);
+
+// catalogue separation
+await db.exec(`reset role; update courses set active=true where title in ('Sara C1','Nora C1','Owner legacy course')`);
+async function asAnon(sql){await db.exec("reset role");await db.exec(`set role anon; select set_config('request.jwt.claim.sub','',false)`);try{const r=await db.query(sql);await db.exec('reset role');return r.rows;}catch(e){await db.exec('reset role');return 'ERR '+e.message;}}
+{const r=await asAnon(`select title from courses order by 1`);t('anon sees only owner courses on general policy',JSON.stringify(r)===JSON.stringify([{title:'Owner legacy course'}]));}
+{const r=await asAnon(`select title from get_public_tenant_courses('sara')`);t('suspended sara -> landing RPC empty',Array.isArray(r)&&r.length===0);}
+await db.exec(`reset role; update tenants set status='active' where slug='sara'`);
+{const r=await asAnon(`select title from get_public_tenant_courses('sara')`);t('reactivated sara: anon sees sara course via landing RPC',Array.isArray(r)&&r.length===2&&r.every(x=>x.title.startsWith('Sara')));}
+{const r=await asAnon(`select title from get_public_tenant_courses('nora')`);t('nora landing unpublished -> RPC empty',Array.isArray(r)&&r.length===0);}
+t('legacy learner does not see trainer courses',(await cnt('legacy',`select count(*) n from courses where title in ('Sara C1','Nora C1')`))===0);
+t('legacy learner still sees owner course',(await cnt('legacy',`select count(*) n from courses where title='Owner legacy course'`))===1);
+t('sara learner sees sara course',(await cnt('l1',`select count(*) n from courses where title='Sara C1'`))===1);
+t('nora learner does not see sara course',(await cnt('l2',`select count(*) n from courses where title='Sara C1'`))===0);
 console.log(`\nRESULT pass=${pass} fail=${fail} (base migrations failing in harness: ${baseFail})`);
