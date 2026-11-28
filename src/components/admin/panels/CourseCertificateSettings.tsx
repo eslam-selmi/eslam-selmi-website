@@ -98,6 +98,16 @@ export function CourseCertificateSettings({ course }: { course: { id: string; ti
 
     <div className="dash-card p-4 space-y-4">
       <h4 className="font-bold">التصميم</h4>
+      <div className="space-y-2" role="radiogroup" aria-label="تنسيق الشهادة">
+        <span className="text-xs text-muted-foreground">تنسيق الشهادة: يُطبَّق على كل الشهادات التي تُصدر لهذا الكورس بعد الحفظ.</span>
+        <div className="flex flex-wrap gap-3">
+          {([["portrait", "عمودي", "Portrait", "h-16 w-12"], ["landscape", "أفقي", "Landscape", "h-12 w-16"]] as const).map(([v, ar, en, box]) => <button key={v} type="button" role="radio" aria-checked={s.orientation === v} onClick={() => setS((p) => ({ ...p, orientation: v }))}
+            className={`flex items-center gap-3 rounded-lg border px-4 py-3 text-sm transition ${s.orientation === v ? "border-primary bg-primary/10" : "border-border bg-secondary"}`}>
+            <span className={`${box} flex flex-col items-center justify-between rounded-[3px] border border-border bg-[#f4f5f2] py-1`} aria-hidden="true"><i className="block h-1 w-full bg-[#0f2a63]" /><i className="block size-3 rounded-full border-2 border-[#0f2a63]" /><i className="block h-1 w-full bg-[#0f2a63]" /></span>
+            <span className="text-start font-bold">{ar}<span className="block text-xs font-normal text-muted-foreground" dir="ltr">{en}</span></span>
+          </button>)}
+        </div>
+      </div>
       <div className="grid gap-3 sm:grid-cols-4">
         {(Object.keys(COLOR_LABELS) as (keyof typeof COLOR_LABELS)[]).map((k) => <label key={k} className="text-xs space-y-1"><span className="text-muted-foreground">{COLOR_LABELS[k]}</span>
           <input type="color" value={s.colors[k]} onChange={(e) => setS((p) => ({ ...p, colors: { ...p.colors, [k]: e.target.value } }))} className="block h-10 w-full rounded-lg border border-border bg-secondary" /></label>)}

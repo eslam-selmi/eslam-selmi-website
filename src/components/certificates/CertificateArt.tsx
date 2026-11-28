@@ -2,25 +2,30 @@
 // All geometry is generated from fixed formulas so the sheet renders identically on screen and in the PDF export.
 const W = 794;
 const H = 1123;
+export const certificateSize = (orientation?: "portrait" | "landscape") => orientation === "landscape" ? { width: H, height: W } : { width: W, height: H };
 
 const f2 = (n: number) => n.toFixed(2);
-const wave = (y: number) => [0, 1, 2].map((k) => {
+const wave = (y: number, w = W) => [0, 1, 2].map((k) => {
   const pts: string[] = [];
-  for (let x = 0; x <= W; x += 3) pts.push(`${x},${f2(y + 5 * Math.sin((x / 38) * Math.PI * 2 / 2.2 + k * 2.1))}`);
+  for (let x = 0; x <= w; x += 3) pts.push(`${x},${f2(y + 5 * Math.sin((x / 38) * Math.PI * 2 / 2.2 + k * 2.1))}`);
   return pts.join(" ");
 });
 const TOP_WAVES = wave(18);
 const BOTTOM_WAVES = wave(H - 18);
+const LAND_TOP_WAVES = wave(18, H);
+const LAND_BOTTOM_WAVES = wave(W - 18, H);
 
-export function CertificateBands() {
+export function CertificateBands({ landscape = false }: { landscape?: boolean }) {
+  const w = landscape ? H : W, h = landscape ? W : H;
+  const top = landscape ? LAND_TOP_WAVES : TOP_WAVES, bottom = landscape ? LAND_BOTTOM_WAVES : BOTTOM_WAVES;
   return <>
-    <svg className="certificate-bands" width={W} height={H} viewBox={`0 0 ${W} ${H}`} aria-hidden="true">
-      <rect x="0" y="0" width={W} height="56" fill="#0f2a63" />
-      <line x1="0" x2={W} y1="56" y2="56" stroke="#19b9b5" strokeWidth="1.5" />
-      {TOP_WAVES.map((p, i) => <polyline key={`t${i}`} points={p} fill="none" stroke="#7fa3e6" strokeWidth=".5" opacity=".9" />)}
-      <rect x="0" y={H - 56} width={W} height="56" fill="#0f2a63" />
-      <line x1="0" x2={W} y1={H - 56} y2={H - 56} stroke="#19b9b5" strokeWidth="1.5" />
-      {BOTTOM_WAVES.map((p, i) => <polyline key={`b${i}`} points={p} fill="none" stroke="#7fa3e6" strokeWidth=".5" opacity=".9" />)}
+    <svg className="certificate-bands" width={w} height={h} viewBox={`0 0 ${w} ${h}`} aria-hidden="true">
+      <rect x="0" y="0" width={w} height="56" fill="#0f2a63" />
+      <line x1="0" x2={w} y1="56" y2="56" stroke="#19b9b5" strokeWidth="1.5" />
+      {top.map((p, i) => <polyline key={`t${i}`} points={p} fill="none" stroke="#7fa3e6" strokeWidth=".5" opacity=".9" />)}
+      <rect x="0" y={h - 56} width={w} height="56" fill="#0f2a63" />
+      <line x1="0" x2={w} y1={h - 56} y2={h - 56} stroke="#19b9b5" strokeWidth="1.5" />
+      {bottom.map((p, i) => <polyline key={`b${i}`} points={p} fill="none" stroke="#7fa3e6" strokeWidth=".5" opacity=".9" />)}
     </svg>
   </>;
 }

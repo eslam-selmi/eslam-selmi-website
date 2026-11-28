@@ -18,3 +18,10 @@ test("signaturePath accepts a storage path and rejects traversal or non-strings"
   assert.equal(readCertificateSettings({ signaturePath: 5 }).signaturePath, "");
   assert.equal(readCertificateSettings(null).signaturePath, "");
 });
+
+test("orientation defaults to portrait and only accepts landscape explicitly", () => {
+  assert.equal(readCertificateSettings(null).orientation, "portrait");
+  assert.equal(readCertificateSettings({ orientation: "landscape" }).orientation, "landscape");
+  assert.equal(readCertificateSettings({ orientation: "sideways" }).orientation, "portrait");
+  assert.equal(readCertificateSettings({ signaturePath: "x" }).orientation, "portrait");
+});

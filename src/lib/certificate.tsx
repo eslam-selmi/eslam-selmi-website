@@ -12,7 +12,7 @@ import arabicBold from "@fontsource/ibm-plex-sans-arabic/files/ibm-plex-sans-ara
 import latinLight from "@fontsource/ibm-plex-sans-arabic/files/ibm-plex-sans-arabic-latin-300-normal.woff2?url";
 import latinMedium from "@fontsource/ibm-plex-sans-arabic/files/ibm-plex-sans-arabic-latin-500-normal.woff2?url";
 import latinBold from "@fontsource/ibm-plex-sans-arabic/files/ibm-plex-sans-arabic-latin-600-normal.woff2?url";
-import { CertificateDocument, CERTIFICATE_WIDTH, CERTIFICATE_HEIGHT, verificationUrl } from "@/components/certificates/CertificateDocument";
+import { CertificateDocument, certificateSize, verificationUrl } from "@/components/certificates/CertificateDocument";
 import type { CertificatePayload } from "@/components/certificates/CertificateDocument";
 export type { CertificatePayload } from "@/components/certificates/CertificateDocument";
 
@@ -42,6 +42,9 @@ function embeddedFonts() {
 export async function generateCertificatePdf(p: CertificatePayload): Promise<Blob> {
   const host = document.createElement("div");
   host.className = "certificate-export-host";
+  const size = certificateSize(p.settings?.orientation);
+  const landscape = size.width > size.height;
+  host.style.width = `${size.width}px`; host.style.height = `${size.height}px`;
   document.body.appendChild(host);
   const root = createRoot(host);
   const signaturePath = p.settings?.signaturePath;
@@ -59,11 +62,19 @@ export async function generateCertificatePdf(p: CertificatePayload): Promise<Blo
     const target = host.firstElementChild;
     if (!(target instanceof HTMLElement)) throw new Error("Certificate layout is unavailable");
     const [{ toPng }, { default: jsPDF }] = await Promise.all([import("html-to-image"), import("jspdf")]);
-    const image = await toPng(target, { width: CERTIFICATE_WIDTH, height: CERTIFICATE_HEIGHT, pixelRatio: 1.5, fontEmbedCSS, cacheBust: false });
-    const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4", compress: true });
+    const image = await toPng(target, { width: size.width, height: size.height, pixelRatio: 1.5, fontEmbedCSS, cacheBust: false });
+    const pdf = new jsPDF({ orientation: landscape ? "landscape" : "portrait", unit: "mm", format: "a4", compress: true });
     pdf.setProperties({ title: `${p.lang === "ar" ? "شهادة إتمام" : "Certificate of completion"} — ${p.studentName}`, author: "Eslam Selmi", subject: p.courseTitle });
-    pdf.addImage(image, "PNG", 0, 0, 210, 297, undefined, "FAST");
-    if (p.settings?.toggles.showQr !== false) pdf.link(p.lang === "ar" ? 117.2 : 73.8, 246, 19, 19, { url: verificationUrl(p.certificateId) });
+    const pageW = landscape ? 297 : 210, pageH = landscape ? 210 : 297;
+    pdf.addImage(image, "PNG", 0, 0, pageW, pageH, undefined, "FAST");
+    if (p.settings?.toggles.showQr !== false) {
+      // Link rectangle follows the rendered QR (portrait: 117.2/73.8 mm x, 246 mm y; landscape: bottom corner), 19 mm square.
+      const qrBox = host.querySelector(".certificate-qr")?.getBoundingClientRect(), hostBox = target.getBoundingClientRect();
+      const mm = pageW / size.width;
+      const x = qrBox ? (qrBox.left - hostBox.left) * mm : landscape ? (p.lang === "ar" ? 265 : 15) : p.lang === "ar" ? 117.2 : 73.8;
+      const y = qrBox ? (qrBox.top - hostBox.top) * mm : landscape ? 172 : 246;
+      pdf.link(x, y, 19, 19, { url: verificationUrl(p.certificateId) });
+    }
     return pdf.output("blob");
   } catch (error) {
     throw new Error(`Certificate render failed (${p.lang}): ${error instanceof Error ? error.message : String(error)}`);

@@ -990,6 +990,26 @@ html[dir="rtl"] .rtl-flip { transform: scaleX(-1); }
 .certificate-verify-text { width:150px; font-size:12px; line-height:1.7; color:var(--certificate-muted); text-align:start; }
 .certificate-verify-text bdi { display:block; font-weight:500; letter-spacing:.14em; color:var(--certificate-ink); font-size:11px; direction:ltr; text-align:start; }
 .certificate-ar .certificate-verify-text bdi { text-align:right; }
+/* Landscape format (1123x794): same identity, elements redistributed over the wider sheet. */
+.certificate-sheet.certificate-landscape { width:1123px; height:794px; }
+.certificate-landscape .certificate-watermark { left:211px; top:130px; width:700px; }
+.certificate-landscape .certificate-logo { top:68px; width:92px; }
+.certificate-sheet.certificate-landscape .certificate-title { top:166px; }
+.certificate-sheet.certificate-landscape.certificate-ar .certificate-title { top:154px; }
+.certificate-sheet.certificate-landscape .certificate-subtitle { top:234px; }
+.certificate-landscape .certificate-divider { top:262px; }
+.certificate-landscape .certificate-intro { top:288px; }
+.certificate-sheet.certificate-landscape .certificate-student,.certificate-landscape.certificate-ar .certificate-student { top:318px; }
+.certificate-landscape .certificate-student-line { top:400px; }
+.certificate-landscape .certificate-bridge { top:418px; }
+.certificate-sheet.certificate-landscape .certificate-course { top:450px; }
+.certificate-sheet.certificate-landscape .certificate-hours { top:498px; font-size:16px; }
+.certificate-landscape .certificate-date,.certificate-landscape .certificate-signature { top:560px; width:210px; }
+.certificate-landscape .certificate-signature { inset-inline-start:150px; }
+.certificate-landscape .certificate-date { inset-inline-end:150px; }
+.certificate-landscape .certificate-seal-wrap { top:540px; }
+.certificate-landscape .certificate-verification { top:652px; left:64px; }
+.certificate-landscape.certificate-ar .certificate-verification { left:auto; right:64px; }
 .certificate-preview { width:100%; max-width:794px; aspect-ratio:794/1123; margin:auto; position:relative; overflow:hidden; }
 /* scale comes from a custom property: a global rule resets inline transform:scale() inside <main> */
 .certificate-preview-content { position:absolute; top:0; left:0; transform-origin:top left; transform:scale(var(--certificate-scale,0)); }
