@@ -27,6 +27,19 @@ export function CertificatePanel({
   const namesSaved = !!(enrollment.name_ar && enrollment.name_en);
   const issued = enrollment.certificate_issued && (enrollment.certificate_url_ar || enrollment.certificate_url_en || enrollment.certificate_url);
   const requested = !!enrollment.certificate_requested_at && !issued;
+  // Auto-issued by the server: certificate_issued is true but no stored file exists. The learner renders it locally from the server timestamp.
+  const autoIssued = LEARNER_PROGRESS_ENABLED && !!enrollment.certificate_issued && !issued;
+
+  async function downloadOwn() {
+    const date = resolveIssueDate((enrollment as any).certificate_issued_at);
+    if (!date) return toast.error(isAr ? "تاريخ الإصدار غير متاح للتحميل الذاتي، تواصل مع الإدارة" : "The issue date is not available for self-download, please contact us.");
+    try {
+      setRequesting(true);
+      const { ar, en } = await renderOwnCertificates({ id: enrollment.id, course_id: course.id, name_ar: enrollment.name_ar, name_en: enrollment.name_en, courses: course as any }, date);
+      for (const [b, n] of [[ar, "ar"], [en, "en"]] as const) { const u = URL.createObjectURL(b); const a = document.createElement("a"); a.href = u; a.download = `certificate-${n}.pdf`; a.click(); setTimeout(() => URL.revokeObjectURL(u), 10000); }
+    } catch (e) { console.error("self-certificate render failed:", e instanceof Error ? e.message : String(e)); toast.error(isAr ? "تعذّر إنشاء الملف، جرّب مرة أخرى" : "The file could not be created. Try again."); }
+    finally { setRequesting(false); }
+  }
 
   useEffect(() => {
     (async () => {
@@ -135,6 +148,17 @@ export function CertificatePanel({
               <Download className="w-4 h-4" /> {isAr ? "تحميل الشهادة" : "Download certificate"}
             </button>
           )}
+        </div>
+      ) : autoIssued ? (
+        <div className="space-y-2.5">
+          <p className="text-xs text-emerald-700 dark:text-emerald-300 flex items-center gap-1.5 mb-2">
+            <CheckCircle2 className="w-3.5 h-3.5" /> {isAr ? "شهادتك جاهزة" : "Your certificate is ready"}
+          </p>
+          <button onClick={downloadOwn} disabled={requesting}
+            className="w-full h-11 rounded-xl font-semibold flex items-center justify-center gap-2 disabled:opacity-60"
+            style={{ background: "linear-gradient(135deg, var(--gold), #b8923f)", color: "#0b1736" }}>
+            <Download className="w-4 h-4" /> {isAr ? "تحميل الشهادة (عربي وإنجليزي)" : "Download certificate (Arabic and English)"}
+          </button>
         </div>
       ) : (
         <div className="space-y-3">
