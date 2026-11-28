@@ -9,6 +9,7 @@ import { mediaSource } from "@/lib/media-url";
 import { WATCH_THRESHOLD } from "@/lib/watch-tracker";
 import { hasVideoCues } from "@/lib/video-cues";
 import { Button } from "@/components/ui/button";
+import { PdfCanvasViewer } from "@/components/PdfCanvasViewer";
 import { VideoWithCues } from "@/components/VideoWithCues";
 import { LEARNER_PROGRESS_ENABLED, recordOpened, markItemDone, recordWatched, supabaseProgressStore, createWatchTracker } from "@/lib/learner-progress";
 
@@ -120,8 +121,12 @@ export function MediaViewerModal({
 
   // Byte-verified PDF: fetch the file, accept only if it starts with %PDF- and re-wrap it as application/pdf. Only then is it shown without a sandbox.
   const [verifiedPdfUrl, setVerifiedPdfUrl] = useState<string | null>(null);
+  const [pdfData, setPdfData] = useState<ArrayBuffer | null>(null);
+  const [pdfCanvasFailed, setPdfCanvasFailed] = useState(false);
   useEffect(() => {
     setVerifiedPdfUrl(null);
+    setPdfData(null);
+    setPdfCanvasFailed(false);
     if (!item || !resolvedUrl || !(item.kind === "pdf" || /\.pdf(\?|$)/i.test(resolvedUrl))) return;
     let cancelled = false;
     let obj: string | null = null;
@@ -132,6 +137,7 @@ export function MediaViewerModal({
         const buf = await r.arrayBuffer();
         const head = new TextDecoder().decode(new Uint8Array(buf.slice(0, 5)));
         if (head !== "%PDF-") return;
+        if (!cancelled) setPdfData(buf);
         obj = URL.createObjectURL(new Blob([buf], { type: "application/pdf" }));
         if (!cancelled) setVerifiedPdfUrl(obj); else URL.revokeObjectURL(obj);
       } catch { /* keep the sandboxed original */ }
@@ -274,6 +280,8 @@ export function MediaViewerModal({
                   </a>
                 )}
               </div>
+            ) : pdfData && !pdfCanvasFailed ? (
+              <PdfCanvasViewer data={pdfData} label={item.title} onFail={() => setPdfCanvasFailed(true)} />
             ) : (
               <iframe
                 src={(verifiedPdfUrl ?? resolvedUrl) + (isPdf ? "#toolbar=0" : "")}
