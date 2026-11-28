@@ -923,6 +923,7 @@ export type Database = {
         Row: {
           blocked: boolean
           certificate_issued: boolean
+          certificate_issued_at: string | null
           certificate_requested_at: string | null
           certificate_url: string | null
           certificate_url_ar: string | null
@@ -944,6 +945,7 @@ export type Database = {
         Insert: {
           blocked?: boolean
           certificate_issued?: boolean
+          certificate_issued_at?: string | null
           certificate_requested_at?: string | null
           certificate_url?: string | null
           certificate_url_ar?: string | null
@@ -965,6 +967,7 @@ export type Database = {
         Update: {
           blocked?: boolean
           certificate_issued?: boolean
+          certificate_issued_at?: string | null
           certificate_requested_at?: string | null
           certificate_url?: string | null
           certificate_url_ar?: string | null
@@ -1166,6 +1169,68 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      graduation_approval_log: {
+        Row: {
+          action: string
+          actor: string
+          assignment_id: string
+          at: string
+          id: number
+          note: string | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          actor: string
+          assignment_id: string
+          at?: string
+          id?: never
+          note?: string | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          actor?: string
+          assignment_id?: string
+          at?: string
+          id?: never
+          note?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      graduation_approvals: {
+        Row: {
+          approved_at: string
+          approved_by: string
+          assignment_id: string
+          note: string | null
+          user_id: string
+        }
+        Insert: {
+          approved_at?: string
+          approved_by: string
+          assignment_id: string
+          note?: string | null
+          user_id: string
+        }
+        Update: {
+          approved_at?: string
+          approved_by?: string
+          assignment_id?: string
+          note?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "graduation_approvals_assignment_id_fkey"
+            columns: ["assignment_id"]
+            isOneToOne: false
+            referencedRelation: "assignments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       guest_access: {
         Row: {
@@ -1436,10 +1501,46 @@ export type Database = {
         }
         Relationships: []
       }
+      learner_item_progress: {
+        Row: {
+          completed_at: string | null
+          first_seen_at: string | null
+          item_id: string
+          opened_at: string | null
+          user_id: string
+          watched_seconds: number[]
+        }
+        Insert: {
+          completed_at?: string | null
+          first_seen_at?: string | null
+          item_id: string
+          opened_at?: string | null
+          user_id: string
+          watched_seconds?: number[]
+        }
+        Update: {
+          completed_at?: string | null
+          first_seen_at?: string | null
+          item_id?: string
+          opened_at?: string | null
+          user_id?: string
+          watched_seconds?: number[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "learner_item_progress_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "module_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       module_items: {
         Row: {
           content: string | null
           created_at: string
+          duration_seconds: number | null
           id: string
           kind: string
           module_id: string
@@ -1450,6 +1551,7 @@ export type Database = {
         Insert: {
           content?: string | null
           created_at?: string
+          duration_seconds?: number | null
           id?: string
           kind: string
           module_id: string
@@ -1460,6 +1562,7 @@ export type Database = {
         Update: {
           content?: string | null
           created_at?: string
+          duration_seconds?: number | null
           id?: string
           kind?: string
           module_id?: string
@@ -2481,6 +2584,34 @@ export type Database = {
         }
         Returns: undefined
       }
+      admin_approve_graduation: {
+        Args: { _assignment: string; _note?: string; _user: string }
+        Returns: Json
+      }
+      admin_certificate_finance_unknown: {
+        Args: never
+        Returns: {
+          course_id: string
+          enrollment_id: string
+          user_id: string
+        }[]
+      }
+      admin_revoke_graduation_approval: {
+        Args: { _assignment: string; _user: string }
+        Returns: Json
+      }
+      admin_set_item_duration: {
+        Args: { _item: string; _seconds: number }
+        Returns: undefined
+      }
+      admin_videos_missing_duration: {
+        Args: never
+        Returns: {
+          item_id: string
+          media_class: string
+          module_id: string
+        }[]
+      }
       apply_coupon_to_enrollment: {
         Args: { _code: string; _enrollment_id: string }
         Returns: Json
@@ -2489,6 +2620,10 @@ export type Database = {
       cancel_my_booking: {
         Args: { _reason?: string; _slot_id: string }
         Returns: Json
+      }
+      certificate_finance_state: {
+        Args: { _enrollment: string }
+        Returns: string
       }
       extra_lock_ok: { Args: { p_key: string }; Returns: boolean }
       generate_booking_slots: {
@@ -2554,6 +2689,11 @@ export type Database = {
       }
       has_tool_access: { Args: { _tool: string }; Returns: boolean }
       is_trainer_of_course: { Args: { _course_id: string }; Returns: boolean }
+      issue_my_certificate: { Args: { _enrollment: string }; Returns: Json }
+      item_media_class: {
+        Args: { _kind: string; _url: string }
+        Returns: string
+      }
       list_page_access: {
         Args: never
         Returns: {
@@ -2571,6 +2711,7 @@ export type Database = {
           total_hours: number
         }[]
       }
+      my_certificate_gate: { Args: { _enrollment: string }; Returns: Json }
       my_tool_request_status: { Args: { p_tool: string }; Returns: string }
       notify_admins: {
         Args: { _body: string; _link: string; _title: string }
@@ -2594,6 +2735,15 @@ export type Database = {
       review_tool_request: {
         Args: { p_approve: boolean; p_id: string }
         Returns: string
+      }
+      save_my_item_progress: {
+        Args: {
+          _completed: boolean
+          _item: string
+          _opened: boolean
+          _seconds: number[]
+        }
+        Returns: Json
       }
       set_page_access: {
         Args: { p_key: string; p_mode: string; p_password?: string }
