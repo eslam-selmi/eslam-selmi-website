@@ -77,7 +77,12 @@ function RequestCard({ r, onDone, t }: { r: TenantRequest; onDone: () => void; t
       _request: r.id, _max_courses: unlimited ? null : max, _tools_upload: tools, _landing: landing, _custom_domain: domain, _theme: theme,
     });
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) {
+      const dup = error.code === "23505" || /duplicate key|unique/i.test(error.message);
+      return toast.error(dup
+        ? t(`الرابط /t/${r.requested_slug} مستخدم لمدرب آخر. اطلب من المدرب رابطاً مختلفاً قبل القبول.`, `The link /t/${r.requested_slug} is already used by another trainer. Ask the trainer for a different link before approving.`)
+        : error.message);
+    }
     toast.success(t("تم قبول المدرب", "Trainer approved"));
     onDone();
   }

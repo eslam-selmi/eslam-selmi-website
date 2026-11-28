@@ -1,6 +1,6 @@
 import http from 'node:http';
 const T='00000000-0000-0000-0000-0000000000aa', U='11111111-1111-1111-1111-111111111111';
-const st={learners:[{user_id:'22222222-0000-0000-0000-000000000001',status:'pending',created_at:'2026-11-28T08:00:00Z'},{user_id:'22222222-0000-0000-0000-000000000002',status:'approved',created_at:'2026-11-27T08:00:00Z'}],requests:[]};
+const st={learners:[{user_id:'22222222-0000-0000-0000-000000000001',status:'pending',created_at:'2026-11-28T08:00:00Z'},{user_id:'22222222-0000-0000-0000-000000000002',status:'approved',created_at:'2026-11-27T08:00:00Z'}],requests:process.env.DUP?[{id:'r9',user_id:'22222222-0000-0000-0000-000000000009',status:'pending',full_name:'Dup Trainer',specialty:'x',requested_slug:'demo-trainer',created_at:'2026-11-28T08:00:00Z'}]:[]};
 const names={'22222222-0000-0000-0000-000000000001':'Sara Fixture','22222222-0000-0000-0000-000000000002':'Omar Fixture'};
 const tenant={id:T,slug:'demo-trainer',kind:'trainer',name:'Layla Hassan',status:'active',feature_tools_upload:!!process.env.TOOLS,feature_landing:true,feature_custom_domain:false,max_courses:3};
 st.mods=[];st.items=[];st.asg=[{id:'a1',course_id:'c1',title:'HW1',max_score:100}];st.pay=[];st.enr=[{id:'e1',user_id:'22222222-0000-0000-0000-000000000002',course_id:'c1',name_ar:'عمر فيكستشر',name_en:null,status:'approved',discount_amount:0,certificate_issued:false,certificate_requested_at:'2026-11-28T07:00:00Z',certificate_url:null,courses:{title:'أساسيات القيادة',price:1000}}];
@@ -38,7 +38,7 @@ http.createServer((q,s)=>{
   else if(p.endsWith('/rpc/get_public_tenant_courses'))out=[{id:'c1',title:'أساسيات القيادة',price:0}];
   else if(p.endsWith('/tenants')&&q.method==='PATCH'){Object.assign(tenant,JSON.parse(b));out=null;}
   else if(p.endsWith('/tenants')&&u.search.includes('kind=eq.trainer'))out=[tenant];
-  else if(p.endsWith('/rpc/approve_tenant_request')){out=null;}
+  else if(p.endsWith('/rpc/approve_tenant_request')){ if(process.env.DUP){s.writeHead(409,h);return s.end(JSON.stringify({code:'23505',message:'duplicate key value violates unique constraint "tenants_slug_key"'}));} out=null;}
   else if(p.endsWith('/tenants'))out=tenant;
   else if(p.endsWith('/tenant_landing'))out=landing;
   else if(p.endsWith('/profiles'))out=Object.entries(names).map(([id,full_name])=>({id,full_name}));

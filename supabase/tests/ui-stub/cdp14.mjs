@@ -87,6 +87,12 @@ console.log('TAB_C', await clickText('المحتوى'));await wait(1500);console
 console.log('ASG_BTNS', await ev(`document.querySelectorAll('button.text-rose-300').length`));
 console.log('DEL_ASG', await ev(`(()=>{const b=[...document.querySelectorAll('button.text-rose-300')][0];if(!b)return 'no del btn';b.click();return 'clicked'})()`));await wait(1500);
 }
+if(process.env.MODE==='dup'){
+console.log('APPROVE', await clickText('قبول'));await wait(2000);
+console.log('TOAST', await ev(`document.body.innerText.includes('مستخدم لمدرب آخر')`));
+console.log('TOASTTXT', await ev(`(document.body.innerText.match(/الرابط[^\n]*/)||[''])[0]`));
+console.log('RAW', await ev(`document.body.innerText.includes('duplicate key')`));
+}
 const sh=await ev('document.documentElement.scrollHeight');
 const shot=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:true,clip:{x:0,y:0,width:+w,height:Math.min(sh,2600),scale:1}});
 fs.writeFileSync(out,Buffer.from(shot.data,'base64'));ch.kill();process.exit(0);
