@@ -4,6 +4,8 @@
 -- Safety: it refuses to run if any trainer tenant, trainer course or tenant member exists, because dropping the tables
 -- would delete that data. If trainers exist, export/review first and remove them deliberately; this script never
 -- deletes owner content (owner courses only lose the extra tenant_id column; every other owner column is untouched).
+BEGIN;
+
 DO $$
 BEGIN
   IF EXISTS (SELECT 1 FROM public.tenants WHERE kind = 'trainer')
@@ -76,3 +78,12 @@ DROP FUNCTION IF EXISTS public.get_public_tenant_courses(text), public.get_publi
   public.is_tenant_learner(uuid), public.is_tenant_admin(uuid), public.is_platform_admin(),
   public.platform_tenant_id(), public.trg_courses_tenant_guard(), public.trg_tenant_domains_guard(),
   public.trg_tenants_guard() CASCADE;
+
+DO $do$ BEGIN
+  IF to_regclass('public.course_trainers') IS NOT NULL THEN
+    EXECUTE 'DROP TRIGGER IF EXISTS course_trainers_platform_only ON public.course_trainers';
+  END IF;
+END $do$;
+DROP FUNCTION IF EXISTS public.trg_course_trainers_platform_only();
+
+COMMIT;

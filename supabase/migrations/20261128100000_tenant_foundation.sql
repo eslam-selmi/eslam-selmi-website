@@ -1,10 +1,15 @@
 -- Tenant foundation (PREPARED, not applied to any live database).
--- Additive only: no existing policy, row or column is dropped or rewritten.
+-- NOT purely additive. It also: writes tenant_id on every existing courses row (backfill, then NOT NULL);
+-- drops and recreates two courses SELECT policies; replaces trg_enrollment_guard_trainee();
+-- adds a RESTRICTIVE enrollments insert policy; adds a trigger on course_trainers (if that table exists).
 -- Existing content stays in the platform (owner) tenant via a column default.
+-- The whole file runs in one transaction: a failure leaves nothing applied.
 -- Trainer tenants get their own admin membership, learner membership and course rows.
 -- Platform admin = existing user_roles 'admin' (unchanged).
 
 -- 1. Tenants ---------------------------------------------------------------
+BEGIN;
+
 CREATE TABLE IF NOT EXISTS public.tenants (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   slug text NOT NULL UNIQUE CHECK (slug ~ '^[a-z0-9][a-z0-9-]{1,38}[a-z0-9]$'),
@@ -54,7 +59,8 @@ $$ SELECT EXISTS (SELECT 1 FROM public.tenant_members m JOIN public.tenants t ON
 
 CREATE OR REPLACE FUNCTION public.is_tenant_learner(_tenant uuid) RETURNS boolean
 LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS
-$$ SELECT EXISTS (SELECT 1 FROM public.tenant_members m WHERE m.tenant_id = _tenant AND m.user_id = auth.uid() AND m.role = 'learner' AND m.status = 'approved') $$;
+$$ SELECT EXISTS (SELECT 1 FROM public.tenant_members m JOIN public.tenants t ON t.id = m.tenant_id
+  WHERE m.tenant_id = _tenant AND m.user_id = auth.uid() AND m.role = 'learner' AND m.status = 'approved' AND t.status = 'active') $$;
 
 CREATE OR REPLACE FUNCTION public.tenant_feature(_tenant uuid, _feature text) RETURNS boolean
 LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS
@@ -118,6 +124,7 @@ BEGIN
   IF NOT public.is_platform_admin() THEN RAISE EXCEPTION 'platform admin only'; END IF;
   SELECT * INTO r FROM public.tenant_requests WHERE id = _request FOR UPDATE;
   IF NOT FOUND OR r.status <> 'pending' THEN RAISE EXCEPTION 'request not pending'; END IF;
+  IF EXISTS (SELECT 1 FROM public.tenants WHERE slug = r.requested_slug) THEN RAISE EXCEPTION 'slug already taken'; END IF;
   INSERT INTO public.tenants (slug, kind, name, max_courses, feature_tools_upload, feature_landing, feature_custom_domain)
   VALUES (r.requested_slug, 'trainer', r.full_name, _max_courses, _tools_upload, _landing, _custom_domain)
   RETURNING id INTO t;
@@ -218,7 +225,7 @@ BEGIN
   END IF;
   IF TG_OP = 'INSERT' THEN
     IF NOT public.is_tenant_admin(NEW.tenant_id) THEN RAISE EXCEPTION 'not an admin of this tenant'; END IF;
-    SELECT max_courses INTO lim FROM public.tenants WHERE id = NEW.tenant_id;
+    SELECT max_courses INTO lim FROM public.tenants WHERE id = NEW.tenant_id FOR UPDATE;
     SELECT count(*) INTO cnt FROM public.courses WHERE tenant_id = NEW.tenant_id;
     IF lim IS NOT NULL AND cnt >= lim THEN RAISE EXCEPTION 'course limit reached (%)', lim; END IF;
   END IF;
@@ -268,9 +275,17 @@ BEGIN
     RETURN NEW;
   END IF;
   -- Tenant admin: may change review fields of enrollments in their own tenant, never the course or learner.
+  -- Least privilege: status, blocked and notes only. Certificates, discounts, coupons and grace dates stay with the platform admin.
   IF public.is_tenant_admin(public.course_tenant(OLD.course_id))
      AND NEW.course_id IS NOT DISTINCT FROM OLD.course_id
-     AND NEW.user_id IS NOT DISTINCT FROM OLD.user_id THEN
+     AND NEW.user_id IS NOT DISTINCT FROM OLD.user_id
+     AND NEW.certificate_issued IS NOT DISTINCT FROM OLD.certificate_issued
+     AND NEW.certificate_url IS NOT DISTINCT FROM OLD.certificate_url
+     AND NEW.certificate_url_ar IS NOT DISTINCT FROM OLD.certificate_url_ar
+     AND NEW.certificate_url_en IS NOT DISTINCT FROM OLD.certificate_url_en
+     AND NEW.discount_amount IS NOT DISTINCT FROM OLD.discount_amount
+     AND NEW.coupon_code IS NOT DISTINCT FROM OLD.coupon_code
+     AND NEW.grace_until IS NOT DISTINCT FROM OLD.grace_until THEN
     RETURN NEW;
   END IF;
   IF NEW.status IS DISTINCT FROM OLD.status
@@ -355,3 +370,22 @@ CREATE TRIGGER tenant_domains_guard BEFORE INSERT OR UPDATE ON public.tenant_dom
 -- 12. Trainer colour theme: one of ten fixed keys, validated in the database. Applies only to that tenant's page.
 ALTER TABLE public.tenant_landing ADD COLUMN IF NOT EXISTS theme text NOT NULL DEFAULT 'terracotta'
   CHECK (theme IN ('terracotta','ocean','forest','plum','sand','rose','slate','midnight','mint','saffron'));
+
+-- 13. Legacy trainers feature: stale course_trainers rows must never reach a tenant course.
+-- Legacy trainer policies key on course_trainers and are not tenant-aware; this blocks the link instead of dropping policies.
+CREATE OR REPLACE FUNCTION public.trg_course_trainers_platform_only() RETURNS trigger
+LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+BEGIN
+  IF public.course_tenant(NEW.course_id) IS DISTINCT FROM public.platform_tenant_id() THEN
+    RAISE EXCEPTION 'legacy trainer assignment is only allowed on platform courses';
+  END IF;
+  RETURN NEW;
+END $$;
+DO $do$ BEGIN
+  IF to_regclass('public.course_trainers') IS NOT NULL THEN
+    EXECUTE 'DROP TRIGGER IF EXISTS course_trainers_platform_only ON public.course_trainers';
+    EXECUTE 'CREATE TRIGGER course_trainers_platform_only BEFORE INSERT OR UPDATE ON public.course_trainers FOR EACH ROW EXECUTE FUNCTION public.trg_course_trainers_platform_only()';
+  END IF;
+END $do$;
+
+COMMIT;
