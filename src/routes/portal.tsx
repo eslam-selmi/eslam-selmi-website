@@ -21,7 +21,7 @@ import { UploadModal } from "@/components/portal/UploadModal";
 import { EnrollModal } from "@/components/portal/EnrollModal";
 import { timeGreeting, useWelcomeGreeting } from "@/components/portal/PersonalMessage";
 import { PortalAlerts, usePortalAlerts } from "@/components/portal/OverviewExtras";
-import { buildPortalNav, PortalSidebar, PortalTabBar, type PortalTabId } from "@/components/portal-next/PortalNav";
+import { buildPortalNav, PortalTopNav, PortalTabBar, type PortalTabId } from "@/components/portal-next/PortalNav";
 import { PortalOverviewClean, PortalHero, PortalNudge, PortalStatsRow, PortalQuickLinks, SectionHeader, EmptyState } from "@/components/portal-next/PortalHome";
 
 
@@ -284,29 +284,24 @@ function PortalPage() {
     userLabel: profile?.full_name || profile?.email,
     avatarSrc,
     onAccountSettings: () => setAccountOpen(true),
-    sidebar: (
-      <PortalSidebar
+    topNav: (
+      <PortalTopNav
         items={navItems}
         tab={tab}
         onSelect={(id) => { setViewingId(null); setTab(id); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-        onAccount={() => setAccountOpen(true)}
-        summary={stats}
-        profile={{
-          name: profile?.full_name || (isAr ? "متدرب جديد" : "New trainee"),
-          avatarSrc,
-          countryFlag: country?.flag,
-          countryName: isAr ? country?.name_ar : country?.name_en,
-        }}
-        supportNode={
-          <TraineeSupportButton
-            userId={user.id}
-            enrolledCourses={trEnrollments
-              .filter((e) => e.status === "approved" && e.courses)
-              .map((e) => ({ id: e.course_id, title: e.courses!.title }))}
-          />
-        }
         lang={lang}
       />
+    ),
+    footer: (
+      <>
+        <TraineeSupportButton
+          userId={user.id}
+          enrolledCourses={trEnrollments
+            .filter((e) => e.status === "approved" && e.courses)
+            .map((e) => ({ id: e.course_id, title: e.courses!.title }))}
+        />
+        <button onClick={() => setAccountOpen(true)} className="nx-pill-link">{isAr ? "إعدادات الحساب" : "Account settings"}</button>
+      </>
     ),
     mobileBar: (
       <PortalTabBar

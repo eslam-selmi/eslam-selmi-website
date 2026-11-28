@@ -120,3 +120,26 @@ export function PortalTabBar({ items, tab, onSelect, lang }: {
     </div>
   );
 }
+
+/** Pill navigation for the trainee header. Account settings is not a tab; it stays reachable from the avatar menu and the page footer. */
+export function PortalTopNav({ items, tab, onSelect, lang }: {
+  items: PortalNavItem[];
+  tab: string;
+  onSelect: (id: PortalTabId) => void;
+  lang: string;
+}) {
+  const tabs = items.filter((i) => i.id !== "account") as (PortalNavItem & { id: PortalTabId })[];
+  return (
+    <nav className="nx-pills" aria-label={lang === "ar" ? "أقسام البوابة" : "Portal sections"}>
+      {tabs.map((it) => {
+        const active = tab === it.id;
+        return (
+          <button key={it.id} className="nx-pill" data-active={active} aria-current={active ? "page" : undefined} onClick={() => onSelect(it.id)}>
+            {it.label}
+            {it.badge ? <span className="nx-pill-badge">{it.badge}</span> : null}
+          </button>
+        );
+      })}
+    </nav>
+  );
+}

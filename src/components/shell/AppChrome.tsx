@@ -11,6 +11,7 @@ import { useI18n } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
 import { useSiteProfile } from "@/lib/site-profile";
 import { ChangePasswordModal } from "./ChangePasswordModal";
+import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
 
 type Props = {
   role: "admin" | "trainee" | null;
@@ -19,13 +20,16 @@ type Props = {
   avatarSrc?: string | null;
   sidebar?: React.ReactNode;
   mobileBar?: React.ReactNode;
+  /** Trainee layout: pill navigation in the header instead of a sidebar. */
+  topNav?: React.ReactNode;
+  footer?: React.ReactNode;
   onAccountSettings?: () => void;
   pendingActions?: PendingAction[];
   demo?: boolean; // preview harness: no auth side effects, static bell
   children: React.ReactNode;
 };
 
-export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileBar, onAccountSettings, demo, pendingActions, children }: Props) {
+export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileBar, topNav, footer, onAccountSettings, demo, pendingActions, children }: Props) {
   const { profile } = useSiteProfile();
   const nav = useNavigate();
   const { lang, setLang, dir } = useI18n();
@@ -75,7 +79,7 @@ export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileB
   const initials = (userLabel || "?").trim().charAt(0).toUpperCase();
 
   return (
-    <div dir={dir} className={`nx nx-bg relative min-h-screen text-white ${role === "admin" ? "nx-is-admin admin-shell" : ""}`}>
+    <div dir={dir} className={`nx nx-bg relative min-h-screen text-white ${role === "admin" ? "nx-is-admin admin-shell" : ""} ${topNav ? "nx-thm" : ""}`}>
       <div className="absolute inset-0 nx-grid-overlay pointer-events-none" />
 
 
@@ -99,30 +103,28 @@ export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileB
         <div className="nx-main flex-1 min-w-0 relative">
       <header className="sticky top-0 z-[60] border-b border-white/[0.07] bg-[oklch(0.13_0.035_258/0.78)] backdrop-blur-2xl">
         <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[var(--nx-teal)]/35 to-transparent" />
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+        <div className={`max-w-[1400px] mx-auto px-4 sm:px-6 ${topNav ? "min-h-16 py-2 flex flex-wrap xl:flex-nowrap items-center justify-between gap-x-3 gap-y-2" : "h-16 flex items-center justify-between gap-3"}`}>
           <div className="flex items-center gap-3 min-w-0">
             <Link to="/" reloadDocument aria-label={isAr ? "العودة إلى الموقع" : "Back to website"} className={`flex items-center gap-3 group shrink-0 ${sidebar ? "lg:hidden" : ""}`}>
               <img
-                src={profile.logoDark}
+                src={profile.logoDark || brandLogoAsset.url}
                 alt="Eslam Selmi"
-                className="h-9 w-9 rounded-xl object-contain bg-white/10 p-1 border border-white/15 group-hover:border-[var(--nx-teal)]/60 transition"
+                className={topNav ? "h-9 w-auto max-w-[44px] object-contain" : "h-9 w-9 rounded-xl object-contain bg-white/10 p-1 border border-white/15 group-hover:border-[var(--nx-teal)]/60 transition"}
                 onError={(e) => {
                   const el = e.currentTarget;
+                  if (el.src !== brandLogoAsset.url) { el.src = brandLogoAsset.url; return; }
                   el.onerror = null;
                   el.style.display = "none";
-                  const sib = el.nextElementSibling as HTMLElement | null;
-                  if (sib) sib.style.display = "flex";
                 }}
               />
-              <span style={{ display: "none" }} className="h-9 w-9 rounded-xl bg-gradient-to-br from-[var(--nx-teal)]/30 to-[var(--nx-gold)]/20 border border-white/15 items-center justify-center text-[13px] font-bold text-white">ES</span>
-              <div className="hidden sm:block leading-tight">
+              <div className={`${topNav ? "" : "hidden sm:block"} leading-tight`}>
                 <p className="text-[9px] text-white/40 font-bold" style={{ letterSpacing: dir === "ltr" ? "0.2em" : 0 }}>ESLAM SELMI</p>
                 <p className="text-[12.5px] font-bold text-[var(--nx-teal)]">
                   {role === "admin" ? L.panelAdmin : L.panelTrainee}
                 </p>
               </div>
             </Link>
-            <nav className={`hidden md:flex items-center gap-1 ${sidebar ? "lg:ms-0 lg:ps-0 lg:border-s-0" : "ms-2 ps-3 border-s border-white/10"}`}>
+            <nav className={`${topNav ? "!hidden" : ""} hidden md:flex items-center gap-1 ${sidebar ? "lg:ms-0 lg:ps-0 lg:border-s-0" : "ms-2 ps-3 border-s border-white/10"}`}>
               <Link to="/" reloadDocument className="flex items-center gap-1.5 text-xs text-white/65 hover:text-white px-3 h-9 rounded-lg hover:bg-white/5 transition">
                 {L.site} {isAr ? <ArrowUpLeft className="w-3.5 h-3.5" /> : <ArrowUpRight className="w-3.5 h-3.5" />}
               </Link>
@@ -134,7 +136,16 @@ export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileB
             </nav>
           </div>
 
+          {topNav && <div className="hidden lg:flex order-3 xl:order-none w-full xl:w-auto justify-center">{topNav}</div>}
+
           <div className="flex items-center gap-2">
+            {topNav && (
+              <span className="order-last hidden sm:inline-flex">
+                <Link to="/" reloadDocument className="nx-pill-link">
+                  {isAr ? <ArrowUpLeft className="w-3.5 h-3.5" /> : <ArrowUpRight className="w-3.5 h-3.5" />} {L.site}
+                </Link>
+              </span>
+            )}
             <button onClick={toggle} title={theme === "dark" ? (isAr ? "الوضع الفاتح" : "Light mode") : (isAr ? "الوضع الداكن" : "Dark mode")} aria-label="toggle theme" className="nx-icon-btn">
               {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
@@ -157,7 +168,7 @@ export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileB
                 className="flex items-center gap-2 h-10 ps-1.5 pe-2.5 rounded-[13px] border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] hover:border-[var(--nx-teal)]/40 transition"
               >
                 <span className="w-7 h-7 rounded-[9px] overflow-hidden bg-gradient-to-br from-[var(--nx-teal)]/30 to-[var(--nx-gold)]/20 border border-white/15 flex items-center justify-center text-[13px] font-bold text-white">
-                  {avatarSrc ? <img src={avatarSrc} alt="" className="w-full h-full object-cover" /> : initials}
+                  {avatarSrc ? <img src={avatarSrc} alt="" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} /> : initials}
                 </span>
                 <span className="hidden lg:block text-xs font-semibold text-white/80 max-w-[130px] truncate">{userLabel}</span>
                 <ChevronDown className={`w-3.5 h-3.5 text-white/50 transition-transform ${menuOpen ? "rotate-180" : ""}`} />
@@ -182,7 +193,7 @@ export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileB
           </div>
         </div>
       </header>
-          <main className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-[calc(7rem+env(safe-area-inset-bottom))] lg:pb-12 max-w-[1240px] mx-auto">{children}</main>
+          <main className={`px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-[calc(7rem+env(safe-area-inset-bottom))] lg:pb-12 mx-auto ${topNav ? "max-w-[1400px]" : "max-w-[1240px]"}`}>{children}{footer && <div className="mt-8 flex flex-wrap items-center gap-3">{footer}</div>}</main>
         </div>
       </div>
 

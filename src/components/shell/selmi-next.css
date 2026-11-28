@@ -465,3 +465,32 @@
   .nx-tabbar-item[data-active="true"] { font-weight: 800; }
   .nx-tabbar-item[data-active="true"] > span:first-child { background: color-mix(in oklab, var(--nx-teal) 22%, transparent); }
 }
+
+/* Trainee portal (top-navigation layout): Thmanyah Sans, self-hosted. Applied only when the shell is given a topNav. */
+@font-face { font-family: "Thmanyah Sans"; src: url("/fonts/thmanyah-sans-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Thmanyah Sans"; src: url("/fonts/thmanyah-sans-Medium.woff2") format("woff2"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "Thmanyah Sans"; src: url("/fonts/thmanyah-sans-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Thmanyah Sans"; src: url("/fonts/thmanyah-sans-Black.woff2") format("woff2"); font-weight: 900; font-display: swap; }
+.nx-thm { --nx-font-display: "Thmanyah Sans", "IBM Plex Sans Arabic", sans-serif; }
+.nx-thm, .nx-thm * { font-family: "Thmanyah Sans", "IBM Plex Sans Arabic", "Tajawal", sans-serif; }
+
+.nx-pills {
+  display: flex; align-items: center; gap: 4px; padding: 5px; border-radius: 999px;
+  background: oklch(1 0 0 / 0.06); border: 1px solid var(--nx-line);
+}
+.nx-pill {
+  height: 38px; padding: 0 16px; border-radius: 999px; font-size: 14px; font-weight: 500; white-space: nowrap;
+  color: var(--nx-ink-60); display: inline-flex; align-items: center; gap: 6px;
+}
+.nx-pill:hover { color: var(--nx-ink); background: oklch(1 0 0 / 0.07); }
+.nx .nx-pill[data-active="true"], .nx .nx-pill[data-active="true"]:hover { background: var(--nx-teal); color: oklch(0.2 0.05 215); font-weight: 700; }
+.nx-pill-badge { min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; font-size: 10px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; background: var(--nx-gold); color: #000; }
+.nx-pill-link {
+  height: 40px; padding: 0 14px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 500; white-space: nowrap; color: var(--nx-ink-60); background: oklch(1 0 0 / 0.06); border: 1px solid var(--nx-line); transition: all .2s;
+}
+.nx-pill-link:hover { color: var(--nx-ink); border-color: oklch(0.82 0.12 190 / 0.4); }
+.nx-cover { border-radius: 16px; position: relative; overflow: hidden; height: 112px; }
+:root:not(.dark) .nx .nx-pills, :root:not(.dark) .nx .nx-pill-link { background: oklch(1 0 0 / 0.7); }
+:root.dark .nx header .nx-pill[data-active="true"], :root.dark .nx header .nx-pill[data-active="true"]:hover { background: var(--nx-teal); border-color: transparent; color: oklch(0.2 0.05 215); }
+:root.dark .nx header .nx-pill:not([data-active="true"]) { background: transparent; border-color: transparent; }

@@ -218,10 +218,20 @@ export function EmptyState({ icon: Icon, title, hint, action }: {
 
 export type CourseRowVM = { en: Enrollment; progress: number | null; done: number; total: number };
 
-/** Course-first overview: one "continue" card, one progress card, then the trainee's own courses. Real data only. */
+/** Letters for the typographic cover: the first Latin acronym in the real title (e.g. "TNA"); otherwise the course number. */
+export function coverLabel(title: string | undefined | null, index: number): { text: string; latin: boolean } {
+  const m = (title ?? "").match(/\b[A-Z][A-Z0-9]{1,5}\b/);
+  return m ? { text: m[0], latin: true } : { text: String(index + 1).padStart(2, "0"), latin: false };
+}
+const COVER_TONES = [
+  { bg: "oklch(0.3 0.09 258)", fg: "oklch(0.8 0.13 190)", no: "oklch(0.86 0.07 190)" },
+  { bg: "oklch(0.3 0.06 205)", fg: "oklch(0.78 0.1 255)", no: "oklch(0.88 0.04 250)" },
+];
+
+/** Overview: greeting, current course + overall summary, then the trainee's own courses as cards. Real data only. */
 export function PortalOverviewClean({
   lang, greeting, firstName, welcomeLine, continueTarget, hoursEarned, hoursTotal, hoursPct, certs, courseRows,
-  availableCount, onOpenCourse, onBrowse, onGoMyCourses, onGoCertificates, supportNode,
+  availableCount, onOpenCourse, onBrowse, onGoMyCourses, onGoCertificates,
 }: {
   lang: string; greeting: string; firstName: string; welcomeLine?: string;
   continueTarget: { en: Enrollment; progress: number; done: number; total: number } | null;
@@ -231,101 +241,106 @@ export function PortalOverviewClean({
   supportNode?: React.ReactNode;
 }) {
   const ar = lang === "ar";
-  // Prefer hours when the course durations are set; otherwise show real completed units instead of a meaningless 0/0 hours.
-  const unitsDone = courseRows.filter((r) => r.en.status === "approved").reduce((a, r) => a + r.done, 0);
-  const unitsTotal = courseRows.filter((r) => r.en.status === "approved").reduce((a, r) => a + r.total, 0);
+  const approvedRows = courseRows.filter((r) => r.en.status === "approved");
+  const unitsDone = approvedRows.reduce((a, r) => a + r.done, 0);
+  const unitsTotal = approvedRows.reduce((a, r) => a + r.total, 0);
   const useHours = hoursTotal > 0;
   const pct = unitsTotal > 0 ? Math.round((unitsDone / unitsTotal) * 100) : hoursPct;
+  const rows = [
+    { k: ar ? "الوحدات المكتملة" : "Units completed", v: ar ? `${unitsDone} من ${unitsTotal}` : `${unitsDone} of ${unitsTotal}` },
+    ...(useHours ? [{ k: ar ? "الساعات" : "Hours", v: ar ? `${hoursEarned} من ${hoursTotal}` : `${hoursEarned} of ${hoursTotal}` }] : []),
+    { k: ar ? "شهادات صادرة" : "Certificates issued", v: String(certs), onClick: onGoCertificates },
+    { k: ar ? "الكورسات" : "Courses", v: String(approvedRows.length) },
+  ];
   return (
-    <div className="space-y-5 sm:space-y-7">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <h1 className="nx-display text-[26px] sm:text-[34px] leading-tight truncate">{ar ? `${greeting}، ${firstName}` : `${greeting}, ${firstName}`}</h1>
-          {welcomeLine && <p className="text-white/55 text-sm sm:text-[15px] mt-1.5 leading-relaxed">{welcomeLine}</p>}
-        </div>
-        {supportNode && <div className="lg:hidden shrink-0">{supportNode}</div>}
+    <div className="space-y-6 sm:space-y-8">
+      <div>
+        <h1 className="nx-display font-black text-[34px] sm:text-[52px] leading-[1.15]">
+          {ar ? `${greeting}، ` : `${greeting}, `}<span className="text-[var(--nx-teal)]">{firstName}</span>
+        </h1>
+        {welcomeLine && <p className="text-white/55 text-sm sm:text-[15px] mt-1.5 leading-relaxed">{welcomeLine}</p>}
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
-        <section className="nx-card p-5 sm:p-7 lg:col-span-2 flex flex-col justify-between gap-5">
+      <div className="grid lg:grid-cols-[1.6fr_1fr] gap-4 sm:gap-6">
+        <section className="nx-card p-6 sm:p-8 flex flex-col justify-center gap-5 min-h-[200px]">
           {continueTarget ? (
             <>
+              <h2 className="text-2xl sm:text-[32px] font-bold leading-snug">{continueTarget.en.courses?.title}</h2>
               <div>
-                <p className="nx-eyebrow">{ar ? "كمّل من حيث وقفت" : "Continue learning"}</p>
-                <h2 className="text-xl sm:text-2xl font-bold leading-snug mt-2.5">{continueTarget.en.courses?.title}</h2>
-              </div>
-              <div>
-                <div className="flex items-center justify-between text-xs font-semibold text-white/55 mb-2">
+                <div className="flex items-center justify-between text-sm text-white/70 mb-2.5">
                   <span>{ar ? `أكملت ${continueTarget.done} من ${continueTarget.total} وحدة` : `${continueTarget.done} of ${continueTarget.total} units completed`}</span>
                   <bdi dir="ltr" className="font-bold text-[var(--nx-teal)]">{continueTarget.progress}%</bdi>
                 </div>
-                <div className="nx-track h-2 rounded-full overflow-hidden"><div className="h-full rounded-full bg-[var(--nx-teal)]" style={{ width: `${continueTarget.progress}%` }} /></div>
-                <button onClick={() => onOpenCourse(continueTarget.en)} className="nx-btn nx-btn-primary mt-5">
-                  <PlayCircle className="w-4 h-4" /> {ar ? "أكمل التعلّم" : "Resume"}
-                </button>
+                <div className="nx-track h-2.5 rounded-full overflow-hidden"><div className="h-full rounded-full bg-[var(--nx-teal)]" style={{ width: `${continueTarget.progress}%` }} /></div>
               </div>
+              <div><button onClick={() => onOpenCourse(continueTarget.en)} className="nx-btn nx-btn-primary"><PlayCircle className="w-4 h-4" /> {ar ? "أكمل التعلّم" : "Resume"}</button></div>
             </>
           ) : (
             <>
-              <div>
-                <p className="nx-eyebrow">{ar ? "ابدأ من هنا" : "Start here"}</p>
-                <h2 className="text-xl sm:text-2xl font-bold leading-snug mt-2.5">{ar ? "لا يوجد كورس جارٍ حاليًا" : "No course in progress"}</h2>
-                <p className="text-sm text-white/55 mt-2">{ar ? "اختر كورسًا من المتاح وقدّم طلب الالتحاق." : "Pick an available course and request to join."}</p>
-              </div>
+              <h2 className="text-2xl font-bold leading-snug">{ar ? "لا يوجد كورس جارٍ حاليًا" : "No course in progress"}</h2>
+              <p className="text-sm text-white/55">{ar ? "اختر كورسًا من المتاح وقدّم طلب الالتحاق." : "Pick an available course and request to join."}</p>
               <div><button onClick={onBrowse} className="nx-btn nx-btn-primary"><GraduationCap className="w-4 h-4" /> {ar ? "استكشف الكورسات المتاحة" : "Browse available courses"}</button></div>
             </>
           )}
         </section>
 
-        <section className="nx-card p-4 sm:p-6 flex lg:flex-col items-center lg:justify-center gap-5 lg:gap-4">
-          <ProgressRing value={pct} size={88} stroke={8} tone="teal">
-            <p className="nx-display text-xl leading-none"><bdi dir="ltr">{pct}%</bdi></p>
+        <section className="nx-card p-5 sm:p-6 flex items-center gap-5">
+          <ProgressRing value={pct} size={128} stroke={11} tone="teal">
+            <p className="nx-display font-black text-[30px] leading-none"><bdi dir="ltr">{pct}%</bdi></p>
           </ProgressRing>
-          <div className="lg:text-center min-w-0">
-            <p className="text-sm font-bold"><span className="text-xs text-white/70 font-semibold">{ar ? `أكملت ${unitsDone} من ${unitsTotal} وحدة` : `${unitsDone} of ${unitsTotal} units completed`}</span></p>
-            {useHours && <p className="text-[11px] text-white/45 mt-0.5">{ar ? `${hoursEarned} من ${hoursTotal} ساعة (للكورسات المحدد لها ساعات)` : `${hoursEarned} of ${hoursTotal} hours (courses with set hours)`}</p>}
-            <button onClick={onGoCertificates} className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-[var(--nx-teal)] hover:underline">
-              <Award className="w-3.5 h-3.5" /> {ar ? `شهادات صادرة: ${certs}` : `Certificates: ${certs}`}
-            </button>
+          <div className="flex-1 min-w-0">
+            <h5 className="text-[15px] text-white/60 mb-2.5">{ar ? "إجمالي التقدم في كل الكورسات" : "Overall progress across all courses"}</h5>
+            {rows.map((r) => (
+              <div key={r.k} className="flex items-center justify-between gap-3 py-2 text-[15px] border-t border-white/10 text-white/80">
+                {r.onClick ? <button onClick={r.onClick} className="hover:underline text-start">{r.k}</button> : <span>{r.k}</span>}
+                <b className="text-white font-bold">{r.v}</b>
+              </div>
+            ))}
           </div>
         </section>
       </div>
 
-      {courseRows.length > 0 && (
-        <section>
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-base sm:text-lg font-bold">{ar ? "كورساتي" : "My courses"}</h2>
-            <button onClick={onGoMyCourses} className="text-xs font-bold text-[var(--nx-teal)] inline-flex items-center gap-1">{ar ? "عرض الكل" : "View all"} <ArrowRight className="w-3.5 h-3.5 rtl-flip" /></button>
-          </div>
-          <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
-            {courseRows.slice(0, 4).map(({ en, progress, done, total }) => {
-              const approved = en.status === "approved";
-              return (
-                <button key={en.id} onClick={() => (approved ? onOpenCourse(en) : onGoMyCourses())} className="nx-card nx-card-hover p-4 sm:p-5 text-start">
-                  <div className="flex items-start justify-between gap-3">
-                    <p className="font-bold text-sm sm:text-[15px] leading-snug">{en.courses?.title}</p>
-                    {!approved && <span className="nx-chip shrink-0">{ar ? "قيد المراجعة" : "Under review"}</span>}
-                  </div>
-                  {approved && progress !== null && (
-                    <div className="mt-3.5">
-                      <div className="nx-track h-1.5 rounded-full overflow-hidden"><div className="h-full rounded-full bg-[var(--nx-teal)]" style={{ width: `${progress}%` }} /></div>
-                      <p className="text-[11px] text-white/50 font-semibold mt-1.5">{ar ? `${done} من ${total} وحدة` : `${done} of ${total} units`} · <bdi dir="ltr">{progress}%</bdi></p>
+      <section>
+        <div className="flex items-baseline justify-between mb-3.5">
+          <h2 className="text-xl sm:text-2xl font-bold">{ar ? "كورساتي" : "My courses"}</h2>
+          {courseRows.length > 0 && <button onClick={onGoMyCourses} className="text-sm font-medium text-[var(--nx-teal)] inline-flex items-center gap-1">{ar ? "عرض الكل" : "View all"} <ArrowRight className="w-3.5 h-3.5 rtl-flip" /></button>}
+        </div>
+        <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
+          {courseRows.slice(0, 5).map(({ en, progress, done, total }, i) => {
+            const approved = en.status === "approved";
+            const cv = coverLabel(en.courses?.title, i);
+            const tone = COVER_TONES[i % COVER_TONES.length];
+            return (
+              <button key={en.id} onClick={() => (approved ? onOpenCourse(en) : onGoMyCourses())} className="nx-card nx-card-hover p-4 pb-5 text-start">
+                <div className="nx-cover mb-4" style={{ background: tone.bg }} aria-hidden="true">
+                  <span className="absolute top-3 end-4 text-[13px] font-medium" style={{ color: tone.no }}>{ar ? `كورس ${String(i + 1).padStart(2, "0")}` : `Course ${String(i + 1).padStart(2, "0")}`}</span>
+                  <span className="absolute start-3 -bottom-5 font-black leading-none" dir="ltr" style={{ color: tone.fg, fontSize: cv.latin ? 112 : 96, letterSpacing: -3 }}>{cv.text}</span>
+                </div>
+                <div className="flex items-start justify-between gap-3 px-1.5">
+                  <p className="font-medium text-[17px] leading-snug">{en.courses?.title}</p>
+                  {!approved && <span className="nx-chip shrink-0">{ar ? "قيد المراجعة" : "Under review"}</span>}
+                </div>
+                {approved && progress !== null && (
+                  <div className="mt-3.5 px-1.5">
+                    <div className="flex items-center justify-between text-[13px] text-white/65 mb-2">
+                      <span>{ar ? `${done} من ${total} وحدة` : `${done} of ${total} units`}</span>
+                      <bdi dir="ltr">{progress}%</bdi>
                     </div>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </section>
-      )}
-
-      {availableCount > 0 && (
-        <button onClick={onBrowse} className="nx-card nx-card-hover w-full p-4 flex items-center gap-3 text-start">
-          <span className="w-10 h-10 rounded-xl bg-[var(--nx-teal)]/10 border border-[var(--nx-teal)]/25 flex items-center justify-center shrink-0"><GraduationCap className="w-5 h-5 text-[var(--nx-teal)]" /></span>
-          <span className="flex-1 text-sm font-bold">{ar ? `كورسات متاحة للالتحاق (${availableCount})` : `Courses open to join (${availableCount})`}</span>
-          <ArrowRight className="w-4 h-4 text-white/35 rtl-flip" />
-        </button>
-      )}
+                    <div className="nx-track h-2 rounded-full overflow-hidden"><div className="h-full rounded-full bg-[var(--nx-teal)]" style={{ width: `${progress}%` }} /></div>
+                  </div>
+                )}
+              </button>
+            );
+          })}
+          {availableCount > 0 && (
+            <button onClick={onBrowse} className="nx-card nx-card-hover !border-dashed min-h-[200px] flex flex-col items-center justify-center gap-2 text-white/80">
+              <span className="text-5xl font-light leading-none text-[var(--nx-teal)]">+</span>
+              <span className="text-[17px]">{ar ? "كورسات متاحة" : "Available courses"}</span>
+              <span className="text-xs text-white/50"><bdi dir="ltr">{availableCount}</bdi></span>
+            </button>
+          )}
+        </div>
+      </section>
     </div>
   );
 }
