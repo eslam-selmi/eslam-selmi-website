@@ -33,6 +33,7 @@ import { FinancePanel, PaymentMethodsPanel } from "@/components/admin/panels/Fin
 import { ProgramsPanel } from "@/components/admin/ProgramsPanel";
 import { GraduateToolsPanel } from "@/components/admin/GraduateToolsPanel";
 import { SiteMediaPanel } from "@/components/admin/SiteMediaPanel";
+import { TrainersPanel } from "@/components/tenants/TrainersPanel";
 import { ServicesPanel } from "@/components/admin/panels/ServicesPanel";
 import { VideosPanel } from "@/components/admin/panels/VideosPanel";
 import { PillarsPanel } from "@/components/admin/panels/PillarsPanel";
@@ -319,6 +320,8 @@ function AdminPage() {
             refresh={refresh}
             onEdit={setEditingCourse}
           />
+        ) : tab === "trainers" ? (
+          <TrainersPanel />
         ) : tab === "coupons" ? (
           <CouponsPanel courses={courses} />
         ) : tab === "additions" ? (

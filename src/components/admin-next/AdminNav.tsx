@@ -11,7 +11,7 @@ export type AdminTabId =
   | "testimonials" | "success_cases" | "bookings" | "packages" | "interviews"
   | "snapshots" | "trainings" | "partners" | "contracts" | "programs" | "services"
   | "pillars" | "videos" | "graduate_tools" | "media" | "effects" | "visibility"
-  | "popups" | "maintenance" | "tools" | "pages" | "subscribers";
+  | "popups" | "maintenance" | "tools" | "pages" | "subscribers" | "trainers";
 
 export type AdminNavItem = { id: AdminTabId; label: string; icon: any; badge?: number | string };
 export type AdminNavGroup = { id: string; label: string; items: AdminNavItem[] };
@@ -31,6 +31,7 @@ export function buildAdminNav(
         { id: "subscribers", label: t("المشتركون", "Subscribers"), icon: Users },
         { id: "enrollments", label: t("طلبات وانضمامات", "Enrollments"), icon: Users, badge: badges.pendingEnrollments || undefined },
         { id: "courses", label: t("الكورسات", "Courses"), icon: BookOpen },
+        { id: "trainers", label: t("المدربون (منصات)", "Trainer platforms"), icon: Users },
         { id: "leads", label: t("اهتمامات الكورسات", "Course leads"), icon: StickyNote },
         { id: "feedback", label: t("تقييمات الكورسات", "Course feedback"), icon: Star },
         { id: "banned", label: t("الموقوفون", "Banned"), icon: Archive, badge: badges.blockedCount || undefined },
