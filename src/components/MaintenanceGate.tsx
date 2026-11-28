@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { useRouterState } from "@tanstack/react-router";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { MaintenancePage } from "./MaintenancePage";
+import { maintenanceDecision } from "@/lib/maintenance-gate";
 
 type Config = {
   enabled: boolean;
@@ -10,11 +11,11 @@ type Config = {
   until: string | null;
 };
 
-const ALLOWED_PREFIXES = ["/admin", "/auth", "/portal", "/onboarding", "/verify"];
-
 export function MaintenanceGate({ children }: { children: React.ReactNode }) {
   const [config, setConfig] = useState<Config | null>(null);
-  const [signedIn, setSignedIn] = useState<boolean>(false);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [adminCheck, setAdminCheck] = useState<{ id: string; admin: boolean } | null>(null);
+  const navigate = useNavigate();
   const [sessionChecked, setSessionChecked] = useState(false);
   const location = useRouterState({ select: (s) => s.location.pathname });
 
@@ -53,22 +54,51 @@ export function MaintenanceGate({ children }: { children: React.ReactNode }) {
     const sync = async () => {
       try {
         const { data, error } = await supabase.auth.getSession();
-        if (alive) setSignedIn(!error && !!data.session?.user);
+        if (alive) setUserId(!error ? data.session?.user?.id ?? null : null);
       } catch {
-        if (alive) setSignedIn(false); // a broken or stale session must not open a maintenance site
+        if (alive) setUserId(null); // a broken or stale session must not open a maintenance site
       }
       if (alive) setSessionChecked(true);
     };
     sync();
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
-      if (alive) setSignedIn(!!session?.user);
+      if (alive) setUserId(session?.user?.id ?? null);
     });
     return () => { alive = false; sub.subscription.unsubscribe(); };
   }, []);
 
-  const allowedPath = ALLOWED_PREFIXES.some((p) => location === p || location.startsWith(p + "/"));
-  if ((!config || !sessionChecked) && !allowedPath) {
-    // Until the maintenance setting and the session are known, keep the page hidden so visitors never see it flash.
+  // Admin check, only to decide who may open the homepage while maintenance is on. A failed check means "not admin".
+  // The result is tied to the user id, so a new session is "unknown" (page hidden) until its own check finishes.
+  useEffect(() => {
+    if (!userId) return;
+    let alive = true;
+    (async () => {
+      let admin = false;
+      try {
+        const { data, error } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+        admin = !error && data === true;
+      } catch { admin = false; }
+      if (alive) setAdminCheck({ id: userId, admin });
+    })();
+    return () => { alive = false; };
+  }, [userId]);
+  const isAdmin = !userId ? false : adminCheck?.id === userId ? adminCheck.admin : null;
+
+  const decision = maintenanceDecision({
+    pathname: location,
+    enabled: config ? config.enabled : null,
+    session: !sessionChecked ? "unknown" : userId ? "user" : "none",
+    isAdmin,
+  });
+
+  useEffect(() => {
+    if (decision === "to-portal") void navigate({ to: "/portal", replace: true });
+  }, [decision, navigate]);
+
+  if (decision === "show") return <>{children}</>;
+  if (decision === "to-portal") return <div aria-hidden style={{ position: "fixed", inset: 0, zIndex: 9999, background: "#07112a" }} />;
+  if (decision === "hide") {
+    // Until the maintenance setting, session and role are known, keep the page hidden so visitors never see it flash.
     return (
       <>
         <div aria-hidden style={{ visibility: "hidden" }}>{children}</div>
@@ -76,14 +106,8 @@ export function MaintenanceGate({ children }: { children: React.ReactNode }) {
       </>
     );
   }
-  if (!config) return <>{children}</>;
-  if (!config.enabled) return <>{children}</>;
-  if (signedIn) return <>{children}</>;
-  if (ALLOWED_PREFIXES.some((p) => location === p || location.startsWith(p + "/"))) {
-    return <>{children}</>;
-  }
 
   const lang = typeof document !== "undefined" ? document.documentElement.getAttribute("lang") : "ar";
-  const message = lang === "en" ? (config.message_en || config.message_ar) : (config.message_ar || config.message_en);
-  return <MaintenancePage message={message} until={config.until} />;
+  const message = lang === "en" ? (config?.message_en || config?.message_ar) : (config?.message_ar || config?.message_en);
+  return <MaintenancePage message={message ?? ""} until={config?.until ?? null} />;
 }
