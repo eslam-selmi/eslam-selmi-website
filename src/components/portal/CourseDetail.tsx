@@ -1,6 +1,6 @@
 import { orderModulesForDisplay } from "@/lib/general-modules";
 import { regroupByUnit } from "@/lib/item-unit";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
@@ -9,6 +9,9 @@ import { safeHref } from "@/lib/safe-url";
 import { Clock, Wallet, ExternalLink, Calendar, Layers, StickyNote, Link as LinkIcon, Paperclip, Check, ChevronLeft, PlayCircle } from "lucide-react";
 import { MediaViewerModal, type MediaItem } from "@/components/MediaViewerModal";
 import { visibleItemText } from "@/lib/video-cues";
+import { LEARNER_PROGRESS_ENABLED } from "@/lib/learner-progress";
+import { itemMediaClass, isMeasuredVideo } from "@/lib/media-class";
+import { unitDoneFor, itemWatchPercent, type ProgressRow } from "@/lib/unit-progress";
 import type { Enrollment } from "./types";
 import type { Tables } from "@/integrations/supabase/types";
 import { AssignmentsSection } from "./Assignments";
@@ -45,6 +48,21 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
   });
   const modules = detail.data?.modules ?? [];
   const items = detail.data?.items ?? {};
+  // The learner's own progress (completion by measured playback / explicit mark). The old admin mark is ignored, same as the portal home.
+  const progressQ = useQuery({
+    queryKey: ["portal", "item-progress", enrollment.user_id, c.id],
+    enabled: LEARNER_PROGRESS_ENABLED && !!enrollment.user_id,
+    staleTime: 0,
+    queryFn: async (): Promise<ProgressRow[]> => {
+      const { data } = await (supabase as any).from("learner_item_progress").select("item_id,completed_at,watched_seconds").eq("user_id", enrollment.user_id);
+      return (data ?? []) as ProgressRow[];
+    },
+  });
+  const progRows: ProgressRow[] = progressQ.data ?? [];
+  const progById = useMemo(() => new Map(progRows.map((p) => [p.item_id, p])), [progRows]);
+  // Re-read after the viewer closes so a just-finished video shows its check without a page reload.
+  useEffect(() => { if (!viewItem) void progressQ.refetch(); }, [viewItem]); // eslint-disable-line react-hooks/exhaustive-deps
+  const isUnitDone = (m: any) => LEARNER_PROGRESS_ENABLED ? unitDoneFor((items[m.id] ?? []) as any[], progRows) : !!m.completed_by_admin;
   const sessions = detail.data?.sessions ?? [];
   const payments = detail.data?.payments ?? [];
   const installments = detail.data?.installments ?? [];
@@ -52,7 +70,7 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
 
   const totalPaid = payments.filter((p) => p.status !== "rejected" && p.status !== "pending").reduce((s, p) => s + Number(p.amount), 0);
   const coursePrice = Number(c.price ?? 0);
-  const completedCount = modules.filter((m) => m.completed_by_admin).length;
+  const completedCount = modules.filter((m) => isUnitDone(m)).length;
   const progressPct = modules.length ? Math.round((completedCount / modules.length) * 100) : 0;
 
   // Translate module titles + session titles
@@ -154,15 +172,15 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
         ) : (
           <div className="space-y-3">
             {orderModulesForDisplay(modules as any[]).map(({ m, i, num }: any) => (
-              <div key={m.id} className={`rounded-2xl border p-5 ${m.completed_by_admin ? "border-emerald-400/40 bg-emerald-400/5" : "border-white/10 bg-white/[0.03]"}`}>
+              <div key={m.id} className={`rounded-2xl border p-5 ${isUnitDone(m) ? "border-emerald-400/40 bg-emerald-400/5" : "border-white/10 bg-white/[0.03]"}`}>
                 <div className="flex items-center gap-3">
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 ${m.completed_by_admin ? "bg-emerald-500/20 text-emerald-300" : "bg-white/5 text-[var(--gold)]"}`}>
-                    {m.completed_by_admin ? <Check className="w-4 h-4" /> : num ?? <Paperclip className="w-4 h-4" />}
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 ${isUnitDone(m) ? "bg-emerald-500/20 text-emerald-300" : "bg-white/5 text-[var(--gold)]"}`}>
+                    {isUnitDone(m) ? <Check className="w-4 h-4" /> : num ?? <Paperclip className="w-4 h-4" />}
                   </div>
                   <div className="flex-1 min-w-0">
                     {num === null && <p className="text-[11px] text-[var(--gold)]/80 mb-0.5">{isAr ? "ملفات عامة للكورس" : "Course-wide files"}</p>}
                     <h4 className="font-bold">{trModuleTitles[i] || m.title}</h4>
-                    {m.completed_by_admin && <p className="text-[11px] text-emerald-300/80 mt-0.5">✓ {isAr ? "تم إكمال هذا الجزء" : "This module is complete"}</p>}
+                    {isUnitDone(m) && <p className="text-[11px] text-emerald-300/80 mt-0.5">✓ {isAr ? "تم إكمال هذا الجزء" : "This module is complete"}</p>}
                   </div>
                   {safeHref(m.online_url) && (
                     <a href={safeHref(m.online_url)!} target="_blank" rel="noopener" className="text-xs px-3 h-9 rounded-lg bg-[var(--gold)]/15 text-[var(--gold)] border border-[var(--gold)]/30 flex items-center gap-1">
@@ -179,11 +197,21 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
                       const openable = it.kind !== "note" && !!it.url;
                       return (
                         <li key={it.id} className="flex items-start gap-2 p-2.5 rounded-lg bg-white/[0.03] border border-white/5 text-sm">
-                          {it.kind === "note" ? <StickyNote className="w-4 h-4 mt-0.5 text-amber-300 shrink-0" /> :
+                          {LEARNER_PROGRESS_ENABLED && progById.get(it.id)?.completed_at ? <Check className="w-4 h-4 mt-0.5 text-emerald-300 shrink-0" data-testid="item-done" /> :
+                           it.kind === "note" ? <StickyNote className="w-4 h-4 mt-0.5 text-amber-300 shrink-0" /> :
                            it.kind === "link" ? <LinkIcon className="w-4 h-4 mt-0.5 text-sky-300 shrink-0" /> :
                            <Paperclip className="w-4 h-4 mt-0.5 text-emerald-300 shrink-0" />}
                           <div className="flex-1 min-w-0">
                             <p className="font-medium">{it.title}</p>
+                            {LEARNER_PROGRESS_ENABLED && (() => {
+                              const pr = progById.get(it.id);
+                              if (pr?.completed_at) return <p className="text-[11px] text-emerald-300 mt-0.5" data-testid="item-status">{isAr ? "✓ تم الإكمال" : "✓ Completed"}</p>;
+                              if (isMeasuredVideo(itemMediaClass(it))) {
+                                const pc = itemWatchPercent(pr?.watched_seconds, it.duration_seconds);
+                                return <p className="text-[11px] text-white/55 mt-0.5" data-testid="item-status">{pc > 0 ? (isAr ? `شوهد ${pc}%، يكتمل بمشاهدته كاملًا بدون تخطّي` : `${pc}% watched, completes after watching it all without skipping`) : (isAr ? "لم يكتمل بعد، يكتمل بمشاهدته كاملًا بدون تخطّي" : "Not completed yet, completes after watching it all without skipping")}</p>;
+                              }
+                              return null;
+                            })()}
                             {visibleItemText(it.content) && <p className="text-xs text-white/60 whitespace-pre-wrap mt-1">{visibleItemText(it.content)}</p>}
                             {openable && (
                               <button
@@ -273,7 +301,7 @@ export function CourseDetail({ enrollment, onBack, onDownloadCert, onRefresh }: 
         <CertificatePanel
           enrollment={enrollment}
           course={c}
-          allModulesDone={modules.length > 0 && modules.every((m: any) => m.completed_by_admin)}
+          allModulesDone={modules.length > 0 && modules.every((m: any) => isUnitDone(m))}
           totalModules={modules.length}
           completedModules={completedCount}
           onDownloadCert={onDownloadCert}

@@ -44,13 +44,22 @@ export function MediaViewerModal({
   const durRef = useRef(0);
   const mediaClass = item ? itemMediaClass(item) : "plain";
   const [markedDone, setMarkedDone] = useState(false);
-  useEffect(() => { setMarkedDone(false); }, [item?.id]);
+  const [pct, setPct] = useState<number | null>(null);
+  const [srvDone, setSrvDone] = useState(false);
+  const lastFlush = useRef(0);
+  useEffect(() => { setMarkedDone(false); setPct(null); setSrvDone(false); }, [item?.id]);
+  useEffect(() => {
+    if (!LEARNER_PROGRESS_ENABLED || !progress || !item) return;
+    let on = true;
+    void supabaseProgressStore.load(progress.userId, progress.itemId).then((p) => { if (on && p?.completed_at) setSrvDone(true); }).catch(() => {});
+    return () => { on = false; };
+  }, [item?.id, progress?.itemId]); // eslint-disable-line react-hooks/exhaustive-deps
   const canMark = LEARNER_PROGRESS_ENABLED && !!progress && !isMeasuredVideo(mediaClass) && mediaClass !== "embed_other";
   const onMarkDone = async () => { if (!progress) return; const r = await markItemDone(supabaseProgressStore, progress.userId, progress.itemId, { measuredVideo: false }); if (r.ok) setMarkedDone(true); };
   const flushWatch = () => {
     if (!LEARNER_PROGRESS_ENABLED || !progress || !tracker.current || durRef.current <= 0) return;
     const snap = tracker.current.snapshot(); if (!snap.length) return;
-    void recordWatched(supabaseProgressStore, progress.userId, progress.itemId, snap).catch(() => {});
+    void recordWatched(supabaseProgressStore, progress.userId, progress.itemId, snap).then((r) => { if (r?.completed) setSrvDone(true); }).catch(() => {});
   };
   useEffect(() => {
     if (!LEARNER_PROGRESS_ENABLED || !progress || !item) return;
@@ -63,6 +72,11 @@ export function MediaViewerModal({
     if (!(duration > 0)) return;
     if (!tracker.current || durRef.current !== duration) { tracker.current = createWatchTracker(duration); durRef.current = duration; }
     tracker.current.tick(t, playing, rate);
+    const r = Math.min(1, tracker.current.ratio());
+    setPct((prev) => { const n = Math.floor(r * 100); return prev === n ? prev : n; });
+    // Send progress when the learner pauses, seeks or reaches the end (not only every 30 s), so the server can decide completion promptly.
+    const now = Date.now();
+    if ((!playing || r >= 1) && now - lastFlush.current > 2000) { lastFlush.current = now; flushWatch(); }
   } : undefined;
 
   useEffect(() => {
@@ -141,6 +155,11 @@ export function MediaViewerModal({
             <h3 className="font-bold text-white truncate">{item.title}</h3>
             {item.subtitle && (
               <p className="text-[11px] text-white/55 truncate">{item.subtitle}</p>
+            )}
+            {LEARNER_PROGRESS_ENABLED && !!progress && isMeasuredVideo(mediaClass) && (srvDone || pct !== null) && (
+              <p className={`text-[11px] truncate ${srvDone ? "text-emerald-300" : "text-white/70"}`} data-testid="watch-status">
+                {srvDone ? (isAr ? "✓ تم إكمال هذا الفيديو" : "✓ Video completed") : (isAr ? `تمت مشاهدة ${pct}% في هذه الجلسة` : `${pct}% watched this session`)}
+              </p>
             )}
           </div>
           {canMark && (
