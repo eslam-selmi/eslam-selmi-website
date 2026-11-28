@@ -151,13 +151,6 @@ export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileB
               </span>
             )}
             {headerActions}
-            <button onClick={toggle} title={theme === "dark" ? (isAr ? "الوضع الفاتح" : "Light mode") : (isAr ? "الوضع الداكن" : "Dark mode")} aria-label="toggle theme" className="nx-icon-btn">
-              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </button>
-            <button onClick={() => setLang(isAr ? "en" : "ar")} title={L.switchLang} className="nx-icon-btn !w-auto px-3 gap-1.5 text-xs font-bold">
-              <Languages className="w-4 h-4" />
-              <span className="hidden sm:inline">{L.switchLang}</span>
-            </button>
             {demo ? (
               <button className="nx-icon-btn relative" aria-label="notifications">
                 <Bell className="w-4 h-4" />
@@ -187,6 +180,12 @@ export function AppChrome({ role, userId, userLabel, avatarSrc, sidebar, mobileB
                   )}
                   <button className="nx-menu-item" onClick={() => { setMenuOpen(false); setShowChangePassword(true); }}>
                     <KeyRound className="w-4 h-4 text-[var(--nx-teal)]" /> {L.password}
+                  </button>
+                  <button className="nx-menu-item" onClick={() => { toggle(); }}>
+                    {theme === "dark" ? <Sun className="w-4 h-4 text-[var(--nx-teal)]" /> : <Moon className="w-4 h-4 text-[var(--nx-teal)]" />} {theme === "dark" ? (isAr ? "الوضع الفاتح" : "Light mode") : (isAr ? "الوضع الداكن" : "Dark mode")}
+                  </button>
+                  <button className="nx-menu-item" onClick={() => { setLang(isAr ? "en" : "ar"); setMenuOpen(false); }}>
+                    <Languages className="w-4 h-4 text-[var(--nx-teal)]" /> {L.switchLang}
                   </button>
                   <hr className="nx-divider my-1.5" />
                   <button className="nx-menu-item" data-danger onClick={() => { if (!demo) { signOut(); nav({ to: "/auth" }); } setMenuOpen(false); }}>

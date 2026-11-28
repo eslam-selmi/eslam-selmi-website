@@ -33,9 +33,11 @@ type EnrolledCourse = { id: string; title: string };
 export function TraineeSupportButton({
   userId,
   enrolledCourses,
+  compact = false,
 }: {
   userId: string;
   enrolledCourses: EnrolledCourse[];
+  compact?: boolean;
 }) {
   const { lang } = useI18n();
   const isAr = lang === "ar";
@@ -68,6 +70,17 @@ export function TraineeSupportButton({
 
   return (
     <>
+      {compact ? (
+        <button
+          onClick={() => setOpen(true)}
+          title={isAr ? "مركز الدعم" : "Support Center"}
+          aria-label={isAr ? "مركز الدعم" : "Support Center"}
+          className={`nx-icon-btn relative ${glowing ? "!border-[var(--gold)]/60" : ""}`}
+        >
+          <Headset className="w-4 h-4" strokeWidth={1.75} />
+          {unreadCount > 0 && <span className="absolute -top-1 -end-1 min-w-[16px] h-4 px-1 rounded-full bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center">{unreadCount}</span>}
+        </button>
+      ) : (
       <button
         onClick={() => setOpen(true)}
         className={`nx-nav-item relative ${glowing ? "!border-[var(--gold)]/60" : ""}`}
@@ -80,6 +93,7 @@ export function TraineeSupportButton({
           </span>
         )}
       </button>
+      )}
       {open && (
         <SupportPopup
           role="user"

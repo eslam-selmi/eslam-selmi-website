@@ -322,6 +322,7 @@ function PortalPage() {
     ),
     headerActions: (
       <TraineeSupportButton
+        compact
         userId={user.id}
         enrolledCourses={trEnrollments
           .filter((e) => e.status === "approved" && e.courses)
