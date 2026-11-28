@@ -2,7 +2,7 @@ import http from 'node:http';
 const T='00000000-0000-0000-0000-0000000000aa', U='11111111-1111-1111-1111-111111111111';
 const st={learners:[{user_id:'22222222-0000-0000-0000-000000000001',status:'pending',created_at:'2026-11-28T08:00:00Z'},{user_id:'22222222-0000-0000-0000-000000000002',status:'approved',created_at:'2026-11-27T08:00:00Z'}],requests:[]};
 const names={'22222222-0000-0000-0000-000000000001':'Sara Fixture','22222222-0000-0000-0000-000000000002':'Omar Fixture'};
-const tenant={id:T,slug:'demo-trainer',kind:'trainer',name:'Layla Hassan',status:'active',feature_tools_upload:false,feature_landing:true,feature_custom_domain:false,max_courses:3};
+const tenant={id:T,slug:'demo-trainer',kind:'trainer',name:'Layla Hassan',status:'active',feature_tools_upload:!!process.env.TOOLS,feature_landing:true,feature_custom_domain:false,max_courses:3};
 st.mods=[];st.items=[];st.asg=[{id:'a1',course_id:'c1',title:'HW1',max_score:100}];st.pay=[];st.enr=[{id:'e1',user_id:'22222222-0000-0000-0000-000000000002',course_id:'c1',name_ar:'عمر فيكستشر',name_en:null,status:'approved',discount_amount:0,certificate_issued:false,certificate_requested_at:'2026-11-28T07:00:00Z',certificate_url:null,courses:{title:'أساسيات القيادة',price:1000}}];
 st.sess=process.env.SEED?[{id:'q1',course_id:'c1',title:'جلسة 1',starts_at:'2026-12-01T10:00:00Z',duration_minutes:60,link:null}]:[];st.sub=[{id:'s1',assignment_id:'a1',user_id:'22222222-0000-0000-0000-000000000002',content:'my work',link:null,score:null,feedback:null},{id:'s2',assignment_id:'a1',user_id:'22222222-0000-0000-0000-000000000001',content:'dated work',link:null,score:null,feedback:null,submitted_at:'2026-11-27T09:30:00Z'}];
 const landing={tenant_id:T,headline:'تدرّب على القيادة بثقة',subtitle:'x',about:'y',theme:'terracotta',published:true};
@@ -22,9 +22,10 @@ http.createServer((q,s)=>{
   else if(p.includes('/storage/v1/object/certificates/')){out={Key:'ok'};}
   else if(p.endsWith('/enrollments')&&q.method==='PATCH'){Object.assign(st.enr[0],JSON.parse(b));out=null;}
   else if(p.endsWith('/course_modules')&&q.method==='DELETE'){st.mods=[];out=null;}
-  else if(p.endsWith('/enrollments')){ if(q.method==='POST'){out=null;} else out=st.enr.map(e=>({...e,courses:{id:'c1',title:'أساسيات القيادة',description:null,price:0,currency:'EGP',active:true,installments_count:1,cover_emoji:'📘',total_hours:4}}));}
+  else if(p.endsWith('/enrollments')){ if(q.method==='POST'){out=null;} else out=st.enr.map(e=>({...e,courses:{id:'c1',title:'أساسيات القيادة',description:null,price:+(process.env.PRICE||0),currency:'EGP',active:true,installments_count:1,cover_emoji:'📘',total_hours:4}}));}
   else if(p.endsWith('/payments')){ if(q.method==='POST'){const j=JSON.parse(b);st.pay.push({id:'p'+st.pay.length,currency:'EGP',...j});out=null;} else out=st.pay;}
   else if(p.endsWith('/installments')){ if(q.method==='DELETE'){st.ins=[];out=null;} else out=process.env.SEED?(st.ins=st.ins||[{id:'n1',enrollment_id:'e1',amount:300,due_date:null,paid:false}]):[];}
+  else if(p.includes('/storage/v1/object/tool-assets')&&q.method==='DELETE'){out=[{name:'guide.pdf'}];}
   else if(p.includes('/storage/v1/object/list'))out=process.env.TOOLS?[{name:'guide.pdf'}]:[];
   else if(p.endsWith('/course_sessions')&&q.method==='DELETE'){st.sess=[];out=null;}
   else if(p.endsWith('/course_sessions')){ if(q.method==='POST'){const j=JSON.parse(b);st.sess.push({id:'x'+st.sess.length,...j});out=null;} else out=st.sess;}
