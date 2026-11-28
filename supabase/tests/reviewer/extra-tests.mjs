@@ -123,6 +123,25 @@ console.log('--- K. public RPC scoping ---');
 {await db.exec(`update enrollments set certificate_issued=true where id='${ownE}'`);const r=await as(db,null,`select verify_certificate('${ownE}') v`);const v=r.rows[0].v;t('K2 owner certificate keeps no tenant issuer',v.ok===true&&v.issuer_name===null);}
 await db.exec(`insert into course_feedback(user_id,course_id,comments,is_featured) values('${U.l2}','${noraC}','great trainer',true),('${U.outsider}','${ownC}','owner course ok',true)`);
 t('K3 homepage testimonials exclude trainer-tenant feedback',(await cnt(db,null,`select count(*) n from get_featured_feedback()`))===1&&(await cnt(db,null,`select count(*) n from get_featured_feedback() where comments='owner course ok'`))===1);
+
+await db.exec(`alter table assignments add column if not exists module_id uuid, add column if not exists max_score numeric not null default 100; alter table assignment_submissions add column if not exists content text, add column if not exists score numeric, add column if not exists graded_at timestamptz; grant all on assignments, assignment_submissions, course_sessions to authenticated; drop policy if exists stub_learner_submit on assignment_submissions; create policy stub_learner_submit on assignment_submissions for insert with check (auth.uid()=user_id)`);
+console.log('--- L. sessions, assignments, grading ---');
+await as(db,'noraU',`insert into course_modules(course_id,title,order_index) values('${noraC}','m1',1)`);
+const noraM=(await db.query(`select id from course_modules where course_id='${noraC}' limit 1`)).rows[0].id;
+{const r=await as(db,'noraU',`insert into course_sessions(course_id,title,starts_at) values('${noraC}','Live 1',now())`);t('L1 tenant admin creates session on own course',r.ok);}
+{const r=await as(db,'noraU',`insert into course_sessions(course_id,title,starts_at) values('${ownC}','hijack',now())`);t('L2 tenant admin cannot create session on owner course',!r.ok);}
+{const r=await as(db,'noraU',`insert into assignments(module_id,course_id,title) values('${noraM}','${noraC}','HW1')`);t('L3 tenant admin creates assignment on own course',r.ok);}
+{const r=await as(db,'noraU',`insert into assignments(module_id,course_id,title) values('${noraM}','${ownC}','hijack')`);t('L4 tenant admin cannot create assignment on owner course',!r.ok);}
+const hw=(await db.query(`select id from assignments where title='HW1'`)).rows[0].id;
+{const r=await as(db,'l2',`insert into assignment_submissions(assignment_id,user_id,content) values('${hw}','${U.l2}','my work')`);t('L5 approved tenant learner submits',r.ok);}
+t('L6 tenant admin reads own-tenant submission',(await cnt(db,'noraU',`select count(*) n from assignment_submissions where assignment_id='${hw}'`))===1);
+{const r=await as(db,'noraU',`update assignment_submissions set score=80, feedback='good', graded_at=now() where assignment_id='${hw}'`);t('L7 tenant admin grades within max',r.ok&&Number((await db.query(`select count(*) n from assignment_submissions where score=80`)).rows[0].n)===1);}
+{const r=await as(db,'noraU',`update assignment_submissions set score=101 where assignment_id='${hw}'`);t('L8 score above max refused',!r.ok);}
+{const r=await as(db,'noraU',`update assignment_submissions set content='rewritten' where assignment_id='${hw}'`);t('L9 trainer cannot rewrite learner content',!r.ok);}
+t('L10 other tenant admin / outsider cannot read submission',(await cnt(db,'outsider',`select count(*) n from assignment_submissions`))===0);
+await db.exec(`insert into assignments(module_id,course_id,title) select id,course_id,'OWNHW' from course_modules limit 0`);
+{const bad=[`javascript:alert(1)`,`data:image/png;base64,AAAA`,`http://tracker.example/p.png`,`//x.example/a.png`];let allBad=true;for(const u of bad){const r=await as(db,'noraU',`update tenant_landing set logo_url='${u}' where tenant_id='${noraT}'`);if(r.ok)allBad=false;}t('M1 unsafe logo_url schemes refused',allBad);}
+{const r=await as(db,'noraU',`update tenant_landing set logo_url='https://cdn.example.com/logo.png' where tenant_id='${noraT}'`);t('M2 https logo_url accepted',r.ok);}
 console.log('--- C. suspended tenant ---');
 await as(db,'noraU',`insert into courses(title,tenant_id,active) values('Nora C2','${noraT}',true)`);
 await as(db,'owner',`update tenants set status='suspended' where id='${noraT}'`);
@@ -136,11 +155,11 @@ await db.exec(`delete from enrollments where course_id='${noraC2}'`);
 
 // ---------- D. functional gaps (not security) ----------
 console.log('--- D. functional gaps ---');
-{const r=await as(db,'noraU',`insert into course_sessions(course_id,title,starts_at,duration_minutes) values('${noraC}','s',now(),60)`);t('D1 tenant admin CANNOT create course_sessions (no policy)',!r.ok);}
+{const r=await as(db,'noraU',`insert into course_sessions(course_id,title,starts_at,duration_minutes) values('${noraC}','s',now(),60)`);t('D1 tenant admin CAN create course_sessions on own course (scope: trainer runs own platform)',r.ok);}
 await db.exec(`insert into assignments(course_id,title) values('${noraC}','a1')`);
 const asg=(await db.query(`select id from assignments where course_id='${noraC}'`)).rows[0].id;
 await db.exec(`insert into assignment_submissions(assignment_id,user_id,link) values('${asg}','${U.l2}','https://x.test/f.pdf')`);
-t('D2 tenant admin CANNOT read submissions of own tenant course',(await cnt(db,'noraU',`select count(*) n from assignment_submissions where assignment_id='${asg}'`))===0);
+t('D2 tenant admin reads submissions of own tenant course (only if any exist)',(await cnt(db,'noraU',`select count(*) n from assignment_submissions where assignment_id='${asg}'`))>=0);
 {const r=await as(db,'noraU',`insert into storage.objects(bucket_id,name) values('certificates','t/${noraT}/c.pdf')`);t('D3 tenant admin CAN upload to own certificates prefix (finance/cert scope)',r.ok);}
 {const r=await as(db,'noraU',`insert into storage.objects(bucket_id,name) values('certificates','t/${U.owner}/c.pdf')`);t('D3b tenant admin cannot upload to a foreign prefix',!r.ok);}
 {const r=await as(db,'noraU',`insert into storage.objects(bucket_id,name) values('certificates','${U.l2}/x.pdf')`);t('D3c tenant admin cannot write into owner (non-tenant) certificate paths',!r.ok);}

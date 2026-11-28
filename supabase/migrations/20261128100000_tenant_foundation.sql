@@ -564,4 +564,43 @@ CREATE OR REPLACE FUNCTION public.get_featured_feedback() RETURNS TABLE (
   ORDER BY f.created_at DESC LIMIT 24
 $$;
 
+-- 17. A trainer runs sessions, assignments and grading inside his own tenant (course tenant admin only).
+CREATE OR REPLACE FUNCTION public.assignment_tenant(_assignment uuid) RETURNS uuid
+LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS
+$$ SELECT public.course_tenant(course_id) FROM public.assignments WHERE id = _assignment $$;
+
+CREATE POLICY "tenant admin manages own sessions" ON public.course_sessions FOR ALL TO authenticated
+  USING (public.is_tenant_admin(public.course_tenant(course_id)))
+  WITH CHECK (public.is_tenant_admin(public.course_tenant(course_id)));
+CREATE POLICY "tenant admin reads own submissions" ON public.assignment_submissions FOR SELECT TO authenticated
+  USING (public.is_tenant_admin(public.assignment_tenant(assignment_id)));
+CREATE POLICY "tenant admin grades own submissions" ON public.assignment_submissions FOR UPDATE TO authenticated
+  USING (public.is_tenant_admin(public.assignment_tenant(assignment_id)))
+  WITH CHECK (public.is_tenant_admin(public.assignment_tenant(assignment_id)));
+
+-- A tenant admin may only grade: content, link, owner and assignment of a learner's submission stay as the learner left them,
+-- and the score stays within the assignment's maximum.
+CREATE OR REPLACE FUNCTION public.trg_submission_tenant_grade_guard() RETURNS trigger
+LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+DECLARE _max numeric;
+BEGIN
+  IF auth.uid() IS NULL OR auth.uid() = OLD.user_id OR public.is_platform_admin() THEN RETURN NEW; END IF;
+  IF public.is_tenant_admin(public.assignment_tenant(OLD.assignment_id)) THEN
+    IF NEW.content IS DISTINCT FROM OLD.content OR NEW.link IS DISTINCT FROM OLD.link
+       OR NEW.user_id <> OLD.user_id OR NEW.assignment_id <> OLD.assignment_id OR NEW.submitted_at IS DISTINCT FROM OLD.submitted_at THEN
+      RAISE EXCEPTION 'a trainer can only grade a submission';
+    END IF;
+    SELECT max_score INTO _max FROM public.assignments WHERE id = OLD.assignment_id;
+    IF NEW.score IS NOT NULL AND (NEW.score < 0 OR NEW.score > COALESCE(_max, 100)) THEN
+      RAISE EXCEPTION 'score outside 0..max';
+    END IF;
+  END IF;
+  RETURN NEW;
+END $$;
+CREATE TRIGGER submission_tenant_grade_guard BEFORE UPDATE ON public.assignment_submissions
+  FOR EACH ROW EXECUTE FUNCTION public.trg_submission_tenant_grade_guard();
+
+-- 18. logo_url must be an https URL or empty (no data:, javascript:, http: or relative values). Trainers cannot point it anywhere else.
+ALTER TABLE public.tenant_landing ADD CONSTRAINT tenant_landing_logo_https CHECK (logo_url IS NULL OR logo_url = '' OR logo_url ~* '^https://[a-z0-9.-]+(:[0-9]+)?(/[^[:space:]]*)?$') NOT VALID;
+
 COMMIT;

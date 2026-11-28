@@ -50,7 +50,6 @@ END; $$;
 DROP POLICY IF EXISTS "tenant admin manages own courses" ON public.courses;
 DROP POLICY IF EXISTS "tenant admin manages own modules" ON public.course_modules;
 DROP POLICY IF EXISTS "tenant admin manages own items" ON public.module_items;
-DROP POLICY IF EXISTS "tenant admin manages own assignments" ON public.assignments;
 DROP POLICY IF EXISTS "tenant admin reads own enrollments" ON public.enrollments;
 DROP POLICY IF EXISTS "tenant admin updates own enrollments" ON public.enrollments;
 DROP POLICY IF EXISTS "tenant admin reads own learners profiles" ON public.profiles;
@@ -86,6 +85,13 @@ DO $do$ BEGIN
 END $do$;
 DROP FUNCTION IF EXISTS public.trg_course_trainers_platform_only();
 
+DROP TRIGGER IF EXISTS submission_tenant_grade_guard ON public.assignment_submissions;
+DROP FUNCTION IF EXISTS public.trg_submission_tenant_grade_guard();
+DROP POLICY IF EXISTS "tenant admin manages own sessions" ON public.course_sessions;
+DROP POLICY IF EXISTS "tenant admin manages own assignments" ON public.assignments;
+DROP POLICY IF EXISTS "tenant admin reads own submissions" ON public.assignment_submissions;
+DROP POLICY IF EXISTS "tenant admin grades own submissions" ON public.assignment_submissions;
+DROP FUNCTION IF EXISTS public.assignment_tenant(uuid);
 -- Restore finance objects changed by section 14 (original definitions copied from 20260523140436 and 20260626083801).
 DROP POLICY IF EXISTS "tenant admin manages own payments" ON public.payments;
 DROP POLICY IF EXISTS "tenant admin manages own installments" ON public.installments;

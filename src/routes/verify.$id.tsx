@@ -9,10 +9,10 @@ export const Route = createFileRoute("/verify/$id")({
   component: VerifyPage,
   head: () => ({
     meta: [
-      { title: "التحقق من الشهادة · Certificate Verification — إسلام سلمي" },
-      { name: "description", content: "Verify the authenticity of a certificate issued by Eslam Selmi Academy." },
-      { property: "og:title", content: "Certificate Verification — Eslam Selmi" },
-      { property: "og:description", content: "Verify the authenticity of a certificate issued by Eslam Selmi." },
+      { title: "التحقق من الشهادة · Certificate Verification" },
+      { name: "description", content: "Verify the authenticity of a certificate." },
+      { property: "og:title", content: "Certificate Verification" },
+      { property: "og:description", content: "Verify the authenticity of a certificate." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
