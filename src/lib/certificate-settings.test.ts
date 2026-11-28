@@ -5,11 +5,11 @@ import { certText, readCertificateSettings } from "./certificate-settings";
 test("custom text overrides the default per language", () => {
   const s = readCertificateSettings({ ar: { title: "شهادة تميز" } });
   assert.equal(certText(s, "ar", "title"), "شهادة تميز");
-  assert.equal(certText(s, "en", "title"), "CERTIFICATE");
+  assert.equal(certText(s, "en", "title"), "Certificate of Completion");
 });
 
 test("invalid colors fall back to defaults", () => {
-  assert.equal(readCertificateSettings({ colors: { accent: "red" } }).colors.accent, "#52d0cf");
+  assert.equal(readCertificateSettings({ colors: { accent: "red" } }).colors.accent, "#19b9b5");
 });
 
 test("signaturePath accepts a storage path and rejects traversal or non-strings", () => {

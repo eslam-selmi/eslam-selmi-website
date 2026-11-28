@@ -1,27 +1,27 @@
 export const CERT_TEXT_FIELDS = [
   ["brandName", "اسم الجهة", "إسلام سلمي", "ESLAM SELMI"],
   ["brandTagline", "وصف الجهة", "التدريب والتطوير", "TRAINING & DEVELOPMENT"],
-  ["eyebrow", "السطر العلوي", "تقديرٌ للإنجاز · استثمارٌ في المستقبل", "RECOGNISING ACHIEVEMENT"],
-  ["title", "العنوان الرئيسي", "شهادة إتمام", "CERTIFICATE"],
-  ["subtitle", "العنوان الفرعي", "برنامج تدريبي", "OF COMPLETION"],
-  ["intro", "جملة التقديم", "تُمنح هذه الشهادة إلى", "THIS CERTIFICATE IS AWARDED TO"],
-  ["bridge", "جملة الإتمام", "لإتمام البرنامج التدريبي بنجاح", "For successfully completing the training programme"],
+    ["title", "العنوان الرئيسي", "شهادة إتمام", "Certificate of Completion"],
+  ["subtitle", "العنوان الفرعي", "CERTIFICATE OF COMPLETION", "TRAINING PROGRAMME"],
+  ["intro", "جملة التقديم", "يشهد إسلام سلمي بأن", "This is to certify that"],
+  ["bridge", "جملة الإتمام", "قد أتمّ بنجاح البرنامج التدريبي", "has successfully completed the training programme"],
   ["courseTitle", "اسم البرنامج على الشهادة (فارغ = اسم الكورس)", "", ""],
-  ["hoursLabel", "وصف الساعات", "ساعة تدريبية", "TRAINING HOURS"],
-  ["dateLabel", "عنوان التاريخ", "تاريخ الإصدار", "DATE OF ISSUE"],
+  ["hoursPrefix", "كلمة قبل الساعات", "بإجمالي", "A total of"],
+  ["hoursLabel", "وصف الساعات", "ساعة تدريبية", "training hours"],
+  ["dateLabel", "عنوان التاريخ", "تاريخ الإصدار", "Date of issue"],
   ["website", "الموقع الإلكتروني", "eslam-selmi.com", "eslam-selmi.com"],
   ["signatureMark", "التوقيع", "Eslam Selmi", "Eslam Selmi"],
-  ["signerName", "اسم الموقّع", "م. إسلام سلمي", "Eng. Eslam Selmi"],
-  ["signerTitle", "صفة الموقّع", "المؤسس والمدرب", "Founder & Trainer"],
-  ["verifyTitle", "عنوان التحقق", "التحقق من الشهادة", "VERIFY CREDENTIAL"],
-  ["verifyHint", "وصف التحقق", "امسح الرمز للتحقق من الأصالة", "Scan to verify authenticity"],
+  ["signerName", "اسم الموقّع", "إسلام سلمي", "Eslam Selmi"],
+  ["signerTitle", "صفة الموقّع", "المدرب", "Trainer"],
+  ["verifyTitle", "عنوان التحقق", "للتحقق من صحة الشهادة", "Scan to verify"],
+  ["verifyHint", "وصف التحقق", "امسح الرمز", "this certificate"],
 ] as const;
 
 export type CertTextKey = (typeof CERT_TEXT_FIELDS)[number][0];
 export type CertTexts = Record<CertTextKey, string>;
 export const CERT_TOGGLES = [
-  ["showBrand", "الشعار واسم الجهة"], ["showSpine", "الشريط الجانبي"], ["showLines", "الخطوط الزخرفية"],
-  ["showFrame", "الإطار"], ["showHours", "عدد الساعات"], ["showPartner", "شعار الكورس"],
+  ["showBrand", "الشعار"], ["showSpine", "الشريطان العلوي والسفلي"], ["showLines", "العلامة المائية"],
+  ["showFrame", "الختم"], ["showHours", "عدد الساعات"], ["showPartner", "شعار الكورس"],
   ["showDate", "التاريخ"], ["showSignature", "التوقيع"], ["showQr", "رمز التحقق"],
 ] as const;
 export type CertToggleKey = (typeof CERT_TOGGLES)[number][0];
@@ -37,7 +37,7 @@ export type CertificateSettings = {
 
 export const defaultCertificateSettings: CertificateSettings = {
   ar: {}, en: {},
-  colors: { paper: "#fbfcfd", ink: "#0b1f45", accent: "#52d0cf", line: "#c6d3dc" },
+  colors: { paper: "#f4f5f2", ink: "#0a1f4d", accent: "#19b9b5", line: "#c6d3dc" },
   toggles: { showBrand: true, showSpine: true, showLines: true, showFrame: true, showHours: true, showPartner: true, showDate: true, showSignature: true, showQr: true },
   titleScale: 100, nameScale: 100, signaturePath: "",
 };

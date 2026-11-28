@@ -2,10 +2,16 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import QRCode from "qrcode";
 import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
 import { supabase } from "@/integrations/supabase/client";
+import { CertificateBands, CertificateSeal } from "@/components/certificates/CertificateArt";
 import { useSiteProfile } from "@/lib/site-profile";
 import { certText, defaultCertificateSettings, type CertTextKey, type CertificateSettings } from "@/lib/certificate-settings";
 import "@fontsource/ibm-plex-sans-arabic/arabic-400.css";
+import "@fontsource/ibm-plex-sans-arabic/arabic-300.css";
+import "@fontsource/ibm-plex-sans-arabic/arabic-500.css";
 import "@fontsource/ibm-plex-sans-arabic/arabic-600.css";
+import "@fontsource/ibm-plex-sans-arabic/latin-300.css";
+import "@fontsource/ibm-plex-sans-arabic/latin-500.css";
+import "@fontsource/ibm-plex-sans-arabic/latin-600.css";
 import "@fontsource/manrope/latin-400.css";
 import "@fontsource/manrope/latin-600.css";
 import "@fontsource/manrope/latin-800.css";
@@ -30,14 +36,6 @@ export const CERTIFICATE_WIDTH = 794;
 export const CERTIFICATE_HEIGHT = 1123;
 export const verificationUrl = (id: string) => `https://eslam-selmi.com/verify/${encodeURIComponent(id)}`;
 
-// Fine contour lines behind the content (same curve family as the approved design).
-const CONTOUR_PATHS = Array.from({ length: 70 }, (_, i) => {
-  const y0 = i * 17 - 40;
-  let d = `M-10 ${y0}`;
-  for (let x = -10; x < 810; x += 20) d += `L${x} ${(y0 + 38 * Math.sin(x / 130 + i * 0.09) + 14 * Math.sin(x / 47 + i * 0.2) + x * 0.12).toFixed(1)}`;
-  return d;
-});
-
 export function CertificateDocument({ payload: p, qr, logo = brandLogoAsset.url, courseLogo, signature }: {
   payload: CertificatePayload; qr?: string; logo?: string; courseLogo?: string; signature?: string;
 }) {
@@ -45,33 +43,33 @@ export function CertificateDocument({ payload: p, qr, logo = brandLogoAsset.url,
   const s = p.settings ?? defaultCertificateSettings;
   const tx = (k: CertTextKey) => certText(s, p.lang, k);
   const on = s.toggles;
-  const date = p.issueDate.toLocaleDateString(ar ? "ar-EG-u-nu-latn" : "en-GB", { year: "numeric", month: "long", day: "numeric" });
+  const date = p.issueDate.toLocaleDateString(ar ? "ar-EG" : "en-GB", { year: "numeric", month: "long", day: "numeric" });
   const style = { "--certificate-paper": s.colors.paper, "--certificate-ink": s.colors.ink, "--certificate-accent": s.colors.accent, "--certificate-line": s.colors.line } as CSSProperties;
   const student = p.studentName.replace(/"/g, "");
-  const nameSize = (student.length < 24 ? 66 : student.length < 40 ? 42 : 34) * s.nameScale / 100;
+  const nameBase = ar ? 80 : 70;
+  const nameSize = nameBase * (student.length < 24 ? 1 : student.length < 40 ? 0.64 : 0.5) * s.nameScale / 100;
+  const course = (s[p.lang].courseTitle?.trim() || p.courseTitle).replace(/[\p{Extended_Pictographic}\uFE0F\u200D]+/gu, "").replace(/\s{2,}/g, " ").trim();
+  const courseSize = (ar ? 34 : 27) * (course.length > 50 ? 0.65 : course.length > 30 ? 0.8 : 1);
+  const hours = ar ? Number(p.totalHours).toLocaleString("ar-EG") : String(p.totalHours);
+  const micro = ar ? "CERTIFICATE OF COMPLETION · شهادة إتمام · ".repeat(18) : "CERTIFICATE OF COMPLETION · ".repeat(26);
   return <article className={`certificate-sheet ${ar ? "certificate-ar" : "certificate-en"}`} style={style} dir={ar ? "rtl" : "ltr"} aria-label={tx("title")}>
-    {on.showLines && <svg className="certificate-lines" viewBox="0 0 794 1123" aria-hidden="true">{CONTOUR_PATHS.map((d, i) => <path key={i} d={d} />)}</svg>}
-    <div className="certificate-top-band" aria-hidden="true" />
-    {on.showFrame && <div className="certificate-inner-frame" aria-hidden="true" />}
-    {on.showBrand && <img className="certificate-watermark" src={logo} alt="" aria-hidden="true" />}
+    {on.showLines && <img className="certificate-watermark" src="/certificate-watermark.webp" alt="" aria-hidden="true" />}
+    {on.showSpine && <><CertificateBands /><div className="certificate-micro certificate-micro-top" aria-hidden="true">{micro}</div><div className="certificate-micro certificate-micro-bottom" aria-hidden="true">{micro}</div></>}
     {on.showBrand && <img className="certificate-logo" src={logo} alt="" />}
-    <main className="certificate-main">
-      <h1 style={{ fontSize: `${(ar ? 48 : 36) * s.titleScale / 100}px` }}>{tx("title")}</h1>
-      <p className="certificate-subtitle">{tx("subtitle")}</p>
-      <p className="certificate-intro">{tx("intro")}</p>
-      <h2 className="certificate-student" style={{ fontSize: `${nameSize}px` }}>{student}</h2>
-      <p className="certificate-bridge">{tx("bridge")}</p>
-      <h3 className="certificate-course">{(s[p.lang].courseTitle?.trim() || p.courseTitle).replace(/[\p{Extended_Pictographic}\uFE0F\u200D]+/gu, "").replace(/\s{2,}/g, " ").trim()}</h3>
-      {on.showHours && Number(p.totalHours) > 0 && <p className="certificate-hours"><strong>{p.totalHours}</strong><span>{tx("hoursLabel")}</span></p>}
-      {on.showPartner && p.courseBrandName && <div className="certificate-partner">{courseLogo && <img src={courseLogo} alt="" />}<span>{p.courseBrandName}</span></div>}
-    </main>
-    <footer className="certificate-footer">
-      <div className="certificate-date">{on.showDate && <><div className="certificate-line-value">{date}</div><span>{tx("dateLabel")}</span></>}</div>
-      <div className="certificate-signature">{on.showSignature && <><div className="certificate-line-value"><span>{p.signerName || tx("signerName")}</span>{signature && <img src={signature} alt="" />}</div><span>{p.signerTitle || tx("signerTitle")}</span></>}</div>
-      <div className="certificate-verification">{on.showQr && <>{qr && <img src={qr} alt={tx("verifyTitle")} />}<strong>{tx("verifyTitle")}</strong><span>{tx("verifyHint")}</span></>}</div>
-    </footer>
-    <div className="certificate-issuer">{tx("brandName")} &nbsp;·&nbsp; {tx("brandTagline")}{tx("website") ? <> &nbsp;·&nbsp; <bdi>{tx("website")}</bdi></> : null}</div>
-    {on.showSpine && <><div className="certificate-bottom-accent" aria-hidden="true" /><div className="certificate-bottom-band" aria-hidden="true" /></>}
+    {on.showPartner && p.courseBrandName && <div className="certificate-partner">{courseLogo && <img src={courseLogo} alt="" />}<span>{p.courseBrandName}</span></div>}
+    <h1 className="certificate-title" style={{ fontSize: `${(ar ? 58 : 41) * s.titleScale / 100}px` }}>{tx("title")}</h1>
+    <p className="certificate-subtitle">{tx("subtitle")}</p>
+    <div className="certificate-divider" aria-hidden="true"><i /><b /><i /></div>
+    <p className="certificate-intro">{tx("intro")}</p>
+    <h2 className="certificate-student" style={{ fontSize: `${nameSize}px` }}>{student}</h2>
+    <div className="certificate-student-line" aria-hidden="true" />
+    <p className="certificate-bridge">{tx("bridge")}</p>
+    <h3 className="certificate-course" style={{ fontSize: `${courseSize}px` }}>{course}</h3>
+    {on.showHours && Number(p.totalHours) > 0 && <p className="certificate-hours">{tx("hoursPrefix")} <strong>{hours}</strong> {tx("hoursLabel")}</p>}
+    <div className="certificate-date">{on.showDate && <><div className="certificate-line-value">{date}</div><span>{tx("dateLabel")}</span></>}</div>
+    <div className="certificate-signature">{on.showSignature && <><div className="certificate-line-value"><span>{p.signerName || tx("signerName")}</span>{signature && <img src={signature} alt="" />}</div><span>{p.signerTitle || tx("signerTitle")}</span></>}</div>
+    {on.showFrame && <div className="certificate-seal-wrap"><CertificateSeal logo={logo} /></div>}
+    {on.showQr && <div className="certificate-verification">{qr && <div className="certificate-qr"><img src={qr} alt={tx("verifyTitle")} /></div>}<div className="certificate-verify-text">{tx("verifyTitle")}<br />{tx("verifyHint")}<bdi>{p.certificateId.length > 20 ? p.certificateId.slice(0, 8).toUpperCase() : p.certificateId}</bdi></div></div>}
   </article>;
 }
 

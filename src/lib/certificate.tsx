@@ -6,21 +6,21 @@ import brandLogoAsset from "@/assets/brand-logo.webp.asset.json";
 import { QueryClient } from "@tanstack/react-query";
 import { siteProfileOptions } from "@/lib/site-profile";
 import { readSiteProfile } from "@/lib/site-profile-data";
-import arabicRegular from "@fontsource/ibm-plex-sans-arabic/files/ibm-plex-sans-arabic-arabic-400-normal.woff2?url";
+import arabicLight from "@fontsource/ibm-plex-sans-arabic/files/ibm-plex-sans-arabic-arabic-300-normal.woff2?url";
+import arabicMedium from "@fontsource/ibm-plex-sans-arabic/files/ibm-plex-sans-arabic-arabic-500-normal.woff2?url";
 import arabicBold from "@fontsource/ibm-plex-sans-arabic/files/ibm-plex-sans-arabic-arabic-600-normal.woff2?url";
-import bodyRegular from "@fontsource/manrope/files/manrope-latin-400-normal.woff2?url";
-import bodyBold from "@fontsource/manrope/files/manrope-latin-600-normal.woff2?url";
-import bodyHeavy from "@fontsource/manrope/files/manrope-latin-800-normal.woff2?url";
-import headingRegular from "@fontsource/sora/files/sora-latin-600-normal.woff2?url";
-import headingBold from "@fontsource/sora/files/sora-latin-700-normal.woff2?url";
+import latinLight from "@fontsource/ibm-plex-sans-arabic/files/ibm-plex-sans-arabic-latin-300-normal.woff2?url";
+import latinMedium from "@fontsource/ibm-plex-sans-arabic/files/ibm-plex-sans-arabic-latin-500-normal.woff2?url";
+import latinBold from "@fontsource/ibm-plex-sans-arabic/files/ibm-plex-sans-arabic-latin-600-normal.woff2?url";
 import { CertificateDocument, CERTIFICATE_WIDTH, CERTIFICATE_HEIGHT, verificationUrl } from "@/components/certificates/CertificateDocument";
 import type { CertificatePayload } from "@/components/certificates/CertificateDocument";
 export type { CertificatePayload } from "@/components/certificates/CertificateDocument";
 
+const ARABIC_RANGE = "U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0898-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC";
+const LATIN_RANGE = "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD";
 const fonts = [
-  ["IBM Plex Sans Arabic", 400, arabicRegular], ["IBM Plex Sans Arabic", 600, arabicBold],
-  ["Manrope", 400, bodyRegular], ["Manrope", 600, bodyBold], ["Manrope", 800, bodyHeavy],
-  ["Sora", 600, headingRegular], ["Sora", 700, headingBold],
+  ["IBM Plex Sans Arabic", 300, arabicLight, ARABIC_RANGE, "شهادة إتمام"], ["IBM Plex Sans Arabic", 500, arabicMedium, ARABIC_RANGE, "شهادة إتمام"], ["IBM Plex Sans Arabic", 600, arabicBold, ARABIC_RANGE, "شهادة إتمام"],
+  ["IBM Plex Sans Arabic", 300, latinLight, LATIN_RANGE, "Certificate"], ["IBM Plex Sans Arabic", 500, latinMedium, LATIN_RANGE, "Certificate"], ["IBM Plex Sans Arabic", 600, latinBold, LATIN_RANGE, "Certificate"],
 ] as const;
 async function asDataUrl(url: string): Promise<string> {
   const response = await fetch(url);
@@ -35,7 +35,7 @@ async function asDataUrl(url: string): Promise<string> {
 }
 let fontCss: Promise<string> | undefined;
 function embeddedFonts() {
-  if (!fontCss) fontCss = Promise.all(fonts.map(async ([family, weight, url]) => `@font-face{font-family:'${family}';font-style:normal;font-weight:${weight};src:url(${await asDataUrl(url)}) format('woff2');}`)).then(css => css.join("\n")).catch(error => { fontCss = undefined; throw error; });
+  if (!fontCss) fontCss = Promise.all(fonts.map(async ([family, weight, url, range]) => `@font-face{font-family:'${family}';font-style:normal;font-weight:${weight};src:url(${await asDataUrl(url)}) format('woff2');unicode-range:${range};}`)).then(css => css.join("\n")).catch(error => { fontCss = undefined; throw error; });
   return fontCss;
 }
 
@@ -53,7 +53,7 @@ export async function generateCertificatePdf(p: CertificatePayload): Promise<Blo
       p.courseLogoUrl ? asDataUrl(p.courseLogoUrl).catch(() => undefined) : Promise.resolve(undefined),
     ]);
     flushSync(() => root.render(<CertificateDocument payload={p} qr={qr} logo={logo} courseLogo={courseLogo} signature={signature} />));
-    await Promise.all(fonts.map(([family, weight]) => document.fonts.load(`${weight} 24px "${family}"`, family === "IBM Plex Sans Arabic" ? "شهادة إتمام" : "Certificate")));
+    await Promise.all(fonts.map(([family, weight, , , sample]) => document.fonts.load(`${weight} 24px "${family}"`, sample)));
     await document.fonts.ready;
     await Promise.all(Array.from(host.querySelectorAll("img")).map(img => img.decode()));
     const target = host.firstElementChild;
@@ -63,7 +63,7 @@ export async function generateCertificatePdf(p: CertificatePayload): Promise<Blo
     const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4", compress: true });
     pdf.setProperties({ title: `${p.lang === "ar" ? "شهادة إتمام" : "Certificate of completion"} — ${p.studentName}`, author: "Eslam Selmi", subject: p.courseTitle });
     pdf.addImage(image, "PNG", 0, 0, 210, 297, undefined, "FAST");
-    if (p.settings?.toggles.showQr !== false) pdf.link(p.lang === "ar" ? 21.2 : 157.8, 215.4, 31.2, 31.2, { url: verificationUrl(p.certificateId) });
+    if (p.settings?.toggles.showQr !== false) pdf.link(p.lang === "ar" ? 117.2 : 73.8, 246, 19, 19, { url: verificationUrl(p.certificateId) });
     return pdf.output("blob");
   } catch (error) {
     throw new Error(`Certificate render failed (${p.lang}): ${error instanceof Error ? error.message : String(error)}`);
