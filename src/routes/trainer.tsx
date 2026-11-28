@@ -8,6 +8,7 @@ import { useI18n } from "@/lib/i18n";
 import { TENANT_THEMES, themeByKey, themeVars } from "@/lib/tenant-themes";
 import { TrainerFinance } from "@/components/tenants/TrainerFinance";
 import { TrainerTools } from "@/components/tenants/TrainerTools";
+import { TrainerClassroom } from "@/components/tenants/TrainerClassroom";
 import { tdb, HOST_RE, isDbMissing, type Tenant, type TenantDomain } from "@/lib/tenants";
 
 export const Route = createFileRoute("/trainer")({
@@ -124,6 +125,8 @@ function TrainerDashboard() {
         </form>
         {full && <p className="text-xs text-destructive">{t("وصلت للحد الأقصى من الكورسات.", "You reached your course limit.")}</p>}
       </section>
+
+      <TrainerClassroom courses={courses} t={t} />
 
       <TrainerTools tenant={tenant} t={t} />
 

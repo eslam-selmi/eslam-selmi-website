@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/portal-auth";
 import { useI18n } from "@/lib/i18n";
 import { tdb, isDbMissing } from "@/lib/tenants";
 import { themeByKey, themeVars } from "@/lib/tenant-themes";
+import { LearnerTools } from "@/components/tenants/LearnerTools";
 import { TenantLandingView, type PublicTenant, type Landing } from "@/components/tenants/TenantLandingView";
 
 // Trainer public page route: loads the tenant's own data and hands it to the presentational view.
@@ -81,6 +82,7 @@ function TenantLanding() {
   }
 
   return (
+    <>
     <TenantLandingView
       tenant={tenant} landing={landing} courses={courses} lang={lang === "ar" ? "ar" : "en"}
       signedIn={!!user} mode={mode} setMode={setMode} form={form} setForm={setForm} busy={busy} msg={msg}
@@ -88,5 +90,7 @@ function TenantLanding() {
       onJoin={async () => { try { await join(); setMsg("joined"); } catch (e: any) { setMsg("err:" + e.message); } }}
       vars={themeVars(themeByKey(landing.theme))}
     />
+    {user && <LearnerTools tenantId={tenant.id} lang={lang === "ar" ? "ar" : "en"} />}
+    </>
   );
 }

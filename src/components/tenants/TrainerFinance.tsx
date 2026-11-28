@@ -38,17 +38,19 @@ export function TrainerFinance({ tenant, courses, t }: { tenant: Tenant; courses
   }
   async function addPayment(e: React.FormEvent<HTMLFormElement>, eid: string) {
     e.preventDefault();
-    const f = new FormData(e.currentTarget); const amount = Number(f.get("amount"));
+    const form = e.currentTarget;
+    const f = new FormData(form); const amount = Number(f.get("amount"));
     if (!(amount > 0)) return toast.error(t("المبلغ غير صحيح", "Invalid amount"));
     await run(db.from("payments").insert({ enrollment_id: eid, amount, note: String(f.get("note") ?? "") || null }));
-    e.currentTarget.reset();
+    form.reset();
   }
   async function addInstallment(e: React.FormEvent<HTMLFormElement>, eid: string) {
     e.preventDefault();
-    const f = new FormData(e.currentTarget); const amount = Number(f.get("amount"));
+    const form = e.currentTarget;
+    const f = new FormData(form); const amount = Number(f.get("amount"));
     if (!(amount > 0)) return toast.error(t("المبلغ غير صحيح", "Invalid amount"));
     await run(db.from("installments").insert({ enrollment_id: eid, amount, due_date: String(f.get("due") ?? "") || null }));
-    e.currentTarget.reset();
+    form.reset();
   }
   async function setDiscount(eid: string, v: string) {
     const n = Math.max(0, Number(v) || 0);
@@ -85,8 +87,8 @@ export function TrainerFinance({ tenant, courses, t }: { tenant: Tenant; courses
                     <span className="text-xs text-muted-foreground" dir="ltr">≤ {price}</span>
                   </label>
                   <form onSubmit={(e) => addPayment(e, r.id)} className="flex flex-wrap gap-2 items-center">
-                    <input name="amount" type="number" step="0.01" min="0" placeholder={t("دفعة", "Payment")} className="w-24 border rounded px-2 py-1 bg-background" dir="ltr" />
-                    <input name="note" placeholder={t("ملاحظة", "Note")} className="flex-1 border rounded px-2 py-1 bg-background" />
+                    <label className="flex items-center gap-1 text-xs">{t("مبلغ الدفعة", "Payment amount")}<input name="amount" type="number" step="0.01" min="0" placeholder={t("دفعة", "Payment")} className="w-24 border rounded px-2 py-1 bg-background text-sm" dir="ltr" /></label>
+                    <label className="flex flex-1 items-center gap-1 text-xs">{t("ملاحظة", "Note")}<input name="note" className="flex-1 border rounded px-2 py-1 bg-background text-sm" /></label>
                     <button className="px-3 py-1 rounded border">{t("تسجيل دفعة", "Record payment")}</button>
                   </form>
                   <ul className="text-xs space-y-1">
@@ -96,8 +98,8 @@ export function TrainerFinance({ tenant, courses, t }: { tenant: Tenant; courses
                     ))}
                   </ul>
                   <form onSubmit={(e) => addInstallment(e, r.id)} className="flex flex-wrap gap-2 items-center">
-                    <input name="amount" type="number" step="0.01" min="0" placeholder={t("قسط", "Installment")} className="w-24 border rounded px-2 py-1 bg-background" dir="ltr" />
-                    <input name="due" type="date" className="border rounded px-2 py-1 bg-background" dir="ltr" />
+                    <label className="flex items-center gap-1 text-xs">{t("مبلغ القسط", "Installment amount")}<input name="amount" type="number" step="0.01" min="0" className="w-24 border rounded px-2 py-1 bg-background text-sm" dir="ltr" /></label>
+                    <label className="flex items-center gap-1 text-xs">{t("تاريخ الاستحقاق", "Due date")}<input name="due" type="date" className="border rounded px-2 py-1 bg-background text-sm" dir="ltr" /></label>
                     <button className="px-3 py-1 rounded border">{t("إضافة قسط", "Add installment")}</button>
                   </form>
                   <ul className="text-xs space-y-1">
@@ -109,7 +111,7 @@ export function TrainerFinance({ tenant, courses, t }: { tenant: Tenant; courses
                   </ul>
                   <div className="flex flex-wrap items-center gap-2">
                     <span>{t("الشهادة", "Certificate")}: {r.certificate_issued ? t("صادرة", "issued") : t("غير صادرة", "not issued")}</span>
-                    <input type="file" accept="application/pdf" onChange={(e) => uploadCert(r.id, e.target.files?.[0])} className="text-xs" />
+                    <label className="flex items-center gap-1 text-xs">{t("ملف الشهادة (PDF)", "Certificate file (PDF)")}<input type="file" accept="application/pdf" onChange={(e) => uploadCert(r.id, e.target.files?.[0])} className="text-xs" /></label>
                     {r.certificate_issued && <button className="underline text-xs" onClick={() => run(db.from("enrollments").update({ certificate_issued: false, certificate_url: null }).eq("id", r.id))}>{t("سحب الشهادة", "Revoke")}</button>}
                   </div>
                 </div>
